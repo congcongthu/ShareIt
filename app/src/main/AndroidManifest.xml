@@ -9,7 +9,10 @@
         android:roundIcon="@drawable/ic_share_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".setting.PersonalQrcodeActivity"></activity>
+        <activity android:name=".contact.ContactInfoActivity"></activity>
+        <activity android:name=".contact.SearchContactActivity" />
+        <activity android:name=".share.chat.ChatActivity" />
+        <activity android:name=".setting.PersonalQrcodeActivity" />
         <activity android:name=".album.FileActivity" />
         <activity android:name=".album.VideoActivity" />
         <activity android:name=".album.PhotoActivity" />
