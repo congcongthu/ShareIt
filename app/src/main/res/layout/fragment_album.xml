@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:background="@color/lightgray"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我的文件"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/bt_sync"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="right"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
+            android:padding="10dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/ic_sync" />
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_width="360dp"
+        android:layout_height="180dp" >
+
+        <LinearLayout
+            android:id="@+id/album_photo_layout"
+            android:gravity="center"
+            android:layout_margin="20dp"
+            android:orientation="vertical"
+            android:background="@drawable/rect_search_contact"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:src="@drawable/ic_album_photo"
+                android:layout_width="60dp"
+                android:layout_height="60dp" />
+
+            <TextView
+                android:text="相册"
+                android:padding="10dp"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/album_video_layout"
+            android:gravity="center"
+            android:layout_margin="20dp"
+            android:orientation="vertical"
+            android:background="@drawable/rect_search_contact"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:src="@drawable/ic_album_video"
+                android:layout_width="60dp"
+                android:layout_height="60dp" />
+
+            <TextView
+                android:text="视频"
+                android:padding="10dp"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/album_file_layout"
+            android:gravity="center"
+            android:layout_margin="20dp"
+            android:orientation="vertical"
+            android:background="@drawable/rect_search_contact"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:src="@drawable/ic_album_file"
+                android:layout_width="60dp"
+                android:layout_height="60dp" />
+
+            <TextView
+                android:text="文件"
+                android:padding="10dp"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
