@@ -4,6 +4,7 @@ package com.sjtuopennetwork.shareit.share;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,6 +21,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.share.chat.ChatActivity;
+import com.sjtuopennetwork.shareit.util.MyEvent;
+import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -35,10 +44,12 @@ public class ShareFragment extends Fragment {
     DialogAdapter dialogAdapter;  //对话列表的数据适配器
     ListView dialoglistView; //对话列表
     ImageView bt_share_menu; //右上角加号按钮
+    CircleProgressDialog circleProgressDialog; //等待圆环
 
 
     //内存数据
     List<TDialog> dialogs; //对话列表数据
+    boolean nodeOnline=false;
 
 
     public ShareFragment() {
@@ -59,6 +70,16 @@ public class ShareFragment extends Fragment {
         initUI();
 
         initData();
+
+        if(!nodeOnline){
+            circleProgressDialog=new CircleProgressDialog(getActivity());
+            circleProgressDialog.setText("节点启动中");
+            circleProgressDialog.showDialog();
+        }
+
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
 
     }
 
@@ -89,6 +110,14 @@ public class ShareFragment extends Fragment {
 
         dialogAdapter=new DialogAdapter(getContext(),R.layout.item_share_dialog,dialogs);
         dialoglistView.setAdapter(dialogAdapter);
+
+        dialoglistView.setOnItemClickListener((parent, view, position, id) -> {
+            String threadid="threadid";
+
+            Intent it=new Intent(getActivity(), ChatActivity.class);
+            it.putExtra("threadid",threadid);
+            startActivity(it);
+        });
     }
 
     //右上角菜单
@@ -111,27 +140,15 @@ public class ShareFragment extends Fragment {
             });
             return view;
         }
-
-//        //先不加动画
-//        @Override
-//        protected Animator onCreateShowAnimator() {
-//            return createAnimator(true);
-//        }
-//
-//        @Override
-//        protected Animator onCreateDismissAnimator() {
-//            return createAnimator(false);
-//        }
-//
-//        private Animator createAnimator(boolean isShow) {
-//            ObjectAnimator objectAnimator=ObjectAnimator.ofFloat(getDisplayAnimateView(),
-//                    View.TRANSLATION_Y,
-//                    isShow ? 0:0,
-//                    isShow ? 0:-300);
-//            objectAnimator.setDuration(500);
-//            objectAnimator.setInterpolator(new OvershootInterpolator(isShow ? 6 : -6));
-//            return objectAnimator;
-//        }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void knowOnline(MyEvent event){
+        if(event.getCode()==0){
+            if(!nodeOnline){
+                circleProgressDialog.dismiss();
+                nodeOnline=true;
+            }
+        }
+    }
 }

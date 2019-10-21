@@ -16,6 +16,8 @@ import com.sjtuopennetwork.shareit.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.textile.pb.Model;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -25,6 +27,9 @@ public class ContactFragment extends Fragment {
     private ContactView contactView;
     LinearLayout contact_discover_layout;
     LinearLayout new_friend_layout;
+
+    //内存数据
+    List<Model.Contact> contacts;
 
 
     public ContactFragment() {
@@ -44,6 +49,8 @@ public class ContactFragment extends Fragment {
         super.onStart();
 
         initUI();
+
+        initData();
 
         contactView=getActivity().findViewById(R.id.contact_list);
         List<ContactBean> contactBeans=new ArrayList<>();
@@ -72,6 +79,10 @@ public class ContactFragment extends Fragment {
             contactBeans.add(contactBean);
         }
         contactView.setData(contactBeans,false);
+    }
+
+    private void initData(){
+
     }
 
     private void initUI() {

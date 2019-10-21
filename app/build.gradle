@@ -49,6 +49,9 @@ dependencies {
     //联系人
     implementation project(path: ':libcontacts')
 
+    //等待圆环
+    implementation 'com.github.autume:CircleProgressDialog:1.0.2'
+
     //测试相关
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
