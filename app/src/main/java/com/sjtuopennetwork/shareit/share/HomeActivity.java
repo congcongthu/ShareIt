@@ -160,5 +160,12 @@ public class HomeActivity extends AppCompatActivity {
             //连网之后反馈给主界面
             EventBus.getDefault().postSticky(new MyEvent(0,null)); //怕先连网，后启动ShareFragment的注册，所以用Sticky
         }
+
+        @Override
+        public void contactQueryResult(String queryId, Model.Contact contact) {
+            super.contactQueryResult(queryId, contact);
+
+            EventBus.getDefault().post(new MyEvent(1,contact));
+        }
     }
 }
