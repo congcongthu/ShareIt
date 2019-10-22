@@ -46,7 +46,6 @@ public class ShareFragment extends Fragment {
     ImageView bt_share_menu; //右上角加号按钮
     CircleProgressDialog circleProgressDialog; //等待圆环
 
-
     //内存数据
     List<TDialog> dialogs; //对话列表数据
     boolean nodeOnline=false;

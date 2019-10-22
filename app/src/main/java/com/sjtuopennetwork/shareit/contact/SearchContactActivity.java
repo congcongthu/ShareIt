@@ -1,37 +1,46 @@
 package com.sjtuopennetwork.shareit.contact;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.util.FileUtil;
 import com.sjtuopennetwork.shareit.util.MyEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import io.textile.pb.Model;
 import io.textile.pb.QueryOuterClass;
-import io.textile.textile.Handlers;
 import io.textile.textile.Textile;
 
 public class SearchContactActivity extends AppCompatActivity {
 
     //UI控件
-    SearchView searchView;
-    ListView contact_search_result_lv;
-    SearchResultAdapter searchResultAdapter;
+    SearchView searchView; //搜索框
+    ListView contact_search_result_lv;  //搜索结果列表
+    SearchResultAdapter searchResultAdapter;  //搜索结果适配器
 
     //内存数据
-    List<Model.Contact> contacts;
-    List<SearchResultContact> resultContacts;
-
+    List<Model.Contact> oldContacts;  //已添加的联系人
+    List<Model.Contact> newContacts;  //搜索到的结果
+    List<SearchResultContact> resultContacts;  //存放自定义的搜索结果item对象
+    List<String> inviteAddr=new LinkedList<>(); //存放要发送申请的联系人的地址
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +57,15 @@ public class SearchContactActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        contacts=new LinkedList<>();
+        //初始化已添加的联系人列表
+        try {
+            oldContacts=Textile.instance().contacts.list().getItemsList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                contacts.clear(); //清空结果列表
                 resultContacts.clear();
                 QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder()
                         .setWait(10)
@@ -66,6 +79,7 @@ public class SearchContactActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
                 return true;
             }
 
@@ -74,64 +88,94 @@ public class SearchContactActivity extends AppCompatActivity {
                 return true;
             }
         });
+        searchView.setOnCloseListener(() -> {
+            resultContacts.clear();
+            newContacts.clear();
+            return true;
+        });
 
-
+        contact_search_result_lv.setOnItemClickListener((parent, view, position, id) -> {
+            Model.Contact wantToAdd=newContacts.get(position);
+            AlertDialog.Builder addContact=new AlertDialog.Builder(SearchContactActivity.this);
+            addContact.setTitle("添加联系人");
+            addContact.setMessage("确定添加 "+wantToAdd.getName()+" 吗？");
+            addContact.setPositiveButton("添加", (dialog, which) -> {
+                try {
+                    Textile.instance().contacts.add(wantToAdd);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                inviteAddr.add(wantToAdd.getAddress()); //添加到申请列表
+                createTwoPersonThread(wantToAdd.getName(),wantToAdd.getAddress()); //创建双人thread,key就是那个人的地址
+            });
+            addContact.setNegativeButton("取消", (dialog, which) -> Toast.makeText(SearchContactActivity.this,"已取消",Toast.LENGTH_SHORT).show());
+            addContact.show();
+        });
     }
 
     private void initUI() {
         searchView=findViewById(R.id.contact_search);
         contact_search_result_lv=findViewById(R.id.contact_search_result_lv);
 
-        resultContacts=new LinkedList<>();
+        resultContacts=Collections.synchronizedList(new LinkedList<>());
+        newContacts=Collections.synchronizedList(new LinkedList<>());
+        searchResultAdapter=new SearchResultAdapter(SearchContactActivity.this,R.layout.item_contact_search_result,resultContacts);
+        searchResultAdapter.notifyDataSetChanged();
+        contact_search_result_lv.setAdapter(searchResultAdapter);
     }
 
-    //每得到一个搜索结果就会调用一次
+    //一次得到一个搜索结果
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void showSearch(MyEvent event){
+    public void getAnResult(MyEvent event){
         if(event.getCode()!=1){
-            return;
+            return; //如果消息码不等于1，则直接返回
         }
         Model.Contact c=(Model.Contact) event.getEvent();
-        System.out.println("=============得到搜索结果："+c.getName());
-
-        //这里不区分是否是已添加的联系人，直到点到详情里面才根据不同的用户显示不同的布局
-        contacts.add(c);
-        String addr=c.getAddress();
-        String addr_last10="address: "+addr.substring(addr.length()-10);
-        if(c.getAvatar().equals("")){ //如果是没有设置头像，就直接添加进去
-            System.out.println("=======没有设置头像"+c.getName());
-            resultContacts.add(new SearchResultContact(addr_last10,c.getName(),null,"null"));
-        }else{ //如果是设置过头像，要看是否存储过
-            System.out.println("========头像hash："+c.getAvatar());
-            String avatarPath= FileUtil.getFilePath(c.getAvatar());
-            if(avatarPath.equals("null")){ //如果没有存储这个用户的头像，就使用网络上的数据
-                String avatarHash=c.getAvatar();
-                Textile.instance().ipfs.dataAtPath("/ipfs/" + avatarHash + "/0/small/content", new Handlers.DataHandler() {
-                    @Override
-                    public void onComplete(byte[] data, String media) {
-                        System.out.println("=================设置了头像"+c.getName());
-                        resultContacts.add(new SearchResultContact(addr_last10,c.getName(),data,"null"));
-                        drawSearchResult();
-                    }
-                    @Override
-                    public void onError(Exception e) {
-                    }
-                });
-            }else{ //如果已经存储了这个用户，就直接添加到结果列表显示出来
-                System.out.println("=========已经存储过"+c.getName());
-                resultContacts.add(new SearchResultContact(addr_last10,c.getName(),null,avatarPath));
+        for(Model.Contact oldcontact:oldContacts){
+            if(oldcontact.getAddress().equals(c.getAddress())){
+                return; //如果已经添加过这个联系人也直接返回
             }
         }
-        drawSearchResult();
+
+        //添加到结果列表
+        System.out.println("========得到搜索结果："+c.getName());
+        String addr=c.getAddress();
+        String addr_last10="address: "+addr.substring(addr.length()-10);
+        newContacts.add(c);
+        resultContacts.add(new SearchResultContact(addr_last10,c.getName(),c.getAvatar(),null));
+        System.out.println("===============结果长度："+resultContacts.size());
     }
 
-    private void drawSearchResult() {
-        System.out.println("=========长度："+resultContacts.size());
-        List<SearchResultContact> newResult=new LinkedList<>();
-        for(SearchResultContact s:resultContacts){
-            newResult.add(s);
+    //创建一个新的双人thread
+    private void createTwoPersonThread(String threadName,String key){
+        io.textile.pb.View.AddThreadConfig.Schema schema= io.textile.pb.View.AddThreadConfig.Schema.newBuilder()
+                .setPreset(io.textile.pb.View.AddThreadConfig.Schema.Preset.MEDIA)
+                .build();
+        io.textile.pb.View.AddThreadConfig config=io.textile.pb.View.AddThreadConfig.newBuilder()
+                .setSharing(Model.Thread.Sharing.SHARED)
+                .setType(Model.Thread.Type.OPEN)
+                .setKey(key).setName(threadName)
+                .setSchema(schema)
+                .build();
+        try {
+            Textile.instance().threads.add(config);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        searchResultAdapter=new SearchResultAdapter(this,R.layout.item_contact_search_result,newResult);
-        contact_search_result_lv.setAdapter(searchResultAdapter);
+    }
+
+    //thread创建成功后就发送邀请，用户看起来就是好友申请
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void sendInvite(MyEvent event){
+        if(event.getCode()!=2){
+            return;
+        }
+        try {
+            Model.Thread t=Textile.instance().threads.get((String)event.getEvent());
+            Textile.instance().invites.add(t.getId(),t.getKey()); //key就是联系人的address
+            System.out.println("===============发送了邀请");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

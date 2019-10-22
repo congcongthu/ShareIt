@@ -1,25 +1,33 @@
 package com.sjtuopennetwork.shareit.contact;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
 
 import java.util.List;
 
+import io.textile.textile.Handlers;
+import io.textile.textile.Textile;
+
 public class SearchResultAdapter extends ArrayAdapter {
 
     Context context;
     int resource;
     List<SearchResultContact> resultContacts;
+    byte[] img;
 
     public SearchResultAdapter(Context context, int resource, List objects) {
         super(context, resource, objects);
@@ -42,15 +50,29 @@ public class SearchResultAdapter extends ArrayAdapter {
             vh=(ViewHolder)v.getTag();
         }
 
-        if(resultContacts.get(position).avatar==null){
-            if(resultContacts.get(position).avatarPath.equals("null")){ //没有头像的新用户
-                vh.avatar.setImageResource(R.drawable.ic_default_avatar);
-            }else{ //已添加联系人
-                vh.avatar.setImageBitmap(BitmapFactory.decodeFile(resultContacts.get(position).avatarPath));
+        if(resultContacts.get(position).avatarhash.equals("")){ //如果没有设置头像
+            System.out.println("=====没有设置头像："+resultContacts.get(position).getName());
+            vh.avatar.setImageResource(R.drawable.ic_default_avatar);
+        }else{ //设置过头像
+            System.out.println("=====设置了头像："+resultContacts.get(position).getName()+" "+resultContacts.get(position).getAvatarhash());
+            img=resultContacts.get(position).getAvatar();
+            if(img==null){
+                Textile.instance().ipfs.dataAtPath("/ipfs/" + resultContacts.get(position).getAvatarhash() + "/0/small/content", new Handlers.DataHandler() {
+                    @Override
+                    public void onComplete(byte[] data, String media) {
+                        System.out.println("===============获得了头像");
+                        img=data;
+                        vh.avatar.setImageBitmap(BitmapFactory.decodeByteArray(img,0,img.length));
+                    }
+                    @Override
+                    public void onError(Exception e) {
+                        System.out.println("=========获得头像失败");
+                        vh.avatar.setImageResource(R.drawable.ic_default_avatar);
+                    }
+                });
+            }else{
+                vh.avatar.setImageBitmap(BitmapFactory.decodeByteArray(img,0,img.length));
             }
-        }else{
-            byte[] data=resultContacts.get(position).avatar;
-            vh.avatar.setImageBitmap(BitmapFactory.decodeByteArray(data,0,data.length));
         }
         vh.name.setText(resultContacts.get(position).name);
         vh.addr.setText(resultContacts.get(position).address);

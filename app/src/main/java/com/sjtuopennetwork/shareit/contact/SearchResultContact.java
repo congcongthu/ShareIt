@@ -3,14 +3,14 @@ package com.sjtuopennetwork.shareit.contact;
 public class SearchResultContact {
     String address;
     String name;
+    String avatarhash;
     byte[] avatar;
-    String avatarPath;
 
-    public SearchResultContact(String address, String name, byte[] avatar,String avatarPath) {
+    public SearchResultContact(String address, String name, String avatarhash,byte[] avatar) {
         this.address = address;
         this.name = name;
+        this.avatarhash=avatarhash;
         this.avatar = avatar;
-        this.avatarPath=avatarPath;
     }
 
     public String getAddress() {
@@ -29,6 +29,14 @@ public class SearchResultContact {
         this.name = name;
     }
 
+    public String getAvatarhash() {
+        return avatarhash;
+    }
+
+    public void setAvatarhash(String avatarhash) {
+        this.avatarhash = avatarhash;
+    }
+
     public byte[] getAvatar() {
         return avatar;
     }
@@ -37,11 +45,4 @@ public class SearchResultContact {
         this.avatar = avatar;
     }
 
-    public String getAvatarPath() {
-        return avatarPath;
-    }
-
-    public void setAvatarPath(String avatarPath) {
-        this.avatarPath = avatarPath;
-    }
 }

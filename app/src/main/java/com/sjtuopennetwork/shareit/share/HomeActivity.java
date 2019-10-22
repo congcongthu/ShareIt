@@ -2,6 +2,8 @@ package com.sjtuopennetwork.shareit.share;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.bottomnavigation.LabelVisibilityMode;
 import android.support.design.widget.BottomNavigationView;
@@ -74,11 +76,9 @@ public class HomeActivity extends AppCompatActivity {
         initUI();
 
         initData();
-
     }
 
     private void initData() {
-
         //初始化pref
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
 
@@ -104,9 +104,6 @@ public class HomeActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
     }
 
     private void initUI(){
@@ -144,18 +141,32 @@ public class HomeActivity extends AppCompatActivity {
                     Textile.instance().profile.setAvatar(avatarpath, new Handlers.BlockHandler() {
                         @Override
                         public void onComplete(Model.Block block) {
-
+                            System.out.println("======头像设置成功");
                         }
 
                         @Override
                         public void onError(Exception e) {
-
+                            System.out.println("======头像设置失败");
                         }
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+
+            Textile.instance().cafes.register(
+                    "http://202.120.38.131:40601",
+                    "24NR6PTk3ocFCxqidUHWAi6nmhcc76DzMgWHkcMYryeQ8YGRVZmXeLKkx1yXS",
+                    new Handlers.ErrorHandler() {
+                        @Override
+                        public void onComplete() {
+                            System.out.println("==========cafe连接成功");
+                        }
+                        @Override
+                        public void onError(Exception e) {
+                            System.out.println("==========cafe连接失败");
+                        }
+                    });
 
             //连网之后反馈给主界面
             EventBus.getDefault().postSticky(new MyEvent(0,null)); //怕先连网，后启动ShareFragment的注册，所以用Sticky
@@ -166,6 +177,13 @@ public class HomeActivity extends AppCompatActivity {
             super.contactQueryResult(queryId, contact);
 
             EventBus.getDefault().post(new MyEvent(1,contact));
+        }
+
+        @Override
+        public void threadAdded(String threadId) {
+            super.threadAdded(threadId);
+
+            EventBus.getDefault().post(new MyEvent(2,threadId));
         }
     }
 }

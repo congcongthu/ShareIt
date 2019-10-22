@@ -31,7 +31,7 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:28.0.0'
 
     //Textile SDK
-    implementation 'io.textile:textile:2.0.8'
+    implementation 'io.textile:textile:2.0.9-0.7.4-public'
 
     //EventBus，用于异步消息通信
     implementation 'org.greenrobot:eventbus:3.1.1'
