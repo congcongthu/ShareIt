@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
@@ -21,7 +22,7 @@
     </android.support.v7.widget.Toolbar>
 
     <com.shehuan.niv.NiceImageView
-        android:id="@+id/new_contact_avatar"
+        android:id="@+id/contact_info_avatar"
         android:layout_margin="20dp"
         android:layout_gravity="center"
         android:src="@drawable/ic_people"
@@ -30,7 +31,7 @@
         android:layout_height="120dp"  />
 
     <TextView
-        android:id="@+id/new_contact_name"
+        android:id="@+id/contact_info_name"
         android:textSize="30dp"
         android:textColor="@color/black"
         android:padding="10dp"
@@ -70,7 +71,7 @@
 
         <TextView
             android:padding="10dp"
-            android:id="@+id/my_addr"
+            android:id="@+id/contact_info_addr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="null"/>
@@ -86,12 +87,12 @@
         android:layout_height="1dp" />
 
     <TextView
-        android:id="@+id/new_contact_add"
+        android:id="@+id/contact_info_del"
         android:clickable="true"
         android:focusable="true"
         android:background="?selectableItemBackground"
         android:gravity="center"
-        android:text="添加到联系人"
+        android:text="删除联系人"
         android:padding="10dp"
         android:textSize="20sp"
         android:textColor="@color/black"
@@ -104,5 +105,18 @@
         android:background="@color/lightgray"
         android:layout_width="match_parent"
         android:layout_height="1dp" />
+
+    <TextView
+        android:id="@+id/contact_info_send"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?selectableItemBackground"
+        android:gravity="center"
+        android:text="发消息"
+        android:padding="10dp"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

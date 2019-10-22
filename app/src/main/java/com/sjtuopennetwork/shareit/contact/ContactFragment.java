@@ -11,14 +11,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.chezi008.libcontacts.bean.ContactBean;
+import com.chezi008.libcontacts.listener.ContactListener;
 import com.chezi008.libcontacts.widget.ContactView;
+import com.example.qrlibrary.qrcode.utils.PermissionUtils;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.util.FileUtil;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import io.textile.pb.Model;
+import io.textile.textile.Textile;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,6 +33,7 @@ public class ContactFragment extends Fragment {
     LinearLayout contact_discover_layout;
     LinearLayout new_friend_layout;
     ImageView bt_contact_search;
+    ImageView bt_contact_scan;
 
     //内存数据
     List<Model.Contact> contacts;
@@ -55,43 +59,53 @@ public class ContactFragment extends Fragment {
 
         initData();
 
-        contactView=getActivity().findViewById(R.id.contact_list);
-        List<ContactBean> contactBeans=new LinkedList<>();
-        for(int i=0;i<3;i++){
-            ContactBean contactBean=new ContactBean();
-            contactBean.setName("赵"+i);
-            contactBean.setAvatar("null");
-            contactBeans.add(contactBean);
-        }
-        for(int i=0;i<3;i++){
-            ContactBean contactBean=new ContactBean();
-            contactBean.setName("a"+i);
-            contactBean.setAvatar("null");
-            contactBeans.add(contactBean);
-        }
-        for(int i=0;i<3;i++){
-            ContactBean contactBean=new ContactBean();
-            contactBean.setName("李"+i);
-            contactBean.setAvatar("null");
-            contactBeans.add(contactBean);
-        }
-        for(int i=0;i<3;i++){
-            ContactBean contactBean=new ContactBean();
-            contactBean.setName("L"+i);
-            contactBean.setAvatar("null");
-            contactBeans.add(contactBean);
-        }
-        contactView.setData(contactBeans,false);
+
+
     }
 
     private void initData(){
+        List<ContactBean> contactBeans=new LinkedList<>();
+        try {
+            List<Model.Contact> contacts= Textile.instance().contacts.list().getItemsList();
+            for(Model.Contact c:contacts){
+                ContactBean contactBean=new ContactBean();
+                contactBean.setId(c.getAddress());
+                contactBean.setName(c.getName());
+                String avatarPath= FileUtil.getFilePath(c.getAvatar());
+                contactBean.setAvatar(avatarPath);
+                contactBeans.add(contactBean);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        contactView.setData(contactBeans,false);
+        contactView.setContactListener(new ContactListener<ContactBean>() {
+            @Override
+            public void onClick(ContactBean item) {
+                Intent it=new Intent(getActivity(),ContactInfoActivity.class);
+                it.putExtra("address",item.getId());
+                startActivity(it);
+            }
+
+            @Override
+            public void onLongClick(ContactBean item) {
+
+            }
+
+            @Override
+            public void loadAvatar(ImageView imageView, String avatar) {
+
+            }
+        });
     }
 
     private void initUI() {
         contact_discover_layout=getActivity().findViewById(R.id.contact_discover_layout);
         new_friend_layout=getActivity().findViewById(R.id.contact_new_friend_layout);
         bt_contact_search=getActivity().findViewById(R.id.bt_contact_search);
+        contactView=getActivity().findViewById(R.id.contact_list);
+        bt_contact_scan=getActivity().findViewById(R.id.bt_contact_scan);
 
         contact_discover_layout.setOnClickListener(v -> {
             Intent it=new Intent(getActivity(),ContactDiscoverActivity.class);
@@ -103,6 +117,11 @@ public class ContactFragment extends Fragment {
         });
         bt_contact_search.setOnClickListener(v -> {
             Intent it=new Intent(getActivity(),SearchContactActivity.class);
+            startActivity(it);
+        });
+        bt_contact_scan.setOnClickListener(v -> {
+            PermissionUtils.getInstance().requestPermission(getActivity());
+            Intent it=new Intent(getActivity(),ContactQRCodeAtivity.class);
             startActivity(it);
         });
     }

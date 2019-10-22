@@ -1,5 +1,6 @@
 package com.sjtuopennetwork.shareit.share;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -7,9 +8,11 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.bottomnavigation.LabelVisibilityMode;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -71,11 +74,21 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        getPermission();
+
         isFirstRun=getIntent().getBooleanExtra("isFirstRun",true);
 
         initUI();
 
         initData();
+    }
+
+    private void getPermission() {
+        if(PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)==PermissionChecker.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{"android.permission.WRITE_EXTERNAL_STORAGE",
+                            "android.permission.READ_EXTERNAL_STORAGE"},100);
+        }
     }
 
     private void initData() {

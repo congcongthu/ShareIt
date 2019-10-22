@@ -14,7 +14,8 @@
         android:roundIcon="@drawable/ic_share_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".contact.ContactInfoActivity"></activity>
+        <activity android:name=".contact.ScanResultActivity"></activity>
+        <activity android:name=".contact.ContactInfoActivity" />
         <activity android:name=".contact.SearchContactActivity" />
         <activity android:name=".share.chat.ChatActivity" />
         <activity android:name=".setting.PersonalQrcodeActivity" />
@@ -27,6 +28,7 @@
         <activity android:name=".contact.NewFriendActivity" />
         <activity android:name=".contact.ContactDiscoverActivity" />
         <activity android:name=".share.HomeActivity" />
+        <activity android:name=".contact.ContactQRCodeAtivity" />
         <activity android:name=".login.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
