@@ -1,29 +1,23 @@
 package com.sjtuopennetwork.shareit.contact;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
+import android.util.Pair;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.util.MyEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import io.textile.pb.Model;
 import io.textile.pb.QueryOuterClass;
@@ -49,15 +43,16 @@ public class SearchContactActivity extends AppCompatActivity {
 
         initUI();
 
-        initData();
-
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
+
+        initData();
+
     }
 
     private void initData() {
-        //初始化已添加的联系人列表
+        //初始化已添加的联系人列表，这里还是应该从threa查出来
         try {
             oldContacts=Textile.instance().contacts.list().getItemsList();
         } catch (Exception e) {
@@ -126,14 +121,11 @@ public class SearchContactActivity extends AppCompatActivity {
 
     //一次得到一个搜索结果
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getAnResult(MyEvent event){
-        if(event.getCode()!=1){
-            return; //如果消息码不等于1，则直接返回
-        }
-        Model.Contact c=(Model.Contact) event.getEvent();
+    public void getAnResult(Model.Contact c){
+
         for(Model.Contact oldcontact:oldContacts){
             if(oldcontact.getAddress().equals(c.getAddress())){
-                return; //如果已经添加过这个联系人也直接返回
+                return; //如果已经添加过这个联系人直接返回
             }
         }
 
@@ -164,18 +156,27 @@ public class SearchContactActivity extends AppCompatActivity {
         }
     }
 
-    //thread创建成功后就发送邀请，用户看起来就是好友申请
+    //双人thread创建成功后就发送邀请，用户看起来就是好友申请
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void sendInvite(MyEvent event){
-        if(event.getCode()!=2){
+    public void sendInvite(Pair<Integer,String> addFriend){
+        if(addFriend.first!=1){
             return;
         }
         try {
-            Model.Thread t=Textile.instance().threads.get((String)event.getEvent());
+            Model.Thread t=Textile.instance().threads.get(addFriend.second);
             Textile.instance().invites.add(t.getId(),t.getKey()); //key就是联系人的address
             System.out.println("===============发送了邀请");
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
         }
     }
 }

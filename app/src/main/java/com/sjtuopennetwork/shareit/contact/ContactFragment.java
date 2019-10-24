@@ -2,6 +2,8 @@ package com.sjtuopennetwork.shareit.contact;
 
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import com.chezi008.libcontacts.listener.ContactListener;
 import com.chezi008.libcontacts.widget.ContactView;
 import com.example.qrlibrary.qrcode.utils.PermissionUtils;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 
 import java.util.LinkedList;
@@ -36,13 +39,15 @@ public class ContactFragment extends Fragment {
     ImageView bt_contact_scan;
 
     //内存数据
-    List<Model.Contact> contacts;
+    List<ContactBean> contactBeans;
 
+    //持久化存储
+    private AppdbHelper appdbHelper;
+    public SQLiteDatabase appdb;
 
     public ContactFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,12 +64,14 @@ public class ContactFragment extends Fragment {
 
         initData();
 
-
-
     }
 
     private void initData(){
-        List<ContactBean> contactBeans=new LinkedList<>();
+        appdbHelper=new AppdbHelper(getActivity(),"txtl.db",null,1);
+        appdb=appdbHelper.getWritableDatabase();
+
+        contactBeans=new LinkedList<>();
+        //应该从thread中查，而不是从contacts中查
         try {
             List<Model.Contact> contacts= Textile.instance().contacts.list().getItemsList();
             for(Model.Contact c:contacts){
@@ -87,16 +94,10 @@ public class ContactFragment extends Fragment {
                 it.putExtra("address",item.getId());
                 startActivity(it);
             }
-
             @Override
-            public void onLongClick(ContactBean item) {
-
-            }
-
+            public void onLongClick(ContactBean item) { }
             @Override
-            public void loadAvatar(ImageView imageView, String avatar) {
-
-            }
+            public void loadAvatar(ImageView imageView, String avatar) { }
         });
     }
 

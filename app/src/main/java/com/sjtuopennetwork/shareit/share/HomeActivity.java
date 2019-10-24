@@ -1,10 +1,11 @@
 package com.sjtuopennetwork.shareit.share;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Handler;
-import android.os.Message;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.design.bottomnavigation.LabelVisibilityMode;
 import android.support.design.widget.BottomNavigationView;
@@ -15,20 +16,24 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.MenuItem;
 
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.album.AlbumFragment;
 import com.sjtuopennetwork.shareit.contact.ContactFragment;
 import com.sjtuopennetwork.shareit.setting.SettingFragment;
-import com.sjtuopennetwork.shareit.util.MyEvent;
+import com.sjtuopennetwork.shareit.util.AppdbHelper;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.textile.pb.Model;
 import io.textile.textile.BaseTextileEventListener;
+import io.textile.textile.FeedItemData;
 import io.textile.textile.Handlers;
 import io.textile.textile.Textile;
 
@@ -42,6 +47,8 @@ public class HomeActivity extends AppCompatActivity {
 
     //持久化存储
     SharedPreferences pref;
+    private AppdbHelper appdbHelper;
+    public SQLiteDatabase appdb;
 
     //内存数据
     boolean isFirstRun;
@@ -94,6 +101,8 @@ public class HomeActivity extends AppCompatActivity {
     private void initData() {
         //初始化pref
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
+        appdbHelper=new AppdbHelper(HomeActivity.this,"txtl.db",null,1);
+        appdb=appdbHelper.getWritableDatabase();
 
         //初始化Textile
         Context ctx = getApplicationContext();
@@ -143,7 +152,6 @@ public class HomeActivity extends AppCompatActivity {
     class MyTextileListener extends BaseTextileEventListener {
         @Override
         public void nodeOnline() {
-            super.nodeOnline();
 
             //节点连网之后，如果是首次运行要设置昵称和头像，昵称和头像是登录时华为ID得到，已经存在pref中
             if(isFirstRun){
@@ -174,29 +182,37 @@ public class HomeActivity extends AppCompatActivity {
                         @Override
                         public void onComplete() {
                             System.out.println("==========cafe连接成功");
+
+                            //写到Share...
                         }
                         @Override
                         public void onError(Exception e) {
                             System.out.println("==========cafe连接失败");
+                            //写到Share...
                         }
                     });
 
             //连网之后反馈给主界面
-            EventBus.getDefault().postSticky(new MyEvent(0,null)); //怕先连网，后启动ShareFragment的注册，所以用Sticky
+            EventBus.getDefault().postSticky(Integer.valueOf(0)); //会有先连网后启动ShareFragment的注册，所以用Sticky
         }
 
         @Override
         public void contactQueryResult(String queryId, Model.Contact contact) {
-            super.contactQueryResult(queryId, contact);
-
-            EventBus.getDefault().post(new MyEvent(1,contact));
+            EventBus.getDefault().post(contact);
         }
 
         @Override
         public void threadAdded(String threadId) {
-            super.threadAdded(threadId);
+            Pair<Integer,String> addFriend=new Pair<>(1,threadId);
+            EventBus.getDefault().post(addFriend); //只在添加联系人的时候起作用，创建群组的时候要过滤掉
+        }
 
-            EventBus.getDefault().post(new MyEvent(2,threadId));
+        @Override
+        public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
+            //要保证在所有界面收到消息，就只能是在这里更新数据库了。默认是未读的，但是在聊天界面得到消息就要改为已读
+            //发送消息的目的就是更新界面，所以不用sticky
+
         }
     }
+
 }
