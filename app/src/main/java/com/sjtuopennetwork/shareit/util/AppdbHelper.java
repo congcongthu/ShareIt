@@ -26,12 +26,8 @@ public class AppdbHelper extends SQLiteOpenHelper {
             "blockid text," +  //评论和点赞是直接对block添加，需要blockid
             "authorname text,"+ //作者昵称
             "authoravatar text," +  //作者头像
-            "body text," + //内容，文本消息就是消息，图片消息是图片路径，
+            "body text," + //内容，文本消息就是消息，图片消息是图片的hash值，
             "sendtime integer)";
-
-    //
-
-
 
     public AppdbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);

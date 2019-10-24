@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.share.chat.ChatActivity;
+import com.sjtuopennetwork.shareit.share.util.DialogAdapter;
+import com.sjtuopennetwork.shareit.share.util.TDialog;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
@@ -29,7 +29,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.LinkedList;
 import java.util.List;
 
-import io.textile.textile.FeedItemData;
 import io.textile.textile.Textile;
 import razerdp.basepopup.BasePopupWindow;
 

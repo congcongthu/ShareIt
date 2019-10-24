@@ -1,4 +1,4 @@
-package com.sjtuopennetwork.shareit.share.chat;
+package com.sjtuopennetwork.shareit.share;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

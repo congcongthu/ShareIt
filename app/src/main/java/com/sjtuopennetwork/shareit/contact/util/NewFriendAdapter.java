@@ -1,4 +1,4 @@
-package com.sjtuopennetwork.shareit.contact;
+package com.sjtuopennetwork.shareit.contact.util;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

@@ -9,6 +9,8 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.contact.util.SearchResultAdapter;
+import com.sjtuopennetwork.shareit.contact.util.SearchResultContact;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -17,7 +19,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import io.textile.pb.Model;
 import io.textile.pb.QueryOuterClass;
@@ -147,6 +148,7 @@ public class SearchContactActivity extends AppCompatActivity {
                 .setSharing(Model.Thread.Sharing.SHARED)
                 .setType(Model.Thread.Type.OPEN)
                 .setKey(key).setName(threadName)
+                .addWhitelist(key).addWhitelist(Textile.instance().account.address()) //两个人添加到白名单
                 .setSchema(schema)
                 .build();
         try {

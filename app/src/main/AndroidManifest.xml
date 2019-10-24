@@ -17,7 +17,7 @@
         <activity android:name=".contact.ScanResultActivity"></activity>
         <activity android:name=".contact.ContactInfoActivity" />
         <activity android:name=".contact.SearchContactActivity" />
-        <activity android:name=".share.chat.ChatActivity" />
+        <activity android:name=".share.ChatActivity" />
         <activity android:name=".setting.PersonalQrcodeActivity" />
         <activity android:name=".album.FileActivity" />
         <activity android:name=".album.VideoActivity" />

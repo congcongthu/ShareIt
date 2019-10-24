@@ -1,4 +1,4 @@
-package com.sjtuopennetwork.shareit.share;
+package com.sjtuopennetwork.shareit.share.util;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;

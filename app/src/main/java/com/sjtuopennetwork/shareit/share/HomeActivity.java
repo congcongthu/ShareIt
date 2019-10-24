@@ -34,6 +34,7 @@ import java.util.Map;
 import io.textile.pb.Model;
 import io.textile.textile.BaseTextileEventListener;
 import io.textile.textile.FeedItemData;
+import io.textile.textile.FeedItemType;
 import io.textile.textile.Handlers;
 import io.textile.textile.Textile;
 
@@ -211,6 +212,46 @@ public class HomeActivity extends AppCompatActivity {
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
             //要保证在所有界面收到消息，就只能是在这里更新数据库了。默认是未读的，但是在聊天界面得到消息就要改为已读
             //发送消息的目的就是更新界面，所以不用sticky
+            Model.Thread thread=null;
+            try {
+                thread=Textile.instance().threads.get(threadId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if(feedItemData.type.equals(FeedItemType.JOIN)){
+                String myAddr=Textile.instance().account.address();
+                int whiteListCount=thread.getWhitelistCount();
+                boolean keyIsMyAddress=thread.getKey().equals(myAddr); //如果key是自己的address，说明这是同意他人的好友申请
+                boolean authorIsMe=feedItemData.join.getUser().getAddress().equals(myAddr); //表明是否是自己的JOIN
+
+                if(whiteListCount==2){ //双人thread
+                    if(keyIsMyAddress){ //同意他人的好友申请，会收到自己的和他人的JOIN
+
+                    }else{
+                        if(authorIsMe){ //向他人发送好友申请，会收到自己的JOIN，
+
+                        }else{ //自己的好友申请被他人同意，会收到他人的JOIN
+
+                        }
+                    }
+
+                }else{ //群组thread
+                    if(authorIsMe){ //自己加入群组，就是创建了一个新群组，需要向dialogs表insert
+
+                    }else{ //他人加入群组，需要将dialogs表update
+
+                    }
+                }
+
+
+
+
+
+            }
+
+
+
 
         }
     }

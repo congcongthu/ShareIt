@@ -1,4 +1,4 @@
-package com.sjtuopennetwork.shareit.share;
+package com.sjtuopennetwork.shareit.share.util;
 
 public class TDialog {
     public int id;
