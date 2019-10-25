@@ -45,13 +45,15 @@ public class SearchResultAdapter extends ArrayAdapter {
         }
 
         if(resultContacts.get(position).avatarhash.equals("")){ //如果没有设置头像
-            System.out.println("=====没有设置头像："+resultContacts.get(position).getName());
+            System.out.println("=====没有设置头像："+resultContacts.get(position).name);
             vh.avatar.setImageResource(R.drawable.ic_default_avatar);
         }else{ //设置过头像
-            System.out.println("=====设置了头像："+resultContacts.get(position).getName()+" "+resultContacts.get(position).getAvatarhash());
-            img=resultContacts.get(position).getAvatar();
+            System.out.println("=====设置了头像："+resultContacts.get(position).name+" "+resultContacts.get(position).avatarhash);
+            img=resultContacts.get(position).avatar;
             if(img==null){
-                Textile.instance().ipfs.dataAtPath("/ipfs/" + resultContacts.get(position).getAvatarhash() + "/0/small/content", new Handlers.DataHandler() {
+                String getAvatar="/ipfs/" + resultContacts.get(position).avatarhash + "/0/small/content";
+                System.out.println("=========getAvatar:"+getAvatar);
+                Textile.instance().ipfs.dataAtPath(getAvatar, new Handlers.DataHandler() {
                     @Override
                     public void onComplete(byte[] data, String media) {
                         System.out.println("===============获得了头像");
@@ -65,6 +67,7 @@ public class SearchResultAdapter extends ArrayAdapter {
                     }
                 });
             }else{
+                System.out.println("=================这个");
                 vh.avatar.setImageBitmap(BitmapFactory.decodeByteArray(img,0,img.length));
             }
         }

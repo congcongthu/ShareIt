@@ -9,6 +9,7 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.contact.util.GetFriendList;
 import com.sjtuopennetwork.shareit.contact.util.SearchResultAdapter;
 import com.sjtuopennetwork.shareit.contact.util.SearchResultContact;
 
@@ -32,6 +33,7 @@ public class SearchContactActivity extends AppCompatActivity {
     SearchResultAdapter searchResultAdapter;  //搜索结果适配器
 
     //内存数据
+    List<Model.Peer> myFriends;
     List<Model.Contact> oldContacts;  //已添加的联系人
     List<Model.Contact> newContacts;  //搜索到的结果
     List<SearchResultContact> resultContacts;  //存放自定义的搜索结果item对象
@@ -54,11 +56,8 @@ public class SearchContactActivity extends AppCompatActivity {
 
     private void initData() {
         //初始化已添加的联系人列表，这里还是应该从threa查出来
-        try {
-            oldContacts=Textile.instance().contacts.list().getItemsList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        myFriends= GetFriendList.get();
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -124,8 +123,8 @@ public class SearchContactActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getAnResult(Model.Contact c){
 
-        for(Model.Contact oldcontact:oldContacts){
-            if(oldcontact.getAddress().equals(c.getAddress())){
+        for(Model.Peer p:myFriends){
+            if(p.getAddress().equals(c.getAddress())){
                 return; //如果已经添加过这个联系人直接返回
             }
         }

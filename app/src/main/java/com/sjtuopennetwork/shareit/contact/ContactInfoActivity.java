@@ -50,9 +50,7 @@ public class ContactInfoActivity extends AppCompatActivity {
         contact_addr.setText(contact.getAddress());
 
         contact_avatar=findViewById(R.id.contact_info_avatar);
-
     }
-
     private void initData(){
         //显示头像
         String avatarPath= FileUtil.getFilePath(contact.getAvatar());

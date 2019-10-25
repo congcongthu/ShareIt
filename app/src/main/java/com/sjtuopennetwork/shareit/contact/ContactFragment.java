@@ -17,6 +17,7 @@ import com.chezi008.libcontacts.listener.ContactListener;
 import com.chezi008.libcontacts.widget.ContactView;
 import com.example.qrlibrary.qrcode.utils.PermissionUtils;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.contact.util.GetFriendList;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 
@@ -40,6 +41,7 @@ public class ContactFragment extends Fragment {
 
     //内存数据
     List<ContactBean> contactBeans;
+    List<Model.Peer> myFriends;
 
     //持久化存储
     private AppdbHelper appdbHelper;
@@ -70,20 +72,16 @@ public class ContactFragment extends Fragment {
         appdbHelper=new AppdbHelper(getActivity(),"txtl.db",null,1);
         appdb=appdbHelper.getWritableDatabase();
 
+        myFriends= GetFriendList.get();
         contactBeans=new LinkedList<>();
-        //应该从thread中查，而不是从contacts中查
-        try {
-            List<Model.Contact> contacts= Textile.instance().contacts.list().getItemsList();
-            for(Model.Contact c:contacts){
-                ContactBean contactBean=new ContactBean();
-                contactBean.setId(c.getAddress());
-                contactBean.setName(c.getName());
-                String avatarPath= FileUtil.getFilePath(c.getAvatar());
-                contactBean.setAvatar(avatarPath);
-                contactBeans.add(contactBean);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        for(Model.Peer p:myFriends){
+            ContactBean contactBean=new ContactBean();
+            contactBean.setId(p.getAddress());
+            contactBean.setName(p.getName());
+            String avatarPath= FileUtil.getFilePath(p.getAvatar());
+            contactBean.setAvatar(avatarPath);
+            contactBeans.add(contactBean);
         }
 
         contactView.setData(contactBeans,false);

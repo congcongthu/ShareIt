@@ -11,11 +11,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.util.FileUtil;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
+
+import io.textile.textile.Handlers;
+import io.textile.textile.Textile;
 
 public class DialogAdapter extends ArrayAdapter {
     private List<TDialog> datas;
@@ -44,12 +49,21 @@ public class DialogAdapter extends ArrayAdapter {
             vh=(ViewHolder)v.getTag();
         }
 
-        if(tDialog.imgpath.equals("null")){
-            vh.headImg.setImageResource(R.drawable.back_gray);
-        }else if(tDialog.imgpath.equals("tongzhi")){
+//        if(tDialog.imgpath.equals("null")){
+//            vh.headImg.setImageResource(R.drawable.back_gray);
+//        }else if(tDialog.imgpath.equals("tongzhi")){
+//            vh.headImg.setImageResource(R.drawable.ic_notification_img);
+//        } else{
+//            vh.headImg.setImageBitmap(BitmapFactory.decodeFile(tDialog.imgpath));
+//        }
+        if(tDialog.imgpath.equals("tongzhi")){
             vh.headImg.setImageResource(R.drawable.ic_notification_img);
-        } else{
-            vh.headImg.setImageBitmap(BitmapFactory.decodeFile(tDialog.imgpath));
+        }else{
+            if(tDialog.isSingle){ //如果是单人的，就设置头像
+                setAvatar(vh.headImg,tDialog.imgpath);
+            } else { //如果是多人的就设置图片
+                setPhoto(vh.headImg,tDialog.imgpath);
+            }
         }
 
         if(tDialog.isRead){
@@ -74,6 +88,44 @@ public class DialogAdapter extends ArrayAdapter {
             lastMsgDate=v.findViewById(R.id.item_thread_lastmsgdate);
             headImg=v.findViewById(R.id.item_thread_img);
             isRead=v.findViewById(R.id.item_thread_badge);
+        }
+    }
+
+    private void setAvatar(ImageView imageView, String avatarHash){
+        String avatarPath= FileUtil.getFilePath(avatarHash);
+        if(avatarPath.equals("null")){ //如果没有存储过这个头像文件
+            Textile.instance().ipfs.dataAtPath("/ipfs/" + avatarHash + "/0/small/content", new Handlers.DataHandler() {
+                @Override
+                public void onComplete(byte[] data, String media) {
+                    String newPath= FileUtil.storeFile(data,avatarHash);
+                    imageView.setImageBitmap(BitmapFactory.decodeFile(newPath));
+                }
+                @Override
+                public void onError(Exception e) {
+                    imageView.setImageResource(R.drawable.ic_default_avatar);
+                }
+            });
+        }else{ //如果已经存储过这个头像
+            imageView.setImageBitmap(BitmapFactory.decodeFile(avatarPath));
+        }
+    }
+
+    private void setPhoto(ImageView imageView,String fileHash){
+        String filePath= FileUtil.getFilePath(fileHash);
+        if(filePath.equals("null")){ //如果没有存储过图片
+            Textile.instance().files.content(fileHash, new Handlers.DataHandler() {
+                @Override
+                public void onComplete(byte[] data, String media) {
+                    String fileName=FileUtil.storeFile(data,fileHash);
+                    imageView.setImageBitmap(BitmapFactory.decodeFile(fileName));
+                }
+                @Override
+                public void onError(Exception e) {
+                    imageView.setImageResource(R.drawable.ic_album);
+                }
+            });
+        }else{
+            imageView.setImageBitmap(BitmapFactory.decodeFile(filePath));
         }
     }
 }

@@ -9,17 +9,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.util.DialogAdapter;
 import com.sjtuopennetwork.shareit.share.util.TDialog;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
+import com.sjtuopennetwork.shareit.util.DBoperator;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -28,7 +32,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
+import io.textile.pb.Model;
 import io.textile.textile.Textile;
 import razerdp.basepopup.BasePopupWindow;
 
@@ -100,37 +106,14 @@ public class ShareFragment extends Fragment {
         dialogs=new LinkedList<>();
 
         //从数据库中查出对话
-        Cursor cursor=appdb.query("dialogs",null,"isvisible",new String[]{"1"},null,null,"lastmsgdate asc");
-        if(cursor.moveToFirst()){
-            do{
-                int lookid=cursor.getInt(cursor.getColumnIndex("id"));
-                String threadid=cursor.getString(cursor.getColumnIndex("threadid"));
-                String threadname=cursor.getString(cursor.getColumnIndex("threadname"));
-                String lastmsg=cursor.getString(cursor.getColumnIndex("lastmsg"));
-                long lastmsgdate=cursor.getLong(cursor.getColumnIndex("lastmsgdate"));
-                boolean isread=cursor.getInt(cursor.getColumnIndex("isread"))==1;
-                String imgpath=cursor.getString(cursor.getColumnIndex("imgpath"));
-                boolean isSingle=cursor.getInt(cursor.getColumnIndex("issingle"))==1;
-
-                TDialog tDialog=new TDialog(lookid,threadid,threadname,lastmsg,lastmsgdate,isread,imgpath,isSingle,true);
-                dialogs.add(tDialog);
-            }while (cursor.moveToNext());
-        }
-        cursor.close();
+        dialogs= DBoperator.queryAllDIalogs(appdb);
+        System.out.println("================数据库中dialog数："+dialogs.size());
 
         //查出邀请中最近的一个，添加到头部。包括好友申请的邀请，也包括群组的邀请，不过要一下类
-        io.textile.pb.View.InviteView inviteView=null;
-        try {
-            inviteView=Textile.instance().invites.list().getItems(0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if(inviteView!=null){
-            TDialog invite=new TDialog(1,"1","通知",inviteView.getInviter().getName()+" 邀请",inviteView.getDate().getSeconds(),false,"tongzhi",false,true);
-            dialogs.add(0,invite);
-        }
+
 
         dialogAdapter=new DialogAdapter(getContext(),R.layout.item_share_dialog,dialogs);
+        dialogAdapter.notifyDataSetChanged();
         dialoglistView.setAdapter(dialogAdapter);
 
         dialoglistView.setOnItemClickListener((parent, view, position, id) -> {
@@ -141,7 +124,6 @@ public class ShareFragment extends Fragment {
             ContentValues v=new ContentValues();
             v.put("isread",1);
             appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
-
 
             Intent it=new Intent(getActivity(), ChatActivity.class);
             it.putExtra("threadid",threadid);
@@ -165,9 +147,36 @@ public class ShareFragment extends Fragment {
             View view= createPopupById(R.layout.pop_share_add_menu);
             LinearLayout create_gp=view.findViewById(R.id.create_group);
             create_gp.setOnClickListener(v -> {
-
+                //先弹出对话框，输入thread名称之后获取到名称，然后调佣addNewThread方法
+                final EditText newThreadEdit=new EditText(getActivity());
+                AlertDialog.Builder addThread=new AlertDialog.Builder(getActivity());
+                addThread.setTitle("新建分享群组");
+                addThread.setView(newThreadEdit);
+                addThread.setPositiveButton("创建", (dialogInterface, i) -> {
+                    String threadname=newThreadEdit.getText().toString();
+                    addNewThreads(threadname);
+                });
+                addThread.setNegativeButton("取消", (dialog, which) -> Toast.makeText(getActivity(),"已取消",Toast.LENGTH_SHORT).show());
+                addThread.show();
             });
             return view;
+        }
+    }
+    private void addNewThreads(String threadName){
+        String key= UUID.randomUUID().toString();
+        io.textile.pb.View.AddThreadConfig.Schema schema= io.textile.pb.View.AddThreadConfig.Schema.newBuilder()
+                .setPreset(io.textile.pb.View.AddThreadConfig.Schema.Preset.MEDIA)
+                .build();
+        io.textile.pb.View.AddThreadConfig config=io.textile.pb.View.AddThreadConfig.newBuilder()
+                .setSharing(Model.Thread.Sharing.SHARED)
+                .setType(Model.Thread.Type.OPEN)
+                .setKey(key).setName(threadName)
+                .setSchema(schema)
+                .build();
+        try {
+            Textile.instance().threads.add(config);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -182,8 +191,21 @@ public class ShareFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getNewMsg(){
-
+    public void getNewMsg(TDialog tDialog){ //获取到新的消息后要更新显示
+        for(TDialog t:dialogs){
+            if(t.threadid.equals(tDialog.threadid)){
+                dialogs.remove(t);
+                dialogs.add(0,tDialog);
+            }
+        }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
+    }
 }
