@@ -90,6 +90,11 @@ public class PhotoActivity extends AppCompatActivity {
 
     private void initData(String threadId) {
 
+        try {
+            System.out.println("===================thread个数："+Textile.instance().threads.list().getItemsCount());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         String large_hash = null;
         try {
             large_hash = Textile.instance().files.list(threadId, "", 16).getItems(0).getFiles(0).getLinksMap().get("large").getHash();
@@ -114,10 +119,10 @@ public class PhotoActivity extends AppCompatActivity {
         photo_add.setOnClickListener(view -> {
             System.out.println("添加本地照片");
             PictureSelector.create(PhotoActivity.this)
-                    .openGallery(PictureMimeType.ofImage())
-                    .maxSelectNum(1)
-                    .compress(false)
-                    .forResult(PictureConfig.CHOOSE_REQUEST);
+                    .openGallery(PictureMimeType.ofImage())//全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()
+                    .maxSelectNum(1)//最大图片选择数量
+                    .compress(false)//是否压缩
+                    .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调 onActivityResult code
         });
         //检查thread上的照片，同步到相册
         photo_sync.setOnClickListener(view -> {
