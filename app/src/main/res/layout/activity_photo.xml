@@ -29,14 +29,19 @@
             android:clickable="true"
             android:src="@drawable/ic_add" />
 
+
+
         <ImageView
             android:id="@+id/photo_sync"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_gravity="right"
             android:background="?selectableItemBackground"
             android:clickable="true"
-            android:src="@drawable/ic_add" />
+            android:padding="10dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/ic_sync" />
+
     </android.support.v7.widget.Toolbar>
 
 

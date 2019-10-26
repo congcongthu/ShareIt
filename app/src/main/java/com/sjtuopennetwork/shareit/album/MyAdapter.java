@@ -68,6 +68,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         //holder.imageView.setText(mDataset[position]);
         holder.getTextView().setText(mDataSet[position]);
 
+
         //这里可以设置item监听
         //对整个item监听
         holder.itemView.setOnClickListener(new View.OnClickListener() {

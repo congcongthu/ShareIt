@@ -38,6 +38,7 @@ public class PhotoActivity extends AppCompatActivity {
     //
     private  String threadId;
     protected String[] mDataset;
+    protected String picDataset;
 
     List<LocalMedia> choosePic;
     /**
@@ -57,7 +58,8 @@ public class PhotoActivity extends AppCompatActivity {
 
         initUI();
         //初始化
-        //initData(threadId);
+        initData(threadId);
+
         initDataset();
 
         //初始化主体
@@ -90,30 +92,35 @@ public class PhotoActivity extends AppCompatActivity {
 
     private void initData(String threadId) {
 
+        int listnum = 0;
         try {
-            System.out.println("===================thread个数："+Textile.instance().threads.list().getItemsCount());
+            listnum = Textile.instance().threads.list().getItemsCount();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String large_hash = null;
-        try {
-            large_hash = Textile.instance().files.list(threadId, "", 16).getItems(0).getFiles(0).getLinksMap().get("large").getHash();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        String finalLarge_hash = large_hash;
-        Textile.instance().files.content(large_hash, new Handlers.DataHandler() {
-            @Override
-            public void onComplete(byte[] data, String media) {
-                //完成后将文件路径存储到mappings表，并构造新的对象
-                String filename = FileUtil.storeFile(data, finalLarge_hash);
 
-            }
-            @Override
-            public void onError(Exception e) {
+            System.out.println("===============Item个数："+listnum);
 
+        //取出thread中的每个图片hash
+            String large_hash = "";
+            try {
+                large_hash = Textile.instance().files.list(threadId, "", listnum).getItems(0).getFiles(0).getLinksMap().get("large").getHash();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        });
+            String finalLarge_hash = large_hash;
+
+            Textile.instance().files.content(large_hash, new Handlers.DataHandler() {
+                @Override
+                public void onComplete(byte[] data, String media) {
+                    //存储下来的包括路径的完整文件名
+                    picDataset = FileUtil.storeFile(data, finalLarge_hash);
+                }
+                @Override
+                public void onError(Exception e) {
+                }
+            });
+
 
         //添加本地照片到photo thread
         photo_add.setOnClickListener(view -> {
