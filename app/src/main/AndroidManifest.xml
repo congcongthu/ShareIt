@@ -36,6 +36,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:name="com.huawei.hms.update.provider.UpdateProvider"
+        android:authorities="com.sjtuopennetwork.shareit.hms.update.provider"
+        android:exported="false"
+        android:grantUriPermissions="true" ></provider>
+
     </application>
 
 </manifest>
