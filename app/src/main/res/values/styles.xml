@@ -8,6 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowTranslucentStatus">true</item><item name="android:windowAnimationStyle">@style/AnimationActivity</item>
     </style>
+    <!--自定义EditText样式-->
+    <style name="MyEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/lightgreen</item>
+        <item name="colorControlActivated">@color/lightgreen</item>
+    </style>
 
     <!--Activity进场。出场动画-->
     <style name="AnimationActivity" parent="@android:style/Animation.Activity">

@@ -37,7 +37,6 @@
             android:src="@drawable/ic_default_avatar"
             android:id="@+id/setting_avatar"
             android:layout_margin="10dp"
-            app:corner_radius="10dp"
             android:layout_width="70dp"
             android:layout_height="70dp"/>
 
@@ -47,6 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
+                android:id="@+id/myname"
                 android:text="昵称"
                 android:paddingLeft="15dp"
                 android:paddingTop="10dp"
@@ -120,42 +120,6 @@
         android:layout_width="match_parent"
         android:layout_height="15dp" />
     <LinearLayout
-        android:id="@+id/setting_cafe_layout"
-        android:paddingLeft="10dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?selectableItemBackground"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_width="match_parent"
-        android:layout_height="45dp">
-        <ImageView
-            android:padding="10dp"
-            android:src="@drawable/ic_cafe"
-            android:layout_width="45dp"
-            android:layout_height="45dp" />
-        <TextView
-            android:layout_weight="1"
-            android:textSize="18sp"
-            android:textColor="@color/black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cafe节点"/>
-        <ImageView
-            android:padding="10dp"
-            android:src="@drawable/ic_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-
-    <View
-        android:background="@color/lightgray"
-        android:layout_width="match_parent"
-        android:layout_height="15dp" />
-    <LinearLayout
         android:id="@+id/setting_notification_layout"
         android:paddingLeft="10dp"
         android:clickable="true"
@@ -185,7 +149,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
-
+    <View
+        android:background="@color/lightgray"
+        android:layout_width="match_parent"
+        android:layout_height="15dp" />
+    <LinearLayout
+        android:id="@+id/setting_devices_layout"
+        android:paddingLeft="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?selectableItemBackground"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+        <ImageView
+            android:padding="10dp"
+            android:src="@drawable/ic_devices"
+            android:layout_width="45dp"
+            android:layout_height="45dp" />
+        <TextView
+            android:textSize="18sp"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我的设备"/>
+        <ImageView
+            android:padding="10dp"
+            android:src="@drawable/ic_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
     <View
         android:background="@color/lightgray"
         android:layout_width="match_parent"

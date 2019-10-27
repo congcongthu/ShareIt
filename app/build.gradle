@@ -52,6 +52,12 @@ dependencies {
     //等待圆环
     implementation 'com.github.autume:CircleProgressDialog:1.0.2'
 
+    //头像 picture selector
+    implementation 'com.github.wildma:PictureSelector:1.1.3'
+
+    //发送图片 picture selector
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.0'
+
     //测试相关
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

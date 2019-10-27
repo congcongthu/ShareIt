@@ -9,7 +9,8 @@
         android:roundIcon="@drawable/ic_share_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".contact.ContactInfoActivity"></activity>
+        <activity android:name=".setting.MyDevicesActivity"></activity>
+        <activity android:name=".contact.ContactInfoActivity" />
         <activity android:name=".contact.SearchContactActivity" />
         <activity android:name=".share.chat.ChatActivity" />
         <activity android:name=".setting.PersonalQrcodeActivity" />
@@ -19,6 +20,7 @@
         <activity android:name=".setting.NotificationActivity" />
         <activity android:name=".setting.CafeActivity" />
         <activity android:name=".setting.PersonalInfoActivity" />
+        <activity android:name=".setting.InfoNameActivity" />
         <activity android:name=".contact.NewFriendActivity" />
         <activity android:name=".contact.ContactDiscoverActivity" />
         <activity android:name=".share.HomeActivity" />
