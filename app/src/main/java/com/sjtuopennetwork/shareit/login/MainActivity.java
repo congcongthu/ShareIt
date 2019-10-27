@@ -1,8 +1,11 @@
 package com.sjtuopennetwork.shareit.login;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main); 这个Activity不需要layout，因为直接使用华为的登录页面
 
+
+
         //查SharedPreference中"isLogin"判断登录状态，如果未登录则直接拉起华为ID登录界面。如果已登录则跳转到HomeActivity
 
 
@@ -32,4 +37,5 @@ public class MainActivity extends AppCompatActivity {
         finish();
 
     }
+
 }

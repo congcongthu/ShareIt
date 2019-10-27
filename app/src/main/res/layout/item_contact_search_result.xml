@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_search_result_layout"
+    android:layout_width="match_parent"
+    android:gravity="center_vertical"
+    android:layout_height="70dp">
+
+    <com.shehuan.niv.NiceImageView
+        android:src="@drawable/ic_default_avatar"
+        android:id="@+id/result_avatar"
+        android:layout_margin="10dp"
+        app:corner_radius="10dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"/>
+
+    <LinearLayout
+        android:id="@+id/name_and_addr"
+        android:layout_toRightOf="@+id/result_avatar"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp">
+        <TextView
+            android:id="@+id/result_name"
+            android:text="昵称"
+            android:paddingLeft="15dp"
+            android:paddingTop="10dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/result_address"
+            android:text="address"
+            android:paddingLeft="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -11,6 +11,11 @@ import android.widget.LinearLayout;
 
 import com.sjtuopennetwork.shareit.R;
 
+import java.util.UUID;
+
+import io.textile.pb.Model;
+import io.textile.textile.Textile;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -60,6 +65,25 @@ public class AlbumFragment extends Fragment {
             startActivity(it);
         });
     }
+    
+    //创建新的thread
+    private void addNewThreads(String threadName){
+        String key= UUID.randomUUID().toString();//随机生成key
+        io.textile.pb.View.AddThreadConfig.Schema schema= io.textile.pb.View.AddThreadConfig.Schema.newBuilder()
+                .setPreset(io.textile.pb.View.AddThreadConfig.Schema.Preset.MEDIA)
+                .build();
 
+        io.textile.pb.View.AddThreadConfig config=io.textile.pb.View.AddThreadConfig.newBuilder()
+                .setSharing(Model.Thread.Sharing.NOT_SHARED)
+                .setType(Model.Thread.Type.OPEN)
+                .setKey(key).setName(threadName)//设置key和thread名字
+                .setSchema(schema)
+                .build();
+        try {
+            Textile.instance().threads.add(config);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

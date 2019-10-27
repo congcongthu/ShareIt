@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sjtuopennetwork.shareit">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_share_launch"
@@ -9,10 +14,14 @@
         android:roundIcon="@drawable/ic_share_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+<<<<<<< HEAD
         <activity android:name=".setting.MyDevicesActivity"></activity>
+=======
+        <activity android:name=".contact.ScanResultActivity"></activity>
+>>>>>>> d37709c38cc934d64b91d3a162b97e15c40f6b54
         <activity android:name=".contact.ContactInfoActivity" />
         <activity android:name=".contact.SearchContactActivity" />
-        <activity android:name=".share.chat.ChatActivity" />
+        <activity android:name=".share.ChatActivity" />
         <activity android:name=".setting.PersonalQrcodeActivity" />
         <activity android:name=".album.FileActivity" />
         <activity android:name=".album.VideoActivity" />
@@ -24,6 +33,7 @@
         <activity android:name=".contact.NewFriendActivity" />
         <activity android:name=".contact.ContactDiscoverActivity" />
         <activity android:name=".share.HomeActivity" />
+        <activity android:name=".contact.ContactQRCodeAtivity" />
         <activity android:name=".login.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,6 +41,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:name="com.huawei.hms.update.provider.UpdateProvider"
+        android:authorities="com.sjtuopennetwork.shareit.hms.update.provider"
+        android:exported="false"
+        android:grantUriPermissions="true" ></provider>
+
     </application>
 
 </manifest>

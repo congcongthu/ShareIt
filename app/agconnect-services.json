@@ -1,0 +1,11 @@
+{
+	"client":{
+		"cp_id":"260086000305184001",
+		"product_id":"9105385871708180323",
+		"client_id":"216482414434714624",
+		"client_secret":"9E3EF4028EE3CA1C343D93E1961D84CCFFBA8D7A285F01B2403CBB0981187386",
+		"app_id":"101282283",
+		"package_name":"com.sjtuopennetwork.shareit"
+	},
+	"configuration_version":"1.0"
+}

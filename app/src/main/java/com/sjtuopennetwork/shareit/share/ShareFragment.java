@@ -1,38 +1,41 @@
 package com.sjtuopennetwork.shareit.share;
 
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.Gravity;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.OvershootInterpolator;
-import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.share.chat.ChatActivity;
-import com.sjtuopennetwork.shareit.util.MyEvent;
+import com.sjtuopennetwork.shareit.share.util.DialogAdapter;
+import com.sjtuopennetwork.shareit.share.util.TDialog;
+import com.sjtuopennetwork.shareit.util.AppdbHelper;
+import com.sjtuopennetwork.shareit.util.DBoperator;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
+import io.textile.pb.Model;
+import io.textile.textile.Textile;
 import razerdp.basepopup.BasePopupWindow;
 
 /**
@@ -46,11 +49,13 @@ public class ShareFragment extends Fragment {
     ImageView bt_share_menu; //右上角加号按钮
     CircleProgressDialog circleProgressDialog; //等待圆环
 
-
     //内存数据
     List<TDialog> dialogs; //对话列表数据
     boolean nodeOnline=false;
 
+    //持久化存储
+    private AppdbHelper appdbHelper;
+    public SQLiteDatabase appdb;
 
     public ShareFragment() {
         // Required empty public constructor
@@ -96,23 +101,28 @@ public class ShareFragment extends Fragment {
     }
 
     private void initData(){
+        appdb=AppdbHelper.getInstance(getContext()).getWritableDatabase();
         dialogs=new LinkedList<>();
 
-        //这些数据应该是从数据库中查出来
-        dialogs.add(new TDialog(1,"1","实验室","你好呀",1546300,false,"null",false,true));
-        dialogs.add(new TDialog(2,"2","教室","你好呀",1546300,false,"null",false,true));
-        dialogs.add(new TDialog(3,"3","老王","你好呀",1546300,false,"null",true,true));
-        for(int i=0;i<10;i++){
-            TDialog t1=new TDialog(1,"1","测试"+i,"你好呀",1546300,false,"null",false,true);
-            dialogs.add(t1);
-        }
-        dialogs.add(0,new TDialog(1,"1","通知","你好呀",1546300,false,"tongzhi",false,true));
+        //从数据库中查出对话
+        dialogs= DBoperator.queryAllDIalogs(appdb);
+        System.out.println("================数据库中dialog数："+dialogs.size());
+
+        //查出邀请中最近的一个，添加到头部。包括好友申请的邀请，也包括群组的邀请，不过要一下类
+
 
         dialogAdapter=new DialogAdapter(getContext(),R.layout.item_share_dialog,dialogs);
+        dialogAdapter.notifyDataSetChanged();
         dialoglistView.setAdapter(dialogAdapter);
 
         dialoglistView.setOnItemClickListener((parent, view, position, id) -> {
-            String threadid="threadid";
+            String threadid=dialogs.get(position).threadid;
+
+            //数据库中修改为已读
+            //先将对应threadlook的状态设为已读
+            ContentValues v=new ContentValues();
+            v.put("isread",1);
+            appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
 
             Intent it=new Intent(getActivity(), ChatActivity.class);
             it.putExtra("threadid",threadid);
@@ -136,19 +146,65 @@ public class ShareFragment extends Fragment {
             View view= createPopupById(R.layout.pop_share_add_menu);
             LinearLayout create_gp=view.findViewById(R.id.create_group);
             create_gp.setOnClickListener(v -> {
-
+                //先弹出对话框，输入thread名称之后获取到名称，然后调佣addNewThread方法
+                final EditText newThreadEdit=new EditText(getActivity());
+                AlertDialog.Builder addThread=new AlertDialog.Builder(getActivity());
+                addThread.setTitle("新建分享群组");
+                addThread.setView(newThreadEdit);
+                addThread.setPositiveButton("创建", (dialogInterface, i) -> {
+                    String threadname=newThreadEdit.getText().toString();
+                    addNewThreads(threadname);
+                });
+                addThread.setNegativeButton("取消", (dialog, which) -> Toast.makeText(getActivity(),"已取消",Toast.LENGTH_SHORT).show());
+                addThread.show();
             });
             return view;
         }
     }
+    private void addNewThreads(String threadName){
+        String key= UUID.randomUUID().toString();
+        io.textile.pb.View.AddThreadConfig.Schema schema= io.textile.pb.View.AddThreadConfig.Schema.newBuilder()
+                .setPreset(io.textile.pb.View.AddThreadConfig.Schema.Preset.MEDIA)
+                .build();
+        io.textile.pb.View.AddThreadConfig config=io.textile.pb.View.AddThreadConfig.newBuilder()
+                .setSharing(Model.Thread.Sharing.SHARED)
+                .setType(Model.Thread.Type.OPEN)
+                .setKey(key).setName(threadName)
+                .setSchema(schema)
+                .build();
+        try {
+            Textile.instance().threads.add(config);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
-    public void knowOnline(MyEvent event){
-        if(event.getCode()==0){
+    public void knowOnline(Integer integer){
+        if(integer.intValue()==0){
             if(!nodeOnline){
                 circleProgressDialog.dismiss();
                 nodeOnline=true;
             }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getNewMsg(TDialog tDialog){ //获取到新的消息后要更新显示
+        for(TDialog t:dialogs){
+            if(t.threadid.equals(tDialog.threadid)){
+                dialogs.remove(t);
+                dialogs.add(0,tDialog);
+            }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
         }
     }
 }

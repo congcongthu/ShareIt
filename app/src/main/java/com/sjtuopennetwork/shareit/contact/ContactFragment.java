@@ -2,21 +2,30 @@ package com.sjtuopennetwork.shareit.contact;
 
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.chezi008.libcontacts.bean.ContactBean;
+import com.chezi008.libcontacts.listener.ContactListener;
 import com.chezi008.libcontacts.widget.ContactView;
+import com.example.qrlibrary.qrcode.utils.PermissionUtils;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.contact.util.GetFriendList;
+import com.sjtuopennetwork.shareit.util.AppdbHelper;
+import com.sjtuopennetwork.shareit.util.FileUtil;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import io.textile.pb.Model;
+import io.textile.textile.Textile;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,15 +36,20 @@ public class ContactFragment extends Fragment {
     private ContactView contactView;
     LinearLayout contact_discover_layout;
     LinearLayout new_friend_layout;
+    ImageView bt_contact_search;
+    ImageView bt_contact_scan;
 
     //内存数据
-    List<Model.Contact> contacts;
+    List<ContactBean> contactBeans;
+    List<Model.Peer> myFriends;
 
+    //持久化存储
+    private AppdbHelper appdbHelper;
+    public SQLiteDatabase appdb;
 
     public ContactFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,42 +66,45 @@ public class ContactFragment extends Fragment {
 
         initData();
 
-        contactView=getActivity().findViewById(R.id.contact_list);
-        List<ContactBean> contactBeans=new ArrayList<>();
-        for(int i=0;i<3;i++){
-            ContactBean contactBean=new ContactBean();
-            contactBean.setName("赵"+i);
-            contactBean.setAvatar("null");
-            contactBeans.add(contactBean);
-        }
-        for(int i=0;i<3;i++){
-            ContactBean contactBean=new ContactBean();
-            contactBean.setName("a"+i);
-            contactBean.setAvatar("null");
-            contactBeans.add(contactBean);
-        }
-        for(int i=0;i<3;i++){
-            ContactBean contactBean=new ContactBean();
-            contactBean.setName("李"+i);
-            contactBean.setAvatar("null");
-            contactBeans.add(contactBean);
-        }
-        for(int i=0;i<3;i++){
-            ContactBean contactBean=new ContactBean();
-            contactBean.setName("L"+i);
-            contactBean.setAvatar("null");
-            contactBeans.add(contactBean);
-        }
-        contactView.setData(contactBeans,false);
     }
 
     private void initData(){
+        appdb=AppdbHelper.getInstance(getContext()).getWritableDatabase();
 
+        myFriends= GetFriendList.get();
+        System.out.println("=============myFriends数量："+myFriends.size());
+        contactBeans=new LinkedList<>();
+
+        for(Model.Peer p:myFriends){
+            ContactBean contactBean=new ContactBean();
+            contactBean.setId(p.getAddress());
+            contactBean.setName(p.getName());
+            String avatarPath= FileUtil.getFilePath(p.getAvatar());
+            contactBean.setAvatar(avatarPath);
+            contactBeans.add(contactBean);
+        }
+
+        contactView.setData(contactBeans,false);
+        contactView.setContactListener(new ContactListener<ContactBean>() {
+            @Override
+            public void onClick(ContactBean item) {
+                Intent it=new Intent(getActivity(),ContactInfoActivity.class);
+                it.putExtra("address",item.getId());
+                startActivity(it);
+            }
+            @Override
+            public void onLongClick(ContactBean item) { }
+            @Override
+            public void loadAvatar(ImageView imageView, String avatar) { }
+        });
     }
 
     private void initUI() {
         contact_discover_layout=getActivity().findViewById(R.id.contact_discover_layout);
         new_friend_layout=getActivity().findViewById(R.id.contact_new_friend_layout);
+        bt_contact_search=getActivity().findViewById(R.id.bt_contact_search);
+        contactView=getActivity().findViewById(R.id.contact_list);
+        bt_contact_scan=getActivity().findViewById(R.id.bt_contact_scan);
 
         contact_discover_layout.setOnClickListener(v -> {
             Intent it=new Intent(getActivity(),ContactDiscoverActivity.class);
@@ -95,6 +112,15 @@ public class ContactFragment extends Fragment {
         });
         new_friend_layout.setOnClickListener(v -> {
             Intent it=new Intent(getActivity(),NewFriendActivity.class);
+            startActivity(it);
+        });
+        bt_contact_search.setOnClickListener(v -> {
+            Intent it=new Intent(getActivity(),SearchContactActivity.class);
+            startActivity(it);
+        });
+        bt_contact_scan.setOnClickListener(v -> {
+            PermissionUtils.getInstance().requestPermission(getActivity());
+            Intent it=new Intent(getActivity(),ContactQRCodeAtivity.class);
             startActivity(it);
         });
     }
