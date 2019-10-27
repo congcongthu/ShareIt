@@ -16,14 +16,14 @@ import java.util.List;
 import io.textile.textile.Handlers;
 import io.textile.textile.Textile;
 
-public class SearchResultAdapter extends ArrayAdapter {
+public class ResultAdapter extends ArrayAdapter {
 
     Context context;
     int resource;
-    List<SearchResultContact> resultContacts;
+    List<ResultContact> resultContacts;
     byte[] img;
 
-    public SearchResultAdapter(Context context, int resource, List objects) {
+    public ResultAdapter(Context context, int resource, List objects) {
         super(context, resource, objects);
         this.context=context;
         this.resource=resource;
@@ -56,13 +56,13 @@ public class SearchResultAdapter extends ArrayAdapter {
                 Textile.instance().ipfs.dataAtPath(getAvatar, new Handlers.DataHandler() {
                     @Override
                     public void onComplete(byte[] data, String media) {
-                        System.out.println("===============获得了头像");
+                        System.out.println("===============获得了头像:"+resultContacts.get(position).name);
                         img=data;
                         vh.avatar.setImageBitmap(BitmapFactory.decodeByteArray(img,0,img.length));
                     }
                     @Override
                     public void onError(Exception e) {
-                        System.out.println("=========获得头像失败");
+                        System.out.println("=========获得头像失败:"+resultContacts.get(position).name);
                         vh.avatar.setImageResource(R.drawable.ic_default_avatar);
                     }
                 });

@@ -17,6 +17,9 @@ public class FileUtil {
      * @return 如果文件已经存在则返回文件路径，如果不存在则返回null
      */
     public static String getFilePath(String hash){
+        if(hash.equals("")){
+            return "null";
+        }
         File file=new File(dir+hash);
         String filePath="null";
         if(file.exists()){

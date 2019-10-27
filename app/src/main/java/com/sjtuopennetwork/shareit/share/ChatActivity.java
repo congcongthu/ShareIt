@@ -80,13 +80,11 @@ public class ChatActivity extends AppCompatActivity {
         send_msg=findViewById(R.id.chat_send_text);
         bt_send_img=findViewById(R.id.bt_send_img);
         chat_text_edt=findViewById(R.id.chat_text_edt);
-
     }
 
     private void initData() {
         //连接数据库
-        appdbHelper=new AppdbHelper(this,"txtl.db",null,1);
-        appdb=appdbHelper.getWritableDatabase();
+        appdb=AppdbHelper.getInstance(this).getWritableDatabase();
 
         //初始化对话
         Intent it=getIntent();
@@ -134,6 +132,8 @@ public class ChatActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateChat(TMsg tMsg){
         msgList.add(tMsg);
+        msgAdapter.notifyDataSetChanged();
+        chat_lv.setSelection(msgList.size());
     }
 
     @Override

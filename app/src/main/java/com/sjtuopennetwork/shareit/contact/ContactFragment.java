@@ -69,10 +69,10 @@ public class ContactFragment extends Fragment {
     }
 
     private void initData(){
-        appdbHelper=new AppdbHelper(getActivity(),"txtl.db",null,1);
-        appdb=appdbHelper.getWritableDatabase();
+        appdb=AppdbHelper.getInstance(getContext()).getWritableDatabase();
 
         myFriends= GetFriendList.get();
+        System.out.println("=============myFriends数量："+myFriends.size());
         contactBeans=new LinkedList<>();
 
         for(Model.Peer p:myFriends){

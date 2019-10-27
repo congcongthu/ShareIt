@@ -21,4 +21,15 @@
 
     </android.support.v7.widget.Toolbar>
 
+    <View
+        android:layout_margin="10dp"
+        android:background="@color/lightgray"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <ListView
+        android:id="@+id/new_friend_lv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>

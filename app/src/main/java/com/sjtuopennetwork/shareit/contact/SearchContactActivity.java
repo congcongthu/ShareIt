@@ -10,8 +10,8 @@ import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.contact.util.GetFriendList;
-import com.sjtuopennetwork.shareit.contact.util.SearchResultAdapter;
-import com.sjtuopennetwork.shareit.contact.util.SearchResultContact;
+import com.sjtuopennetwork.shareit.contact.util.ResultAdapter;
+import com.sjtuopennetwork.shareit.contact.util.ResultContact;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -30,13 +30,12 @@ public class SearchContactActivity extends AppCompatActivity {
     //UI控件
     SearchView searchView; //搜索框
     ListView contact_search_result_lv;  //搜索结果列表
-    SearchResultAdapter searchResultAdapter;  //搜索结果适配器
+    ResultAdapter searchResultAdapter;  //搜索结果适配器
 
     //内存数据
     List<Model.Peer> myFriends;
-    List<Model.Contact> oldContacts;  //已添加的联系人
     List<Model.Contact> newContacts;  //搜索到的结果
-    List<SearchResultContact> resultContacts;  //存放自定义的搜索结果item对象
+    List<ResultContact> resultContacts;  //存放自定义的搜索结果item对象
     List<String> inviteAddr=new LinkedList<>(); //存放要发送申请的联系人的地址
 
     @Override
@@ -58,10 +57,13 @@ public class SearchContactActivity extends AppCompatActivity {
         //初始化已添加的联系人列表，这里还是应该从threa查出来
         myFriends= GetFriendList.get();
 
+        searchView.setIconifiedByDefault(false);
+        searchView.setQueryHint("请输入昵称");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 resultContacts.clear();
+                newContacts.clear();
                 QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder()
                         .setWait(10)
                         .setLimit(1)
@@ -114,7 +116,7 @@ public class SearchContactActivity extends AppCompatActivity {
 
         resultContacts=Collections.synchronizedList(new LinkedList<>());
         newContacts=Collections.synchronizedList(new LinkedList<>());
-        searchResultAdapter=new SearchResultAdapter(SearchContactActivity.this,R.layout.item_contact_search_result,resultContacts);
+        searchResultAdapter=new ResultAdapter(SearchContactActivity.this,R.layout.item_contact_search_result,resultContacts);
         searchResultAdapter.notifyDataSetChanged();
         contact_search_result_lv.setAdapter(searchResultAdapter);
     }
@@ -134,7 +136,8 @@ public class SearchContactActivity extends AppCompatActivity {
         String addr=c.getAddress();
         String addr_last10="address: "+addr.substring(addr.length()-10);
         newContacts.add(c);
-        resultContacts.add(new SearchResultContact(addr_last10,c.getName(),c.getAvatar(),null));
+        resultContacts.add(new ResultContact(addr_last10,c.getName(),c.getAvatar(),null));
+        searchView.clearFocus();
         System.out.println("===============结果长度："+resultContacts.size());
     }
 

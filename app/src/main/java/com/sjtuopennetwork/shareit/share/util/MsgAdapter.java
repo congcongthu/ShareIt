@@ -119,17 +119,22 @@ public class MsgAdapter extends BaseAdapter {
             TextViewHolder h=(TextViewHolder) view.getTag();
             String avatarPath= FileUtil.getFilePath(msgList.get(i).authoravatar);
             if(msgList.get(i).ismine){ //如果是自己的消息
+                System.out.println("==========是自己的消息："+msgList.get(i).body);
                 h.send_text_left.setVisibility(View.GONE); //左边的隐藏
                 h.msg_name_r.setText(msgList.get(i).authorname);
                 h.msg_time_r.setText(df.format(msgList.get(i).sendtime*1000));
-                setAvatar(h.msg_avatar_r,avatarPath,msgList.get(i).authoravatar);
+//                setAvatar(h.msg_avatar_r,avatarPath,msgList.get(i).authoravatar);
+                h.msg_avatar_r.setImageResource(R.drawable.ic_default_avatar);//测试时没有头像
                 h.chat_words_r.setText(msgList.get(i).body);
+                h.send_text_right.setVisibility(View.VISIBLE); //右边的显示
             }else{ //不是自己的消息
+                System.out.println("=====别人的消息："+msgList.get(i).body);
                 h.send_text_right.setVisibility(View.GONE); //右边的隐藏
                 h.msg_name.setText(msgList.get(i).authorname);
                 h.msg_time.setText(df.format(msgList.get(i).sendtime*1000));
                 setAvatar(h.msg_avatar,avatarPath,msgList.get(i).authoravatar);
                 h.chat_words.setText(msgList.get(i).body);
+                h.send_text_left.setVisibility(View.VISIBLE); //左边的显示
             }
         }
         return view;
@@ -148,14 +153,17 @@ public class MsgAdapter extends BaseAdapter {
                 h.send_photo_left.setVisibility(View.GONE); //左边的隐藏
                 h.photo_name_r.setText(msgList.get(i).authorname);
                 h.photo_time_r.setText(df.format(msgList.get(i).sendtime*1000));
-                setAvatar(h.photo_avatar_r,avatarPath,msgList.get(i).authoravatar);
+//                setAvatar(h.photo_avatar_r,avatarPath,msgList.get(i).authoravatar);
+                h.photo_avatar_r.setImageResource(R.drawable.ic_default_avatar); //测试时没有头像
                 setPhoto(h.chat_photo_r,filePath,msgList.get(i).body);
+                h.send_photo_right.setVisibility(View.VISIBLE); //右边的显示
             }else{ //不是自己的消息
-                h.send_photo_right.setVisibility(View.GONE); //左边的隐藏
+                h.send_photo_right.setVisibility(View.GONE); //右边的隐藏
                 h.photo_name.setText(msgList.get(i).authorname);
                 h.photo_time.setText(df.format(msgList.get(i).sendtime*1000));
                 setAvatar(h.photo_avatar,avatarPath,msgList.get(i).authoravatar);
                 setPhoto(h.chat_photo,filePath,msgList.get(i).body);
+                h.send_photo_left.setVisibility(View.VISIBLE); //左边的显示
             }
         }
         return view;

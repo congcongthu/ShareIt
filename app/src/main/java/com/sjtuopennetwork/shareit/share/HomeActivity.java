@@ -53,7 +53,6 @@ public class HomeActivity extends AppCompatActivity {
 
     //持久化存储
     SharedPreferences pref;
-    private AppdbHelper appdbHelper;
     public SQLiteDatabase appdb;
 
     //内存数据
@@ -89,6 +88,7 @@ public class HomeActivity extends AppCompatActivity {
 
         getPermission();
 
+        //测试用
         isFirstRun=getIntent().getBooleanExtra("isFirstRun",true);
 
         initUI();
@@ -96,20 +96,21 @@ public class HomeActivity extends AppCompatActivity {
         initData();
     }
 
+
     private void getPermission() {
         System.out.println("=========输出");
         if(PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)==PermissionChecker.PERMISSION_DENIED){
             ActivityCompat.requestPermissions(this,
                     new String[]{"android.permission.WRITE_EXTERNAL_STORAGE",
-                            "android.permission.READ_EXTERNAL_STORAGE"},100);
+                            "android.permission.READ_EXTERNAL_STORAGE",
+                            "android.permission.CAMERA"},100);
         }
     }
 
     private void initData() {
         //初始化pref
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
-        appdbHelper=new AppdbHelper(HomeActivity.this,"txtl.db",null,1);
-        appdb=appdbHelper.getWritableDatabase();
+        appdb=AppdbHelper.getInstance(this).getWritableDatabase();
 
         //初始化Textile
         Context ctx = getApplicationContext();
@@ -169,11 +170,12 @@ public class HomeActivity extends AppCompatActivity {
 
             //节点连网之后，如果是首次运行要设置昵称和头像，昵称和头像是登录时华为ID得到，已经存在pref中
             if(isFirstRun){
-                String myname=pref.getString("myname","ceshi11"); //这里测试使用ceshi1
+                String myname=pref.getString("myname","Zoom1"); //这里测试使用ceshi1
                 String avatarpath=pref.getString("avatarpath","null");
                 try {
                     System.out.println("=================名字："+Textile.instance().profile.name());
                     Textile.instance().profile.setName(myname);
+                    //测试时头像获取都为""
 //                    Textile.instance().profile.setAvatar(avatarpath, new Handlers.BlockHandler() {
 //                        @Override
 //                        public void onComplete(Model.Block block) {
@@ -227,7 +229,6 @@ public class HomeActivity extends AppCompatActivity {
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
             //要保证在所有界面收到消息，就只能是在这里更新数据库了。默认是未读的，但是在聊天界面得到消息就要改为已读
             //发送消息的目的就是更新界面，所以不用sticky
-
             Model.Thread thread=null;
             try {
                 thread=Textile.instance().threads.get(threadId);
@@ -297,6 +298,7 @@ public class HomeActivity extends AppCompatActivity {
             }
 
             if(feedItemData.type.equals(FeedItemType.TEXT)){ //如果是文本消息
+                System.out.println("=================收到文本消息："+feedItemData.text.getBody());
                 int ismine=0;
                 if(feedItemData.text.getUser().getAddress().equals(Textile.instance().account.address())){
                     ismine=1;
@@ -339,7 +341,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 System.out.println("================是否是单人的："+isSingle+" "+dialogimg);
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
-                        feedItemData.files.getUser().getAvatar(), feedItemData.files.getDate().getSeconds(),
+                        feedItemData.files.getUser().getName()+"分享了图片", feedItemData.files.getDate().getSeconds(),
                         dialogimg);
                 System.out.println("====================这个执行了吗");
 

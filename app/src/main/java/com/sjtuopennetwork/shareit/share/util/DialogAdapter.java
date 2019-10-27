@@ -49,13 +49,6 @@ public class DialogAdapter extends ArrayAdapter {
             vh=(ViewHolder)v.getTag();
         }
 
-//        if(tDialog.imgpath.equals("null")){
-//            vh.headImg.setImageResource(R.drawable.back_gray);
-//        }else if(tDialog.imgpath.equals("tongzhi")){
-//            vh.headImg.setImageResource(R.drawable.ic_notification_img);
-//        } else{
-//            vh.headImg.setImageBitmap(BitmapFactory.decodeFile(tDialog.imgpath));
-//        }
         if(tDialog.imgpath.equals("tongzhi")){
             vh.headImg.setImageResource(R.drawable.ic_notification_img);
         }else{

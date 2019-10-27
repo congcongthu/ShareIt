@@ -101,8 +101,7 @@ public class ShareFragment extends Fragment {
     }
 
     private void initData(){
-        appdbHelper=new AppdbHelper(getActivity(),"txtl.db",null,1);
-        appdb=appdbHelper.getWritableDatabase();
+        appdb=AppdbHelper.getInstance(getContext()).getWritableDatabase();
         dialogs=new LinkedList<>();
 
         //从数据库中查出对话

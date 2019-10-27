@@ -6,6 +6,18 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class AppdbHelper extends SQLiteOpenHelper {
 
+    private static AppdbHelper singleInstance=null;
+    public synchronized static AppdbHelper getInstance(Context context){
+        if(singleInstance==null){
+            singleInstance=new AppdbHelper(context);
+        }
+        return singleInstance;
+    }
+
+    public AppdbHelper(Context context){
+        super(context,"txtl.db",null,1);
+    }
+
     //对话表
     private String CREATE_DIALOGS="create table dialogs " +
             "(id integer primary key autoincrement," +
@@ -30,9 +42,6 @@ public class AppdbHelper extends SQLiteOpenHelper {
             "sendtime integer," +
             "ismine integer)"; //1表示是我的消息，0为别人消息
 
-    public AppdbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-    }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
