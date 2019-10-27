@@ -9,7 +9,7 @@
     <android.support.v7.widget.Toolbar
         android:background="@color/lightgray"
         android:layout_width="match_parent"
-        android:layout_height="56dp">
+        android:layout_height="50dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -20,12 +20,12 @@
 
         <ImageView
             android:id="@+id/bt_contact_search"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="right"
             android:background="?selectableItemBackground"
             android:clickable="true"
-            android:padding="10dp"
+            android:padding="8dp"
             android:layout_marginRight="5dp"
             android:src="@drawable/ic_search" />
 
@@ -36,7 +36,7 @@
             android:layout_gravity="right"
             android:background="?selectableItemBackground"
             android:clickable="true"
-            android:padding="10dp"
+            android:padding="8dp"
             android:layout_marginRight="5dp"
             android:src="@drawable/ic_scan" />
 
@@ -69,7 +69,7 @@
                 android:layout_height="50dp" />
 
             <TextView
-                android:id="@+id/item_thread_badge"
+                android:id="@+id/application_badge"
                 android:layout_width="10dp"
                 android:layout_height="10dp"
                 android:layout_marginLeft="5dp"
@@ -141,6 +141,6 @@
     <com.chezi008.libcontacts.widget.ContactView
         android:id="@+id/contact_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>

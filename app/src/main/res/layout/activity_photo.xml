@@ -10,7 +10,7 @@
         android:id="@+id/photo_toolbar"
         android:background="@color/lightgray"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="50dp">
 
         <TextView
             android:id="@+id/photo_name_toolbar"

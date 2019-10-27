@@ -63,7 +63,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Log.d(TAG, "Element " + position + " set.");
-        // - get element from your dataset at this position
+        // - getFriendList element from your dataset at this position
         // - replace the contents of the view with that element
         //holder.imageView.setText(mDataset[position]);
         holder.getTextView().setText(mDataSet[position]);

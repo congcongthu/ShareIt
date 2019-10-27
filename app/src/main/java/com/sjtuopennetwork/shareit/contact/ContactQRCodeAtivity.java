@@ -2,6 +2,7 @@ package com.sjtuopennetwork.shareit.contact;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.qrlibrary.qrcode.activity.DefaultQRScanActivity;
 
@@ -9,6 +10,13 @@ public class ContactQRCodeAtivity extends DefaultQRScanActivity {
     @Override
     protected void initCustomViewAndEvents() {
 
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
     }
 
     @Override

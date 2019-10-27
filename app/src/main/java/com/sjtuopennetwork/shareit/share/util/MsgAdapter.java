@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.util.FileUtil;
@@ -26,13 +27,17 @@ public class MsgAdapter extends BaseAdapter {
     private LayoutInflater layoutInflater;
     private List<TMsg> msgList;
     DateFormat df=new SimpleDateFormat("MM-dd HH:mm:ss");
+    String avatarpath;
+    Context context;
 
-    public MsgAdapter(Context context, List<TMsg> msgList) {
+    public MsgAdapter(Context context, List<TMsg> msgList,String avatarpath) {
+        this.context=context;
         this.layoutInflater = LayoutInflater.from(context);
         this.msgList = msgList;
+        this.avatarpath=avatarpath;
     }
 
-    static class TextViewHolder{
+    public static class TextViewHolder{
         public TextView msg_name,msg_time,chat_words;
         public TextView msg_name_r,msg_time_r,chat_words_r;
         public NiceImageView msg_avatar,msg_avatar_r;
@@ -52,7 +57,7 @@ public class MsgAdapter extends BaseAdapter {
         }
     }
 
-    static class PhotoViewHolder{
+    public static class PhotoViewHolder{
         public TextView photo_name,photo_time;
         public TextView photo_name_r,photo_time_r;
         public NiceImageView photo_avatar,photo_avatar_r;
@@ -100,6 +105,7 @@ public class MsgAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        System.out.println("===============getView调用");
         switch (getItemViewType(i)){
             case 0: //是文本
                 return handleTextView(i,view,viewGroup);
@@ -119,22 +125,21 @@ public class MsgAdapter extends BaseAdapter {
             TextViewHolder h=(TextViewHolder) view.getTag();
             String avatarPath= FileUtil.getFilePath(msgList.get(i).authoravatar);
             if(msgList.get(i).ismine){ //如果是自己的消息
+                h.send_text_right.setVisibility(View.VISIBLE); //右边的显示
                 System.out.println("==========是自己的消息："+msgList.get(i).body);
                 h.send_text_left.setVisibility(View.GONE); //左边的隐藏
                 h.msg_name_r.setText(msgList.get(i).authorname);
                 h.msg_time_r.setText(df.format(msgList.get(i).sendtime*1000));
-//                setAvatar(h.msg_avatar_r,avatarPath,msgList.get(i).authoravatar);
-                h.msg_avatar_r.setImageResource(R.drawable.ic_default_avatar);//测试时没有头像
+                h.msg_avatar_r.setImageBitmap(BitmapFactory.decodeFile(avatarpath));
                 h.chat_words_r.setText(msgList.get(i).body);
-                h.send_text_right.setVisibility(View.VISIBLE); //右边的显示
             }else{ //不是自己的消息
+                h.send_text_left.setVisibility(View.VISIBLE); //左边的显示
                 System.out.println("=====别人的消息："+msgList.get(i).body);
                 h.send_text_right.setVisibility(View.GONE); //右边的隐藏
                 h.msg_name.setText(msgList.get(i).authorname);
                 h.msg_time.setText(df.format(msgList.get(i).sendtime*1000));
                 setAvatar(h.msg_avatar,avatarPath,msgList.get(i).authoravatar);
                 h.chat_words.setText(msgList.get(i).body);
-                h.send_text_left.setVisibility(View.VISIBLE); //左边的显示
             }
         }
         return view;
@@ -150,20 +155,19 @@ public class MsgAdapter extends BaseAdapter {
             String avatarPath= FileUtil.getFilePath(msgList.get(i).authoravatar);
             String filePath=FileUtil.getFilePath(msgList.get(i).body);
             if(msgList.get(i).ismine){ //如果是自己的消息
+                h.send_photo_right.setVisibility(View.VISIBLE); //右边的显示
                 h.send_photo_left.setVisibility(View.GONE); //左边的隐藏
                 h.photo_name_r.setText(msgList.get(i).authorname);
                 h.photo_time_r.setText(df.format(msgList.get(i).sendtime*1000));
-//                setAvatar(h.photo_avatar_r,avatarPath,msgList.get(i).authoravatar);
-                h.photo_avatar_r.setImageResource(R.drawable.ic_default_avatar); //测试时没有头像
+                h.photo_avatar_r.setImageBitmap(BitmapFactory.decodeFile(avatarpath));
                 setPhoto(h.chat_photo_r,filePath,msgList.get(i).body);
-                h.send_photo_right.setVisibility(View.VISIBLE); //右边的显示
             }else{ //不是自己的消息
+                h.send_photo_left.setVisibility(View.VISIBLE); //左边的显示
                 h.send_photo_right.setVisibility(View.GONE); //右边的隐藏
                 h.photo_name.setText(msgList.get(i).authorname);
                 h.photo_time.setText(df.format(msgList.get(i).sendtime*1000));
                 setAvatar(h.photo_avatar,avatarPath,msgList.get(i).authoravatar);
                 setPhoto(h.chat_photo,filePath,msgList.get(i).body);
-                h.send_photo_left.setVisibility(View.VISIBLE); //左边的显示
             }
         }
         return view;
@@ -182,7 +186,8 @@ public class MsgAdapter extends BaseAdapter {
                 }
             });
         }else{ //如果已经存储过这个头像
-            imageView.setImageBitmap(BitmapFactory.decodeFile(avatarPath));
+//            imageView.setImageBitmap(BitmapFactory.decodeFile(avatarPath));
+            Glide.with(context).load(avatarPath).thumbnail(0.3f).into(imageView);
         }
     }
 
@@ -200,7 +205,8 @@ public class MsgAdapter extends BaseAdapter {
                 }
             });
         }else{
-            imageView.setImageBitmap(BitmapFactory.decodeFile(filePath));
+//            imageView.setImageBitmap(BitmapFactory.decodeFile(filePath));
+            Glide.with(context).load(filePath).thumbnail(0.3f).into(imageView);
         }
     }
 }

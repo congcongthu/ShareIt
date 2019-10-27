@@ -9,7 +9,7 @@
     <android.support.v7.widget.Toolbar
         android:background="@color/lightgray"
         android:layout_width="match_parent"
-        android:layout_height="56dp">
+        android:layout_height="50dp">
 
     <TextView
             android:layout_width="wrap_content"
@@ -19,15 +19,26 @@
             android:textSize="20sp" />
 
         <ImageView
-            android:id="@+id/bt_share_menu"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:id="@+id/bt_share_add"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="right"
             android:background="?selectableItemBackground"
             android:clickable="true"
-            android:padding="10dp"
+            android:padding="5dp"
             android:layout_marginRight="5dp"
             android:src="@drawable/ic_add" />
+
+        <ImageView
+            android:id="@+id/bt_share_scan"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
+            android:padding="5dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/ic_scan" />
 
     </android.support.v7.widget.Toolbar>
 

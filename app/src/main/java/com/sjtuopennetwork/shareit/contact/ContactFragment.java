@@ -2,7 +2,6 @@ package com.sjtuopennetwork.shareit.contact;
 
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,13 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.chezi008.libcontacts.bean.ContactBean;
 import com.chezi008.libcontacts.listener.ContactListener;
 import com.chezi008.libcontacts.widget.ContactView;
 import com.example.qrlibrary.qrcode.utils.PermissionUtils;
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.contact.util.GetFriendList;
+import com.sjtuopennetwork.shareit.contact.util.GetFriendListOrApplication;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 
@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import io.textile.pb.Model;
-import io.textile.textile.Textile;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,13 +37,13 @@ public class ContactFragment extends Fragment {
     LinearLayout new_friend_layout;
     ImageView bt_contact_search;
     ImageView bt_contact_scan;
+    TextView application_badge;
 
     //内存数据
     List<ContactBean> contactBeans;
     List<Model.Peer> myFriends;
 
     //持久化存储
-    private AppdbHelper appdbHelper;
     public SQLiteDatabase appdb;
 
     public ContactFragment() {
@@ -71,7 +70,7 @@ public class ContactFragment extends Fragment {
     private void initData(){
         appdb=AppdbHelper.getInstance(getContext()).getWritableDatabase();
 
-        myFriends= GetFriendList.get();
+        myFriends= GetFriendListOrApplication.getFriendList();
         System.out.println("=============myFriends数量："+myFriends.size());
         contactBeans=new LinkedList<>();
 
@@ -105,6 +104,7 @@ public class ContactFragment extends Fragment {
         bt_contact_search=getActivity().findViewById(R.id.bt_contact_search);
         contactView=getActivity().findViewById(R.id.contact_list);
         bt_contact_scan=getActivity().findViewById(R.id.bt_contact_scan);
+        application_badge=getActivity().findViewById(R.id.application_badge);
 
         contact_discover_layout.setOnClickListener(v -> {
             Intent it=new Intent(getActivity(),ContactDiscoverActivity.class);
@@ -123,5 +123,9 @@ public class ContactFragment extends Fragment {
             Intent it=new Intent(getActivity(),ContactQRCodeAtivity.class);
             startActivity(it);
         });
+
+        if(GetFriendListOrApplication.getApplication().second.size()==0){
+            application_badge.setVisibility(View.GONE);
+        }
     }
 }

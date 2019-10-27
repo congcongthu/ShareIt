@@ -9,7 +9,7 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.contact.util.GetFriendList;
+import com.sjtuopennetwork.shareit.contact.util.GetFriendListOrApplication;
 import com.sjtuopennetwork.shareit.contact.util.ResultAdapter;
 import com.sjtuopennetwork.shareit.contact.util.ResultContact;
 
@@ -55,7 +55,7 @@ public class SearchContactActivity extends AppCompatActivity {
 
     private void initData() {
         //初始化已添加的联系人列表，这里还是应该从threa查出来
-        myFriends= GetFriendList.get();
+        myFriends= GetFriendListOrApplication.getFriendList();
 
         searchView.setIconifiedByDefault(false);
         searchView.setQueryHint("请输入昵称");

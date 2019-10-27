@@ -10,7 +10,7 @@
     <android.support.v7.widget.Toolbar
         android:background="@color/lightgray"
         android:layout_width="match_parent"
-        android:layout_height="56dp">
+        android:layout_height="50dp">
 
         <TextView
             android:layout_width="wrap_content"

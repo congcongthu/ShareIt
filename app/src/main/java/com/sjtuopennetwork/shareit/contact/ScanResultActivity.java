@@ -1,10 +1,12 @@
 package com.sjtuopennetwork.shareit.contact;
 
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Pair;
 import android.widget.TextView;
 
+import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
 
 import org.greenrobot.eventbus.EventBus;
@@ -13,23 +15,26 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import io.textile.pb.Model;
 import io.textile.pb.QueryOuterClass;
+import io.textile.textile.Handlers;
 import io.textile.textile.Textile;
 
 public class ScanResultActivity extends AppCompatActivity {
 
     //UI控件
     TextView add_friend;
+    NiceImageView res_avatar;
+    TextView res_name;
+    TextView res_address;
 
     //内存数据
+    String name;
+    String avatar;
     private String address;
     private Model.Contact resultContact;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scan_result);
-
         if (getIntent() != null){
             Bundle bundle = getIntent().getExtras();
             address = bundle.getString("result");
@@ -39,9 +44,10 @@ public class ScanResultActivity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         }
 
+        setContentView(R.layout.activity_scan_result);
         initUI();
 
-        sendQuery();
+        sendQuery(); //有可能结果很快找到，UI还未初始化，所以要放在UI初始化后面
     }
 
     private void initUI() {
@@ -69,13 +75,30 @@ public class ScanResultActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getResult(Model.Contact c){
         resultContact=c;
-
         //这里再设置
-
         drawUI();
     }
 
     private void drawUI() {
+        name=resultContact.getName();
+        avatar=resultContact.getAvatar();
+        address=resultContact.getAddress();
+
+        res_name.setText(name);
+        res_address.setText(address);
+        String getAvatar="/ipfs/" + avatar + "/0/small/content";
+        System.out.println("=========getAvatar:"+getAvatar);
+        Textile.instance().ipfs.dataAtPath(getAvatar, new Handlers.DataHandler() {
+            @Override
+            public void onComplete(byte[] data, String media) {
+                res_avatar.setImageBitmap(BitmapFactory.decodeByteArray(data,0,data.length));
+            }
+            @Override
+            public void onError(Exception e) {
+                System.out.println("=========扫码获得头像失败:");
+//                        vh.avatar.setImageResource(R.drawable.ic_default_avatar);
+            }
+        });
 
         add_friend.setOnClickListener(v -> {
             //点击就申请添加好友，逻辑与搜索结果界面的添加是相同的

@@ -58,6 +58,9 @@ dependencies {
     //发送图片 picture selector
     implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.0'
 
+    //图片加载
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+
     //测试相关
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

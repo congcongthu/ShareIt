@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,12 +92,15 @@ public class ShareFragment extends Fragment {
     private void initUI(){
         dialoglistView=getActivity().findViewById(R.id.dialogs_lv);
         //右上角菜单按钮
-        bt_share_menu=getActivity().findViewById(R.id.bt_share_menu);
+        bt_share_menu=getActivity().findViewById(R.id.bt_share_add);
         bt_share_menu.setOnClickListener(v -> {
-            BtShareMenu btShareMenu=new BtShareMenu(getContext());
-            btShareMenu.setBackgroundColor(Color.parseColor("#00000000"));
-
-            btShareMenu.showPopupWindow(v);
+//            BtShareMenu btShareMenu=new BtShareMenu(getContext());
+//            btShareMenu.setBackgroundColor(Color.parseColor("#00000000"));
+//            btShareMenu.setPopupGravity(Gravity.CENTER);
+//            btShareMenu.showPopupWindow();
+            //直接跳转一个新的Activity
+            Intent it=new Intent(getActivity(),NewGroupActivity.class);
+            startActivity(it);
         });
     }
 
@@ -128,55 +132,6 @@ public class ShareFragment extends Fragment {
             it.putExtra("threadid",threadid);
             startActivity(it);
         });
-    }
-
-    //右上角菜单
-    class BtShareMenu extends BasePopupWindow{
-        LinearLayout create_view;
-        LinearLayout qrcode_join_gorup;
-        Context context;
-
-        public BtShareMenu(Context context) {
-            super(context);
-            this.context=context;
-            create_view=findViewById(R.id.create_group);
-        }
-        @Override
-        public View onCreateContentView() {
-            View view= createPopupById(R.layout.pop_share_add_menu);
-            LinearLayout create_gp=view.findViewById(R.id.create_group);
-            create_gp.setOnClickListener(v -> {
-                //先弹出对话框，输入thread名称之后获取到名称，然后调佣addNewThread方法
-                final EditText newThreadEdit=new EditText(getActivity());
-                AlertDialog.Builder addThread=new AlertDialog.Builder(getActivity());
-                addThread.setTitle("新建分享群组");
-                addThread.setView(newThreadEdit);
-                addThread.setPositiveButton("创建", (dialogInterface, i) -> {
-                    String threadname=newThreadEdit.getText().toString();
-                    addNewThreads(threadname);
-                });
-                addThread.setNegativeButton("取消", (dialog, which) -> Toast.makeText(getActivity(),"已取消",Toast.LENGTH_SHORT).show());
-                addThread.show();
-            });
-            return view;
-        }
-    }
-    private void addNewThreads(String threadName){
-        String key= UUID.randomUUID().toString();
-        io.textile.pb.View.AddThreadConfig.Schema schema= io.textile.pb.View.AddThreadConfig.Schema.newBuilder()
-                .setPreset(io.textile.pb.View.AddThreadConfig.Schema.Preset.MEDIA)
-                .build();
-        io.textile.pb.View.AddThreadConfig config=io.textile.pb.View.AddThreadConfig.newBuilder()
-                .setSharing(Model.Thread.Sharing.SHARED)
-                .setType(Model.Thread.Type.OPEN)
-                .setKey(key).setName(threadName)
-                .setSchema(schema)
-                .build();
-        try {
-            Textile.instance().threads.add(config);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)

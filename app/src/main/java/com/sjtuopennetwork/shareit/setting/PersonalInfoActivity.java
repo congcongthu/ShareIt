@@ -113,7 +113,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 String picturePath = data.getStringExtra(PictureSelector.PICTURE_PATH);
                 SharedPreferences.Editor editor=pref.edit();
                 editor.putString("avatarpath",picturePath);
-                editor.apply();
+                editor.commit();
+                System.out.println("=====================设置头像："+pref.getString("avatarpath","null"));
                 Textile.instance().profile.setAvatar(picturePath, new Handlers.BlockHandler() {
                     @Override
                     public void onComplete(Model.Block block) {

@@ -57,6 +57,8 @@ public class HomeActivity extends AppCompatActivity {
 
     //内存数据
     boolean isFirstRun;
+    String myname;
+    String avatarpath;
 
     //导航栏监听器，每次点击都进行fragment的切换
     private BottomNavigationView.OnNavigationItemSelectedListener navSeLis=new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -92,26 +94,16 @@ public class HomeActivity extends AppCompatActivity {
         isFirstRun=getIntent().getBooleanExtra("isFirstRun",true);
 
         initUI();
-
         initData();
+        initTextile();
     }
 
-
-    private void getPermission() {
-        System.out.println("=========输出");
-        if(PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)==PermissionChecker.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(this,
-                    new String[]{"android.permission.WRITE_EXTERNAL_STORAGE",
-                            "android.permission.READ_EXTERNAL_STORAGE",
-                            "android.permission.CAMERA"},100);
-        }
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
-    private void initData() {
-        //初始化pref
-        pref=getSharedPreferences("txtl",MODE_PRIVATE);
-        appdb=AppdbHelper.getInstance(this).getWritableDatabase();
-
+    public void initTextile(){
         //初始化Textile
         Context ctx = getApplicationContext();
         final File filesDir = ctx.getFilesDir();
@@ -134,6 +126,26 @@ public class HomeActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void getPermission() {
+        System.out.println("=========输出");
+        if(PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)==PermissionChecker.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{"android.permission.WRITE_EXTERNAL_STORAGE",
+                            "android.permission.READ_EXTERNAL_STORAGE",
+                            "android.permission.CAMERA"},100);
+        }
+    }
+
+    private void initData() {
+        //初始化pref
+        pref=getSharedPreferences("txtl",MODE_PRIVATE);
+        appdb=AppdbHelper.getInstance(this).getWritableDatabase();
+        myname=pref.getString("myname","null");
+        avatarpath=pref.getString("avatarpath","null");
+
+
     }
 
     private void initUI(){
@@ -170,8 +182,6 @@ public class HomeActivity extends AppCompatActivity {
 
             //节点连网之后，如果是首次运行要设置昵称和头像，昵称和头像是登录时华为ID得到，已经存在pref中
             if(isFirstRun){
-                String myname=pref.getString("myname","Zoom1"); //这里测试使用ceshi1
-                String avatarpath=pref.getString("avatarpath","null");
                 try {
                     System.out.println("=================名字："+Textile.instance().profile.name());
                     Textile.instance().profile.setName(myname);

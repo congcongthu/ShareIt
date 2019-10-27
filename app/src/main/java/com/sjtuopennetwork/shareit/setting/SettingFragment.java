@@ -127,6 +127,7 @@ public class SettingFragment extends Fragment {
 
         myname=pref.getString("myname","null");
         imagePath=pref.getString("avatarpath","null");
+        System.out.println("============头像路径："+imagePath);
 
     }
     private void drawUI() {

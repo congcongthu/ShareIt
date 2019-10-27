@@ -14,11 +14,9 @@
         android:roundIcon="@drawable/ic_share_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-<<<<<<< HEAD
-        <activity android:name=".setting.MyDevicesActivity"></activity>
-=======
-        <activity android:name=".contact.ScanResultActivity"></activity>
->>>>>>> d37709c38cc934d64b91d3a162b97e15c40f6b54
+        <activity android:name=".share.NewGroupActivity"></activity>
+        <activity android:name=".setting.MyDevicesActivity" />
+        <activity android:name=".contact.ScanResultActivity" />
         <activity android:name=".contact.ContactInfoActivity" />
         <activity android:name=".contact.SearchContactActivity" />
         <activity android:name=".share.ChatActivity" />
@@ -41,12 +39,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="com.huawei.hms.update.provider.UpdateProvider"
-        android:authorities="com.sjtuopennetwork.shareit.hms.update.provider"
-        android:exported="false"
-        android:grantUriPermissions="true" ></provider>
-
+            android:authorities="com.sjtuopennetwork.shareit.hms.update.provider"
+            android:exported="false"
+            android:grantUriPermissions="true" />
     </application>
 
 </manifest>

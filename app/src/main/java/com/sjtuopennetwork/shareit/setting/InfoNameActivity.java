@@ -38,6 +38,7 @@ public class InfoNameActivity extends AppCompatActivity {
     private void initData() {
         pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
         myname=pref.getString("myname","null");
+
     }
 
     private void initUI() {

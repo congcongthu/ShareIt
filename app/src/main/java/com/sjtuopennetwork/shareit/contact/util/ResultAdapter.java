@@ -63,7 +63,7 @@ public class ResultAdapter extends ArrayAdapter {
                     @Override
                     public void onError(Exception e) {
                         System.out.println("=========获得头像失败:"+resultContacts.get(position).name);
-                        vh.avatar.setImageResource(R.drawable.ic_default_avatar);
+//                        vh.avatar.setImageResource(R.drawable.ic_default_avatar);
                     }
                 });
             }else{

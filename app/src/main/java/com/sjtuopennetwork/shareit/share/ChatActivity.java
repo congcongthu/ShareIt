@@ -1,6 +1,7 @@
 package com.sjtuopennetwork.shareit.share;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -44,15 +45,16 @@ public class ChatActivity extends AppCompatActivity {
     EditText chat_text_edt;
 
     //持久化数据
-    private AppdbHelper appdbHelper;
     public SQLiteDatabase appdb;
+    public SharedPreferences pref;
 
-    //没存数据
+    //内存数据
     String threadid;
     Model.Thread chat_thread;
     List<TMsg> msgList;
     MsgAdapter msgAdapter;
     List<LocalMedia> choosePic;
+    String avatarpath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +85,9 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        //连接数据库
         appdb=AppdbHelper.getInstance(this).getWritableDatabase();
+        pref=getSharedPreferences("txtl",MODE_PRIVATE);
+        avatarpath=pref.getString("avatarpath","null");
 
         //初始化对话
         Intent it=getIntent();
@@ -98,7 +101,8 @@ public class ChatActivity extends AppCompatActivity {
         chat_name_toolbar.setText(chat_thread.getName());
 
         send_msg.setOnClickListener(view -> {
-            String msg=chat_text_edt.getText().toString();
+            final String msg=chat_text_edt.getText().toString();
+
             if(!msg.equals("")){
                 chat_text_edt.setText("");
                 try {
@@ -124,7 +128,7 @@ public class ChatActivity extends AppCompatActivity {
         msgList= DBoperator.queryMsg(appdb,threadid);
         System.out.println("=============消息数："+msgList.size());
 
-        msgAdapter=new MsgAdapter(this,msgList);
+        msgAdapter=new MsgAdapter(this,msgList,avatarpath);
         msgAdapter.notifyDataSetChanged();
         chat_lv.setAdapter(msgAdapter);
     }
@@ -132,8 +136,8 @@ public class ChatActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateChat(TMsg tMsg){
         msgList.add(tMsg);
-        msgAdapter.notifyDataSetChanged();
         chat_lv.setSelection(msgList.size());
+        System.out.println("==================收到了消息："+tMsg.body);
     }
 
     @Override
