@@ -10,13 +10,13 @@ import com.sjtuopennetwork.shareit.R;
 
 import java.util.List;
 
-import io.textile.textile.Textile;
+import sjtu.opennet.hon.Textile;
 
 public class MyDevicesActivity extends AppCompatActivity {
 
     ListView lv_devices;
     List<String> list;
-    private List<io.textile.pb.Model.Peer> peers_list;
+    private List<sjtu.opennet.textilepb.Model.Peer> peers_list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +42,7 @@ public class MyDevicesActivity extends AppCompatActivity {
         }
     }
     private void drawUI() {
-        ArrayAdapter<io.textile.pb.Model.Peer> adapter = new ArrayAdapter<io.textile.pb.Model.Peer>(
+        ArrayAdapter<sjtu.opennet.textilepb.Model.Peer> adapter = new ArrayAdapter<sjtu.opennet.textilepb.Model.Peer>(
                 MyDevicesActivity.this, android.R.layout.simple_list_item_1, peers_list);
         lv_devices.setAdapter(adapter);
     }

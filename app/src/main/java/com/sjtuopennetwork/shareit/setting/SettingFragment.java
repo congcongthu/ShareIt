@@ -21,9 +21,9 @@ import android.widget.TextView;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.login.MainActivity;
 
-import io.textile.pb.Model;
-import io.textile.textile.Handlers;
-import io.textile.textile.Textile;
+import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.hon.Handlers;
+import sjtu.opennet.hon.Textile;
 
 /**
  * A simple {@link Fragment} subclass.

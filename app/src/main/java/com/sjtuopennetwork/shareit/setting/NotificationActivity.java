@@ -9,9 +9,9 @@ import com.sjtuopennetwork.shareit.R;
 
 import java.util.List;
 
-import io.textile.pb.Model;
-import io.textile.pb.Model.Notification;
-import io.textile.textile.Textile;
+import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.textilepb.Model.Notification;
+import sjtu.opennet.hon.Textile;
 
 public class NotificationActivity extends AppCompatActivity {
 

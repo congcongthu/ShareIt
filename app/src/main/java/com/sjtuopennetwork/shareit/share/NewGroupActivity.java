@@ -22,8 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import io.textile.pb.Model;
-import io.textile.textile.Textile;
+import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.hon.Textile;
 
 public class NewGroupActivity extends AppCompatActivity {
 
@@ -100,10 +100,10 @@ public class NewGroupActivity extends AppCompatActivity {
 
     private void addNewThreads(String threadName){
         String key= UUID.randomUUID().toString();
-        io.textile.pb.View.AddThreadConfig.Schema schema= io.textile.pb.View.AddThreadConfig.Schema.newBuilder()
-                .setPreset(io.textile.pb.View.AddThreadConfig.Schema.Preset.MEDIA)
+        sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
+                .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.MEDIA)
                 .build();
-        io.textile.pb.View.AddThreadConfig config=io.textile.pb.View.AddThreadConfig.newBuilder()
+        sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
                 .setSharing(Model.Thread.Sharing.SHARED)
                 .setType(Model.Thread.Type.OPEN)
                 .setKey(key).setName(threadName)

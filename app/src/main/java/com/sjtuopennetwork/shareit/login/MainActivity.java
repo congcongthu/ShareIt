@@ -28,7 +28,21 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }else{ //如果未登录
             // TODO: 2019/10/28  在这里拉起华为登录页面
+            String myname="jsapj";
+            String avatarpath="null";
+            String openid="null";
 
+            //写入SharedPreference
+            SharedPreferences.Editor editor=pref.edit();
+            editor.putString("myname",myname);
+            editor.putString("avatarpath",avatarpath);
+            editor.putString("openid",openid);
+            editor.putBoolean("isLogin",true);
+            editor.commit();
+
+            Intent toHomeActivity=new Intent(this, HomeActivity.class);
+            startActivity(toHomeActivity);
+            finish();
 
         }
     }

@@ -24,7 +24,7 @@ import com.sjtuopennetwork.shareit.util.FileUtil;
 import java.util.LinkedList;
 import java.util.List;
 
-import io.textile.pb.Model;
+import sjtu.opennet.textilepb.Model;
 
 /**
  * A simple {@link Fragment} subclass.

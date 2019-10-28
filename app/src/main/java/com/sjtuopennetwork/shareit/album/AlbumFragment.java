@@ -13,8 +13,8 @@ import com.sjtuopennetwork.shareit.R;
 
 import java.util.UUID;
 
-import io.textile.pb.Model;
-import io.textile.textile.Textile;
+import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.hon.Textile;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,11 +69,11 @@ public class AlbumFragment extends Fragment {
     //创建新的thread
     private void addNewThreads(String threadName){
         String key= UUID.randomUUID().toString();//随机生成key
-        io.textile.pb.View.AddThreadConfig.Schema schema= io.textile.pb.View.AddThreadConfig.Schema.newBuilder()
-                .setPreset(io.textile.pb.View.AddThreadConfig.Schema.Preset.MEDIA)
+        sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
+                .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.MEDIA)
                 .build();
 
-        io.textile.pb.View.AddThreadConfig config=io.textile.pb.View.AddThreadConfig.newBuilder()
+        sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
                 .setSharing(Model.Thread.Sharing.NOT_SHARED)
                 .setType(Model.Thread.Type.OPEN)
                 .setKey(key).setName(threadName)//设置key和thread名字

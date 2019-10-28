@@ -20,9 +20,9 @@ import com.sjtuopennetwork.shareit.util.FileUtil;
 
 import java.util.List;
 
-import io.textile.pb.Model;
-import io.textile.textile.Handlers;
-import io.textile.textile.Textile;
+import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.hon.Handlers;
+import sjtu.opennet.hon.Textile;
 
 import static android.app.PendingIntent.getActivity;
 

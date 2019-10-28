@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.sjtuopennetwork.shareit.R;
 
-import io.textile.textile.Textile;
+import sjtu.opennet.hon.Textile;
 
 public class InfoNameActivity extends AppCompatActivity {
 

@@ -36,12 +36,12 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.textile.pb.Model;
-import io.textile.textile.BaseTextileEventListener;
-import io.textile.textile.FeedItemData;
-import io.textile.textile.FeedItemType;
-import io.textile.textile.Handlers;
-import io.textile.textile.Textile;
+import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.hon.BaseTextileEventListener;
+import sjtu.opennet.hon.FeedItemData;
+import sjtu.opennet.hon.FeedItemType;
+import sjtu.opennet.hon.Handlers;
+import sjtu.opennet.hon.Textile;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -131,7 +131,6 @@ public class HomeActivity extends AppCompatActivity {
         try {
             if (!Textile.isInitialized(repoPath)) { //如果未初始化
 
-                //应该是不等于0，但是为了测试可以进入if，这里不等于1
 //                String phrase = Textile.newWallet(wordCount); //新建一个wallet
 //                String seed = Textile.walletAccountAt(phrase, 0, "").getSeed(); //拿到第一个account的seed
 //                Textile.initialize(repoPath, seed, true, false);
@@ -162,10 +161,13 @@ public class HomeActivity extends AppCompatActivity {
             //测试
             try {
                 System.out.println("===================昵称："+Textile.instance().profile.name());
-                System.out.println("===================thread个数："+Textile.instance().threads.list().getItemsCount());
+//                System.out.println("===================thread个数："+Textile.instance().threads.list().getItemsCount());
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            //连网之后反馈给主界面
+            EventBus.getDefault().postSticky(Integer.valueOf(0)); //会有先连网后启动ShareFragment的注册，所以用Sticky
 
             Textile.instance().cafes.register(
                     "http://202.120.38.131:40601",
@@ -189,9 +191,7 @@ public class HomeActivity extends AppCompatActivity {
 //                e.printStackTrace();
 //            }
 
-            //连网之后反馈给主界面
-            EventBus.getDefault().postSticky(Integer.valueOf(0)); //会有先连网后启动ShareFragment的注册，所以用Sticky
-        }
+            }
 
         @Override
         public void contactQueryResult(String queryId, Model.Contact contact) {
