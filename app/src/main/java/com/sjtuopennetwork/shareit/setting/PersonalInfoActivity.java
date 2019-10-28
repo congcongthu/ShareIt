@@ -51,7 +51,6 @@ public class PersonalInfoActivity extends AppCompatActivity {
         drawUI();
     }
     private void drawUI() {
-
         info_name.setText(myname);
         info_addr.setText(myaddr);
         if(!avatarPath.equals("null")){ //头像为空只可能是引导页未设置

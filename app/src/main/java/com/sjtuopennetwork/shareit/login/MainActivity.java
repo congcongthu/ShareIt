@@ -1,17 +1,10 @@
 package com.sjtuopennetwork.shareit.login;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.PermissionChecker;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-
-import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.HomeActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,43 +18,40 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main); 这个Activity不需要layout，因为直接使用华为的登录页面
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
 
-
         //查SharedPreference中"isLogin"判断登录状态，如果未登录则直接拉起华为ID登录界面。如果已登录则跳转到HomeActivity
-        isLogin=pref.getBoolean("isLogin",true);
-        if(isLogin){ //如果已经登录
-            SharedPreferences.Editor editor=pref.edit();
-            editor.putBoolean("isLogin",true);
-            editor.commit();
-
-            //跳转到主界面
+        isLogin=pref.getBoolean("isLogin",false); //如果没有这个字段就是首次打开
+        if(isLogin){ //如果已经登录直接跳转到主界面
             Intent toHomeActivity=new Intent(this, HomeActivity.class);
-            toHomeActivity.putExtra("isFirstRun",false);
             startActivity(toHomeActivity);
             finish();
         }else{ //如果未登录
-            //直接拉起华为登录页面，华为ID登录后拿到昵称、头像
+            // TODO: 2019/10/28  在这里拉起华为登录页面
 
 
-            //写入SharedPreference
-            SharedPreferences.Editor editor=pref.edit();
-            editor.putString("myname","Zoomie");
-            editor.putString("avatarpath","null");
-            editor.putBoolean("isLogin",true);
-            editor.commit();
-
-            Intent toHomeActivity=new Intent(this, HomeActivity.class);
-            toHomeActivity.putExtra("isFirstRun",true);
-            startActivity(toHomeActivity);
-            finish();
         }
-
-
-
-
-
     }
 
+    //从华为ID返回到结果之后，将结果写入到SharedPreference
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        // TODO: 2019/10/28 将华为ID的头像存储到文件，并将用户名、头像路径、openid存储到下面这三个变量中
+        String myname="null";
+        String avatarpath="null";
+        String openid="null";
+
+        //写入SharedPreference
+        SharedPreferences.Editor editor=pref.edit();
+        editor.putString("myname",myname);
+        editor.putString("avatarpath",avatarpath);
+        editor.putString("openid",openid);
+        editor.putBoolean("isLogin",true);
+        editor.commit();
+
+        Intent toHomeActivity=new Intent(this, HomeActivity.class);
+        startActivity(toHomeActivity);
+        finish();
+    }
 }
