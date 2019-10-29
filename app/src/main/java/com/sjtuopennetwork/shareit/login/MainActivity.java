@@ -28,7 +28,9 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }else{ //如果未登录
             // TODO: 2019/10/28  在这里拉起华为登录页面
-            String myname="jsapj";
+
+            //如果有了华为ID登录，这一块代码要删掉
+            String myname="jaspq";
             String avatarpath="null";
             String openid="null";
 

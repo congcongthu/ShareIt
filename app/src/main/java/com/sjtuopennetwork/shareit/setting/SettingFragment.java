@@ -139,22 +139,22 @@ public class SettingFragment extends Fragment {
             avatar_layout.setCornerRadius(10);
         }
         try {
-            if(Textile.instance().profile.name().equals("")){
-                Textile.instance().profile.setName(myname);
-            }
-            if(Textile.instance().profile.avatar().equals("")){
-                Textile.instance().profile.setAvatar(imagePath, new Handlers.BlockHandler() {
-                    @Override
-                    public void onComplete(Model.Block block) {
-                        System.out.println("头像设置成功！");
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        System.out.println("头像设置失败！");
-                    }
-                });
-            }
+//            if(Textile.instance().profile.name().equals("")){
+//                Textile.instance().profile.setName(myname);
+//            }
+//            if(Textile.instance().profile.avatar().equals("")){
+//                Textile.instance().profile.setAvatar(imagePath, new Handlers.BlockHandler() {
+//                    @Override
+//                    public void onComplete(Model.Block block) {
+//                        System.out.println("头像设置成功！");
+//                    }
+//
+//                    @Override
+//                    public void onError(Exception e) {
+//                        System.out.println("头像设置失败！");
+//                    }
+//                });
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }

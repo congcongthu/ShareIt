@@ -14,7 +14,11 @@
         android:roundIcon="@drawable/ic_share_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".share.NewGroupActivity"></activity>
+        <activity android:name=".share.GroupSetAdminActivity"></activity>
+        <activity android:name=".share.GroupDelMemberActivity" />
+        <activity android:name=".share.GroupAddMemberActivity" />
+        <activity android:name=".share.GroupInfoActivity" />
+        <activity android:name=".share.NewGroupActivity" />
         <activity android:name=".setting.MyDevicesActivity" />
         <activity android:name=".contact.ScanResultActivity" />
         <activity android:name=".contact.ContactInfoActivity" />
