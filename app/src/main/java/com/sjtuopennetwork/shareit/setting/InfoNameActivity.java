@@ -33,17 +33,6 @@ public class InfoNameActivity extends AppCompatActivity {
 
     private void drawUI() {
         et_name.setText(myname);
-    }
-
-    private void initData() {
-        pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
-        myname=pref.getString("myname","null");
-
-    }
-
-    private void initUI() {
-        et_name = findViewById(R.id.name);
-        bt_confirm = findViewById(R.id.confirm);
         bt_confirm.setOnClickListener(View -> {
             myname = et_name.getText().toString();
             SharedPreferences.Editor editor = pref.edit();
@@ -54,7 +43,16 @@ public class InfoNameActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            finish();
-        });
+        finish();  });
+    }
+
+    private void initData() {
+        pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
+        myname=pref.getString("myname","null");
+    }
+
+    private void initUI() {
+        et_name = findViewById(R.id.name);
+        bt_confirm = findViewById(R.id.confirm);
     }
 }
