@@ -7,9 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import io.textile.pb.Model;
-import io.textile.pb.View;
-import io.textile.textile.Textile;
+import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.textilepb.View;
+import sjtu.opennet.hon.Textile;
 
 public class GetFriendListOrApplication {
 

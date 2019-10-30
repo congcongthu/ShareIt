@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.sjtuopennetwork.shareit.R;
 
-import io.textile.textile.Textile;
+import sjtu.opennet.hon.Textile;
 
 public class InfoNameActivity extends AppCompatActivity {
 
@@ -39,7 +39,9 @@ public class InfoNameActivity extends AppCompatActivity {
             editor.putString("myname", myname);
             editor.apply();
             try {
+                System.out.println("=========新昵称："+myname);
                 Textile.instance().profile.setName(myname);
+                System.out.println("============设置成功："+myname);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -54,5 +56,17 @@ public class InfoNameActivity extends AppCompatActivity {
     private void initUI() {
         et_name = findViewById(R.id.name);
         bt_confirm = findViewById(R.id.confirm);
+    }
+
+    private void initData() {
+        pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
+        myname=pref.getString("myname","null");
+
+    }
+
+    private void initUI() {
+        et_name = findViewById(R.id.name);
+        bt_confirm = findViewById(R.id.confirm);
+
     }
 }

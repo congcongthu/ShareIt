@@ -35,8 +35,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import io.textile.pb.Model;
-import io.textile.textile.Textile;
+import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.hon.Textile;
 import razerdp.basepopup.BasePopupWindow;
 
 /**

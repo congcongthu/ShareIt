@@ -21,7 +21,9 @@ import android.widget.TextView;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.login.MainActivity;
 
-import io.textile.textile.Textile;
+import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.hon.Handlers;
+import sjtu.opennet.hon.Textile;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -108,7 +110,7 @@ public class SettingFragment extends Fragment {
             public void onClick(DialogInterface dialogInterface, int i) {
                 SharedPreferences.Editor editor=pref.edit();
                 editor.putBoolean("isLogin",false);
-                editor.apply();
+                editor.commit();
                 Intent it=new Intent(getActivity(), MainActivity.class);
                 startActivity(it);
             }
@@ -135,6 +137,26 @@ public class SettingFragment extends Fragment {
         if(!avatar_layout.equals("null")){ //头像为空只可能是引导页未设置
             avatar_layout.setImageBitmap(BitmapFactory.decodeFile(imagePath));
             avatar_layout.setCornerRadius(10);
+        }
+        try {
+//            if(Textile.instance().profile.name().equals("")){
+//                Textile.instance().profile.setName(myname);
+//            }
+//            if(Textile.instance().profile.avatar().equals("")){
+//                Textile.instance().profile.setAvatar(imagePath, new Handlers.BlockHandler() {
+//                    @Override
+//                    public void onComplete(Model.Block block) {
+//                        System.out.println("头像设置成功！");
+//                    }
+//
+//                    @Override
+//                    public void onError(Exception e) {
+//                        System.out.println("头像设置失败！");
+//                    }
+//                });
+//            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

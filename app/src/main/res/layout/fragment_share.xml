@@ -25,7 +25,7 @@
             android:layout_gravity="right"
             android:background="?selectableItemBackground"
             android:clickable="true"
-            android:padding="5dp"
+            android:padding="8dp"
             android:layout_marginRight="5dp"
             android:src="@drawable/ic_add" />
 
@@ -36,7 +36,7 @@
             android:layout_gravity="right"
             android:background="?selectableItemBackground"
             android:clickable="true"
-            android:padding="5dp"
+            android:padding="8dp"
             android:layout_marginRight="5dp"
             android:src="@drawable/ic_scan" />
 

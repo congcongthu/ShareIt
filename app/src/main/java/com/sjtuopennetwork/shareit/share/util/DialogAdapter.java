@@ -19,8 +19,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import io.textile.textile.Handlers;
-import io.textile.textile.Textile;
+import sjtu.opennet.hon.Handlers;
+import sjtu.opennet.hon.Textile;
 
 public class DialogAdapter extends ArrayAdapter {
     private List<TDialog> datas;

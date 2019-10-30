@@ -36,12 +36,12 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.textile.pb.Model;
-import io.textile.textile.BaseTextileEventListener;
-import io.textile.textile.FeedItemData;
-import io.textile.textile.FeedItemType;
-import io.textile.textile.Handlers;
-import io.textile.textile.Textile;
+import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.hon.BaseTextileEventListener;
+import sjtu.opennet.hon.FeedItemData;
+import sjtu.opennet.hon.FeedItemType;
+import sjtu.opennet.hon.Handlers;
+import sjtu.opennet.hon.Textile;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -56,9 +56,9 @@ public class HomeActivity extends AppCompatActivity {
     public SQLiteDatabase appdb;
 
     //内存数据
-    boolean isFirstRun;
     String myname;
     String avatarpath;
+    String phrase;
 
     //导航栏监听器，每次点击都进行fragment的切换
     private BottomNavigationView.OnNavigationItemSelectedListener navSeLis=new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -90,42 +90,8 @@ public class HomeActivity extends AppCompatActivity {
 
         getPermission();
 
-        //测试用
-        isFirstRun=getIntent().getBooleanExtra("isFirstRun",true);
-
         initUI();
         initData();
-        initTextile();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    public void initTextile(){
-        //初始化Textile
-        Context ctx = getApplicationContext();
-        final File filesDir = ctx.getFilesDir();
-        final File repo = new File(filesDir, "textile-repo");
-        final String repoPath = repo.getAbsolutePath();
-        try {
-            if (!Textile.isInitialized(repoPath)) { //如果未初始化
-                long wordCount = pref.getLong("wordCount", 0); //获得phrase的词数
-                if (wordCount != 1) { //应该是不等于0，但是为了测试可以进入if，这里不等于1
-//                    String phrase = Textile.newWallet(wordCount); //新建一个wallet
-//                    String seed = Textile.walletAccountAt(phrase, 0, "").getSeed(); //拿到第一个account的seed
-//                    Textile.initialize(repoPath, seed, true, false);
-
-                    //测试时创建一个新的账户
-                    Textile.initializeCreatingNewWalletAndAccount(repoPath,true, false);
-                }
-            }
-            Textile.launch(ctx, repoPath, true);
-            Textile.instance().addEventListener(new MyTextileListener());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void getPermission() {
@@ -138,16 +104,6 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private void initData() {
-        //初始化pref
-        pref=getSharedPreferences("txtl",MODE_PRIVATE);
-        appdb=AppdbHelper.getInstance(this).getWritableDatabase();
-        myname=pref.getString("myname","null");
-        avatarpath=pref.getString("avatarpath","null");
-
-
-    }
-
     private void initUI(){
         shareFragment=new ShareFragment();
         contactFragment=new ContactFragment();
@@ -157,6 +113,36 @@ public class HomeActivity extends AppCompatActivity {
         BottomNavigationView nav=findViewById(R.id.nav_view);
         nav.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         nav.setOnNavigationItemSelectedListener(navSeLis);
+    }
+
+    private void initData() {
+        //初始化pref
+        pref=getSharedPreferences("txtl",MODE_PRIVATE);
+        appdb=AppdbHelper.getInstance(this).getWritableDatabase();
+        myname=pref.getString("myname","null");
+        avatarpath=pref.getString("avatarpath","null");
+        phrase=pref.getString("openid","null");
+
+        //初始化Textile
+        Context ctx = getApplicationContext();
+        final File filesDir = ctx.getFilesDir();
+        final File repo = new File(filesDir, "textile-repo");
+        final String repoPath = repo.getAbsolutePath();
+        try {
+            if (!Textile.isInitialized(repoPath)) { //如果未初始化
+
+//                String phrase = Textile.newWallet(wordCount); //新建一个wallet
+//                String seed = Textile.walletAccountAt(phrase, 0, "").getSeed(); //拿到第一个account的seed
+//                Textile.initialize(repoPath, seed, true, false);
+
+                //测试时创建一个新的账户
+                Textile.initializeCreatingNewWalletAndAccount(repoPath,true, false);
+            }
+            Textile.launch(ctx, repoPath, true);
+            Textile.instance().addEventListener(new MyTextileListener());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         replaceFragment(shareFragment);
     }
@@ -175,41 +161,23 @@ public class HomeActivity extends AppCompatActivity {
             //测试
             try {
                 System.out.println("===================昵称："+Textile.instance().profile.name());
-                System.out.println("===================thread个数："+Textile.instance().threads.list().getItemsCount());
+//                System.out.println("===================thread个数："+Textile.instance().threads.list().getItemsCount());
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            //节点连网之后，如果是首次运行要设置昵称和头像，昵称和头像是登录时华为ID得到，已经存在pref中
-            if(isFirstRun){
-                try {
-                    System.out.println("=================名字："+Textile.instance().profile.name());
-                    Textile.instance().profile.setName(myname);
-                    //测试时头像获取都为""
-//                    Textile.instance().profile.setAvatar(avatarpath, new Handlers.BlockHandler() {
-//                        @Override
-//                        public void onComplete(Model.Block block) {
-//                            System.out.println("======头像设置成功");
-//                        }
-//
-//                        @Override
-//                        public void onError(Exception e) {
-//                            System.out.println("======头像设置失败");
-//                        }
-//                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            //连网之后反馈给主界面
+            EventBus.getDefault().postSticky(Integer.valueOf(0)); //会有先连网后启动ShareFragment的注册，所以用Sticky
 
             Textile.instance().cafes.register(
-                    "http://202.120.38.131:40601",
-                    "24NR6PTk3ocFCxqidUHWAi6nmhcc76DzMgWHkcMYryeQ8YGRVZmXeLKkx1yXS",
+//                    "http://202.120.38.131:40601",
+                    "http://159.138.132.28:40601",
+//                    "24NR6PTk3ocFCxqidUHWAi6nmhcc76DzMgWHkcMYryeQ8YGRVZmXeLKkx1yXS",
+                    "6kCnzeBvbcGU6xNjAscBJj1zGe4WgCLyAw4iPfig3bphyimcaC9PrUC7Q8ZG",
                     new Handlers.ErrorHandler() {
                         @Override
                         public void onComplete() {
                             System.out.println("==========cafe连接成功");
-
                             //写到Share...
                         }
                         @Override
@@ -219,9 +187,13 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     });
 
-            //连网之后反馈给主界面
-            EventBus.getDefault().postSticky(Integer.valueOf(0)); //会有先连网后启动ShareFragment的注册，所以用Sticky
-        }
+//            try {
+//                Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.131/tcp/23524/ipfs/12D3KooWERhx7JQhFfXA3a7WGSPCH5Zd1EuQnY6eeQM3VrVUBg67");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+
+            }
 
         @Override
         public void contactQueryResult(String queryId, Model.Contact contact) {
@@ -322,11 +294,11 @@ public class HomeActivity extends AppCompatActivity {
                 EventBus.getDefault().post(tMsg);
 
                 //更新dialogs表
-                TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
-                TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
-                        feedItemData.text.getBody(), feedItemData.text.getDate().getSeconds(),
-                        tDialog.imgpath);
-                EventBus.getDefault().post(updateDialog);
+//                TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
+//                TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
+//                        feedItemData.text.getBody(), feedItemData.text.getDate().getSeconds(),
+//                        tDialog.imgpath);
+//                EventBus.getDefault().post(updateDialog);
 
             }
 
@@ -366,7 +338,7 @@ public class HomeActivity extends AppCompatActivity {
                         feedItemData.files.getUser().getAvatar(),
                         large_hash,
                         feedItemData.files.getDate().getSeconds(), ismine);
-                System.out.println("=============msgs："+tMsg.authorname+" "+tMsg.authorname);
+                System.out.println("=============msgs：" + tMsg.authorname+" " + tMsg.authorname);
 
                 EventBus.getDefault().post(updateDialog);
                 EventBus.getDefault().post(tMsg);

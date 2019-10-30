@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import com.example.qrlibrary.qrcode.utils.QRCodeUtil;
 import com.sjtuopennetwork.shareit.R;
 
-import io.textile.textile.Textile;
+import sjtu.opennet.hon.Textile;
 
 public class PersonalQrcodeActivity extends AppCompatActivity {
 

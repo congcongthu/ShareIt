@@ -32,9 +32,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
-import io.textile.pb.Model;
-import io.textile.textile.Handlers;
-import io.textile.textile.Textile;
+import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.hon.Handlers;
+import sjtu.opennet.hon.Textile;
 
 public class ChatActivity extends AppCompatActivity {
     //UI控件
@@ -43,6 +43,7 @@ public class ChatActivity extends AppCompatActivity {
     Button send_msg;
     NiceImageView bt_send_img;
     EditText chat_text_edt;
+    ImageView group_menu;
 
     //持久化数据
     public SQLiteDatabase appdb;
@@ -82,6 +83,7 @@ public class ChatActivity extends AppCompatActivity {
         send_msg=findViewById(R.id.chat_send_text);
         bt_send_img=findViewById(R.id.bt_send_img);
         chat_text_edt=findViewById(R.id.chat_text_edt);
+        group_menu=findViewById(R.id.group_menu);
     }
 
     private void initData() {
@@ -105,11 +107,17 @@ public class ChatActivity extends AppCompatActivity {
 
             if(!msg.equals("")){
                 chat_text_edt.setText("");
-                try {
-                    Textile.instance().messages.add(threadid,msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
+//                new Thread(){
+//                    @Override
+//                    public void run() {
+                        try {
+                            Textile.instance().messages.add(threadid,msg);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+//                    }
+//                }.start();
             }else{
                 Toast.makeText(this,"消息不能为空", Toast.LENGTH_SHORT).show();
             }
@@ -121,6 +129,12 @@ public class ChatActivity extends AppCompatActivity {
                     .maxSelectNum(1)
                     .compress(false)
                     .forResult(PictureConfig.CHOOSE_REQUEST);
+        });
+
+        group_menu.setOnClickListener(v -> {
+            Intent toGroupInfo=new Intent(ChatActivity.this,GroupInfoActivity.class);
+            toGroupInfo.putExtra("threadid",threadid);
+            startActivity(toGroupInfo);
         });
     }
 

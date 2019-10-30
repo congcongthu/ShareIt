@@ -17,9 +17,9 @@ import android.widget.Toast;
 import com.wildma.pictureselector.PictureSelector;
 import com.sjtuopennetwork.shareit.R;
 
-import io.textile.pb.Model;
-import io.textile.textile.Handlers;
-import io.textile.textile.Textile;
+import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.hon.Handlers;
+import sjtu.opennet.hon.Textile;
 
 import static android.os.Build.VERSION_CODES.O;
 
@@ -51,7 +51,6 @@ public class PersonalInfoActivity extends AppCompatActivity {
         drawUI();
     }
     private void drawUI() {
-
         info_name.setText(myname);
         info_addr.setText(myaddr);
         if(!avatarPath.equals("null")){ //头像为空只可能是引导页未设置

@@ -21,9 +21,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import io.textile.pb.Model;
-import io.textile.pb.QueryOuterClass;
-import io.textile.textile.Textile;
+import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.textilepb.QueryOuterClass;
+import sjtu.opennet.hon.Textile;
 
 public class SearchContactActivity extends AppCompatActivity {
 
@@ -143,10 +143,10 @@ public class SearchContactActivity extends AppCompatActivity {
 
     //创建一个新的双人thread
     private void createTwoPersonThread(String threadName,String key){
-        io.textile.pb.View.AddThreadConfig.Schema schema= io.textile.pb.View.AddThreadConfig.Schema.newBuilder()
-                .setPreset(io.textile.pb.View.AddThreadConfig.Schema.Preset.MEDIA)
+        sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
+                .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.MEDIA)
                 .build();
-        io.textile.pb.View.AddThreadConfig config=io.textile.pb.View.AddThreadConfig.newBuilder()
+        sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
                 .setSharing(Model.Thread.Sharing.SHARED)
                 .setType(Model.Thread.Type.OPEN)
                 .setKey(key).setName(threadName)

@@ -1,2 +1,2 @@
-include ':app', ':libcontacts'
+include ':app', ':libcontacts', ':hon', ':textilepb'
 rootProject.name='ShareIt'
