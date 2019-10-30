@@ -107,7 +107,6 @@ public class ChatActivity extends AppCompatActivity {
 
             if(!msg.equals("")){
                 chat_text_edt.setText("");
-
 //                new Thread(){
 //                    @Override
 //                    public void run() {
@@ -118,6 +117,17 @@ public class ChatActivity extends AppCompatActivity {
                         }
 //                    }
 //                }.start();
+
+                TMsg tMsg= null;
+                try {
+                    tMsg = new TMsg(1,threadid,0,"",
+                            Textile.instance().profile.name(),Textile.instance().profile.avatar(),msg,System.currentTimeMillis()/1000,true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                msgList.add(tMsg);
+                chat_lv.setSelection(msgList.size());
+
             }else{
                 Toast.makeText(this,"消息不能为空", Toast.LENGTH_SHORT).show();
             }

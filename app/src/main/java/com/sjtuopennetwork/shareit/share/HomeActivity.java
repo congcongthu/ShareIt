@@ -169,11 +169,28 @@ public class HomeActivity extends AppCompatActivity {
             //连网之后反馈给主界面
             EventBus.getDefault().postSticky(Integer.valueOf(0)); //会有先连网后启动ShareFragment的注册，所以用Sticky
 
+//            try {
+//                String a=Textile.instance().cafes.sessions().getItems(0).getId();
+//                Textile.instance().cafes.deregister(a, new Handlers.ErrorHandler() {
+//                    @Override
+//                    public void onComplete() {
+//                        System.out.println("===========解注册成功");
+//                    }
+//
+//                    @Override
+//                    public void onError(Exception e) {
+//                        System.out.println("===========解注册失败");
+//                    }
+//                });
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+
             Textile.instance().cafes.register(
-//                    "http://202.120.38.131:40601",
-                    "http://159.138.132.28:40601",
-//                    "24NR6PTk3ocFCxqidUHWAi6nmhcc76DzMgWHkcMYryeQ8YGRVZmXeLKkx1yXS",
-                    "6kCnzeBvbcGU6xNjAscBJj1zGe4WgCLyAw4iPfig3bphyimcaC9PrUC7Q8ZG",
+                    "http://202.120.38.131:40601",
+//                    "http://159.138.132.28:40601",
+                    "24NR6PTk3ocFCxqidUHWAi6nmhcc76DzMgWHkcMYryeQ8YGRVZmXeLKkx1yXS",
+//                    "6kCnzeBvbcGU6xNjAscBJj1zGe4WgCLyAw4iPfig3bphyimcaC9PrUC7Q8ZG",
                     new Handlers.ErrorHandler() {
                         @Override
                         public void onComplete() {
@@ -192,7 +209,6 @@ public class HomeActivity extends AppCompatActivity {
 //            } catch (Exception e) {
 //                e.printStackTrace();
 //            }
-
             }
 
         @Override
@@ -291,15 +307,17 @@ public class HomeActivity extends AppCompatActivity {
                         feedItemData.text.getUser().getAvatar(),
                         feedItemData.text.getBody(),
                         feedItemData.text.getDate().getSeconds(), ismine);
-                EventBus.getDefault().post(tMsg);
 
-                //更新dialogs表
-//                TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
-//                TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
-//                        feedItemData.text.getBody(), feedItemData.text.getDate().getSeconds(),
-//                        tDialog.imgpath);
-//                EventBus.getDefault().post(updateDialog);
+//                更新dialogs表
+                TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
+                TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
+                        feedItemData.text.getBody(), feedItemData.text.getDate().getSeconds(),
+                        tDialog.imgpath);
 
+                if(ismine==0){ //不是我的消息才广播出去
+                    EventBus.getDefault().post(tMsg);
+                    EventBus.getDefault().post(updateDialog);
+                }
             }
 
             if(feedItemData.type.equals(FeedItemType.FILES)){

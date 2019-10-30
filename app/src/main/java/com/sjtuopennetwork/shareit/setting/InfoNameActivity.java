@@ -39,34 +39,23 @@ public class InfoNameActivity extends AppCompatActivity {
             editor.putString("myname", myname);
             editor.apply();
             try {
-                System.out.println("=========新昵称："+myname);
+                System.out.println("=========新昵称：" + myname);
                 Textile.instance().profile.setName(myname);
-                System.out.println("============设置成功："+myname);
+                System.out.println("============设置成功：" + myname);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        finish();  });
+            finish();
+        });
     }
 
     private void initData() {
-        pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
-        myname=pref.getString("myname","null");
+        pref = getSharedPreferences("txtl", Context.MODE_PRIVATE);
+        myname = pref.getString("myname", "null");
     }
 
     private void initUI() {
         et_name = findViewById(R.id.name);
         bt_confirm = findViewById(R.id.confirm);
-    }
-
-    private void initData() {
-        pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
-        myname=pref.getString("myname","null");
-
-    }
-
-    private void initUI() {
-        et_name = findViewById(R.id.name);
-        bt_confirm = findViewById(R.id.confirm);
-
     }
 }

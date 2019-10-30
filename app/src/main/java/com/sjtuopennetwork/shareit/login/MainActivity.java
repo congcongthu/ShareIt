@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
             // TODO: 2019/10/28  在这里拉起华为登录页面
 
             //如果有了华为ID登录，这一块代码要删掉
-            String myname="jaspq";
+            String myname="null";
             String avatarpath="null";
             String openid="null";
 

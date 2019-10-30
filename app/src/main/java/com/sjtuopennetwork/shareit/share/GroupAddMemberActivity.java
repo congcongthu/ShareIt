@@ -77,8 +77,7 @@ public class GroupAddMemberActivity extends AppCompatActivity {
         contactView.setData(contactBeans,true);
         contactView.setContactListener(new ContactListener<ContactBean>() {
             @Override
-            public void onClick(ContactBean item) {
-            }
+            public void onClick(ContactBean item) { }
             @Override
             public void onLongClick(ContactBean item) { }
             @Override
