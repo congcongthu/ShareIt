@@ -56,6 +56,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
         if(!avatarPath.equals("null")){ //头像为空只可能是引导页未设置
             avatar_img.setImageBitmap(BitmapFactory.decodeFile(avatarPath));
             avatar_img.setCornerRadius(5);
+        }else{
+            System.out.println("=============头像路径："+avatarPath);
         }
     }
     private void initData() {

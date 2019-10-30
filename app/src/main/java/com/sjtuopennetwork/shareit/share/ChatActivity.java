@@ -43,6 +43,7 @@ public class ChatActivity extends AppCompatActivity {
     Button send_msg;
     NiceImageView bt_send_img;
     EditText chat_text_edt;
+    ImageView group_menu;
 
     //持久化数据
     public SQLiteDatabase appdb;
@@ -82,6 +83,7 @@ public class ChatActivity extends AppCompatActivity {
         send_msg=findViewById(R.id.chat_send_text);
         bt_send_img=findViewById(R.id.bt_send_img);
         chat_text_edt=findViewById(R.id.chat_text_edt);
+        group_menu=findViewById(R.id.group_menu);
     }
 
     private void initData() {
@@ -105,11 +107,27 @@ public class ChatActivity extends AppCompatActivity {
 
             if(!msg.equals("")){
                 chat_text_edt.setText("");
+//                new Thread(){
+//                    @Override
+//                    public void run() {
+                        try {
+                            Textile.instance().messages.add(threadid,msg);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+//                    }
+//                }.start();
+
+                TMsg tMsg= null;
                 try {
-                    Textile.instance().messages.add(threadid,msg);
+                    tMsg = new TMsg(1,threadid,0,"",
+                            Textile.instance().profile.name(),Textile.instance().profile.avatar(),msg,System.currentTimeMillis()/1000,true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                msgList.add(tMsg);
+                chat_lv.setSelection(msgList.size());
+
             }else{
                 Toast.makeText(this,"消息不能为空", Toast.LENGTH_SHORT).show();
             }
@@ -121,6 +139,12 @@ public class ChatActivity extends AppCompatActivity {
                     .maxSelectNum(1)
                     .compress(false)
                     .forResult(PictureConfig.CHOOSE_REQUEST);
+        });
+
+        group_menu.setOnClickListener(v -> {
+            Intent toGroupInfo=new Intent(ChatActivity.this,GroupInfoActivity.class);
+            toGroupInfo.putExtra("threadid",threadid);
+            startActivity(toGroupInfo);
         });
     }
 

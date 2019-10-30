@@ -20,15 +20,16 @@
             android:textColor="@color/black"
             android:textSize="20sp" />
 
+
         <ImageView
-            android:id="@+id/invite_others"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="right"
+            android:id="@+id/group_menu"
+            android:padding="8dp"
             android:background="?selectableItemBackground"
             android:clickable="true"
-            android:padding="8dp"
-            android:src="@drawable/ic_add" />
+            android:layout_gravity="right"
+            android:src="@drawable/ic_menu"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
 
     </android.support.v7.widget.Toolbar>
 
