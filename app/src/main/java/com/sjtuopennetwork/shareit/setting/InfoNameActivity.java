@@ -27,11 +27,12 @@ public class InfoNameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_info_name);
 
         initUI();
-        initData();
-        drawUI();
     }
-
-    private void drawUI() {
+    private void initUI() {
+        et_name = findViewById(R.id.name);
+        bt_confirm = findViewById(R.id.confirm);
+        pref = getSharedPreferences("txtl", Context.MODE_PRIVATE);
+        myname = pref.getString("myname", "null");
         et_name.setText(myname);
         bt_confirm.setOnClickListener(View -> {
             myname = et_name.getText().toString();
@@ -47,15 +48,5 @@ public class InfoNameActivity extends AppCompatActivity {
             }
             finish();
         });
-    }
-
-    private void initData() {
-        pref = getSharedPreferences("txtl", Context.MODE_PRIVATE);
-        myname = pref.getString("myname", "null");
-    }
-
-    private void initUI() {
-        et_name = findViewById(R.id.name);
-        bt_confirm = findViewById(R.id.confirm);
     }
 }
