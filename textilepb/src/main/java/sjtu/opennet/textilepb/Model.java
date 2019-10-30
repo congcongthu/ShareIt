@@ -21957,6 +21957,10 @@ public final class Model {
        * <code>ADMIN_ADDED = 100;</code>
        */
       ADMIN_ADDED(100),
+      /**
+       * <code>PEER_REMOVED = 101;</code>
+       */
+      PEER_REMOVED(101),
       UNRECOGNIZED(-1),
       ;
 
@@ -22000,6 +22004,10 @@ public final class Model {
        * <code>ADMIN_ADDED = 100;</code>
        */
       public static final int ADMIN_ADDED_VALUE = 100;
+      /**
+       * <code>PEER_REMOVED = 101;</code>
+       */
+      public static final int PEER_REMOVED_VALUE = 101;
 
 
       public final int getNumber() {
@@ -22030,6 +22038,7 @@ public final class Model {
           case 6: return COMMENT_ADDED;
           case 7: return LIKE_ADDED;
           case 100: return ADMIN_ADDED;
+          case 101: return PEER_REMOVED;
           default: return null;
         }
       }
@@ -41457,72 +41466,72 @@ public final class Model {
       "xt\030\003 \001(\010\022\014\n\004mill\030\004 \001(\t\022\035\n\004opts\030\005 \003(\0132\017.L" +
       "ink.OptsEntry\022,\n\013json_schema\030\006 \001(\0132\027.goo" +
       "gle.protobuf.Struct\032+\n\tOptsEntry\022\013\n\003key\030" +
-      "\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\262\003\n\014Notificatio" +
+      "\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\304\003\n\014Notificatio" +
       "n\022\n\n\002id\030\001 \001(\t\022(\n\004date\030\002 \001(\0132\032.google.pro" +
       "tobuf.Timestamp\022\r\n\005actor\030\003 \001(\t\022\017\n\007subjec" +
       "t\030\004 \001(\t\022\024\n\014subject_desc\030\005 \001(\t\022\r\n\005block\030\006" +
       " \001(\t\022\016\n\006target\030\007 \001(\t\022 \n\004type\030\010 \001(\0162\022.Not" +
       "ification.Type\022\014\n\004body\030\t \001(\t\022\014\n\004read\030\n \001" +
-      "(\010\022\023\n\004user\030e \001(\0132\005.User\"\303\001\n\004Type\022\023\n\017INVI" +
+      "(\010\022\023\n\004user\030e \001(\0132\005.User\"\325\001\n\004Type\022\023\n\017INVI" +
       "TE_RECEIVED\020\000\022\027\n\023ACCOUNT_PEER_JOINED\020\001\022\025" +
       "\n\021ACCOUNT_PEER_LEFT\020\010\022\017\n\013PEER_JOINED\020\002\022\r" +
       "\n\tPEER_LEFT\020\003\022\021\n\rMESSAGE_ADDED\020\004\022\017\n\013FILE" +
       "S_ADDED\020\005\022\021\n\rCOMMENT_ADDED\020\006\022\016\n\nLIKE_ADD" +
-      "ED\020\007\022\017\n\013ADMIN_ADDED\020d\"0\n\020NotificationLis" +
-      "t\022\034\n\005items\030\001 \003(\0132\r.Notification\"_\n\004Cafe\022" +
-      "\014\n\004peer\030\001 \001(\t\022\017\n\007address\030\002 \001(\t\022\013\n\003api\030\003 " +
-      "\001(\t\022\020\n\010protocol\030\004 \001(\t\022\014\n\004node\030\005 \001(\t\022\013\n\003u" +
-      "rl\030\006 \001(\t\"\301\001\n\013CafeSession\022\n\n\002id\030\001 \001(\t\022\016\n\006" +
-      "access\030\002 \001(\t\022\'\n\003exp\030\003 \001(\0132\032.google.proto" +
-      "buf.Timestamp\022\017\n\007refresh\030\004 \001(\t\022(\n\004rexp\030\005" +
-      " \001(\0132\032.google.protobuf.Timestamp\022\017\n\007subj" +
-      "ect\030\006 \001(\t\022\014\n\004type\030\007 \001(\t\022\023\n\004cafe\030\010 \001(\0132\005." +
-      "Cafe\".\n\017CafeSessionList\022\033\n\005items\030\001 \003(\0132\014" +
-      ".CafeSession\"\255\003\n\013CafeRequest\022\n\n\002id\030\001 \001(\t" +
-      "\022\014\n\004peer\030\002 \001(\t\022\016\n\006target\030\003 \001(\t\022\023\n\004cafe\030\004" +
-      " \001(\0132\005.Cafe\022\r\n\005group\030\010 \001(\t\022\022\n\nsync_group" +
-      "\030\n \001(\t\022\037\n\004type\030\005 \001(\0162\021.CafeRequest.Type\022" +
-      "(\n\004date\030\006 \001(\0132\032.google.protobuf.Timestam" +
-      "p\022\014\n\004size\030\007 \001(\003\022#\n\006status\030\t \001(\0162\023.CafeRe" +
-      "quest.Status\022\020\n\010attempts\030\013 \001(\005\022\022\n\ngroup_" +
-      "size\030\014 \001(\003\022\031\n\021group_transferred\030\r \001(\003\"O\n" +
-      "\004Type\022\t\n\005STORE\020\000\022\013\n\007UNSTORE\020\003\022\020\n\014STORE_T" +
-      "HREAD\020\001\022\022\n\016UNSTORE_THREAD\020\004\022\t\n\005INBOX\020\002\"," +
-      "\n\006Status\022\007\n\003NEW\020\000\022\013\n\007PENDING\020\001\022\014\n\010COMPLE" +
-      "TE\020\002\".\n\017CafeRequestList\022\033\n\005items\030\001 \003(\0132\014" +
-      ".CafeRequest\"\372\001\n\023CafeSyncGroupStatus\022\n\n\002" +
-      "id\030\001 \001(\t\022\021\n\tnum_total\030\002 \001(\005\022\023\n\013num_pendi" +
-      "ng\030\003 \001(\005\022\024\n\014num_complete\030\004 \001(\005\022\022\n\nsize_t" +
-      "otal\030\005 \001(\003\022\024\n\014size_pending\030\006 \001(\003\022\025\n\rsize" +
-      "_complete\030\007 \001(\003\022\031\n\021groups_size_total\030\010 \001" +
-      "(\003\022\034\n\024groups_size_complete\030\t \001(\003\022\r\n\005erro" +
-      "r\0302 \001(\t\022\020\n\010error_id\0303 \001(\t\"\330\001\n\017CafeHTTPRe" +
-      "quest\022#\n\004type\030\001 \001(\0162\025.CafeHTTPRequest.Ty" +
-      "pe\022\013\n\003url\030\002 \001(\t\022.\n\007headers\030\003 \003(\0132\035.CafeH" +
-      "TTPRequest.HeadersEntry\022\014\n\004path\030\004 \001(\t\032.\n" +
-      "\014HeadersEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(" +
-      "\t:\0028\001\"%\n\004Type\022\007\n\003PUT\020\000\022\010\n\004POST\020\001\022\n\n\006DELE" +
-      "TE\020\002\"c\n\013CafeMessage\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030" +
-      "\002 \001(\t\022(\n\004date\030\003 \001(\0132\032.google.protobuf.Ti" +
-      "mestamp\022\020\n\010attempts\030\004 \001(\005\"[\n\017CafeClientN" +
-      "once\022\r\n\005value\030\001 \001(\t\022\017\n\007address\030\002 \001(\t\022(\n\004" +
-      "date\030\003 \001(\0132\032.google.protobuf.Timestamp\"\217" +
-      "\001\n\nCafeClient\022\n\n\002id\030\001 \001(\t\022\017\n\007address\030\002 \001" +
-      "(\t\022+\n\007created\030\003 \001(\0132\032.google.protobuf.Ti" +
-      "mestamp\022(\n\004seen\030\004 \001(\0132\032.google.protobuf." +
-      "Timestamp\022\r\n\005token\030\005 \001(\t\",\n\016CafeClientLi" +
-      "st\022\032\n\005items\030\001 \003(\0132\013.CafeClient\"P\n\tCafeTo" +
-      "ken\022\n\n\002id\030\001 \001(\t\022\r\n\005value\030\002 \001(\014\022(\n\004date\030\003" +
-      " \001(\0132\032.google.protobuf.Timestamp\"B\n\020Cafe" +
-      "ClientThread\022\n\n\002id\030\001 \001(\t\022\016\n\006client\030\002 \001(\t" +
-      "\022\022\n\nciphertext\030\003 \001(\014\"g\n\021CafeClientMessag" +
-      "e\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022\016\n\006client\030\003 " +
-      "\001(\t\022(\n\004date\030\004 \001(\0132\032.google.protobuf.Time" +
-      "stamp\"}\n\005BotKV\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001" +
-      "(\014\022+\n\007created\030\003 \001(\0132\032.google.protobuf.Ti" +
-      "mestamp\022+\n\007updated\030\004 \001(\0132\032.google.protob" +
-      "uf.TimestampB\034\n\026sjtu.opennet.textilepbZ\002" +
-      "pbb\006proto3"
+      "ED\020\007\022\017\n\013ADMIN_ADDED\020d\022\020\n\014PEER_REMOVED\020e\"" +
+      "0\n\020NotificationList\022\034\n\005items\030\001 \003(\0132\r.Not" +
+      "ification\"_\n\004Cafe\022\014\n\004peer\030\001 \001(\t\022\017\n\007addre" +
+      "ss\030\002 \001(\t\022\013\n\003api\030\003 \001(\t\022\020\n\010protocol\030\004 \001(\t\022" +
+      "\014\n\004node\030\005 \001(\t\022\013\n\003url\030\006 \001(\t\"\301\001\n\013CafeSessi" +
+      "on\022\n\n\002id\030\001 \001(\t\022\016\n\006access\030\002 \001(\t\022\'\n\003exp\030\003 " +
+      "\001(\0132\032.google.protobuf.Timestamp\022\017\n\007refre" +
+      "sh\030\004 \001(\t\022(\n\004rexp\030\005 \001(\0132\032.google.protobuf" +
+      ".Timestamp\022\017\n\007subject\030\006 \001(\t\022\014\n\004type\030\007 \001(" +
+      "\t\022\023\n\004cafe\030\010 \001(\0132\005.Cafe\".\n\017CafeSessionLis" +
+      "t\022\033\n\005items\030\001 \003(\0132\014.CafeSession\"\255\003\n\013CafeR" +
+      "equest\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022\016\n\006targ" +
+      "et\030\003 \001(\t\022\023\n\004cafe\030\004 \001(\0132\005.Cafe\022\r\n\005group\030\010" +
+      " \001(\t\022\022\n\nsync_group\030\n \001(\t\022\037\n\004type\030\005 \001(\0162\021" +
+      ".CafeRequest.Type\022(\n\004date\030\006 \001(\0132\032.google" +
+      ".protobuf.Timestamp\022\014\n\004size\030\007 \001(\003\022#\n\006sta" +
+      "tus\030\t \001(\0162\023.CafeRequest.Status\022\020\n\010attemp" +
+      "ts\030\013 \001(\005\022\022\n\ngroup_size\030\014 \001(\003\022\031\n\021group_tr" +
+      "ansferred\030\r \001(\003\"O\n\004Type\022\t\n\005STORE\020\000\022\013\n\007UN" +
+      "STORE\020\003\022\020\n\014STORE_THREAD\020\001\022\022\n\016UNSTORE_THR" +
+      "EAD\020\004\022\t\n\005INBOX\020\002\",\n\006Status\022\007\n\003NEW\020\000\022\013\n\007P" +
+      "ENDING\020\001\022\014\n\010COMPLETE\020\002\".\n\017CafeRequestLis" +
+      "t\022\033\n\005items\030\001 \003(\0132\014.CafeRequest\"\372\001\n\023CafeS" +
+      "yncGroupStatus\022\n\n\002id\030\001 \001(\t\022\021\n\tnum_total\030" +
+      "\002 \001(\005\022\023\n\013num_pending\030\003 \001(\005\022\024\n\014num_comple" +
+      "te\030\004 \001(\005\022\022\n\nsize_total\030\005 \001(\003\022\024\n\014size_pen" +
+      "ding\030\006 \001(\003\022\025\n\rsize_complete\030\007 \001(\003\022\031\n\021gro" +
+      "ups_size_total\030\010 \001(\003\022\034\n\024groups_size_comp" +
+      "lete\030\t \001(\003\022\r\n\005error\0302 \001(\t\022\020\n\010error_id\0303 " +
+      "\001(\t\"\330\001\n\017CafeHTTPRequest\022#\n\004type\030\001 \001(\0162\025." +
+      "CafeHTTPRequest.Type\022\013\n\003url\030\002 \001(\t\022.\n\007hea" +
+      "ders\030\003 \003(\0132\035.CafeHTTPRequest.HeadersEntr" +
+      "y\022\014\n\004path\030\004 \001(\t\032.\n\014HeadersEntry\022\013\n\003key\030\001" +
+      " \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"%\n\004Type\022\007\n\003PUT\020\000" +
+      "\022\010\n\004POST\020\001\022\n\n\006DELETE\020\002\"c\n\013CafeMessage\022\n\n" +
+      "\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022(\n\004date\030\003 \001(\0132\032." +
+      "google.protobuf.Timestamp\022\020\n\010attempts\030\004 " +
+      "\001(\005\"[\n\017CafeClientNonce\022\r\n\005value\030\001 \001(\t\022\017\n" +
+      "\007address\030\002 \001(\t\022(\n\004date\030\003 \001(\0132\032.google.pr" +
+      "otobuf.Timestamp\"\217\001\n\nCafeClient\022\n\n\002id\030\001 " +
+      "\001(\t\022\017\n\007address\030\002 \001(\t\022+\n\007created\030\003 \001(\0132\032." +
+      "google.protobuf.Timestamp\022(\n\004seen\030\004 \001(\0132" +
+      "\032.google.protobuf.Timestamp\022\r\n\005token\030\005 \001" +
+      "(\t\",\n\016CafeClientList\022\032\n\005items\030\001 \003(\0132\013.Ca" +
+      "feClient\"P\n\tCafeToken\022\n\n\002id\030\001 \001(\t\022\r\n\005val" +
+      "ue\030\002 \001(\014\022(\n\004date\030\003 \001(\0132\032.google.protobuf" +
+      ".Timestamp\"B\n\020CafeClientThread\022\n\n\002id\030\001 \001" +
+      "(\t\022\016\n\006client\030\002 \001(\t\022\022\n\nciphertext\030\003 \001(\014\"g" +
+      "\n\021CafeClientMessage\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030" +
+      "\002 \001(\t\022\016\n\006client\030\003 \001(\t\022(\n\004date\030\004 \001(\0132\032.go" +
+      "ogle.protobuf.Timestamp\"}\n\005BotKV\022\013\n\003key\030" +
+      "\001 \001(\t\022\r\n\005value\030\002 \001(\014\022+\n\007created\030\003 \001(\0132\032." +
+      "google.protobuf.Timestamp\022+\n\007updated\030\004 \001" +
+      "(\0132\032.google.protobuf.TimestampB\034\n\026sjtu.o" +
+      "pennet.textilepbZ\002pbb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
