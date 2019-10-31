@@ -112,6 +112,9 @@ public class SettingFragment extends Fragment {
                 SharedPreferences.Editor editor=pref.edit();
                 editor.putBoolean("isLogin",false);
                 editor.commit();
+
+                Textile.instance().destroy();
+
                 Intent it=new Intent(getActivity(), MainActivity.class);
                 startActivity(it);
             }
