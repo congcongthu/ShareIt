@@ -28,11 +28,13 @@ public class PersonalInfoActivity extends AppCompatActivity {
     //UI控件
     private TextView info_name; //昵称
     private TextView info_addr; //公钥
+    private TextView info_phrase; //助记词
    // private ImageView avatar_img;//头像
     com.shehuan.niv.NiceImageView avatar_img;
     private LinearLayout info_avatar_layout;   //头像板块
     private LinearLayout info_name_layout;  //昵称板块
     private LinearLayout info_addr_layout;  //公钥地址板块
+    private LinearLayout info_phrase_layout;    //助记词板块
     //持久化
     private SharedPreferences pref;
 
@@ -41,7 +43,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private String avatarPath;
     private String myaddr;
     private String avatarHash;
-
+    private String phrase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +55,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private void drawUI() {
         info_name.setText(myname);
         info_addr.setText(myaddr);
+        info_phrase.setText(phrase);
         if(!avatarPath.equals("null")){ //头像为空只可能是引导页未设置
             avatar_img.setImageBitmap(BitmapFactory.decodeFile(avatarPath));
             avatar_img.setCornerRadius(5);
@@ -64,6 +67,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
         pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
 
         myname=pref.getString("myname","null");
+        phrase=pref.getString("phrase","null");
 //        myaddr=pref.getString("myaddr","null");
         try {
             myaddr=Textile.instance().profile.get().getAddress();
@@ -82,6 +86,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
         info_avatar_layout = findViewById(R.id.setting_personal_info_avatar);
         info_name_layout = findViewById(R.id.setting_personal_info_name);
         info_addr_layout = findViewById(R.id.setting_personal_info_address);
+        info_phrase_layout=findViewById(R.id.setting_personal_info_phrase);
 
         info_avatar_layout.setOnClickListener(v -> {
             PictureSelector.create(this, PictureSelector.SELECT_REQUEST_CODE)
@@ -94,6 +99,9 @@ public class PersonalInfoActivity extends AppCompatActivity {
         });
         info_addr_layout.setOnClickListener(view -> {
             Toast.makeText(this,info_addr.getText(),Toast.LENGTH_LONG).show();
+        });
+        info_phrase_layout.setOnClickListener(view -> {
+            Toast.makeText(this,info_phrase.getText(),Toast.LENGTH_SHORT).show();
         });
     }
 
