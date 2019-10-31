@@ -36,6 +36,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import sjtu.opennet.textilepb.Mobile;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.BaseTextileEventListener;
 import sjtu.opennet.hon.FeedItemData;
@@ -56,15 +57,15 @@ public class HomeActivity extends AppCompatActivity {
     public SQLiteDatabase appdb;
 
     //内存数据
-    String myname;
-    String avatarpath;
-    String phrase;
+    String huaweiAvatar;
+    String loginAccount="";
+
+
 
     //导航栏监听器，每次点击都进行fragment的切换
     private BottomNavigationView.OnNavigationItemSelectedListener navSeLis=new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
             switch(menuItem.getItemId()){
                 case R.id.share:
                     replaceFragment(shareFragment);
@@ -88,20 +89,8 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        getPermission();
-
         initUI();
         initData();
-    }
-
-    private void getPermission() {
-        System.out.println("=========输出");
-        if(PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)==PermissionChecker.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(this,
-                    new String[]{"android.permission.WRITE_EXTERNAL_STORAGE",
-                            "android.permission.READ_EXTERNAL_STORAGE",
-                            "android.permission.CAMERA"},100);
-        }
     }
 
     private void initUI(){
@@ -116,35 +105,106 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        //初始化pref
+        //持久化存储
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
         appdb=AppdbHelper.getInstance(this).getWritableDatabase();
-        myname=pref.getString("myname","null");
-        avatarpath=pref.getString("avatarpath","null");
-        phrase=pref.getString("openid","null");
 
-        //初始化Textile
+        int login=getIntent().getIntExtra("login",0);
+        initTextile(login);
+
+        replaceFragment(shareFragment);
+    }
+
+    public void initTextile(int login){
+        String repoPath="";
+        String phrase="";
         Context ctx = getApplicationContext();
         final File filesDir = ctx.getFilesDir();
-        final File repo = new File(filesDir, "textile-repo");
-        final String repoPath = repo.getAbsolutePath();
+
+        switch (login){
+            case 0: //已经登录，找到repo，初始化textile
+                System.out.println("========已经登录");
+                loginAccount=pref.getString("loginAccount","null"); //当前登录的account，就是address
+                final File repo0 = new File(filesDir, loginAccount);
+                repoPath = repo0.getAbsolutePath();
+                break;
+            case 1: //shareit注册，新建repo，初始化textile
+                System.out.println("===============shareit注册");
+                try {
+                    phrase=Textile.newWallet(12);
+                    Mobile.MobileWalletAccount m=Textile.walletAccountAt(phrase,Textile.WALLET_ACCOUNT_INDEX,Textile.WALLET_PASSPHRASE);
+                    loginAccount=m.getAddress();
+                    final File repo1 = new File(filesDir, loginAccount);
+                    repoPath = repo1.getAbsolutePath();
+                    Textile.initialize(repoPath,m.getSeed() , true, false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case 2: //华为账号登录，找到repo，初始化textile
+                System.out.println("========华为账号登录");
+                String openid=pref.getString("openid","").substring(0,128);
+                String avatarUri=pref.getString("avatarUri","");
+                //新开线程获得头像
+                new Thread(){
+                    @Override
+                    public void run() {
+                        huaweiAvatar=FileUtil.getHuaweiAvatar(avatarUri);
+                        SharedPreferences.Editor editor=pref.edit();
+                        editor.putString("avatarpath",huaweiAvatar);
+                        editor.commit();
+                    }
+                }.start();
+                System.out.println("============华为id长度："+openid.length());
+                try {
+                    phrase=Textile.newWalletFromHuaweiOpenId(openid);
+                    Mobile.MobileWalletAccount m=Textile.walletAccountAt(phrase,Textile.WALLET_ACCOUNT_INDEX,Textile.WALLET_PASSPHRASE);
+                    loginAccount=m.getAddress();
+                    final File repo1 = new File(filesDir, loginAccount);
+                    repoPath = repo1.getAbsolutePath();
+                    Textile.initialize(repoPath,m.getSeed() , true, false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case 3: //shareit助记词登录，初始化textile
+                System.out.println("========助记词登录");
+                phrase=pref.getString("phrase","");
+                try {
+                    Mobile.MobileWalletAccount m=Textile.walletAccountAt(phrase,Textile.WALLET_ACCOUNT_INDEX,Textile.WALLET_PASSPHRASE);
+                    loginAccount=m.getAddress();
+                    final File repo1 = new File(filesDir, loginAccount);
+                    repoPath = repo1.getAbsolutePath();
+                    if (!Textile.isInitialized(repoPath)){
+                        Textile.initialize(repoPath,m.getSeed() , true, false);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                SharedPreferences.Editor editor=pref.edit();
+                editor.putString("avatarpath","shareitlogin");
+                editor.putString("myname","shareitlogin");
+                editor.commit();
+                break;
+        }
+
         try {
-            if (!Textile.isInitialized(repoPath)) { //如果未初始化
-
-//                String phrase = Textile.newWallet(wordCount); //新建一个wallet
-//                String seed = Textile.walletAccountAt(phrase, 0, "").getSeed(); //拿到第一个account的seed
-//                Textile.initialize(repoPath, seed, true, false);
-
-                //测试时创建一个新的账户
-                Textile.initializeCreatingNewWalletAndAccount(repoPath,true, false);
-            }
             Textile.launch(ctx, repoPath, true);
             Textile.instance().addEventListener(new MyTextileListener());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        replaceFragment(shareFragment);
+        SharedPreferences.Editor editor=pref.edit();
+        editor.putBoolean("isLogin",true);
+        editor.putString("loginAccount",loginAccount);
+
+        if(login!=0){ //1,2,3都需要修改助记词
+            editor.putString("phrase",phrase);
+        }
+        editor.commit();
+
+        System.out.println("==================登录账户："+loginAccount+" "+phrase);
     }
 
     //切换Fragment
@@ -161,7 +221,6 @@ public class HomeActivity extends AppCompatActivity {
             //测试
             try {
                 System.out.println("===================昵称："+Textile.instance().profile.name());
-//                System.out.println("===================thread个数："+Textile.instance().threads.list().getItemsCount());
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="80dp">
+
+    <com.shehuan.niv.NiceImageView
+        android:id="@+id/group_member_avatar"
+        android:layout_margin="5dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_people"
+        app:corner_radius="10dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"  />
+
+    <TextView
+        android:id="@+id/group_member_name"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="昵称"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

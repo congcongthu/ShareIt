@@ -1,10 +1,17 @@
 package com.sjtuopennetwork.shareit.login;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.auth0.android.jwt.JWT;
 import com.huawei.hmf.tasks.Task;
@@ -14,7 +21,10 @@ import com.huawei.hms.common.ApiException;
 import com.huawei.hms.support.api.hwid.HuaweiIdSignInOptions;
 import com.huawei.hms.support.api.hwid.HuaweiIdStatusCodes;
 import com.huawei.hms.support.api.hwid.SignInHuaweiId;
+import com.shehuan.niv.NiceImageView;
+import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.HomeActivity;
+import com.wildma.pictureselector.PictureSelector;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,91 +35,128 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import sjtu.opennet.hon.Textile;
+
 public class MainActivity extends AppCompatActivity {
+
+    //UI控件
+    Button huaweiLogin;
+    Button shareItLogin;
+    Button shareItRegister;
+    NiceImageView registerAvatar;
+    EditText editText;
 
     //持久化存储
     SharedPreferences pref;
 
     //内存数据
     boolean isLogin;
+    String avatarpath;
+
 
     //华为ID
     private HuaweiIdSignInClient mSignInClient;
     private HuaweiIdSignInOptions mSignInOptions;
-    String myclientid = "218779032643175488";
+//    String myclientid = "218779032643175488";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
 
-        //查SharedPreference中"isLogin"判断登录状态，如果未登录则直接拉起华为ID登录界面。如果已登录则跳转到HomeActivity
+        getPermission();
+
+        //查SharedPreference中"isLogin"判断登录状态，如果未登录则进入登录界面。如果已登录则跳转到HomeActivity
         isLogin=pref.getBoolean("isLogin",false); //如果没有这个字段就是首次打开
         if(isLogin){ //如果已经登录直接跳转到主界面
             Intent toHomeActivity=new Intent(this, HomeActivity.class);
+            toHomeActivity.putExtra("login",0); //已经处于登录状态，0
             startActivity(toHomeActivity);
             finish();
         }else{ //如果未登录
-            // TODO: 2019/10/28  在这里拉起华为登录页面
+            setContentView(R.layout.activity_main); //进入登录界面
+            huaweiLogin=findViewById(R.id.huaweiLogin);
+            shareItLogin=findViewById(R.id.shareItLogin);
+            shareItRegister=findViewById(R.id.shareItRegister);
+            registerAvatar=findViewById(R.id.register_avatar);
+            editText=findViewById(R.id.edt_name);
 
-            mSignInOptions = new HuaweiIdSignInOptions.Builder(HuaweiIdSignInOptions.DEFAULT_SIGN_IN).build();
-            mSignInClient= HuaweiIdSignIn.getClient(MainActivity.this,mSignInOptions);
-            startActivityForResult(mSignInClient.getSignInIntent(), 8888);
+            //去掉状态栏
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
 
+            registerAvatar.setOnClickListener(v -> {
+                PictureSelector.create(this, PictureSelector.SELECT_REQUEST_CODE).selectPicture();
+            });
 
+            shareItRegister.setOnClickListener(v -> {
+                //注册shareIt新账号,新建wallet
+                SharedPreferences.Editor editor=pref.edit();
+                String myname=editText.getText().toString();
+                editor.putString("myname",myname);
+                editor.putString("avatarpath",avatarpath);
+                editor.commit();
 
-            //如果有了华为ID登录，这一块代码要删掉
-//            String myname="null";
-//            String avatarpath="null";
-//            String openid="null";
-//
-//            //写入SharedPreference
-//            SharedPreferences.Editor editor=pref.edit();
-//            editor.putString("myname",myname);
-//            editor.putString("avatarpath",avatarpath);
-//            editor.putString("openid",openid);
-//            editor.putBoolean("isLogin",true);
-//            editor.commit();
-//
-//            Intent toHomeActivity=new Intent(this, HomeActivity.class);
-//            startActivity(toHomeActivity);
-//            finish();
+                //跳转到HomeActivity
+                Intent toHomeActivity=new Intent(this, HomeActivity.class);
+                toHomeActivity.putExtra("login",1); //shareit注册新账号，1
+                startActivity(toHomeActivity);
+                finish();
+            });
 
+            huaweiLogin.setOnClickListener(v -> {
+                //使用华为账号登录
+                mSignInOptions = new HuaweiIdSignInOptions.Builder(HuaweiIdSignInOptions.DEFAULT_SIGN_IN).build();
+                mSignInClient= HuaweiIdSignIn.getClient(MainActivity.this,mSignInOptions);
+                startActivityForResult(mSignInClient.getSignInIntent(), 8888);
+            });
+
+            shareItLogin.setOnClickListener(v -> {
+                //跳转到shareit登录界面
+                Intent toShareIt=new Intent(MainActivity.this,ShareItLoginActivity.class);
+                startActivity(toShareIt);
+                finish();
+            });
         }
     }
 
     //从华为ID返回到结果之后，将结果写入到SharedPreference
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
-
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 8888) {
             Task<SignInHuaweiId> signInHuaweiIdTask = HuaweiIdSignIn.getSignedInAccountFromIntent(data);
             if (signInHuaweiIdTask.isSuccessful()) {
                 //登录成功，获取用户的华为帐号信息和ID Token
                 SignInHuaweiId huaweiAccount = signInHuaweiIdTask.getResult();
-                System.out.println("====================================1" +huaweiAccount.getIdToken());
-                System.out.println("====================================2" + huaweiAccount.toString());
 
-                //已经调用华为授权，使用方法：requestIdToken(String clientId)返回IDtoken，验证其有效性；
-                String clientId = myclientid;
-                String id_token =huaweiAccount.getIdToken();
-                System.out.println("====================================3" + huaweiAccount.getIdToken());
-                JWT jwt= new JWT(id_token);
-                String issuer = jwt.getIssuer();
-                System.out.println("====================================issuer" + issuer);
+                //暂时不验证
+//                //已经调用华为授权，使用方法：requestIdToken(String clientId)返回IDtoken，验证其有效性；
+//                String clientId = myclientid;
+//                String id_token =huaweiAccount.getIdToken();
+//                System.out.println("====================================3" + huaweiAccount.getIdToken());
+//                JWT jwt= new JWT(id_token);
+//                String issuer = jwt.getIssuer();
+//                System.out.println("====================================issuer" + issuer);
 
                 //IDToken有效性验证完成，调用requestId() 返回OpenId，与textile账号关联
+
                 String openid = huaweiAccount.getOpenId();
-                System.out.println("=================================4"+openid);
+                String avatarUri=huaweiAccount.getPhotoUrl().toString();
+                String myname=huaweiAccount.getDisplayName();
+                System.out.println("================openid:"+openid+" myname:"+myname+" avat:"+avatarUri);
+                SharedPreferences.Editor editor=pref.edit();
+                editor.putString("myname",myname);
+                editor.putString("openid",openid);
+                editor.putString("avatarUri",avatarUri);
+                editor.commit();
 
-                 Intent toHomeActivity=new Intent(this, HomeActivity.class);
-                  startActivity(toHomeActivity);
+                Intent toHomeActivity=new Intent(this, HomeActivity.class);
+                toHomeActivity.putExtra("login",2); //华为账号登录，2
+                startActivity(toHomeActivity);
                 finish();
-
-            }
-            else{
+            } else{ //先不处理登录失败
                 int status = ((ApiException) signInHuaweiIdTask.getException()).getStatusCode();
                 System.out.println("=============================signIn failed: "+status);
                 System.out.println("=============================Result code: "+resultCode);
@@ -135,24 +182,23 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-
-        // TODO: 2019/10/28 将华为ID的头像存储到文件，并将用户名、头像路径、openid存储到下面这三个变量中
-//        String myname="null";
-//        String avatarpath="null";
-//        String openid="null";
-//
-//        //写入SharedPreference
-//        SharedPreferences.Editor editor=pref.edit();
-//        editor.putString("myname",myname);
-//        editor.putString("avatarpath",avatarpath);
-//        editor.putString("openid",openid);
-//        editor.putBoolean("isLogin",true);
-//        editor.commit();
-//
-//        Intent toHomeActivity=new Intent(this, HomeActivity.class);
-//        startActivity(toHomeActivity);
-//        finish();
+        if(requestCode==PictureSelector.SELECT_REQUEST_CODE){
+            if (data != null) {
+                avatarpath = data.getStringExtra(PictureSelector.PICTURE_PATH);
+                registerAvatar.setImageBitmap(BitmapFactory.decodeFile(avatarpath));
+            }
+        }
   }
+
+    private void getPermission() {
+        System.out.println("=========输出");
+        if(PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)==PermissionChecker.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{"android.permission.WRITE_EXTERNAL_STORAGE",
+                            "android.permission.READ_EXTERNAL_STORAGE",
+                            "android.permission.CAMERA"},100);
+        }
+    }
 
     /**
      * 发送Get请求到服务器

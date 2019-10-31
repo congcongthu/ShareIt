@@ -6,6 +6,11 @@ import android.os.Environment;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class FileUtil {
 
@@ -67,6 +72,44 @@ public class FileUtil {
             e.printStackTrace();
         }
 
+        return finalNameWithDir;
+    }
+
+
+    public static String getHuaweiAvatar(String url){
+        System.out.println("=============华为头像："+url);
+        //创建文件夹
+        File f = new File(dir);
+        if(!f.exists()){
+            f.mkdirs();
+        }
+        //获取存储状态，如果状态不是mounted，则无法读写，返回“null”
+        String state = Environment.getExternalStorageState();
+        if (!state.equals(Environment.MEDIA_MOUNTED)) {
+            return "null";
+        }
+
+        String[] urls=url.split("/");
+
+        String finalNameWithDir="null";
+        try {
+            URL aurl=new URL(url);
+            URLConnection connection=aurl.openConnection();
+            connection.setConnectTimeout(3000);
+            InputStream inputStream=connection.getInputStream();
+            byte[] bs=new byte[1024];
+            File huaweiAvatar=new File(dir+urls[urls.length-1]);
+            OutputStream outputStream=new FileOutputStream(huaweiAvatar);
+            int len;
+            while((len=inputStream.read(bs))!=-1){
+                outputStream.write(bs,0,len);
+            }
+            outputStream.close();
+            inputStream.close();
+            finalNameWithDir=dir+urls[urls.length-1];
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return finalNameWithDir;
     }
 }

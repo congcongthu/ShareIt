@@ -80,7 +80,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-        avatar_img = findViewById((R.id.setting_avatar));
+        avatar_img = findViewById((R.id.setting_avatar_niceview));
         info_name = findViewById(R.id.info_name);
         info_addr = findViewById(R.id.info_addr);
         info_avatar_layout = findViewById(R.id.setting_personal_info_avatar);

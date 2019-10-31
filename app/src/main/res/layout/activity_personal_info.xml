@@ -44,7 +44,7 @@
 
 
     <com.shehuan.niv.NiceImageView
-        android:id="@+id/setting_avatar"
+        android:id="@+id/setting_avatar_niceview"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="5dp"
