@@ -177,6 +177,11 @@ public class Textile implements LifecycleObserver {
         return Mobile.newWallet(wordCount);
     }
 
+
+    public static String entropyFromHuaweiOpenId(final String huaweiOpenId) {
+        return Mobile.entropyFromHuaweiOpenId(huaweiOpenId)
+    }
+
     /**
      * Create a new Textile wallet
      * @param huaweiOpenId Huawei open id
