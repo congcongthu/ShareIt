@@ -162,14 +162,18 @@ public class HomeActivity extends AppCompatActivity {
                     loginAccount=m.getAddress();
                     final File repo1 = new File(filesDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
-                    Textile.initialize(repoPath,m.getSeed() , true, false);
+                    if(!Textile.isInitialized(repoPath)){
+                        Textile.initialize(repoPath,m.getSeed() , true, false);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
             case 3: //shareit助记词登录，初始化textile
                 System.out.println("========助记词登录");
-                phrase=pref.getString("phrase","");
+//                phrase=pref.getString("phrase","");
+                phrase=getIntent().getStringExtra("phrase");
+                System.out.println("===============助记词："+phrase);
                 try {
                     Mobile.MobileWalletAccount m=Textile.walletAccountAt(phrase,Textile.WALLET_ACCOUNT_INDEX,Textile.WALLET_PASSPHRASE);
                     loginAccount=m.getAddress();
@@ -180,6 +184,7 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+
                 }
                 SharedPreferences.Editor editor=pref.edit();
                 editor.putString("avatarpath","shareitlogin");

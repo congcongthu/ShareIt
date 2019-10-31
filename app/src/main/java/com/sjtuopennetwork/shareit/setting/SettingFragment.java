@@ -117,6 +117,8 @@ public class SettingFragment extends Fragment {
 
                 Intent it=new Intent(getActivity(), MainActivity.class);
                 startActivity(it);
+
+                getActivity().finish();
             }
         });
         dialog.setNegativeButton("关闭", new DialogInterface.OnClickListener() {
