@@ -87,6 +87,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
         info_name_layout = findViewById(R.id.setting_personal_info_name);
         info_addr_layout = findViewById(R.id.setting_personal_info_address);
         info_phrase_layout=findViewById(R.id.setting_personal_info_phrase);
+        info_phrase=findViewById(R.id.info_phrase);
 
         info_avatar_layout.setOnClickListener(v -> {
             PictureSelector.create(this, PictureSelector.SELECT_REQUEST_CODE)
