@@ -35,13 +35,13 @@
 
         <com.shehuan.niv.NiceImageView
             android:src="@drawable/ic_default_avatar"
-            android:id="@+id/setting_avatar"
+            android:id="@+id/setting_avatar_photo"
             android:layout_margin="10dp"
             android:layout_width="70dp"
             android:layout_height="70dp"/>
 
         <LinearLayout
-            android:layout_toRightOf="@+id/setting_avatar"
+            android:layout_toRightOf="@+id/setting_avatar_photo"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

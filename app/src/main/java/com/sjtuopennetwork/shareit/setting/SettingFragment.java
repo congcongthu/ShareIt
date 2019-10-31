@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.login.MainActivity;
+import com.sjtuopennetwork.shareit.util.FileUtil;
 
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Handlers;
@@ -70,7 +71,7 @@ public class SettingFragment extends Fragment {
         qrcode_layout=getActivity().findViewById(R.id.setting_qrcode_layout);
         //cafe_layout=getActivity().findViewById(R.id.setting_cafe_layout);
         notification_layout=getActivity().findViewById(R.id.setting_notification_layout);
-        avatar_layout=getActivity().findViewById(R.id.setting_avatar);
+        avatar_layout=getActivity().findViewById(R.id.setting_avatar_photo);
         tv_name=getActivity().findViewById(R.id.myname);
         devices_layout=getActivity().findViewById(R.id.setting_devices_layout);
         logout_layout=getActivity().findViewById(R.id.logout);
@@ -111,6 +112,9 @@ public class SettingFragment extends Fragment {
                 SharedPreferences.Editor editor=pref.edit();
                 editor.putBoolean("isLogin",false);
                 editor.commit();
+
+                Textile.instance().destroy();
+
                 Intent it=new Intent(getActivity(), MainActivity.class);
                 startActivity(it);
             }
@@ -134,27 +138,51 @@ public class SettingFragment extends Fragment {
     }
     private void drawUI() {
         tv_name.setText(myname);
-        if(!avatar_layout.equals("null")){ //头像为空只可能是引导页未设置
+        if(myname.equals("shareitlogin")){ //表明是shareit助记词登录的
+            try {
+                myname=Textile.instance().profile.name();
+                final String avatarHash=Textile.instance().profile.avatar();
+                imagePath= FileUtil.getFilePath(avatarHash);
+                if(imagePath.equals("null")){ //如果没有存储过
+                    String getAvatar="/ipfs/" + Textile.instance().profile.avatar() + "/0/small/content";
+                    System.out.println("=========getAvatar:"+getAvatar);
+                    Textile.instance().ipfs.dataAtPath(getAvatar, new Handlers.DataHandler() {
+                        @Override
+                        public void onComplete(byte[] data, String media) {
+                            String storePath=FileUtil.storeFile(data,avatarHash);
+                            avatar_layout.setImageBitmap(BitmapFactory.decodeFile(storePath));
+                        }
+                        @Override
+                        public void onError(Exception e) {
+                        }
+                    });
+                }else{
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if(!imagePath.equals("null")){
             avatar_layout.setImageBitmap(BitmapFactory.decodeFile(imagePath));
             avatar_layout.setCornerRadius(10);
         }
         try {
-//            if(Textile.instance().profile.name().equals("")){
-//                Textile.instance().profile.setName(myname);
-//            }
-//            if(Textile.instance().profile.avatar().equals("")){
-//                Textile.instance().profile.setAvatar(imagePath, new Handlers.BlockHandler() {
-//                    @Override
-//                    public void onComplete(Model.Block block) {
-//                        System.out.println("头像设置成功！");
-//                    }
-//
-//                    @Override
-//                    public void onError(Exception e) {
-//                        System.out.println("头像设置失败！");
-//                    }
-//                });
-//            }
+            if(Textile.instance().profile.name().equals("")){
+                Textile.instance().profile.setName(myname);
+            }
+            if(Textile.instance().profile.avatar().equals("")){
+                Textile.instance().profile.setAvatar(imagePath, new Handlers.BlockHandler() {
+                    @Override
+                    public void onComplete(Model.Block block) {
+                        System.out.println("头像设置成功！");
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        System.out.println("头像设置失败！");
+                    }
+                });
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

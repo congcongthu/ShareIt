@@ -4,6 +4,7 @@ package com.sjtuopennetwork.shareit.share;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -55,8 +56,8 @@ public class ShareFragment extends Fragment {
     boolean nodeOnline=false;
 
     //持久化存储
-    private AppdbHelper appdbHelper;
     public SQLiteDatabase appdb;
+    public SharedPreferences pref;
 
     public ShareFragment() {
         // Required empty public constructor
@@ -77,11 +78,11 @@ public class ShareFragment extends Fragment {
 
         initData();
 
-        if(!nodeOnline){
-            circleProgressDialog=new CircleProgressDialog(getActivity());
-            circleProgressDialog.setText("节点启动中");
-            circleProgressDialog.showDialog();
-        }
+//        if(!nodeOnline){
+//            circleProgressDialog=new CircleProgressDialog(getActivity());
+//            circleProgressDialog.setText("节点启动中");
+//            circleProgressDialog.showDialog();
+//        }
 
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
@@ -105,6 +106,7 @@ public class ShareFragment extends Fragment {
     }
 
     private void initData(){
+        pref=getActivity().getSharedPreferences("txtl",Context.MODE_PRIVATE);
         appdb=AppdbHelper.getInstance(getContext()).getWritableDatabase();
         dialogs=new LinkedList<>();
 
@@ -138,8 +140,8 @@ public class ShareFragment extends Fragment {
     public void knowOnline(Integer integer){
         if(integer.intValue()==0){
             if(!nodeOnline){
-                circleProgressDialog.dismiss();
-                nodeOnline=true;
+//                circleProgressDialog.dismiss();
+//                nodeOnline=true;
             }
         }
     }
