@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -96,6 +97,10 @@ public class ChatActivity extends AppCompatActivity {
         threadid=it.getStringExtra("threadid");
         try {
             chat_thread = Textile.instance().threads.get(threadid);
+            if(chat_thread.getWhitelistCount()==2){ //如果是双人thread
+                group_menu.setVisibility(View.GONE);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

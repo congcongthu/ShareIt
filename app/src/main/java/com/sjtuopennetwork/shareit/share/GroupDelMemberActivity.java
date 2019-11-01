@@ -57,7 +57,7 @@ public class GroupDelMemberActivity extends AppCompatActivity {
 
         for(Model.Peer p:allMembers){
             ContactBean contactBean=new ContactBean();
-            contactBean.setId(p.getAddress());
+            contactBean.setId(p.getId());
             contactBean.setName(p.getName());
             String avatarPath= FileUtil.getFilePath(p.getAvatar());
             contactBean.setAvatar(avatarPath);
@@ -75,7 +75,15 @@ public class GroupDelMemberActivity extends AppCompatActivity {
         });
 
         delete_members.setOnClickListener(v -> {
-
+            List<ContactBean> selects=contactView.getChoostContacts();
+            for(ContactBean c:selects){ //逐个删除
+                try {
+                    Textile.instance().threads.removePeer(threadid,c.getId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            finish();
         });
     }
 }
