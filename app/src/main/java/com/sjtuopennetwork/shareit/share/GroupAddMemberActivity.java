@@ -86,7 +86,16 @@ public class GroupAddMemberActivity extends AppCompatActivity {
 
 
         invite_new_members.setOnClickListener(v -> {
+            List<ContactBean> selects=contactView.getChoostContacts();
+            for(ContactBean c:selects){ //逐个发送邀请
+                try {
+                    Textile.instance().invites.add(threadid,c.getId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
+            finish();
         });
     }
 

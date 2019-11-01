@@ -107,7 +107,7 @@ public class ShareFragment extends Fragment {
 
     private void initData(){
         pref=getActivity().getSharedPreferences("txtl",Context.MODE_PRIVATE);
-        appdb=AppdbHelper.getInstance(getContext()).getWritableDatabase();
+        appdb=AppdbHelper.getInstance(getContext(),pref.getString("loginAccount","")).getWritableDatabase();
         dialogs=new LinkedList<>();
 
         //从数据库中查出对话

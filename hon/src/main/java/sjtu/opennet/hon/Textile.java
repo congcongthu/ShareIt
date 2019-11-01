@@ -179,7 +179,7 @@ public class Textile implements LifecycleObserver {
 
 
     public static String entropyFromHuaweiOpenId(final String huaweiOpenId) {
-        return Mobile.entropyFromHuaweiOpenId(huaweiOpenId)
+        return Mobile.entropyFromHuaweiOpenId(huaweiOpenId);
     }
 
     /**

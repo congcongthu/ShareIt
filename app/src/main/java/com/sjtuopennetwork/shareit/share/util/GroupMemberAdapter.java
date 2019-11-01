@@ -77,7 +77,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
             });
         }else{ //如果已经存储过这个头像
 //            imageView.setImageBitmap(BitmapFactory.decodeFile(avatarPath));
-            Glide.with(context).load(avatarPath).thumbnail(0.3f).into(imageView);
+            Glide.with(context).load(avatarPath).thumbnail(0.5f).into(imageView);
         }
     }
 }

@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.login.MainActivity;
+import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 
 import sjtu.opennet.textilepb.Model;
@@ -113,10 +114,14 @@ public class SettingFragment extends Fragment {
                 editor.putBoolean("isLogin",false);
                 editor.commit();
 
+                //销毁Texile
                 Textile.instance().destroy();
+                AppdbHelper.setNull();
 
                 Intent it=new Intent(getActivity(), MainActivity.class);
                 startActivity(it);
+
+                getActivity().finish();
             }
         });
         dialog.setNegativeButton("关闭", new DialogInterface.OnClickListener() {
@@ -137,12 +142,11 @@ public class SettingFragment extends Fragment {
 
     }
     private void drawUI() {
-        tv_name.setText(myname);
         if(myname.equals("shareitlogin")){ //表明是shareit助记词登录的
             try {
                 myname=Textile.instance().profile.name();
                 final String avatarHash=Textile.instance().profile.avatar();
-                imagePath= FileUtil.getFilePath(avatarHash);
+                imagePath= FileUtil.getFilePath(avatarHash); //失败会返回null
                 if(imagePath.equals("null")){ //如果没有存储过
                     String getAvatar="/ipfs/" + Textile.instance().profile.avatar() + "/0/small/content";
                     System.out.println("=========getAvatar:"+getAvatar);
@@ -157,11 +161,19 @@ public class SettingFragment extends Fragment {
                         }
                     });
                 }else{
+                    avatar_layout.setImageBitmap(BitmapFactory.decodeFile(imagePath));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            SharedPreferences.Editor editor=pref.edit();
+            editor.putString("avatarpath",imagePath);
+            editor.putString("myname",myname);
+            editor.commit();
         }
+
+        tv_name.setText(myname);
+
         if(!imagePath.equals("null")){
             avatar_layout.setImageBitmap(BitmapFactory.decodeFile(imagePath));
             avatar_layout.setCornerRadius(10);
