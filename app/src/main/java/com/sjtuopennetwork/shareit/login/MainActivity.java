@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.auth0.android.jwt.JWT;
 import com.huawei.hmf.tasks.Task;
 import com.huawei.hms.auth.api.signin.HuaweiIdSignIn;
 import com.huawei.hms.auth.api.signin.HuaweiIdSignInClient;
@@ -35,7 +34,6 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-import sjtu.opennet.hon.Textile;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
     //内存数据
     boolean isLogin;
     String avatarpath;
-
 
     //华为ID
     private HuaweiIdSignInClient mSignInClient;

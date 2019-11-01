@@ -87,8 +87,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        appdb=AppdbHelper.getInstance(this).getWritableDatabase();
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
+        appdb=AppdbHelper.getInstance(this,pref.getString("loginAccount","")).getWritableDatabase();
         avatarpath=pref.getString("avatarpath","null");
 
         //初始化对话

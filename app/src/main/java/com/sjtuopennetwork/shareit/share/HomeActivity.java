@@ -34,7 +34,9 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import sjtu.opennet.textilepb.Mobile;
 import sjtu.opennet.textilepb.Model;
@@ -43,6 +45,7 @@ import sjtu.opennet.hon.FeedItemData;
 import sjtu.opennet.hon.FeedItemType;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
+import sjtu.opennet.textilepb.View;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -107,7 +110,6 @@ public class HomeActivity extends AppCompatActivity {
     private void initData() {
         //持久化存储
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
-        appdb=AppdbHelper.getInstance(this).getWritableDatabase();
 
         int login=getIntent().getIntExtra("login",0);
         initTextile(login);
@@ -193,6 +195,7 @@ public class HomeActivity extends AppCompatActivity {
                 break;
         }
 
+        //启动Textile
         try {
             Textile.launch(ctx, repoPath, true);
             Textile.instance().addEventListener(new MyTextileListener());
@@ -202,13 +205,13 @@ public class HomeActivity extends AppCompatActivity {
 
         SharedPreferences.Editor editor=pref.edit();
         editor.putBoolean("isLogin",true);
-        editor.putString("loginAccount",loginAccount);
-
-        if(login!=0){ //1,2,3都需要修改助记词
+        if(login!=0){ //1,2,3都需要修改助记词和登录账户
             editor.putString("phrase",phrase);
+            editor.putString("loginAccount",loginAccount);
         }
         editor.commit();
 
+        appdb=AppdbHelper.getInstance(this,loginAccount).getWritableDatabase();
         System.out.println("==================登录账户："+loginAccount+" "+phrase);
     }
 
@@ -223,6 +226,9 @@ public class HomeActivity extends AppCompatActivity {
     class MyTextileListener extends BaseTextileEventListener {
         @Override
         public void nodeOnline() {
+
+            createDeviceThread();
+
             //测试
             try {
                 System.out.println("===================昵称："+Textile.instance().profile.name());
@@ -296,6 +302,11 @@ public class HomeActivity extends AppCompatActivity {
                 thread=Textile.instance().threads.get(threadId);
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+
+            //如果是不共享的thread，包括相册thread，设备thread，就不对消息进行处理
+            if (thread.getSharing().equals(Model.Thread.Sharing.NOT_SHARED)){
+                return ;
             }
 
             boolean isSingle=thread.getWhitelistCount()==2;
@@ -428,4 +439,33 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    private void createDeviceThread() {
+        //看有没有"mydevice1219"，没有就新建
+        try {
+            List<Model.Thread> devicethreads=Textile.instance().threads.list().getItemsList();
+            boolean hasDevice=false;
+            for(Model.Thread t:devicethreads){
+                if(t.getName().equals("mydevice1219")){
+                    hasDevice=true;
+                    System.out.println("=============已经有mydevice1219");
+                    break;
+                }
+            }
+            if(!hasDevice){
+                String key= UUID.randomUUID().toString();
+                sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
+                        .setPreset(View.AddThreadConfig.Schema.Preset.BLOB)
+                        .build();
+                sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
+                        .setSharing(Model.Thread.Sharing.NOT_SHARED)
+                        .setType(Model.Thread.Type.PRIVATE)
+                        .setKey(key).setName("mydevice1219")
+                        .setSchema(schema)
+                        .build();
+                Textile.instance().threads.add(config);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
