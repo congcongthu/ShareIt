@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,6 +22,8 @@ import android.widget.TextView;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.login.MainActivity;
 import com.sjtuopennetwork.shareit.util.FileUtil;
+
+import java.util.List;
 
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Handlers;
@@ -127,7 +130,8 @@ public class SettingFragment extends Fragment {
         AlertDialog d=dialog.create();
         d.show();
     }
-
+    private List<Model.Thread> threads;
+    private Model.ThreadList threadList;
     private void initData() {
         pref= getActivity().getSharedPreferences("txtl", Context.MODE_PRIVATE);
 
@@ -135,6 +139,28 @@ public class SettingFragment extends Fragment {
         imagePath=pref.getString("avatarpath","null");
         System.out.println("============头像路径："+imagePath);
 
+        try {
+            threadList=Textile.instance().threads.list();
+            threads=threadList.getItemsList();
+            for(Model.Thread t:threads){
+                if (t.getName().equals("mydevice1219")) {//找到mydevice1219这个thread
+                    String device = android.os.Build.BRAND + " " + Build.MODEL;//获取设备厂商和型号
+                    Boolean flag = true;
+                    sjtu.opennet.textilepb.View.TextList textList=Textile.instance().messages.list("",100,t.getId());
+                    for (int i=0;i<textList.getItemsCount();i++) {
+                        if (textList.getItems(i).getBody().equals(device)){
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if (flag == true) {
+                        Textile.instance().messages.add(t.getId(),device);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     private void drawUI() {
         tv_name.setText(myname);
