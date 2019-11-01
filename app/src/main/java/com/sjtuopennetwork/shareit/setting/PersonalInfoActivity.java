@@ -1,5 +1,6 @@
 package com.sjtuopennetwork.shareit.setting;
 
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -99,10 +100,16 @@ public class PersonalInfoActivity extends AppCompatActivity {
             startActivity(it);
         });
         info_addr_layout.setOnClickListener(view -> {
-            Toast.makeText(this,info_addr.getText(),Toast.LENGTH_LONG).show();
+            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            // 将文本内容放到系统剪贴板里。
+            cm.setText(info_addr.getText());
+            Toast.makeText(this,"已将地址复制到剪贴板："+info_addr.getText(),Toast.LENGTH_LONG).show();
         });
         info_phrase_layout.setOnClickListener(view -> {
-            Toast.makeText(this,info_phrase.getText(),Toast.LENGTH_SHORT).show();
+            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            // 将文本内容放到系统剪贴板里。
+            cm.setText(info_phrase.getText());
+            Toast.makeText(this,"已将助记词复制到剪贴板："+info_phrase.getText(),Toast.LENGTH_LONG).show();
         });
     }
 
