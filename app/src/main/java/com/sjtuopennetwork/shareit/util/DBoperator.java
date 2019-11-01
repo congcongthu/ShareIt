@@ -35,6 +35,10 @@ public class DBoperator {
         return msgs;
     }
 
+    public static void deleteDialogByThreadID(SQLiteDatabase appdb,String threadId){
+        appdb.delete("dialogs","threadid=?",new String[]{threadId});
+    }
+
     public static TDialog queryDialogByThreadID(SQLiteDatabase appdb,String threadId){
 //        appdb=appdbHelper.getWritableDatabase();
         Cursor cursor=appdb.query("dialogs", null,"threadid=?",new String[]{threadId},null,null,null);

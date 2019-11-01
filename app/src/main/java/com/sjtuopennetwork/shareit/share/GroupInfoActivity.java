@@ -102,7 +102,7 @@ public class GroupInfoActivity extends AppCompatActivity {
             startActivity(it);
         });
         leave_group.setOnClickListener(v -> {
-            //自己退出群组,removeThread
+            //自己退出群组,removeThread，自己removeThread
 
         });
     }

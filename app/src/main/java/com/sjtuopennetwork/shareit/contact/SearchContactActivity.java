@@ -169,6 +169,7 @@ public class SearchContactActivity extends AppCompatActivity {
         try {
             Model.Thread t=Textile.instance().threads.get(addFriend.second);
             Textile.instance().invites.add(t.getId(),t.getKey()); //key就是联系人的address
+            Textile.instance().threads.addAdmin(t.getId(),t.getKey()); //设置为管理员
             System.out.println("===============发送了邀请");
         } catch (Exception e) {
             e.printStackTrace();

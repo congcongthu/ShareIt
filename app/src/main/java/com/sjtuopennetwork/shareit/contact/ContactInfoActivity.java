@@ -1,5 +1,9 @@
 package com.sjtuopennetwork.shareit.contact;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +11,9 @@ import android.widget.TextView;
 
 import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.share.ChatActivity;
+import com.sjtuopennetwork.shareit.util.AppdbHelper;
+import com.sjtuopennetwork.shareit.util.DBoperator;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 
 import java.util.List;
@@ -27,6 +34,13 @@ public class ContactInfoActivity extends AppCompatActivity {
     //内存数据
     String address;
     Model.Contact contact;
+    Model.Peer peer;
+    String threadid;
+
+    //持久化存储
+    public SQLiteDatabase appdb;
+    public SharedPreferences pref;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +72,23 @@ public class ContactInfoActivity extends AppCompatActivity {
         contact_avatar=findViewById(R.id.contact_info_avatar);
     }
     private void initData(){
+
+        pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
+        appdb= AppdbHelper.getInstance(this,pref.getString("loginAccount","")).getWritableDatabase();
+
+        //从address得到peerid
+        try {
+            List<Model.Peer> peers=Textile.instance().threads.peers(threadid).getItemsList();
+            for(Model.Peer p:peers){
+                if(p.getAddress().equals(address)){
+                    peer=p;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         //显示头像
         String avatarPath= FileUtil.getFilePath(contact.getAvatar());
         if(avatarPath.equals("null")){ //如果没有存储过这个头像文件
@@ -75,20 +106,39 @@ public class ContactInfoActivity extends AppCompatActivity {
             contact_avatar.setImageBitmap(BitmapFactory.decodeFile(avatarPath));
         }
 
+        List<Model.Thread> devicethreads= null;
+        try {
+            devicethreads = Textile.instance().threads.list().getItemsList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        for(Model.Thread t:devicethreads){
+            if(t.getWhitelistCount()==2){
+                if(t.getWhitelist(0).equals(address) || t.getWhitelist(1).equals(address)){
+                    threadid=t.getId();
+                }
+            }
+        }
+
         contact_del.setOnClickListener(v -> {
-            //删除好友
+            //删除好友,removeThread，并在自己的数据库中删除记录
+            try {
+                Textile.instance().threads.removePeer(threadid,peer.getId());
+                Textile.instance().threads.remove(threadid);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            DBoperator.deleteDialogByThreadID(appdb,threadid);
+
+            finish();
         });
 
         contact_send.setOnClickListener(v -> {
             //发消息，直接找到threadid，跳转到相应的ChatActivity就行
-            List<Model.Thread> devicethreads= null;
-            try {
-                devicethreads = Textile.instance().threads.list().getItemsList();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            for(Model.Thread t:devicethreads){
-            }
+            Intent it=new Intent(this, ChatActivity.class);
+            it.putExtra("threadid",threadid);
+            startActivity(it);
         });
     }
 }
