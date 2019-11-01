@@ -9,6 +9,8 @@ import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 
+import java.util.List;
+
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
@@ -19,6 +21,8 @@ public class ContactInfoActivity extends AppCompatActivity {
     TextView contact_name;
     TextView contact_addr;
     NiceImageView contact_avatar;
+    TextView contact_del;
+    TextView contact_send;
 
     //内存数据
     String address;
@@ -45,9 +49,11 @@ public class ContactInfoActivity extends AppCompatActivity {
     private void initUI() {
         contact_name=findViewById(R.id.contact_info_name);
         contact_addr=findViewById(R.id.contact_info_addr);
+        contact_del=findViewById(R.id.contact_info_del);
+        contact_send=findViewById(R.id.contact_info_send);
 
         contact_name.setText(contact.getName());
-        contact_addr.setText(contact.getAddress());
+        contact_addr.setText("公钥："+contact.getAddress().substring(0,10)+"...");
 
         contact_avatar=findViewById(R.id.contact_info_avatar);
     }
@@ -68,5 +74,21 @@ public class ContactInfoActivity extends AppCompatActivity {
         }else{ //如果已经存储过这个头像
             contact_avatar.setImageBitmap(BitmapFactory.decodeFile(avatarPath));
         }
+
+        contact_del.setOnClickListener(v -> {
+            //删除好友
+        });
+
+        contact_send.setOnClickListener(v -> {
+            //发消息，直接找到threadid，跳转到相应的ChatActivity就行
+            List<Model.Thread> devicethreads= null;
+            try {
+                devicethreads = Textile.instance().threads.list().getItemsList();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            for(Model.Thread t:devicethreads){
+            }
+        });
     }
 }

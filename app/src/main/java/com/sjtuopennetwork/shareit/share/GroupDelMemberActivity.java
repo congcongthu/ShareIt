@@ -50,7 +50,7 @@ public class GroupDelMemberActivity extends AppCompatActivity {
         allMembers=new LinkedList<>();
         try {
             threadid=getIntent().getStringExtra("threadid");
-            allMembers= Textile.instance().threads.peers(threadid).getItemsList();
+            allMembers= Textile.instance().threads.nonAdmins(threadid).getItemsList();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,8 +66,7 @@ public class GroupDelMemberActivity extends AppCompatActivity {
         contactView.setData(contactBeans,true);
         contactView.setContactListener(new ContactListener<ContactBean>() {
             @Override
-            public void onClick(ContactBean item) {
-            }
+            public void onClick(ContactBean item) { }
             @Override
             public void onLongClick(ContactBean item) { }
             @Override

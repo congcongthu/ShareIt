@@ -1,6 +1,7 @@
 package com.sjtuopennetwork.shareit.share.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.share.ImageInfoActivity;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 
 import java.text.DateFormat;
@@ -169,6 +171,17 @@ public class MsgAdapter extends BaseAdapter {
                 setAvatar(h.photo_avatar,avatarPath,msgList.get(i).authoravatar);
                 setPhoto(h.chat_photo,filePath,msgList.get(i).body);
             }
+
+            h.chat_photo.setOnClickListener(v -> {
+                Intent it1=new Intent(context, ImageInfoActivity.class);
+                it1.putExtra("imgpath", filePath);
+                context.startActivity(it1);
+            });
+            h.chat_photo_r.setOnClickListener(v -> {
+                Intent it1=new Intent(context, ImageInfoActivity.class);
+                it1.putExtra("imgpath", filePath);
+                context.startActivity(it1);
+            });
         }
         return view;
     }
@@ -208,5 +221,15 @@ public class MsgAdapter extends BaseAdapter {
 //            imageView.setImageBitmap(BitmapFactory.decodeFile(filePath));
             Glide.with(context).load(filePath).thumbnail(0.3f).into(imageView);
         }
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+
+//        if (msgList.get(position).msgtype==0){
+//            return false;
+//        }
+
+        return false;
     }
 }

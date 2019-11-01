@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,6 +26,7 @@ import com.sjtuopennetwork.shareit.share.util.MsgAdapter;
 import com.sjtuopennetwork.shareit.share.util.TMsg;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
+import com.sjtuopennetwork.shareit.util.FileUtil;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -160,6 +162,18 @@ public class ChatActivity extends AppCompatActivity {
         msgAdapter=new MsgAdapter(this,msgList,avatarpath);
         msgAdapter.notifyDataSetChanged();
         chat_lv.setAdapter(msgAdapter);
+//
+//        chat_lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                if(msgList.get(position).msgtype==1){
+//                    Intent it1=new Intent(ChatActivity.this,ImageInfoActivity.class);
+//                    it1.putExtra("imgpath", FileUtil.getFilePath(msgList.get(position).body));
+//
+//                    startActivity(it1);
+//                }
+//            }
+//        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
