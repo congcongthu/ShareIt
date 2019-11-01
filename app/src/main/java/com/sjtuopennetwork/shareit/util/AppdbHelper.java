@@ -7,15 +7,19 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class AppdbHelper extends SQLiteOpenHelper {
 
     private static AppdbHelper singleInstance=null;
-    public synchronized static AppdbHelper getInstance(Context context){
+    public synchronized static AppdbHelper getInstance(Context context,String dbname){
         if(singleInstance==null){
-            singleInstance=new AppdbHelper(context);
+            singleInstance=new AppdbHelper(context,dbname);
         }
         return singleInstance;
     }
 
-    public AppdbHelper(Context context){
-        super(context,"txtl.db",null,1);
+    public AppdbHelper(Context context,String dbname){
+        super(context,dbname,null,1);
+    }
+
+    public static void setNull(){
+        singleInstance=null;
     }
 
     //对话表

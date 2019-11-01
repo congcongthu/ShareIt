@@ -55,6 +55,9 @@ public class PersonalInfoActivity extends AppCompatActivity {
     }
     private void drawUI() {
         info_name.setText(myname);
+        if (myname.equals("shareitlogin")){
+            info_name.setText("");
+        }
         info_addr.setText(myaddr);
         info_phrase.setText(phrase);
         if(!avatarPath.equals("null")){ //头像为空只可能是引导页未设置

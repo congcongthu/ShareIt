@@ -55,8 +55,6 @@ public class GroupDelMemberActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        System.out.println("===============shit");
-
         for(Model.Peer p:allMembers){
             ContactBean contactBean=new ContactBean();
             contactBean.setId(p.getAddress());

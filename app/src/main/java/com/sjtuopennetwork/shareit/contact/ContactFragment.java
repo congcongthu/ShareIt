@@ -1,7 +1,9 @@
 package com.sjtuopennetwork.shareit.contact;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -45,6 +47,7 @@ public class ContactFragment extends Fragment {
 
     //持久化存储
     public SQLiteDatabase appdb;
+    public SharedPreferences pref;
 
     public ContactFragment() {
         // Required empty public constructor
@@ -68,7 +71,8 @@ public class ContactFragment extends Fragment {
     }
 
     private void initData(){
-        appdb=AppdbHelper.getInstance(getContext()).getWritableDatabase();
+        pref=getActivity().getSharedPreferences("txtl", Context.MODE_PRIVATE);
+        appdb=AppdbHelper.getInstance(getContext(),pref.getString("loginAccount","")).getWritableDatabase();
 
         myFriends= GetFriendListOrApplication.getFriendList();
         System.out.println("=============myFriends数量："+myFriends.size());
