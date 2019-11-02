@@ -125,7 +125,6 @@ public class SearchContactActivity extends AppCompatActivity {
     //一次得到一个搜索结果
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getAnResult(Model.Contact c){
-
         for(Model.Peer p:myFriends){
             if(p.getAddress().equals(c.getAddress())){
                 return; //如果已经添加过这个联系人直接返回

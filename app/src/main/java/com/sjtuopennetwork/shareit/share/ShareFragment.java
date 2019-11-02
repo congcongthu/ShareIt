@@ -49,11 +49,9 @@ public class ShareFragment extends Fragment {
     DialogAdapter dialogAdapter;  //对话列表的数据适配器
     ListView dialoglistView; //对话列表
     ImageView bt_share_menu; //右上角加号按钮
-    CircleProgressDialog circleProgressDialog; //等待圆环
 
     //内存数据
     List<TDialog> dialogs; //对话列表数据
-    boolean nodeOnline=false;
 
     //持久化存储
     public SQLiteDatabase appdb;
@@ -78,11 +76,6 @@ public class ShareFragment extends Fragment {
 
         initData();
 
-//        if(!nodeOnline){
-//            circleProgressDialog=new CircleProgressDialog(getActivity());
-//            circleProgressDialog.setText("节点启动中");
-//            circleProgressDialog.showDialog();
-//        }
 
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
@@ -136,15 +129,7 @@ public class ShareFragment extends Fragment {
         });
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
-    public void knowOnline(Integer integer){
-        if(integer.intValue()==0){
-            if(!nodeOnline){
-//                circleProgressDialog.dismiss();
-//                nodeOnline=true;
-            }
-        }
-    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getNewMsg(TDialog tDialog){ //获取到新的消息后要更新显示
