@@ -288,9 +288,7 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public void threadAdded(String threadId) {
-            System.out.println("============创建thread："+threadId);
-            Pair<Integer,String> addFriend=new Pair<>(1,threadId);
-            EventBus.getDefault().post(addFriend); //只在添加联系人的时候起作用，创建群组的时候要过滤掉
+            EventBus.getDefault().post(threadId); //只在添加联系人的时候起作用，创建群组的时候要过滤掉
         }
 
         @Override
@@ -334,8 +332,6 @@ public class HomeActivity extends AppCompatActivity {
                                 feedItemData.join.getUser().getName()+"你好啊，现在我们已经成为好友了",
                                 feedItemData.join.getDate().getSeconds(), 0);
                         EventBus.getDefault().post(tMsg);
-                    }else{
-                        System.out.println("==========================自己的白名单数为2的JOIN");
                     }
                 }else{//收到群组thread，就先查一下看数据库有没有，没有就插入，有就更新。
                     System.out.println("==================群组JOIN："+thread.getName());

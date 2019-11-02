@@ -1,6 +1,7 @@
 package com.sjtuopennetwork.shareit.setting;
 
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -59,7 +60,28 @@ public class NotificationActivity extends AppCompatActivity {
         notification_listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                Toast.makeText(mContext, "你点击了：" + iData.get(groupPosition).get(childPosition).body, Toast.LENGTH_SHORT).show();
+                String name=iData.get(groupPosition).get(childPosition).actor;
+                String notiid=iData.get(groupPosition).get(childPosition).notiid;
+
+                AlertDialog.Builder acceptOr=new AlertDialog.Builder(NotificationActivity.this);
+                acceptOr.setTitle("邀请处理");
+                acceptOr.setMessage("接受 "+name+" 的邀请吗？");
+                acceptOr.setPositiveButton("接受", (dialogInterface, i1) -> {
+                    try {
+                        Textile.instance().notifications.acceptInvite(notiid);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                acceptOr.setNegativeButton("忽略", (dialog, which) -> {
+                    try {
+                        Textile.instance().notifications.ignoreInvite(notiid);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                acceptOr.show();
+
                 return true;
             }
         });
@@ -97,16 +119,15 @@ public class NotificationActivity extends AppCompatActivity {
                         break;
                 }
             }
-//            //测试用
-//            gData.add(new NotificationGroup("邀请"));
-//            gData.add(new NotificationGroup("评论"));
-//            gData.add(new NotificationGroup("点赞"));
+            gData.add(new NotificationGroup("邀请"));
+            gData.add(new NotificationGroup("评论"));
+            gData.add(new NotificationGroup("点赞"));
+
+            //测试用
 //            Date d=new Date();
 //            inviteData.add(new NotificationItem("1","","YJC", "邀请你", d.getTime(),true));
 //            inviteData.add(new NotificationItem("2","","YJC", "邀请你", d.getTime(),true));
 //            inviteData.add(new NotificationItem("3","","YJC", "邀请你", d.getTime(),true));
-//
-//            //
 
             if (inviteData != null)
                 iData.add(inviteData);

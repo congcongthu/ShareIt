@@ -17,6 +17,7 @@ public class NotificationItem {
     public String avatarPath;
 
     public NotificationItem() {
+
     }
 
     public NotificationItem(int iId, String iName) {

@@ -37,6 +37,7 @@ public class SearchContactActivity extends AppCompatActivity {
     List<Model.Contact> newContacts;  //搜索到的结果
     List<ResultContact> resultContacts;  //存放自定义的搜索结果item对象
     List<String> inviteAddr=new LinkedList<>(); //存放要发送申请的联系人的地址
+    String targetAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,6 @@ public class SearchContactActivity extends AppCompatActivity {
         }
 
         initData();
-
     }
 
     private void initData() {
@@ -103,7 +103,8 @@ public class SearchContactActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 inviteAddr.add(wantToAdd.getAddress()); //添加到申请列表
-                createTwoPersonThread(wantToAdd.getName(),wantToAdd.getAddress()); //创建双人thread,key就是那个人的地址
+                targetAddress=wantToAdd.getAddress();
+                createTwoPersonThread(wantToAdd.getName()); //创建双人thread,key就是那个人的地址
             });
             addContact.setNegativeButton("取消", (dialog, which) -> Toast.makeText(SearchContactActivity.this,"已取消",Toast.LENGTH_SHORT).show());
             addContact.show();
@@ -142,15 +143,16 @@ public class SearchContactActivity extends AppCompatActivity {
     }
 
     //创建一个新的双人thread
-    private void createTwoPersonThread(String threadName,String key){
-        sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
+    private void createTwoPersonThread(String threadName){
+        sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema=
+                sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
                 .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.MEDIA)
                 .build();
         sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
                 .setSharing(Model.Thread.Sharing.SHARED)
                 .setType(Model.Thread.Type.OPEN)
-                .setKey(key).setName(threadName)
-                .addWhitelist(key).addWhitelist(Textile.instance().account.address()) //两个人添加到白名单
+                .setKey(targetAddress).setName(threadName)
+                .addWhitelist(targetAddress).addWhitelist(Textile.instance().account.address()) //两个人添加到白名单
                 .setSchema(schema)
                 .build();
         try {
@@ -162,14 +164,9 @@ public class SearchContactActivity extends AppCompatActivity {
 
     //双人thread创建成功后就发送邀请，用户看起来就是好友申请
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void sendInvite(Pair<Integer,String> addFriend){
-        if(addFriend.first!=1){
-            return;
-        }
-        try {
-            Model.Thread t=Textile.instance().threads.get(addFriend.second);
-            Textile.instance().invites.add(t.getId(),t.getKey()); //key就是联系人的address
-            Textile.instance().threads.addAdmin(t.getId(),t.getKey()); //设置为管理员
+    public void sendInvite(String threadId){
+        try{
+            Textile.instance().invites.add(threadId,targetAddress); //key就是联系人的address
             System.out.println("===============发送了邀请");
         } catch (Exception e) {
             e.printStackTrace();
