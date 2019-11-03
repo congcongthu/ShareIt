@@ -125,7 +125,6 @@ class RequestsHandler implements CafeOutboxHandler {
         for (final Map.Entry<String,String> entry : req.getHeadersMap().entrySet()) {
             request.addHeader(entry.getKey(), entry.getValue());
         }
-
         return request.startUpload();
     }
 }

@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor=pref.edit();
                 String myname=editText.getText().toString();
                 editor.putString("myname",myname);
-                editor.putString("avatarpath",avatarpath);
+                editor.putString("avatarpath",avatarpath); //如果没选则为""
                 editor.commit();
 
                 //跳转到HomeActivity

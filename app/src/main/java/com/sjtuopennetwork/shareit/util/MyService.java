@@ -34,6 +34,7 @@ public class MyService extends Service {
     //内存数据
     String huaweiAvatar;
     String loginAccount="";
+    int login;
 
     public MyService() {
 
@@ -52,11 +53,8 @@ public class MyService extends Service {
             @Override
             public void run() {
                 pref=getSharedPreferences("txtl",MODE_PRIVATE); //得到pref
-
-                int login=intent.getIntExtra("login",0);
-
+                login=intent.getIntExtra("login",0);
                 initTextile(login);
-
                 appdb=AppdbHelper.getInstance(getApplicationContext(),loginAccount).getWritableDatabase();
             }
         }.start();
@@ -92,19 +90,20 @@ public class MyService extends Service {
                 break;
             case 2: //华为账号登录，找到repo，初始化textile
                 System.out.println("========华为账号登录");
-                String openid=pref.getString("openid","").substring(0,128);
-                String avatarUri=pref.getString("avatarUri","");
-                //新开线程获得头像
-                new Thread(){
-                    @Override
-                    public void run() {
-                        huaweiAvatar=FileUtil.getHuaweiAvatar(avatarUri);
-                        SharedPreferences.Editor editor=pref.edit();
-                        editor.putString("avatarpath",huaweiAvatar);
-                        editor.commit();
-                    }
-                }.start();
-                System.out.println("============华为id长度："+openid.length());
+                String openid=pref.getString("openid","").substring(0,128); //?测试一下是否需要截断，应该并不需要
+                String avatarUri=pref.getString("avatarUri",""); //先判断一下是否已经存储过
+                if(FileUtil.getFilePath(avatarUri).equals("null")){
+                    //新开线程获得头像
+                    new Thread(){
+                        @Override
+                        public void run() {
+                            huaweiAvatar=FileUtil.getHuaweiAvatar(avatarUri);
+                            SharedPreferences.Editor editor=pref.edit();
+                            editor.putString("avatarpath",huaweiAvatar);
+                            editor.commit();
+                        }
+                    }.start();
+                }
                 try {
                     phrase=Textile.newWalletFromHuaweiOpenId(openid);
                     Mobile.MobileWalletAccount m=Textile.walletAccountAt(phrase,Textile.WALLET_ACCOUNT_INDEX,Textile.WALLET_PASSPHRASE);
@@ -134,16 +133,12 @@ public class MyService extends Service {
                     e.printStackTrace();
 
                 }
-                SharedPreferences.Editor editor=pref.edit();
-                editor.putString("avatarpath","shareitlogin");
-                editor.putString("myname","shareitlogin");
-                editor.commit();
                 break;
         }
 
         //启动Textile
         try {
-            Textile.launch(MyService.this, repoPath, false);
+            Textile.launch(MyService.this, repoPath, true);
             Textile.instance().addEventListener(new MyTextileListener());
         } catch (Exception e) {
             e.printStackTrace();
@@ -167,16 +162,6 @@ public class MyService extends Service {
 
             createDeviceThread();
 
-            //测试
-            try {
-                System.out.println("===================昵称："+Textile.instance().profile.name());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            //连网之后反馈给主界面
-            EventBus.getDefault().postSticky(Integer.valueOf(0)); //会有先连网后启动ShareFragment的注册，所以用Sticky
-
 //            try {
 //                String a=Textile.instance().cafes.sessions().getItems(0).getId();
 //                Textile.instance().cafes.deregister(a, new Handlers.ErrorHandler() {
@@ -193,12 +178,24 @@ public class MyService extends Service {
 //            } catch (Exception e) {
 //                e.printStackTrace();
 //            }
-
             Textile.instance().cafes.register(
                     "http://202.120.38.131:40601",
-//                    "http://159.138.132.28:40601",
                     "24NR6PTk3ocFCxqidUHWAi6nmhcc76DzMgWHkcMYryeQ8YGRVZmXeLKkx1yXS",
-//                    "6kCnzeBvbcGU6xNjAscBJj1zGe4WgCLyAw4iPfig3bphyimcaC9PrUC7Q8ZG",
+                    new Handlers.ErrorHandler() {
+                        @Override
+                        public void onComplete() {
+                            System.out.println("==========cafe连接成功");
+                            //写到Share...
+                        }
+                        @Override
+                        public void onError(Exception e) {
+                            System.out.println("==========cafe连接失败");
+                            //写到Share...
+                        }
+                    });
+            Textile.instance().cafes.register(
+                    "http://159.138.132.28:40601",
+                    "6kCnzeBvbcGU6xNjAscBJj1zGe4WgCLyAw4iPfig3bphyimcaC9PrUC7Q8ZG",
                     new Handlers.ErrorHandler() {
                         @Override
                         public void onComplete() {
@@ -217,6 +214,83 @@ public class MyService extends Service {
 //            } catch (Exception e) {
 //                e.printStackTrace();
 //            }
+
+            //根据登录方式，设置name和头像
+            switch(login){
+                case 0: //已经登录过的，不用设置name、avatar
+                    break;
+                case 1: //shareit注册，每次都要设置
+                    String shareitName=pref.getString("myname","");
+                    String shareitAvatarpath=pref.getString("avatarpath","");
+                    try {
+                        Textile.instance().profile.setName(shareitName);
+                        if(!shareitAvatarpath.equals("")){
+                            Textile.instance().profile.setAvatar(shareitAvatarpath, new Handlers.BlockHandler() {
+                                @Override
+                                public void onComplete(Model.Block block) {
+                                    System.out.println("==========shareit注册设置头像成功");
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    System.out.println("==========shareit注册设置头像失败");
+                                }
+                            });
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 2: //华为ID登录，判断Textile实例之后进行设置
+                    try {
+                        if(Textile.instance().profile.name().equals("")){ //首次用华为id登录还没有设置Textile账号
+                            String huaweiName=pref.getString("myname","");
+                            Textile.instance().profile.setName(huaweiName);
+                        }
+                        if(Textile.instance().profile.avatar().equals("")){
+                            String huaweiAvatarpath=pref.getString("avatarpath","");
+                            if(!huaweiAvatarpath.equals("")){ //后台线程已经拿到头像
+                                Textile.instance().profile.setAvatar(huaweiAvatarpath, new Handlers.BlockHandler() {
+                                    @Override
+                                    public void onComplete(Model.Block block) {
+                                        System.out.println("==========华为ID登录设置头像成功");
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        System.out.println("==========华为ID登录设置头像失败");
+                                    }
+                                });
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 3: //助记词登录，理论上要判断后重新进行设置，新的peer的name到底能不能同步过来？
+                    try {
+                        if(Textile.instance().profile.name().equals("")){ //如果没有同步过来，
+                            System.out.println("=============助记词登录，新的name没有同步过来");
+                        }
+                        if(Textile.instance().profile.avatar().equals("")) { //如果没有同步过来，
+                            System.out.println("=============助记词登录，新的avatar没有同步过来");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+
+            //测试
+            try {
+                System.out.println("===================昵称："+Textile.instance().profile.name());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            //连网之后反馈给主界面
+            EventBus.getDefault().postSticky(Integer.valueOf(0)); //会有先连网后启动ShareFragment的注册，所以用Sticky
+
         }
 
         @Override
