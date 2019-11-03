@@ -38,6 +38,8 @@ public class ShareItLoginActivity extends AppCompatActivity {
             //写入助记词
             SharedPreferences.Editor editor=pref.edit();
             editor.putString("phrase",phrase);
+            editor.putString("myname","");
+            editor.putString("avatarpath","null"); //先预设为这个
             editor.commit();
 
             startActivity(toHomeActivity);

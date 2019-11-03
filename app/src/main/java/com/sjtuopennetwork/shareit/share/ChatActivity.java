@@ -56,7 +56,7 @@ public class ChatActivity extends AppCompatActivity {
     String threadid;
     Model.Thread chat_thread;
     List<TMsg> msgList;
-    MsgAdapter msgAdapter;
+//    MsgAdapter msgAdapter;
     List<LocalMedia> choosePic;
     String avatarpath;
 
@@ -159,28 +159,21 @@ public class ChatActivity extends AppCompatActivity {
         msgList= DBoperator.queryMsg(appdb,threadid);
         System.out.println("=============消息数："+msgList.size());
 
-        msgAdapter=new MsgAdapter(this,msgList,avatarpath);
-        msgAdapter.notifyDataSetChanged();
+//        chat_lv=findViewById(R.id.chat_lv);
+        MsgAdapter msgAdapter=new MsgAdapter(this,msgList,avatarpath);
         chat_lv.setAdapter(msgAdapter);
-//
-//        chat_lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                if(msgList.get(position).msgtype==1){
-//                    Intent it1=new Intent(ChatActivity.this,ImageInfoActivity.class);
-//                    it1.putExtra("imgpath", FileUtil.getFilePath(msgList.get(position).body));
-//
-//                    startActivity(it1);
-//                }
-//            }
-//        });
+        chat_lv.invalidateViews();
+        chat_lv.setSelection(msgList.size());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateChat(TMsg tMsg){
-        msgList.add(tMsg);
-        chat_lv.setSelection(msgList.size());
-        System.out.println("==================收到了消息："+tMsg.body);
+        if(tMsg.threadid.equals(threadid)){
+            msgList.add(tMsg);
+            chat_lv.invalidateViews();
+            chat_lv.setSelection(msgList.size()); //图片有时候不立即显示，因为Item大小完全相同。
+            System.out.println("==================收到了消息："+tMsg.body);
+        }
     }
 
     @Override
@@ -194,6 +187,7 @@ public class ChatActivity extends AppCompatActivity {
             Textile.instance().files.addFiles(filePath, threadid, "", new Handlers.BlockHandler() {
                 @Override
                 public void onComplete(Model.Block block) {
+
                 }
                 @Override
                 public void onError(Exception e) {

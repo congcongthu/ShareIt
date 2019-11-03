@@ -174,12 +174,12 @@ public class MsgAdapter extends BaseAdapter {
 
             h.chat_photo.setOnClickListener(v -> {
                 Intent it1=new Intent(context, ImageInfoActivity.class);
-                it1.putExtra("imgpath", filePath);
+                it1.putExtra("imghash", msgList.get(i).body);
                 context.startActivity(it1);
             });
             h.chat_photo_r.setOnClickListener(v -> {
                 Intent it1=new Intent(context, ImageInfoActivity.class);
-                it1.putExtra("imgpath", filePath);
+                it1.putExtra("imghash", msgList.get(i).body);
                 context.startActivity(it1);
             });
         }
@@ -196,6 +196,7 @@ public class MsgAdapter extends BaseAdapter {
                 }
                 @Override
                 public void onError(Exception e) {
+
                 }
             });
         }else{ //如果已经存储过这个头像
@@ -207,14 +208,18 @@ public class MsgAdapter extends BaseAdapter {
     private void setPhoto(ImageView imageView,String filePath,String fileHash){
         if(filePath.equals("null")){ //如果没有存储过图片
             Textile.instance().files.content(fileHash, new Handlers.DataHandler() {
+                String afileName="";
                 @Override
                 public void onComplete(byte[] data, String media) {
-                    String fileName=FileUtil.storeFile(data,fileHash);
-                    imageView.setImageBitmap(BitmapFactory.decodeFile(fileName));
+                    System.out.println("====拿图片成功");
+                    afileName=FileUtil.storeFile(data,fileHash);
+                    imageView.setImageBitmap(BitmapFactory.decodeFile(afileName));
                 }
                 @Override
                 public void onError(Exception e) {
-                    imageView.setImageResource(R.drawable.ic_album);
+                    System.out.println("====拿图片失败");
+//                    imageView.setImageResource(R.drawable.ic_album);
+                    imageView.setImageBitmap(BitmapFactory.decodeFile(afileName));
                 }
             });
         }else{

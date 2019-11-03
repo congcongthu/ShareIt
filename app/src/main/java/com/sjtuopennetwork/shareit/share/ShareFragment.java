@@ -65,6 +65,7 @@ public class ShareFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        System.out.println("==============fagment生命周期：conCreateView");
         return inflater.inflate(R.layout.fragment_share, container, false);
     }
 

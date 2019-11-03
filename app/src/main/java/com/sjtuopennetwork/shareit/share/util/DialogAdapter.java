@@ -114,7 +114,7 @@ public class DialogAdapter extends ArrayAdapter {
                 }
                 @Override
                 public void onError(Exception e) {
-                    imageView.setImageResource(R.drawable.ic_album);
+//                    imageView.setImageResource(R.drawable.ic_album);
                 }
             });
         }else{

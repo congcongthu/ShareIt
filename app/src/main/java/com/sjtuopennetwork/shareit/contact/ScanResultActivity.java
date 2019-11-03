@@ -38,8 +38,10 @@ public class ScanResultActivity extends AppCompatActivity {
         if (getIntent() != null){
             Bundle bundle = getIntent().getExtras();
             address = bundle.getString("result");
+            System.out.println("===========扫码信息页面得到结果："+address);
         }
 
+        //注册监听器
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
@@ -51,7 +53,10 @@ public class ScanResultActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-
+        add_friend=findViewById(R.id.scan_result_add);
+        res_avatar=findViewById(R.id.scan_result_avatar);
+        res_name=findViewById(R.id.scan_result_name);
+        res_address=findViewById(R.id.scan_result_addr);
     }
 
     //发送查询请求
@@ -62,9 +67,11 @@ public class ScanResultActivity extends AppCompatActivity {
                 .build();
         QueryOuterClass.ContactQuery query = QueryOuterClass.ContactQuery.newBuilder()
                 .setAddress(address)
+//                .setName("规划局")
                 .build();
         try {
             Textile.instance().contacts.search(query, options);
+            System.out.println("===========查询已发送："+address);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,6 +81,7 @@ public class ScanResultActivity extends AppCompatActivity {
     //得到搜索结果
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getResult(Model.Contact c){
+        System.out.println("==============得到了搜索结果："+c.getName());
         resultContact=c;
         //这里再设置
         drawUI();
