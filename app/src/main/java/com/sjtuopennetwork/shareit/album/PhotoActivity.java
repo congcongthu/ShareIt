@@ -86,8 +86,6 @@ public class PhotoActivity extends AppCompatActivity {
 
     }
 
-
-
     public  void initUI()
     {
         photo_add = findViewById(R.id.photo_add);
@@ -98,7 +96,6 @@ public class PhotoActivity extends AppCompatActivity {
     //处理thread中的数据，将其显示
     //Get raw data for a file hash
     private void initData(String threadId) {
-
         //同步所有thread中的照片到手机
         photoSync(threadId);
 
@@ -114,9 +111,11 @@ public class PhotoActivity extends AppCompatActivity {
         //检查thread上的照片，同步到本地app存储
         photo_sync.setOnClickListener(view -> {
             photoSync(threadId);
+
         });
 
     }
+
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -167,9 +166,9 @@ public class PhotoActivity extends AppCompatActivity {
             }
 
             //排除相同hash，即相同的图片
-            if(!largeHash.contains(large_hash)){
+         //   if(!largeHash.contains(large_hash)){
                 largeHash.add(large_hash);
-            }
+          //  }
 
         }
         System.out.println("===================================hash个数：  " + largeHash.size());
