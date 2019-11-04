@@ -49,10 +49,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         // mDataSet = myDataset;
         mDataset=myPicDataset;
     }
-//    public MyAdapter(String[] myDataset,String myPicDataset) {
-//        mDataSet = myDataset;
-//        picDataset=myPicDataset;
-//    }
+
 
     // Create new views (invoked by the layout manager)
     @Override

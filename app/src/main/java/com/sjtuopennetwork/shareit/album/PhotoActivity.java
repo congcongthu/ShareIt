@@ -80,10 +80,10 @@ public class PhotoActivity extends AppCompatActivity {
         //配置layout manager
         GridLayoutManager layoutManager = new GridLayoutManager(this,3);
         recyclerView.setLayoutManager(layoutManager);
-
         mAdapter = new MyAdapter(mDataset);
         //配置adapter
         recyclerView.setAdapter(mAdapter);
+
     }
 
 
@@ -111,7 +111,7 @@ public class PhotoActivity extends AppCompatActivity {
                     .compress(false)//是否压缩
                     .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调 onActivityResult code
         });
-        //检查thread上的照片，同步到相册
+        //检查thread上的照片，同步到本地app存储
         photo_sync.setOnClickListener(view -> {
             photoSync(threadId);
         });
@@ -138,6 +138,8 @@ public class PhotoActivity extends AppCompatActivity {
                 }
             });
 
+
+
         }
 
     }
@@ -145,7 +147,7 @@ public class PhotoActivity extends AppCompatActivity {
     private void photoSync(String threadId){
         int listnum = 0;
         try {
-            listnum = Textile.instance().files.list(threadId,"",16).getItemsCount();
+            listnum = Textile.instance().files.list(threadId,"",256).getItemsCount();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -163,24 +165,36 @@ public class PhotoActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            largeHash.add(large_hash);
+
+            //排除相同hash，即相同的图片
+            if(!largeHash.contains(large_hash)){
+                largeHash.add(large_hash);
+            }
+
         }
+        System.out.println("===================================hash个数：  " + largeHash.size());
 
-        for(int i=0;i<listnum;i++) {
+
+
+        for(int i=0;i<largeHash.size();i++) {
             int finalI = i;
-            Textile.instance().files.content(largeHash.get(i), new Handlers.DataHandler() {
-                @Override
-                public void onComplete(byte[] data, String media) {
-                    //存储下来的包括路径的完整文件名
-                    picDataset = FileUtil.storeFile(data, largeHash.get(finalI));
-                    mDataset.add(picDataset);
-                    System.out.println("===================================picture path:   "+picDataset);
-                }
-                @Override
-                public void onError(Exception e) {
-                }
-            });
-
+            String filepath = FileUtil.getFilePath(largeHash.get(finalI));
+            if(filepath.equals("null")){
+                Textile.instance().files.content(largeHash.get(i), new Handlers.DataHandler() {
+                    @Override
+                    public void onComplete(byte[] data, String media) {
+                        //存储下来的包括路径的完整文件名
+                        picDataset = FileUtil.storeFile(data, largeHash.get(finalI));
+                        mDataset.add(picDataset);
+                    }
+                    @Override
+                    public void onError(Exception e) {
+                    }
+                });
+            }
+            else{
+                mDataset.add(filepath);
+            }
 
         }
         //
