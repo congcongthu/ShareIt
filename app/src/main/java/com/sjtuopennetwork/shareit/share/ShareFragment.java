@@ -65,6 +65,7 @@ public class ShareFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        System.out.println("==============fagment生命周期：conCreateView");
         return inflater.inflate(R.layout.fragment_share, container, false);
     }
 
@@ -88,10 +89,7 @@ public class ShareFragment extends Fragment {
         //右上角菜单按钮
         bt_share_menu=getActivity().findViewById(R.id.bt_share_add);
         bt_share_menu.setOnClickListener(v -> {
-//            BtShareMenu btShareMenu=new BtShareMenu(getContext());
-//            btShareMenu.setBackgroundColor(Color.parseColor("#00000000"));
-//            btShareMenu.setPopupGravity(Gravity.CENTER);
-//            btShareMenu.showPopupWindow();
+
             //直接跳转一个新的Activity
             Intent it=new Intent(getActivity(),NewGroupActivity.class);
             startActivity(it);

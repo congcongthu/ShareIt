@@ -26,7 +26,7 @@ public class GetFriendListOrApplication {
                     List<Model.Peer> peers=Textile.instance().threads.peers(t.getId()).getItemsList();
                     System.out.println("=========白名单为2的thread及其peer数："+t.getName()+" "+t.getId()+" "+peers.size());
                     for(Model.Peer p:peers){
-                        System.out.println("==============peer:"+p.getName());
+                        System.out.println("==============peer:"+p.getName()+" "+p.getAddress());
                         if(!p.getAddress().equals(Textile.instance().account.address())){ //不是自己就是好友
                             result.add(p);
                         }

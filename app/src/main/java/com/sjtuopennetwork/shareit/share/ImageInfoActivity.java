@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.luck.picture.lib.photoview.PhotoView;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.util.FileUtil;
 
 public class ImageInfoActivity extends AppCompatActivity {
 
@@ -15,6 +16,8 @@ public class ImageInfoActivity extends AppCompatActivity {
 
     //内存数据
     String imgpath;
+    String imghash;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,11 +25,12 @@ public class ImageInfoActivity extends AppCompatActivity {
 
 
         Intent it=getIntent();
-        imgpath=it.getStringExtra("imgpath");
+        imghash=it.getStringExtra("imghash");
+
+        imgpath= FileUtil.getFilePath(imghash);
 
         photoView=findViewById(R.id.photo_view);
 
         photoView.setImageBitmap(BitmapFactory.decodeFile(imgpath));
-
     }
 }

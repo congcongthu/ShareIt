@@ -108,8 +108,10 @@ public class DBoperator {
         v.put("imgpath",imgpath);
         v.put("issingle",isSingle);
         v.put("isvisible",isVisible);
+        appdb.beginTransaction();
         appdb.insert("dialogs",null,v);
-
+        appdb.setTransactionSuccessful();
+        appdb.endTransaction();
         TDialog tDialog=new TDialog(1,threadid,threadname,lastmsg,lastmsgdate,isRead==1,imgpath,isSingle==1,isVisible==1);
         return tDialog;
     }
@@ -125,7 +127,10 @@ public class DBoperator {
         v.put("body",body);
         v.put("sendtime",sendtime);
         v.put("ismine",ismine);
+        appdb.beginTransaction();
         appdb.insert("msgs",null,v);
+        appdb.setTransactionSuccessful();
+        appdb.endTransaction();
 
         TMsg tMsg=new TMsg(1,threadid,msgtype,blockid,authorname,authoravatar,body,sendtime,ismine==1);
 
