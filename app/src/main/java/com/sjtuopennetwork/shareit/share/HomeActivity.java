@@ -12,10 +12,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.album.AlbumFragment;
 import com.sjtuopennetwork.shareit.contact.ContactFragment;
+import com.sjtuopennetwork.shareit.login.MainActivity;
 import com.sjtuopennetwork.shareit.setting.SettingFragment;
 import com.sjtuopennetwork.shareit.share.util.TDialog;
 import com.sjtuopennetwork.shareit.share.util.TMsg;
@@ -128,7 +130,7 @@ public class HomeActivity extends AppCompatActivity {
 
         initTextile(login);
 
-        appdb=AppdbHelper.getInstance(this,loginAccount).getWritableDatabase();
+//        appdb=AppdbHelper.getInstance(this,loginAccount).getWritableDatabase();
 
     }
 
@@ -153,6 +155,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     public void initTextile(int login){
+        boolean loginWrong=false;
         String repoPath="";
         String phrase="";
 //        Context ctx = getApplicationContext();
@@ -210,19 +213,9 @@ public class HomeActivity extends AppCompatActivity {
             case 3: //shareit助记词登录，初始化textile
                 System.out.println("========助记词登录");
                 phrase=pref.getString("phrase","");
+                loginAccount=pref.getString("loginAccount","");
                 System.out.println("===============助记词："+phrase);
-                try {
-                    Mobile.MobileWalletAccount m=Textile.walletAccountAt(phrase,Textile.WALLET_ACCOUNT_INDEX,Textile.WALLET_PASSPHRASE);
-                    loginAccount=m.getAddress();
-                    final File repo1 = new File(filesDir, loginAccount);
-                    repoPath = repo1.getAbsolutePath();
-                    if (!Textile.isInitialized(repoPath)){
-                        Textile.initialize(repoPath,m.getSeed() , true, false);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                }
+                repoPath=getIntent().getStringExtra("repopath");
                 break;
         }
 
@@ -236,13 +229,19 @@ public class HomeActivity extends AppCompatActivity {
 
         SharedPreferences.Editor editor=pref.edit();
         editor.putBoolean("isLogin",true);
-        if(login!=0){ //1,2,3都需要修改助记词和登录账户
+        if(login==1 || login ==2){ //1,2都需要修改助记词和登录账户,3不需要
             editor.putString("phrase",phrase);
             editor.putString("loginAccount",loginAccount);
         }
         editor.commit();
 
-        appdb=AppdbHelper.getInstance(this,loginAccount).getWritableDatabase();
+        try{
+            appdb=AppdbHelper.getInstance(this,loginAccount).getWritableDatabase();
+        }catch (Exception e){
+//            finish();
+            e.printStackTrace();
+        }
+
         System.out.println("==================登录账户："+loginAccount+" "+phrase);
     }
 
