@@ -1,6 +1,9 @@
 package com.sjtuopennetwork.shareit.share;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Message;
@@ -60,6 +63,10 @@ public class ChatActivity extends AppCompatActivity {
     List<LocalMedia> choosePic;
     String avatarpath;
 
+    //退出群组相关
+    public static final String REMOVE_DIALOG="you get out";
+    FinishActivityRecevier finishActivityRecevier;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +75,12 @@ public class ChatActivity extends AppCompatActivity {
         initUI();
 
         initData();
+
+        //注册广播
+        finishActivityRecevier=new FinishActivityRecevier();
+        IntentFilter intentFilter=new IntentFilter();
+        intentFilter.addAction(REMOVE_DIALOG);
+        registerReceiver(finishActivityRecevier,intentFilter);
     }
     @Override
     protected void onStart() {
@@ -203,6 +216,16 @@ public class ChatActivity extends AppCompatActivity {
 
         if(EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().unregister(this);
+        }
+    }
+
+    private class FinishActivityRecevier extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(REMOVE_DIALOG)){
+                ChatActivity.this.finish();
+            }
         }
     }
 }

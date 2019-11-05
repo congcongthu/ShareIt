@@ -15,10 +15,12 @@
         android:roundIcon="@drawable/ic_share_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".share.GroupCodeActivity"></activity>
+
         <service
             android:name=".util.ForeGroundService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity android:name=".share.ImageInfoActivity" />
         <activity android:name=".share.GroupQRCodeActivity" />

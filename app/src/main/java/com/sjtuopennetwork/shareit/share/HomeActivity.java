@@ -269,19 +269,21 @@ public class HomeActivity extends AppCompatActivity {
 //                e.printStackTrace();
 //            }
 
-
+//
             Textile.instance().cafes.register(
                     "http://202.120.38.131:40601",
-                    "24NR6PTk3ocFCxqidUHWAi6nmhcc76DzMgWHkcMYryeQ8YGRVZmXeLKkx1yXS",
+//                    "24NR6PTk3ocFCxqidUHWAi6nmhcc76DzMgWHkcMYryeQ8YGRVZmXeLKkx1yXS",
+//                    "qqfnQNyTJ6Rf8ZDxzPcAFz5SChGJhiKCXy6vQExjEdJaLwbZuaQX79wwtQkm",
+                    "2HgCmu3Gk72XkVbccXGA14JehiwL9tfT9tLueVc1FTRhX1UJzZRX9vhy1dkTB",
                     new Handlers.ErrorHandler() {
                         @Override
                         public void onComplete() {
-                            System.out.println("==========cafe连接成功");
+                            System.out.println("==========131cafe连接成功");
                             //写到Share...
                         }
                         @Override
                         public void onError(Exception e) {
-                            System.out.println("==========cafe连接失败");
+                            System.out.println("==========131cafe连接失败");
                             //写到Share...
                         }
                     });
@@ -291,12 +293,12 @@ public class HomeActivity extends AppCompatActivity {
                     new Handlers.ErrorHandler() {
                         @Override
                         public void onComplete() {
-                            System.out.println("==========cafe连接成功");
+                            System.out.println("==========132cafe连接成功");
                             //写到Share...
                         }
                         @Override
                         public void onError(Exception e) {
-                            System.out.println("==========cafe连接失败");
+                            System.out.println("==========132cafe连接失败");
                             //写到Share...
                         }
                     });

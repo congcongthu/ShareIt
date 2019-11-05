@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.qrlibrary.qrcode.utils.PermissionUtils;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.util.DialogAdapter;
 import com.sjtuopennetwork.shareit.share.util.TDialog;
@@ -49,6 +50,7 @@ public class ShareFragment extends Fragment {
     DialogAdapter dialogAdapter;  //对话列表的数据适配器
     ListView dialoglistView; //对话列表
     ImageView bt_share_menu; //右上角加号按钮
+    ImageView qrcodeJoinGroup; //扫码加群
 
     //内存数据
     List<TDialog> dialogs; //对话列表数据
@@ -92,6 +94,14 @@ public class ShareFragment extends Fragment {
 
             //直接跳转一个新的Activity
             Intent it=new Intent(getActivity(),NewGroupActivity.class);
+            startActivity(it);
+        });
+
+        qrcodeJoinGroup=getActivity().findViewById(R.id.bt_share_scan);
+        qrcodeJoinGroup.setOnClickListener(v -> {
+
+            PermissionUtils.getInstance().requestPermission(getActivity());
+            Intent it=new Intent(getActivity(),GroupQRCodeActivity.class);
             startActivity(it);
         });
     }
