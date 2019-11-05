@@ -81,4 +81,14 @@ public class Contacts extends NodeDependent {
     public SearchHandle search(final ContactQuery query, final QueryOptions options) throws Exception {
         return node.searchContacts(query.toByteArray(), options.toByteArray());
     }
+
+    /**
+     * Discover for Textile Contacts through pubsub
+     * @param options A query options object to control the behavior of the search
+     * @return A handle that can be used to cancel the search
+     * @throws Exception The exception that occurred
+     */
+    public SearchHandle discover(final QueryOptions options) throws Exception {
+        return node.discoverContacts(options.toByteArray());
+    }
 }
