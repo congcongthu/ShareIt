@@ -1,6 +1,7 @@
 package com.sjtuopennetwork.shareit.setting;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -91,7 +92,7 @@ public class NotificationActivity extends AppCompatActivity {
         commentData = new ArrayList<NotificationItem>();
         likeData = new ArrayList<NotificationItem>();
         try {
-            noti_list= Textile.instance().notifications.list("",100).getItemsList();
+            noti_list= Textile.instance().notifications.list("",500).getItemsList();
             for(Notification n:noti_list){
                 switch (n.getType()){
                     case INVITE_RECEIVED:
@@ -119,15 +120,18 @@ public class NotificationActivity extends AppCompatActivity {
                         break;
                 }
             }
-            gData.add(new NotificationGroup("邀请"));
-            gData.add(new NotificationGroup("评论"));
-            gData.add(new NotificationGroup("点赞"));
-
             //测试用
+//            SharedPreferences pref;
+//            pref= getSharedPreferences("txtl", Context.MODE_PRIVATE);
+//            String path;
+//            path=pref.getString("avatarpath","null");
+//            gData.add(new NotificationGroup("邀请"));
+//            gData.add(new NotificationGroup("评论"));
+//            gData.add(new NotificationGroup("点赞"));
 //            Date d=new Date();
-//            inviteData.add(new NotificationItem("1","","YJC", "邀请你", d.getTime(),true));
-//            inviteData.add(new NotificationItem("2","","YJC", "邀请你", d.getTime(),true));
-//            inviteData.add(new NotificationItem("3","","YJC", "邀请你", d.getTime(),true));
+//            inviteData.add(new NotificationItem("1",path,"YJC", "邀请你", d.getTime(),true));
+//            inviteData.add(new NotificationItem("2",path,"YJC", "邀请你", d.getTime(),true));
+//            inviteData.add(new NotificationItem("3",path,"YJC", "邀请你", d.getTime(),true));
 
             if (inviteData != null)
                 iData.add(inviteData);

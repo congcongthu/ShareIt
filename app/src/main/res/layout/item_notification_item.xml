@@ -4,11 +4,11 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="5dp"
-    android:background="@color/lightgray">
+    android:background="@color/white">
 
     <TextView
         android:padding="5dp"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="10dp"
         android:id="@+id/noti_time"
@@ -23,8 +23,8 @@
 
         <ImageView
             android:id="@+id/img_icon"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:focusable="false"
             android:src="@drawable/ic_default_avatar" />
 
@@ -33,11 +33,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:textColor="@color/black"
             android:focusable="false"
             android:text="YJC invite you to join"
-            android:textSize="18sp" />
+            android:textSize="14sp" />
     </LinearLayout>
 
 </LinearLayout>
