@@ -50,14 +50,14 @@ public class GroupDelMemberActivity extends AppCompatActivity {
         allMembers=new LinkedList<>();
         try {
             threadid=getIntent().getStringExtra("threadid");
-            allMembers= Textile.instance().threads.peers(threadid).getItemsList();
+            allMembers= Textile.instance().threads.nonAdmins(threadid).getItemsList();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         for(Model.Peer p:allMembers){
             ContactBean contactBean=new ContactBean();
-            contactBean.setId(p.getAddress());
+            contactBean.setId(p.getId());
             contactBean.setName(p.getName());
             String avatarPath= FileUtil.getFilePath(p.getAvatar());
             contactBean.setAvatar(avatarPath);
@@ -66,8 +66,7 @@ public class GroupDelMemberActivity extends AppCompatActivity {
         contactView.setData(contactBeans,true);
         contactView.setContactListener(new ContactListener<ContactBean>() {
             @Override
-            public void onClick(ContactBean item) {
-            }
+            public void onClick(ContactBean item) { }
             @Override
             public void onLongClick(ContactBean item) { }
             @Override
@@ -75,7 +74,15 @@ public class GroupDelMemberActivity extends AppCompatActivity {
         });
 
         delete_members.setOnClickListener(v -> {
-
+            List<ContactBean> selects=contactView.getChoostContacts();
+            for(ContactBean c:selects){ //逐个删除
+                try {
+                    Textile.instance().threads.removePeer(threadid,c.getId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            finish();
         });
     }
 }

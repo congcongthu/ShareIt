@@ -117,13 +117,10 @@ public class NewGroupActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void sendInvite(Pair<Integer,String> addFriend){
-        if(addFriend.first!=1){
-            return;
-        }
+    public void sendInvite(String addThreadID){
         try {
             for(ContactBean c:contactView.getChoostContacts()){
-                Textile.instance().invites.add(addFriend.second,c.getId());
+                Textile.instance().invites.add(addThreadID,c.getId());
                 System.out.println("===============发送了邀请");
             }
 

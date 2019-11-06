@@ -55,7 +55,7 @@ public class GroupSetAdminActivity extends AppCompatActivity {
 
         for(Model.Peer p:nonAdmins){
             ContactBean contactBean=new ContactBean();
-            contactBean.setId(p.getAddress());
+            contactBean.setId(p.getId());
             contactBean.setName(p.getName());
             String avatarPath= FileUtil.getFilePath(p.getAvatar());
             contactBean.setAvatar(avatarPath);
@@ -73,7 +73,14 @@ public class GroupSetAdminActivity extends AppCompatActivity {
         });
 
         change_admin.setOnClickListener(v -> {
-
+            List<ContactBean> selects=contactView.getChoostContacts();
+            for(ContactBean c:selects){ //逐个添加管理员
+                try {
+                    Textile.instance().threads.addAdmin(threadid,c.getId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         });
     }
 }

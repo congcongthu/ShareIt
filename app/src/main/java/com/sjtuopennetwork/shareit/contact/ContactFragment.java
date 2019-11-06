@@ -74,6 +74,7 @@ public class ContactFragment extends Fragment {
         pref=getActivity().getSharedPreferences("txtl", Context.MODE_PRIVATE);
         appdb=AppdbHelper.getInstance(getContext(),pref.getString("loginAccount","")).getWritableDatabase();
 
+        //显示好友列表
         myFriends= GetFriendListOrApplication.getFriendList();
         System.out.println("=============myFriends数量："+myFriends.size());
         contactBeans=new LinkedList<>();
@@ -86,8 +87,8 @@ public class ContactFragment extends Fragment {
             contactBean.setAvatar(avatarPath);
             contactBeans.add(contactBean);
         }
-
         contactView.setData(contactBeans,false);
+
         contactView.setContactListener(new ContactListener<ContactBean>() {
             @Override
             public void onClick(ContactBean item) {

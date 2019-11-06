@@ -1,6 +1,7 @@
 package com.sjtuopennetwork.shareit.share.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.share.ImageInfoActivity;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 
 import java.text.DateFormat;
@@ -169,6 +171,17 @@ public class MsgAdapter extends BaseAdapter {
                 setAvatar(h.photo_avatar,avatarPath,msgList.get(i).authoravatar);
                 setPhoto(h.chat_photo,filePath,msgList.get(i).body);
             }
+
+            h.chat_photo.setOnClickListener(v -> {
+                Intent it1=new Intent(context, ImageInfoActivity.class);
+                it1.putExtra("imghash", msgList.get(i).body);
+                context.startActivity(it1);
+            });
+            h.chat_photo_r.setOnClickListener(v -> {
+                Intent it1=new Intent(context, ImageInfoActivity.class);
+                it1.putExtra("imghash", msgList.get(i).body);
+                context.startActivity(it1);
+            });
         }
         return view;
     }
@@ -183,6 +196,7 @@ public class MsgAdapter extends BaseAdapter {
                 }
                 @Override
                 public void onError(Exception e) {
+
                 }
             });
         }else{ //如果已经存储过这个头像
@@ -194,19 +208,33 @@ public class MsgAdapter extends BaseAdapter {
     private void setPhoto(ImageView imageView,String filePath,String fileHash){
         if(filePath.equals("null")){ //如果没有存储过图片
             Textile.instance().files.content(fileHash, new Handlers.DataHandler() {
+                String afileName="";
                 @Override
                 public void onComplete(byte[] data, String media) {
-                    String fileName=FileUtil.storeFile(data,fileHash);
-                    imageView.setImageBitmap(BitmapFactory.decodeFile(fileName));
+                    System.out.println("====拿图片成功");
+                    afileName=FileUtil.storeFile(data,fileHash);
+                    imageView.setImageBitmap(BitmapFactory.decodeFile(afileName));
                 }
                 @Override
                 public void onError(Exception e) {
-                    imageView.setImageResource(R.drawable.ic_album);
+                    System.out.println("====拿图片失败");
+//                    imageView.setImageResource(R.drawable.ic_album);
+                    imageView.setImageBitmap(BitmapFactory.decodeFile(afileName));
                 }
             });
         }else{
 //            imageView.setImageBitmap(BitmapFactory.decodeFile(filePath));
             Glide.with(context).load(filePath).thumbnail(0.3f).into(imageView);
         }
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+
+//        if (msgList.get(position).msgtype==0){
+//            return false;
+//        }
+
+        return false;
     }
 }

@@ -168,61 +168,11 @@ public class SettingFragment extends Fragment {
         }
     }
     private void drawUI() {
-        if(myname.equals("shareitlogin")){ //表明是shareit助记词登录的
-            try {
-                myname=Textile.instance().profile.name();
-                final String avatarHash=Textile.instance().profile.avatar();
-                imagePath= FileUtil.getFilePath(avatarHash); //失败会返回null
-                if(imagePath.equals("null")){ //如果没有存储过
-                    String getAvatar="/ipfs/" + Textile.instance().profile.avatar() + "/0/small/content";
-                    System.out.println("=========getAvatar:"+getAvatar);
-                    Textile.instance().ipfs.dataAtPath(getAvatar, new Handlers.DataHandler() {
-                        @Override
-                        public void onComplete(byte[] data, String media) {
-                            String storePath=FileUtil.storeFile(data,avatarHash);
-                            avatar_layout.setImageBitmap(BitmapFactory.decodeFile(storePath));
-                        }
-                        @Override
-                        public void onError(Exception e) {
-                        }
-                    });
-                }else{
-                    avatar_layout.setImageBitmap(BitmapFactory.decodeFile(imagePath));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            SharedPreferences.Editor editor=pref.edit();
-            editor.putString("avatarpath",imagePath);
-            editor.putString("myname",myname);
-            editor.commit();
-        }
-
         tv_name.setText(myname);
 
-        if(!imagePath.equals("null")){
+        if(!imagePath.equals("null") && !imagePath.equals("")){
             avatar_layout.setImageBitmap(BitmapFactory.decodeFile(imagePath));
             avatar_layout.setCornerRadius(10);
-        }
-        try {
-            if(Textile.instance().profile.name().equals("")){
-                Textile.instance().profile.setName(myname);
-            }
-            if(Textile.instance().profile.avatar().equals("")){
-                Textile.instance().profile.setAvatar(imagePath, new Handlers.BlockHandler() {
-                    @Override
-                    public void onComplete(Model.Block block) {
-                        System.out.println("头像设置成功！");
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        System.out.println("头像设置失败！");
-                    }
-                });
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

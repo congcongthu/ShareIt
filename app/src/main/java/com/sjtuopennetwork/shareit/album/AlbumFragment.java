@@ -2,6 +2,7 @@ package com.sjtuopennetwork.shareit.album;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,10 +12,13 @@ import android.widget.LinearLayout;
 
 import com.sjtuopennetwork.shareit.R;
 
+import java.util.List;
 import java.util.UUID;
 
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Textile;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +29,17 @@ public class AlbumFragment extends Fragment {
     LinearLayout album_photo_layout;
     LinearLayout album_video_layout;
     LinearLayout album_file_layout;
+
+    //
+    private String thread_photo_name="2019-10-3119:09:17.16929628-29692";
+    private String thread_file_name= "2019-10-3119:09:17.16929628-29693";
+    private String thread_video_name="2019-10-3119:09:17.16929628-29694";
+    private  String thread_photo_id="";
+    private  String thread_file_id="";
+    private  String thread_video_id="";
+    private boolean thread_photo_flag=false;
+    private boolean thread_file_flag=false;
+    private boolean thread_video_flag=false;
 
 
     public AlbumFragment() {
@@ -45,7 +60,61 @@ public class AlbumFragment extends Fragment {
 
         initUI();
 
+        List<Model.Thread> threads;
+        try {
+            threads = Textile.instance().threads.list().getItemsList();
+            System.out.println("=========================本peer 的 thread 个数： "+threads.size());
+            for(Model.Thread t:threads){//遍历所有一个peer下的所有thread
+                if(t.getSharing().equals(Model.Thread.Sharing.NOT_SHARED)){
+                    if(t.getName().equals(thread_photo_name)){
+                        thread_photo_flag=true;
+                        thread_photo_id=t.getId();
+                        System.out.println("=======================photo thread已存在： "+thread_photo_id);
+                    }
+                    if(t.getName().equals(thread_file_name)){
+                        thread_file_flag=true;
+                        thread_file_id=t.getId();
+                        System.out.println("=======================file thread已存在： "+thread_file_id);
+                    }
+                    if(t.getName().equals(thread_video_name)){
+                        thread_video_flag=true;
+                        thread_video_id=t.getId();
+                        System.out.println("=======================video thread已存在： "+thread_video_id);
+                    }
+                }
+            }
+
+            if(!thread_photo_flag){
+                thread_photo_id=addNewThreads(thread_photo_name);
+                System.out.println("==============创建photo_thread:   "+thread_photo_id);
+                thread_photo_flag=true;
+
+            }
+            if(!thread_file_flag){
+                thread_file_id=addNewThreads(thread_file_name);
+                System.out.println("==============创建file_thread:   "+thread_file_id);
+                thread_file_flag=true;
+            }
+            if(!thread_video_flag){
+                thread_video_id=addNewThreads(thread_video_name);
+                System.out.println("==============创建video_thread:   "+thread_video_id);
+                thread_video_flag=true;
+            }
+            SharedPreferences.Editor editor = getActivity().getSharedPreferences("txt1",MODE_PRIVATE).edit();
+            editor.putString("thread_photo_id",thread_photo_id);
+            editor.putString("thread_file_id",thread_file_id);
+            editor.putString("thread_video_id",thread_video_id);
+            editor.apply();
+
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+
 
     private void initUI() {
         album_photo_layout=getActivity().findViewById(R.id.album_photo_layout);
@@ -65,9 +134,9 @@ public class AlbumFragment extends Fragment {
             startActivity(it);
         });
     }
-    
+
     //创建新的thread
-    private void addNewThreads(String threadName){
+    private String addNewThreads(String threadName){
         String key= UUID.randomUUID().toString();//随机生成key
         sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
                 .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.MEDIA)
@@ -75,7 +144,7 @@ public class AlbumFragment extends Fragment {
 
         sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
                 .setSharing(Model.Thread.Sharing.NOT_SHARED)
-                .setType(Model.Thread.Type.OPEN)
+                .setType(Model.Thread.Type.PRIVATE)
                 .setKey(key).setName(threadName)//设置key和thread名字
                 .setSchema(schema)
                 .build();
@@ -84,6 +153,7 @@ public class AlbumFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return key;
     }
 
 }

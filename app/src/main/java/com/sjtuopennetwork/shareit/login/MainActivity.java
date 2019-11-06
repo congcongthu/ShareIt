@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         //查SharedPreference中"isLogin"判断登录状态，如果未登录则进入登录界面。如果已登录则跳转到HomeActivity
         isLogin=pref.getBoolean("isLogin",false); //如果没有这个字段就是首次打开
-        if(isLogin){ //如果已经登录直接跳转到主界面
+        if(isLogin){ //如果已经登录直接跳转到主界面，默认从pref中读取启动数据
             Intent toHomeActivity=new Intent(this, HomeActivity.class);
             toHomeActivity.putExtra("login",0); //已经处于登录状态，0
             startActivity(toHomeActivity);
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor=pref.edit();
                 String myname=editText.getText().toString();
                 editor.putString("myname",myname);
-                editor.putString("avatarpath",avatarpath);
+                editor.putString("avatarpath",avatarpath); //如果没选则为""
                 editor.commit();
 
                 //跳转到HomeActivity

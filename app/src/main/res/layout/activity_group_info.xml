@@ -30,6 +30,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <TextView
+                android:background="@color/white"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:text="群成员"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="40dp" />
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/group_members"
                 android:layout_width="match_parent"
@@ -40,11 +49,38 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal"
+                android:id="@+id/group_qrcode"
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+
+                <TextView
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:text="群组二维码"
+                    android:padding="10dp"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+
+                <ImageView
+                    android:padding="10dp"
+                    android:src="@drawable/ic_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:background="@drawable/back_manage_bar"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
                 android:id="@+id/group_add_members"
                 android:layout_width="match_parent"
                 android:layout_height="40dp">
 
                 <TextView
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
                     android:text="邀请新成员"
                     android:padding="10dp"
                     android:layout_weight="1"
@@ -59,6 +95,7 @@
 
             </LinearLayout>
 
+
             <LinearLayout
                 android:background="@drawable/back_manage_bar"
                 android:layout_marginBottom="5dp"
@@ -69,6 +106,8 @@
                 android:layout_height="40dp">
 
                 <TextView
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
                     android:text="删除群成员"
                     android:padding="10dp"
                     android:layout_weight="1"
@@ -93,7 +132,9 @@
                 android:layout_height="40dp">
 
                 <TextView
-                    android:text="转让管理员"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:text="设置管理员"
                     android:padding="10dp"
                     android:layout_weight="1"
                     android:layout_width="0dp"
@@ -107,29 +148,17 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/leave_group"
                 android:background="@drawable/back_manage_bar"
-                android:layout_marginBottom="5dp"
+                android:textColor="@color/black"
                 android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:id="@+id/group_leave"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:text="退出该群"
+                android:padding="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="40dp">
-
-                <TextView
-                    android:text="退出该群"
-                    android:padding="10dp"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent" />
-
-                <ImageView
-                    android:padding="10dp"
-                    android:src="@drawable/ic_right"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
+                android:layout_height="40dp" />
 
         </LinearLayout>
     </ScrollView>

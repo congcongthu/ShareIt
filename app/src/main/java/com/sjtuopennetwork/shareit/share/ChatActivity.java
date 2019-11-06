@@ -1,12 +1,17 @@
 package com.sjtuopennetwork.shareit.share;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,6 +29,7 @@ import com.sjtuopennetwork.shareit.share.util.MsgAdapter;
 import com.sjtuopennetwork.shareit.share.util.TMsg;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
+import com.sjtuopennetwork.shareit.util.FileUtil;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -53,9 +59,13 @@ public class ChatActivity extends AppCompatActivity {
     String threadid;
     Model.Thread chat_thread;
     List<TMsg> msgList;
-    MsgAdapter msgAdapter;
+//    MsgAdapter msgAdapter;
     List<LocalMedia> choosePic;
     String avatarpath;
+
+    //退出群组相关
+    public static final String REMOVE_DIALOG="you get out";
+    FinishActivityRecevier finishActivityRecevier;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +75,12 @@ public class ChatActivity extends AppCompatActivity {
         initUI();
 
         initData();
+
+        //注册广播
+        finishActivityRecevier=new FinishActivityRecevier();
+        IntentFilter intentFilter=new IntentFilter();
+        intentFilter.addAction(REMOVE_DIALOG);
+        registerReceiver(finishActivityRecevier,intentFilter);
     }
     @Override
     protected void onStart() {
@@ -96,6 +112,10 @@ public class ChatActivity extends AppCompatActivity {
         threadid=it.getStringExtra("threadid");
         try {
             chat_thread = Textile.instance().threads.get(threadid);
+            if(chat_thread.getWhitelistCount()==2){ //如果是双人thread
+                group_menu.setVisibility(View.GONE);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -152,16 +172,21 @@ public class ChatActivity extends AppCompatActivity {
         msgList= DBoperator.queryMsg(appdb,threadid);
         System.out.println("=============消息数："+msgList.size());
 
-        msgAdapter=new MsgAdapter(this,msgList,avatarpath);
-        msgAdapter.notifyDataSetChanged();
+//        chat_lv=findViewById(R.id.chat_lv);
+        MsgAdapter msgAdapter=new MsgAdapter(this,msgList,avatarpath);
         chat_lv.setAdapter(msgAdapter);
+        chat_lv.invalidateViews();
+        chat_lv.setSelection(msgList.size());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateChat(TMsg tMsg){
-        msgList.add(tMsg);
-        chat_lv.setSelection(msgList.size());
-        System.out.println("==================收到了消息："+tMsg.body);
+        if(tMsg.threadid.equals(threadid)){
+            msgList.add(tMsg);
+            chat_lv.invalidateViews();
+            chat_lv.setSelection(msgList.size()); //图片有时候不立即显示，因为Item大小完全相同。
+            System.out.println("==================收到了消息："+tMsg.body);
+        }
     }
 
     @Override
@@ -175,6 +200,7 @@ public class ChatActivity extends AppCompatActivity {
             Textile.instance().files.addFiles(filePath, threadid, "", new Handlers.BlockHandler() {
                 @Override
                 public void onComplete(Model.Block block) {
+
                 }
                 @Override
                 public void onError(Exception e) {
@@ -190,6 +216,16 @@ public class ChatActivity extends AppCompatActivity {
 
         if(EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().unregister(this);
+        }
+    }
+
+    private class FinishActivityRecevier extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(REMOVE_DIALOG)){
+                ChatActivity.this.finish();
+            }
         }
     }
 }

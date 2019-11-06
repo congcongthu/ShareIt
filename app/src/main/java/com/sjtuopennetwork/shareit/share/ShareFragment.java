@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.qrlibrary.qrcode.utils.PermissionUtils;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.util.DialogAdapter;
 import com.sjtuopennetwork.shareit.share.util.TDialog;
@@ -49,11 +50,10 @@ public class ShareFragment extends Fragment {
     DialogAdapter dialogAdapter;  //对话列表的数据适配器
     ListView dialoglistView; //对话列表
     ImageView bt_share_menu; //右上角加号按钮
-    CircleProgressDialog circleProgressDialog; //等待圆环
+    ImageView qrcodeJoinGroup; //扫码加群
 
     //内存数据
     List<TDialog> dialogs; //对话列表数据
-    boolean nodeOnline=false;
 
     //持久化存储
     public SQLiteDatabase appdb;
@@ -67,6 +67,7 @@ public class ShareFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        System.out.println("==============fagment生命周期：conCreateView");
         return inflater.inflate(R.layout.fragment_share, container, false);
     }
 
@@ -78,11 +79,6 @@ public class ShareFragment extends Fragment {
 
         initData();
 
-//        if(!nodeOnline){
-//            circleProgressDialog=new CircleProgressDialog(getActivity());
-//            circleProgressDialog.setText("节点启动中");
-//            circleProgressDialog.showDialog();
-//        }
 
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
@@ -95,12 +91,17 @@ public class ShareFragment extends Fragment {
         //右上角菜单按钮
         bt_share_menu=getActivity().findViewById(R.id.bt_share_add);
         bt_share_menu.setOnClickListener(v -> {
-//            BtShareMenu btShareMenu=new BtShareMenu(getContext());
-//            btShareMenu.setBackgroundColor(Color.parseColor("#00000000"));
-//            btShareMenu.setPopupGravity(Gravity.CENTER);
-//            btShareMenu.showPopupWindow();
+
             //直接跳转一个新的Activity
             Intent it=new Intent(getActivity(),NewGroupActivity.class);
+            startActivity(it);
+        });
+
+        qrcodeJoinGroup=getActivity().findViewById(R.id.bt_share_scan);
+        qrcodeJoinGroup.setOnClickListener(v -> {
+
+            PermissionUtils.getInstance().requestPermission(getActivity());
+            Intent it=new Intent(getActivity(),GroupQRCodeActivity.class);
             startActivity(it);
         });
     }
@@ -136,15 +137,7 @@ public class ShareFragment extends Fragment {
         });
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
-    public void knowOnline(Integer integer){
-        if(integer.intValue()==0){
-            if(!nodeOnline){
-//                circleProgressDialog.dismiss();
-//                nodeOnline=true;
-            }
-        }
-    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getNewMsg(TDialog tDialog){ //获取到新的消息后要更新显示

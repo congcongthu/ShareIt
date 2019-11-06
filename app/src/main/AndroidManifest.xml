@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -14,7 +15,15 @@
         android:roundIcon="@drawable/ic_share_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".share.GroupQRCodeActivity"></activity>
+        <activity android:name=".share.GroupCodeActivity"></activity>
+
+        <service
+            android:name=".util.ForeGroundService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".share.ImageInfoActivity" />
+        <activity android:name=".share.GroupQRCodeActivity" />
         <activity android:name=".login.ShareItLoginActivity" />
         <activity android:name=".share.GroupSetAdminActivity" />
         <activity android:name=".share.GroupDelMemberActivity" />
