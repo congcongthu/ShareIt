@@ -31,6 +31,7 @@ import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Mobile;
 import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.textilepb.QueryOuterClass;
 import sjtu.opennet.textilepb.View;
 
 public class ForeGroundService extends Service {
@@ -181,6 +182,12 @@ public class ForeGroundService extends Service {
                         @Override
                         public void onComplete() {
                             System.out.println("==========131cafe连接成功");
+                            QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
+                            try {
+                                Textile.instance().account.sync(options);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                         @Override
                         public void onError(Exception e) {
@@ -196,40 +203,14 @@ public class ForeGroundService extends Service {
         @Override
         public void nodeOnline() {
 
+            QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
+            try {
+                Textile.instance().account.sync(options);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             createDeviceThread();
-
-//            try {
-//                String a=Textile.instance().cafes.sessions().getItems(0).getId();
-//                Textile.instance().cafes.deregister(a, new Handlers.ErrorHandler() {
-//                    @Override
-//                    public void onComplete() {
-//                        System.out.println("===========解注册成功");
-//                    }
-//
-//                    @Override
-//                    public void onError(Exception e) {
-//                        System.out.println("===========解注册失败");
-//                    }
-//                });
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-
-//            Textile.instance().cafes.register(
-//                    "http://202.120.38.131:40601",
-//                    "2HgCmu3Gk72XkVbccXGA14JehiwL9tfT9tLueVc1FTRhX1UJzZRX9vhy1dkTB",
-//                    new Handlers.ErrorHandler() {
-//                        @Override
-//                        public void onComplete() {
-//                            System.out.println("==========131cafe连接成功");
-//                        }
-//                        @Override
-//                        public void onError(Exception e) {
-//                            System.out.println("==========131cafe连接失败");
-//                            //发消息再连接
-//                            EventBus.getDefault().post(new Integer(9));
-//                        }
-//                    });
 
             tryConnectCafe(9);
 
@@ -257,6 +238,12 @@ public class ForeGroundService extends Service {
                                 @Override
                                 public void onComplete(Model.Block block) {
                                     System.out.println("==========shareit注册设置头像成功");
+                                    QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
+                                    try {
+                                        Textile.instance().account.sync(options);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
 
                                 @Override
@@ -431,9 +418,10 @@ public class ForeGroundService extends Service {
                         feedItemData.text.getBody(), feedItemData.text.getDate().getSeconds(),
                         tDialog.imgpath);
 
+                EventBus.getDefault().post(updateDialog);
+
                 if(ismine==0){ //不是我的消息才广播出去
                     EventBus.getDefault().post(tMsg);
-                    EventBus.getDefault().post(updateDialog);
                 }
             }
 
@@ -476,7 +464,9 @@ public class ForeGroundService extends Service {
                 System.out.println("=============msgs：" + tMsg.authorname+" " + tMsg.authorname);
 
                 EventBus.getDefault().post(updateDialog);
-                EventBus.getDefault().post(tMsg);
+                if(ismine==0){  //不是我的图片才广播出去
+                    EventBus.getDefault().post(tMsg);
+                }
             }
         }
     }

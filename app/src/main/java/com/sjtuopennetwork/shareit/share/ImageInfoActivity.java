@@ -16,21 +16,22 @@ public class ImageInfoActivity extends AppCompatActivity {
 
     //内存数据
     String imgpath;
-    String imghash;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_info);
 
-
         Intent it=getIntent();
-        imghash=it.getStringExtra("imghash");
+        imgpath=it.getStringExtra("imgpath");
 
-        imgpath= FileUtil.getFilePath(imghash);
+        if(imgpath.charAt(0)=='Q'){ //那就是hash值
+            imgpath= FileUtil.getFilePath(imgpath);
+        }
 
         photoView=findViewById(R.id.photo_view);
-
         photoView.setImageBitmap(BitmapFactory.decodeFile(imgpath));
+
+        photoView.setOnClickListener(view -> finish());
     }
 }

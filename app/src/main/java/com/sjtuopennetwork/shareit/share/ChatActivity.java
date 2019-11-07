@@ -127,11 +127,11 @@ public class ChatActivity extends AppCompatActivity {
 
             if(!msg.equals("")){
                 chat_text_edt.setText("");
-                        try {
-                            Textile.instance().messages.add(threadid,msg);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                try {
+                    Textile.instance().messages.add(threadid,msg);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 TMsg tMsg= null;
                 try {
@@ -189,7 +189,6 @@ public class ChatActivity extends AppCompatActivity {
         if(requestCode==PictureConfig.CHOOSE_REQUEST && resultCode==RESULT_OK){
             choosePic=PictureSelector.obtainMultipleResult(data);
             String filePath=choosePic.get(0).getPath();
-
             //发送照片
             Textile.instance().files.addFiles(filePath, threadid, "", new Handlers.BlockHandler() {
                 @Override
@@ -201,6 +200,15 @@ public class ChatActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             });
+            TMsg tMsg= null;
+            try {
+                tMsg = new TMsg(1,threadid,1,"",
+                        Textile.instance().profile.name(),Textile.instance().profile.avatar(),filePath,System.currentTimeMillis()/1000,true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            msgList.add(tMsg);
+            chat_lv.setSelection(msgList.size());
         }
     }
 
@@ -221,5 +229,11 @@ public class ChatActivity extends AppCompatActivity {
                 ChatActivity.this.finish();
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(finishActivityRecevier);
     }
 }
