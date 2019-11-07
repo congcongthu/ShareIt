@@ -149,7 +149,8 @@ public class Segmenter {
             outDirf.mkdir();
         }
         //String command += "-i " + inputpath;
-        String command = String.format("-i %s -map 0 -codec:v libx264 -codec:a aac -c:s dvdsub -f ssegment -segment_time 10 -segment_list %s/out.m3u8 %s/out%%03d.ts", inputpath, outDir, outDir);
+        //String command = String.format("-i %s -map 0 -codec:v libx264 -codec:a aac -c:s dvdsub -f ssegment -segment_list %s/out.m3u8 %s/out%%03d.ts", inputpath, outDir, outDir);
+        String command = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -f segment -segment_list %s/out.m3u8 %s/out%%03d.ts", inputpath, outDir, outDir);
 
         Log.i(TAG, String.format("Execute command:\n%s", command));
 
