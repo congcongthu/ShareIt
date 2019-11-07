@@ -31,89 +31,119 @@
 
     </android.support.v7.widget.Toolbar>
 
+    <LinearLayout
+        android:id="@+id/album_photo_layout"
+        android:paddingLeft="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?selectableItemBackground"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="55dp">
+        <ImageView
+            android:padding="10dp"
+            android:src="@drawable/ic_album_photo"
+            android:layout_width="45dp"
+            android:layout_height="45dp" />
+        <TextView
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="相册"/>
+        <ImageView
+            android:padding="10dp"
+            android:src="@drawable/ic_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/lightgray"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
 
     <LinearLayout
+        android:id="@+id/album_video_layout"
+        android:paddingLeft="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?selectableItemBackground"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        android:layout_width="360dp"
-        android:layout_height="180dp" >
-
-        <LinearLayout
-            android:id="@+id/album_photo_layout"
-            android:gravity="center"
-            android:layout_margin="20dp"
-            android:orientation="vertical"
-            android:background="@drawable/rect_search_contact"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+        <ImageView
+            android:padding="10dp"
+            android:src="@drawable/ic_album_video"
+            android:layout_width="45dp"
+            android:layout_height="45dp" />
+        <TextView
+            android:textSize="18sp"
             android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" >
-
-            <ImageView
-                android:src="@drawable/ic_album_photo"
-                android:layout_width="60dp"
-                android:layout_height="60dp" />
-
-            <TextView
-                android:text="相册"
-                android:padding="10dp"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/album_video_layout"
-            android:gravity="center"
-            android:layout_margin="20dp"
-            android:orientation="vertical"
-            android:background="@drawable/rect_search_contact"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" >
-
-            <ImageView
-                android:src="@drawable/ic_album_video"
-                android:layout_width="60dp"
-                android:layout_height="60dp" />
-
-            <TextView
-                android:text="视频"
-                android:padding="10dp"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/album_file_layout"
-            android:gravity="center"
-            android:layout_margin="20dp"
-            android:orientation="vertical"
-            android:background="@drawable/rect_search_contact"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" >
-
-            <ImageView
-                android:src="@drawable/ic_album_file"
-                android:layout_width="60dp"
-                android:layout_height="60dp" />
-
-            <TextView
-                android:text="文件"
-                android:padding="10dp"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="视频"/>
+        <ImageView
+            android:padding="10dp"
+            android:src="@drawable/ic_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
+
+    <View
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/lightgray"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <LinearLayout
+        android:id="@+id/album_file_layout"
+        android:paddingLeft="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?selectableItemBackground"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+        <ImageView
+            android:padding="10dp"
+            android:src="@drawable/ic_album_file"
+            android:layout_width="45dp"
+            android:layout_height="45dp" />
+        <TextView
+            android:textSize="18sp"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="文件"/>
+        <ImageView
+            android:padding="10dp"
+            android:src="@drawable/ic_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:background="@color/lightgray"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
 
 
 </LinearLayout>
