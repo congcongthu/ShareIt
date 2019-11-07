@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
-    android:layout_width="match_parent"
+    android:layout_width="80dp"
     android:layout_height="80dp">
 
     <com.shehuan.niv.NiceImageView
@@ -20,6 +20,8 @@
         android:textSize="16sp"
         android:gravity="center"
         android:padding="5dp"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:text="昵称"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
