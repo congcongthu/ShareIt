@@ -155,14 +155,20 @@ public class MsgAdapter extends BaseAdapter {
         if(view != null && view.getTag() instanceof PhotoViewHolder){
             PhotoViewHolder h=(PhotoViewHolder) view.getTag();
             String avatarPath= FileUtil.getFilePath(msgList.get(i).authoravatar);
-            String filePath=FileUtil.getFilePath(msgList.get(i).body);
-            if(msgList.get(i).ismine){ //如果是自己的消息
+            String msgBody=msgList.get(i).body;
+            String filePath=FileUtil.getFilePath(msgBody);
+            if(msgList.get(i).ismine){ //如果是自己的图片
                 h.send_photo_right.setVisibility(View.VISIBLE); //右边的显示
                 h.send_photo_left.setVisibility(View.GONE); //左边的隐藏
                 h.photo_name_r.setText(msgList.get(i).authorname);
                 h.photo_time_r.setText(df.format(msgList.get(i).sendtime*1000));
                 h.photo_avatar_r.setImageBitmap(BitmapFactory.decodeFile(avatarpath));
-                setPhoto(h.chat_photo_r,filePath,msgList.get(i).body);
+                System.out.println("======照片消息的内容："+msgList.get(i).body);
+                if(msgBody.charAt(0)=='Q'){ //如果是hash值
+                    setPhoto(h.chat_photo_r,filePath,msgList.get(i).body);
+                }else{
+                    Glide.with(context).load(msgList.get(i).body).thumbnail(0.3f).into(h.chat_photo_r);
+                }
             }else{ //不是自己的消息
                 h.send_photo_left.setVisibility(View.VISIBLE); //左边的显示
                 h.send_photo_right.setVisibility(View.GONE); //右边的隐藏
@@ -174,12 +180,12 @@ public class MsgAdapter extends BaseAdapter {
 
             h.chat_photo.setOnClickListener(v -> {
                 Intent it1=new Intent(context, ImageInfoActivity.class);
-                it1.putExtra("imghash", msgList.get(i).body);
+                it1.putExtra("imgpath", msgBody);
                 context.startActivity(it1);
             });
             h.chat_photo_r.setOnClickListener(v -> {
                 Intent it1=new Intent(context, ImageInfoActivity.class);
-                it1.putExtra("imghash", msgList.get(i).body);
+                it1.putExtra("imgpath", msgBody);
                 context.startActivity(it1);
             });
         }
@@ -192,15 +198,14 @@ public class MsgAdapter extends BaseAdapter {
                 @Override
                 public void onComplete(byte[] data, String media) {
                     String newPath=FileUtil.storeFile(data,avatarHash);
-                    imageView.setImageBitmap(BitmapFactory.decodeFile(newPath));
-                }
+//                    imageView.setImageBitmap(BitmapFactory.decodeFile(newPath));
+                    Glide.with(context).load(newPath).thumbnail(0.3f).into(imageView);                }
                 @Override
                 public void onError(Exception e) {
 
                 }
             });
         }else{ //如果已经存储过这个头像
-//            imageView.setImageBitmap(BitmapFactory.decodeFile(avatarPath));
             Glide.with(context).load(avatarPath).thumbnail(0.3f).into(imageView);
         }
     }
@@ -213,28 +218,20 @@ public class MsgAdapter extends BaseAdapter {
                 public void onComplete(byte[] data, String media) {
                     System.out.println("====拿图片成功");
                     afileName=FileUtil.storeFile(data,fileHash);
-                    imageView.setImageBitmap(BitmapFactory.decodeFile(afileName));
+                    Glide.with(context).load(afileName).thumbnail(0.3f).into(imageView);
                 }
                 @Override
                 public void onError(Exception e) {
                     System.out.println("====拿图片失败");
-//                    imageView.setImageResource(R.drawable.ic_album);
-                    imageView.setImageBitmap(BitmapFactory.decodeFile(afileName));
                 }
             });
         }else{
-//            imageView.setImageBitmap(BitmapFactory.decodeFile(filePath));
             Glide.with(context).load(filePath).thumbnail(0.3f).into(imageView);
         }
     }
 
     @Override
     public boolean isEnabled(int position) {
-
-//        if (msgList.get(position).msgtype==0){
-//            return false;
-//        }
-
         return false;
     }
 }

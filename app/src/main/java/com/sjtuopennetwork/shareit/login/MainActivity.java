@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
                 //跳转到shareit登录界面
                 Intent toShareIt=new Intent(MainActivity.this,ShareItLoginActivity.class);
                 startActivity(toShareIt);
-                finish();
             });
         }
     }

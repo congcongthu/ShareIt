@@ -8,10 +8,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.library.flowlayout.FlowLayoutManager;
+import com.library.flowlayout.SpaceItemDecoration;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.util.GroupMemberAdapter;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
@@ -79,8 +82,14 @@ public class GroupInfoActivity extends AppCompatActivity {
 
         //显示成员列表
         GroupMemberAdapter adapter=new GroupMemberAdapter(this,allMembers);
-        group_members.setLayoutManager(new GridLayoutManager(this,5));
+        FlowLayoutManager flowLayoutManager=new FlowLayoutManager();
+        group_members.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
+        group_members.setLayoutManager(flowLayoutManager);
         group_members.setAdapter(adapter);
+    }
+
+    private int dp2px(float value) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, getResources().getDisplayMetrics());
     }
 
     private void initUI() {
@@ -90,12 +99,10 @@ public class GroupInfoActivity extends AppCompatActivity {
         leave_group=findViewById(R.id.leave_group);
         group_members=findViewById(R.id.group_members);
         group_qrcode=findViewById(R.id.group_qrcode);
-
     }
     private void initData() {
         pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
         appdb= AppdbHelper.getInstance(this,pref.getString("loginAccount","")).getWritableDatabase();
-
 
         //获得管理员、非管理员，管理员才显示设置管理员。
         threadid=getIntent().getStringExtra("threadid");

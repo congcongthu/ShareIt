@@ -14,6 +14,7 @@ import java.util.List;
 
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.textilepb.QueryOuterClass;
 
 public class MyDevicesActivity extends AppCompatActivity {
 
@@ -28,25 +29,25 @@ public class MyDevicesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_devices);
+        QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
+        try {
+            Textile.instance().account.sync(options);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         initUI();
         initData();
         drawUI();
     }
 
-
-
-
     private void initUI() {
         lv_devices = findViewById(R.id.devices_list);
     }
 
     private void initData() {
-//        try {
-//            peers_list = Textile.instance().account.contact().getPeersList();//获取peers列表
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+
         try {
             threads=Textile.instance().threads.list().getItemsList();
             device_list=new ArrayList<>();

@@ -30,6 +30,7 @@ public class NotificationItem {
         this.body = body;
         this.sendTime = sendTime;
         this.isRead = isRead;
+        this.avatarPath=avatarPath;
     }
 
     public int getiId() {

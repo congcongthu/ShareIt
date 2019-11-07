@@ -34,6 +34,17 @@ public class GroupQRCodeActivity extends DefaultQRScanActivity {
     protected void onAlbumResult(int requestCode, int resultCode, String recode) {
         System.out.println("============相册得到结果："+recode);
 
+        String[] decode=recode.split("/");
+
+        //接受邀请
+        try {
+            Textile.instance().invites.acceptExternal(decode[0],decode[1]);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("==============相册扫码加群成功");
+        finish();
     }
 
     @Override

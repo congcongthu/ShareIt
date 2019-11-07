@@ -127,16 +127,11 @@ public class ChatActivity extends AppCompatActivity {
 
             if(!msg.equals("")){
                 chat_text_edt.setText("");
-//                new Thread(){
-//                    @Override
-//                    public void run() {
-                        try {
-                            Textile.instance().messages.add(threadid,msg);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-//                    }
-//                }.start();
+                try {
+                    Textile.instance().messages.add(threadid,msg);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 TMsg tMsg= null;
                 try {
@@ -147,7 +142,6 @@ public class ChatActivity extends AppCompatActivity {
                 }
                 msgList.add(tMsg);
                 chat_lv.setSelection(msgList.size());
-
             }else{
                 Toast.makeText(this,"消息不能为空", Toast.LENGTH_SHORT).show();
             }
@@ -183,7 +177,7 @@ public class ChatActivity extends AppCompatActivity {
     public void updateChat(TMsg tMsg){
         if(tMsg.threadid.equals(threadid)){
             msgList.add(tMsg);
-            chat_lv.invalidateViews();
+            chat_lv.invalidateViews(); //强制刷新
             chat_lv.setSelection(msgList.size()); //图片有时候不立即显示，因为Item大小完全相同。
             System.out.println("==================收到了消息："+tMsg.body);
         }
@@ -195,7 +189,6 @@ public class ChatActivity extends AppCompatActivity {
         if(requestCode==PictureConfig.CHOOSE_REQUEST && resultCode==RESULT_OK){
             choosePic=PictureSelector.obtainMultipleResult(data);
             String filePath=choosePic.get(0).getPath();
-
             //发送照片
             Textile.instance().files.addFiles(filePath, threadid, "", new Handlers.BlockHandler() {
                 @Override
@@ -207,6 +200,15 @@ public class ChatActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             });
+            TMsg tMsg= null;
+            try {
+                tMsg = new TMsg(1,threadid,1,"",
+                        Textile.instance().profile.name(),Textile.instance().profile.avatar(),filePath,System.currentTimeMillis()/1000,true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            msgList.add(tMsg);
+            chat_lv.setSelection(msgList.size());
         }
     }
 
@@ -227,5 +229,11 @@ public class ChatActivity extends AppCompatActivity {
                 ChatActivity.this.finish();
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(finishActivityRecevier);
     }
 }

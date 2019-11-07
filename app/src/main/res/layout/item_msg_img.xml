@@ -100,14 +100,25 @@
 
             </LinearLayout>
 
-            <ImageView
-                android:background="@color/lightgray"
-                android:id="@+id/chat_photo_r"
-                android:layout_margin="5dp"
-                android:src="@drawable/ic_album"
-                android:adjustViewBounds="true"
-                android:layout_width="160dp"
-                android:layout_height="160dp" />
+            <LinearLayout
+                android:gravity="right|center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="160dp">
+
+                <ImageView
+                    android:id="@+id/photo_status"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp" />
+
+                <ImageView
+                    android:background="@color/lightgray"
+                    android:id="@+id/chat_photo_r"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/ic_album"
+                    android:adjustViewBounds="true"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp" />
+            </LinearLayout>
         </LinearLayout>
 
         <com.shehuan.niv.NiceImageView
