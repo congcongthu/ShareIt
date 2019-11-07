@@ -1,6 +1,7 @@
 package com.sjtuopennetwork.shareit.album;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -14,15 +15,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.luck.picture.lib.photoview.PhotoView;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.util.FileUtil;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import sjtu.opennet.hon.Handlers;
+import sjtu.opennet.hon.Textile;
+
+import static android.support.v4.content.ContextCompat.startActivity;
 
 //创建Adapter
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     private static final String TAG = "MyAdapter";
     List <String> mDataset;
+    // List<String> largeHash=new ArrayList<String>();
+    PhotoView mPhotoView;
     //private  String picDataset;
 
 
@@ -49,7 +63,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         // mDataSet = myDataset;
         mDataset=myPicDataset;
     }
-
+    // Provide a suitable constructor (depends on the kind of dataset)
+//    public MyAdapter() {
+//
+//    }
 
     // Create new views (invoked by the layout manager)
     @Override
@@ -80,20 +97,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
 
         //这里可以设置item监听
-        //对整个item监听
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("======================Element:  "+holder.getAdapterPosition()+"   clicked");
-                Log.d(TAG, "Element " + holder.getAdapterPosition() + " clicked.");
-            }
-        });
-        // 对控件监听
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "Element " + holder.getAdapterPosition() + " clicked.");
-            }
+        holder.imageView.setOnClickListener(v -> {
+            System.out.println("======================Element:  "+holder.getAdapterPosition()+"   clicked");
+            // Log.d(TAG, "Element " + holder.getAdapterPosition() + " clicked.");
+            String photopath = mDataset.get(holder.getAdapterPosition());
+            //  Intent it = new Intent(MyAdapter.class,PhotoShow.class);
+            // startActivity(it);
+
         });
     }
 
@@ -102,5 +112,72 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public int getItemCount() {
         return mDataset.size();
     }
+
+    //得到photo thread中的所有hash
+    //将hash转为本地路径
+    //设置适配器
+    /*
+    private  void initData(String threadId){
+            mDataset.clear();
+            largeHash.clear();
+            int listnum = 0;
+            try {
+                listnum = Textile.instance().files.list(threadId, "", 256).getItemsCount();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // System.out.println("===============Item个数："+listnum);
+            //得到photo thread中所有hash
+            for (int i = 0; i < listnum; i++) {
+                String large_hash = "";
+                try {
+
+                    large_hash = Textile.instance().files.list(threadId, "", listnum).getItems(i).getFiles(0).getLinksMap().get("large").getHash();
+                    //  choosePic=Textile.instance().files.list(threadId,"",listnum);
+                    System.out.println("===================================photo_thread hash" + i + ":   " + large_hash);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //排除相同hash，即相同的图片
+                //    if(!largeHash.contains(large_hash)){
+                largeHash.add(large_hash);
+                //   }
+
+            }
+            for (int i = 0; i < largeHash.size(); i++) {
+                int finalI = i;
+                String filepath = FileUtil.getFilePath(largeHash.get(finalI));
+                if (filepath.equals("null")) {
+                    Textile.instance().files.content(largeHash.get(i), new Handlers.DataHandler() {
+                        @Override
+                        public void onComplete(byte[] data, String media) {
+                            //存储下来的包括路径的完整文件名
+                            picDataset = FileUtil.storeFile(data, largeHash.get(finalI));
+                            System.out.println("=========================文件不存在取得 " + picDataset);
+                            mDataset.add(picDataset);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                        }
+                    });
+                } else {
+                    mDataset.add(filepath);
+                }
+
+            }
+            //
+            for (int i = 0; i < mDataset.size(); i++) {
+                if (mDataset.get(i).equals(null)) {
+                    mDataset.remove(i);
+                }
+            }
+            Collections.reverse(mDataset);
+    }
+
+     */
+
 }
 

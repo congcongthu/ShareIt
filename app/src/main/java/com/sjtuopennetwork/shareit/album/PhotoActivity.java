@@ -19,7 +19,10 @@ import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Handlers;
@@ -28,9 +31,7 @@ import sjtu.opennet.textilepb.View;
 
 import static android.app.PendingIntent.getActivity;
 
-//读取photo_thread中的hash，将其转换为图片，并显示；
-//添加添加本地图片按键，将本地图片同步到photo_thread
-//同步功能
+
 public class PhotoActivity extends AppCompatActivity {
 
     //UI控件
@@ -38,16 +39,15 @@ public class PhotoActivity extends AppCompatActivity {
     ImageView photo_sync;
     //
     private  String thread_photo_id = "";
-
-    List<String> mDataset=new ArrayList<String>();
+    List<String> myDataset=new ArrayList<String>();
     List<String> largeHash=new ArrayList<String>();
-
     protected String picDataset;
-
     List<LocalMedia> choosePic;
 
     //持久化数据
     SharedPreferences pref;
+
+    private Lock lock = new ReentrantLock();
 
     /**
      * 数据：myDataset
@@ -56,7 +56,7 @@ public class PhotoActivity extends AppCompatActivity {
      */
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
+
 
 
     @Override
@@ -64,40 +64,16 @@ public class PhotoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
 
-        initUI();
-
         pref =getSharedPreferences("txt1",MODE_PRIVATE);
         thread_photo_id = pref.getString("thread_photo_id","");
+
+        //同步所有thread中的照片到手机
         initData(thread_photo_id);
 
-        //recycleview配置
-        //初始化主体
+        initUI();
 
-        recyclerView = (RecyclerView) findViewById(R.id.my_recyclerview);
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        recyclerView.setHasFixedSize(true);
-        //配置layout manager
-        GridLayoutManager layoutManager = new GridLayoutManager(this,3);
-        recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new MyAdapter(mDataset);
-        //配置adapter
-        recyclerView.setAdapter(mAdapter);
+        initRecycleView();
 
-    }
-
-    public  void initUI()
-    {
-        photo_add = findViewById(R.id.photo_add);
-        photo_sync=findViewById(R.id.photo_sync);
-    }
-
-    //初始化photo_thread
-    //处理thread中的数据，将其显示
-    //Get raw data for a file hash
-    private void initData(String threadId) {
-        //同步所有thread中的照片到手机
-        photoSync(threadId);
 
         //添加本地照片到photo thread
         photo_add.setOnClickListener(view -> {
@@ -110,132 +86,132 @@ public class PhotoActivity extends AppCompatActivity {
         });
         //检查thread上的照片，同步到本地app存储
         photo_sync.setOnClickListener(view -> {
-            photoSync(threadId);
+            // photoSync(thread_photo_id);
 
         });
+    }
+    private  void initUI()
+    {
+        photo_add = findViewById(R.id.photo_add);
+        photo_sync=findViewById(R.id.photo_sync);
+        recyclerView =  findViewById(R.id.my_recyclerview);
+    }
+
+    private  void  initRecycleView(){
+        // mAdapter.notifyDataSetChanged();
+        //recycleview配置
+        //初始化主体
+        recyclerView.setHasFixedSize(true);
+        GridLayoutManager layoutManager = new GridLayoutManager(this,3);
+        recyclerView.setLayoutManager(layoutManager);
+        // mAdapter=new MyAdapter();
+        //recyclerView.setAdapter(mAdapter);
+        mAdapter = new MyAdapter(myDataset);
+        recyclerView.setAdapter(mAdapter);
+    }
+
+    //得到photo thread中的所有hash
+    //将hash转为本地路径
+    //设置适配器
+    private  void initData(String threadId){
+        try {
+            lock.lock();
+            myDataset.clear();
+            largeHash.clear();
+            int listnum = 0;
+            try {
+                listnum = Textile.instance().files.list(threadId, "", 256).getItemsCount();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // System.out.println("===============Item个数："+listnum);
+            //得到photo thread中所有hash
+            for (int i = 0; i < listnum; i++) {
+                String large_hash = "";
+                try {
+
+                    large_hash = Textile.instance().files.list(threadId, "", listnum).getItems(i).getFiles(0).getLinksMap().get("large").getHash();
+                    //  choosePic=Textile.instance().files.list(threadId,"",listnum);
+                    System.out.println("===================================photo_thread hash" + i + ":   " + large_hash);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //排除相同hash，即相同的图片
+                //    if(!largeHash.contains(large_hash)){
+                largeHash.add(large_hash);
+                //   }
+
+            }
+            for (int i = 0; i < largeHash.size(); i++) {
+                int finalI = i;
+                String filepath = FileUtil.getFilePath(largeHash.get(finalI));
+                if (filepath.equals("null")) {
+                    Textile.instance().files.content(largeHash.get(i), new Handlers.DataHandler() {
+                        @Override
+                        public void onComplete(byte[] data, String media) {
+                            //存储下来的包括路径的完整文件名
+                            picDataset = FileUtil.storeFile(data, largeHash.get(finalI));
+                            System.out.println("=========================文件不存在取得 " + picDataset);
+                            myDataset.add(picDataset);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                        }
+                    });
+                } else {
+                    myDataset.add(filepath);
+                }
+
+            }
+            //
+            for (int i = 0; i < myDataset.size(); i++) {
+                if (myDataset.get(i).equals(null)) {
+                    myDataset.remove(i);
+                }
+            }
+            Collections.reverse(myDataset);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            lock.unlock();
+        }
+
 
     }
 
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode==PictureConfig.CHOOSE_REQUEST && resultCode==RESULT_OK){
+        if (requestCode == PictureConfig.CHOOSE_REQUEST && resultCode == RESULT_OK) {
+            //myDataset.clear();
             //选择或拍摄照片之后的回调，将对应图片添加到photo_thread中
-            choosePic=PictureSelector.obtainMultipleResult(data);
-            String filePath=choosePic.get(0).getPath();
-
-            System.out.println("======================file path "+filePath);
-            pref =getSharedPreferences("txt1",MODE_PRIVATE);
-            thread_photo_id = pref.getString("thread_photo_id","");
+            choosePic = PictureSelector.obtainMultipleResult(data);
+            String filePath = choosePic.get(0).getPath();
+            pref = getSharedPreferences("txt1", MODE_PRIVATE);
+            thread_photo_id = pref.getString("thread_photo_id", "");
             Textile.instance().files.addFiles(filePath, thread_photo_id, "", new Handlers.BlockHandler() {//调用textile接口添加图片到photo_thread
                 @Override
                 public void onComplete(Model.Block block) {
                 }
+
                 @Override
                 public void onError(Exception e) {
                     e.printStackTrace();
                 }
             });
-
-
-
-        }
-
-    }
-
-    private void photoSync(String threadId){
-        int listnum = 0;
-        try {
-            listnum = Textile.instance().files.list(threadId,"",256).getItemsCount();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("===============Item个数："+listnum);
-
-        for(int i=0;i<listnum;i++) {
-            String large_hash = "";
             try {
-
-                large_hash = Textile.instance().files.list(threadId, "", listnum).getItems(i).getFiles(0).getLinksMap().get("large").getHash();
-                //  choosePic=Textile.instance().files.list(threadId,"",listnum);
-                System.out.println("===================================photo_thread hash:   " + large_hash);
-
+                Textile.instance().threads.snapshot();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            //排除相同hash，即相同的图片
-         //   if(!largeHash.contains(large_hash)){
-                largeHash.add(large_hash);
-          //  }
-
+            myDataset.add(filePath);
+            mAdapter.notifyDataSetChanged();
         }
-        System.out.println("===================================hash个数：  " + largeHash.size());
-
-
-
-        for(int i=0;i<largeHash.size();i++) {
-            int finalI = i;
-            String filepath = FileUtil.getFilePath(largeHash.get(finalI));
-            if(filepath.equals("null")){
-                Textile.instance().files.content(largeHash.get(i), new Handlers.DataHandler() {
-                    @Override
-                    public void onComplete(byte[] data, String media) {
-                        //存储下来的包括路径的完整文件名
-                        picDataset = FileUtil.storeFile(data, largeHash.get(finalI));
-                        mDataset.add(picDataset);
-                    }
-                    @Override
-                    public void onError(Exception e) {
-                    }
-                });
-            }
-            else{
-                mDataset.add(filepath);
-            }
-
-        }
-        //
-        for(int i=0;i<mDataset.size();i++){
-            if(mDataset.get(i).equals(null)){
-                mDataset.remove(i);
-            }
-        }
-
-
-//        mAdapter = new MyAdapter(mDataset);
-//        recyclerView.setAdapter(mAdapter);
-
-        //取出thread中的每个图片hash
-//        String large_hash = "";
-//        try {
-//
-//            large_hash = Textile.instance().files.list(threadId, "", listnum).getItems(2).getFiles(0).getLinksMap().get("large").getHash();
-//          //  choosePic=Textile.instance().files.list(threadId,"",listnum);
-//            System.out.println("===================================photo_thread hash:   "+large_hash);
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        String finalLarge_hash = large_hash;
-//
-//        Textile.instance().files.content(large_hash, new Handlers.DataHandler() {
-//            @Override
-//            public void onComplete(byte[] data, String media) {
-//                //存储下来的包括路径的完整文件名
-//                picDataset = FileUtil.storeFile(data, finalLarge_hash);
-//                System.out.println("===================================picture path:   "+picDataset);
-//
-//            }
-//            @Override
-//            public void onError(Exception e) {
-//            }
-//        });
     }
-
-
-
 
 
 }
