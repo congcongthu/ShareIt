@@ -1,15 +1,82 @@
 package com.sjtuopennetwork.shareit.album;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.sjtuopennetwork.shareit.R;
 
-public class VideoActivity extends AppCompatActivity {
+import java.util.List;
 
+import sjtu.opennet.hon.Handlers;
+import sjtu.opennet.hon.Segmenter;
+import sjtu.opennet.hon.Textile;
+import sjtu.opennet.textilepb.Model;
+
+public class VideoActivity extends AppCompatActivity {
+    // UI Gadget
+    ImageView video_sync;
+    ImageView video_add;
+
+    List<LocalMedia> chooseVid;
+
+    private static final String TAG = "VideoActivity";
+    private static final int REQUEST_CODE_PICK_VIDEO = 42;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
+
+        initUI();
     }
+
+
+
+    public void initUI(){
+        video_sync=findViewById(R.id.video_sync);
+        video_add=findViewById(R.id.video_add);
+        video_sync.setOnClickListener(view -> {
+            Segmenter.testExternalStorage();
+            Segmenter.initffmpeg(this);
+            //Segmenter.segment("aaa", "aaa");
+        });
+        video_add.setOnClickListener(video_add -> {
+            Log.i(TAG, "Video Add Clicked.");
+            PictureSelector.create(VideoActivity.this)
+                    .openGallery(PictureMimeType.ofVideo())//全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()
+                    .maxSelectNum(1)//最大选择数量
+                    .compress(false)//是否压缩
+                    .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调 onActivityResult code
+
+            //Segmenter.testFFresume(this);
+        });
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode==PictureConfig.CHOOSE_REQUEST && resultCode==RESULT_OK){
+            //选择或拍摄照片之后的回调，将对应图片添加到photo_thread中
+            chooseVid=PictureSelector.obtainMultipleResult(data);
+            String filePath=chooseVid.get(0).getPath();
+
+            Log.i(TAG, String.format("Add video from file %s.", filePath));
+            Log.i(TAG, String.format("Try to stream video"));
+            //Segmenter.getFrame(filePath);
+            Segmenter.testSegment(this, filePath);
+        }
+        else{
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
 }
