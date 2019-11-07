@@ -142,7 +142,17 @@ public class Segmenter {
     public static void testSegment(Context context, String inputpath){
         Log.i(TAG, "Test ffmpeg segment");
         Log.i(TAG, String.format("Input file %s", inputpath));
-        String command = "-i /storage/emulated/0/DCIM/Camera/VID_20191107_052208.mp4 -map 0 -codec:v libx264 -codec:a aac -c:s dvdsub -f ssegment -segment_list /storage/emulated/0/Download/out.m3u8 /storage/emulated/0/Download/out%03d.ts";
+        String outDir = "/storage/emulated/0/Download/OutDir";
+        File outDirf = new File(outDir);
+        if(!outDirf.exists()){
+            Log.i(TAG, String.format("Test our directory does not exists. Try to create %s.", outDir));
+            outDirf.mkdir();
+        }
+        //String command += "-i " + inputpath;
+        String command = String.format("-i %s -map 0 -codec:v libx264 -codec:a aac -c:s dvdsub -f ssegment -segment_time 10 -segment_list %s/out.m3u8 %s/out%%03d.ts", inputpath, outDir, outDir);
+
+        Log.i(TAG, String.format("Execute command:\n%s", command));
+
         FFmpeg ffmpeg = FFmpeg.getInstance(context);
 
         try{
