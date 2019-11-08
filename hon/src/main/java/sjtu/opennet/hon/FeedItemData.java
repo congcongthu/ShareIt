@@ -8,6 +8,9 @@ import sjtu.opennet.textilepb.View.Leave;
 import sjtu.opennet.textilepb.View.Like;
 import sjtu.opennet.textilepb.View.Text;
 import sjtu.opennet.textilepb.View.Files;
+import sjtu.opennet.textilepb.View.AddAdmin;
+import sjtu.opennet.textilepb.View.RemovePeer;
+import sjtu.opennet.textilepb.View.FeedVideo;
 
 public class FeedItemData {
     public FeedItemType type;
@@ -20,4 +23,7 @@ public class FeedItemData {
     public Join join;
     public Leave leave;
     public Announce announce;
+    public AddAdmin addAdmin;
+    public RemovePeer removePeer;
+    public FeedVideo feedVideo;
 }
