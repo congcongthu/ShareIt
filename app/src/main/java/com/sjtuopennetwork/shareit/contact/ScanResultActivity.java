@@ -144,6 +144,7 @@ public class ScanResultActivity extends AppCompatActivity {
             System.out.println("=============contact的address："+resultContact.getAddress());
             Textile.instance().invites.add(threadId,address); //key就是联系人的address
             System.out.println("===============发送了邀请");
+            finish();
         } catch (Exception e) {
             e.printStackTrace();
         }

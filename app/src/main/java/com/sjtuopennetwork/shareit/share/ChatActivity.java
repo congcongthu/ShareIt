@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,15 +48,18 @@ public class ChatActivity extends AppCompatActivity {
     TextView chat_name_toolbar;
     ListView chat_lv;
     Button send_msg;
-    NiceImageView bt_send_img;
+    ImageView bt_add_file;
     EditText chat_text_edt;
     ImageView group_menu;
+    LinearLayout add_file_layout;
+    TextView bt_send_img;
 
     //持久化数据
     public SQLiteDatabase appdb;
     public SharedPreferences pref;
 
     //内存数据
+    boolean addingFIle=false;
     String threadid;
     Model.Thread chat_thread;
     List<TMsg> msgList;
@@ -95,11 +99,24 @@ public class ChatActivity extends AppCompatActivity {
 
     private void initUI() {
         chat_lv=findViewById(R.id.chat_lv);
+        bt_send_img=findViewById(R.id.bt_send_img);
         chat_name_toolbar=findViewById(R.id.chat_name_toolbar);
         send_msg=findViewById(R.id.chat_send_text);
-        bt_send_img=findViewById(R.id.bt_send_img);
+        bt_add_file=findViewById(R.id.bt_add_file);
         chat_text_edt=findViewById(R.id.chat_text_edt);
         group_menu=findViewById(R.id.group_menu);
+        add_file_layout=findViewById(R.id.file_layout);
+        add_file_layout.setVisibility(View.GONE);
+        
+        bt_add_file.setOnClickListener(view -> {
+            if(addingFIle){
+                addingFIle=false;
+                add_file_layout.setVisibility(View.GONE);
+            }else{
+                addingFIle=true;
+                add_file_layout.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void initData() {
