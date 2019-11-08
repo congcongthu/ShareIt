@@ -58,7 +58,7 @@ dependencies {
     //compile group: 'org.bytedeco', name: 'ffmpeg' + '-platform', version: '4.1.1' + '-1.4.4'
     //compile 'org.bytedeco.javacpp-presets:ffmpeg-platform:4.1-1.4.4'
     //compile 'org.bytedeco.javacpp-presets:ffmpeg-platform:4.1-1.4.4:android-arm'
-    compile group: 'org.bytedeco', name: 'javacv-platform', version: '1.5.2'
+    implementation group: 'org.bytedeco', name: 'javacv-platform', version: '1.5.2'
     //testCompile 'org.bytedeco.javacpp-presets:ffmpeg:4.1-1.4.4:linux-x86_64'
-    compile 'com.writingminds:FFmpegAndroid:0.3.2'
+    implementation 'com.writingminds:FFmpegAndroid:0.3.2'
 }

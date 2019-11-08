@@ -210,6 +210,17 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
+            //测试通知
+            try {
+                List<Model.Notification> noti_list= Textile.instance().notifications.list("",500).getItemsList();
+                System.out.println("============通知条数："+noti_list.size());
+                for(Model.Notification n:noti_list){
+                    System.out.println("=======通知的内容："+n.getType().toString()+" "+n.getUser().getName()+" "+n.getBody());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             createDeviceThread();
 
             tryConnectCafe(9);
@@ -341,7 +352,22 @@ public class ForeGroundService extends Service {
             }
 
             boolean isSingle=thread.getWhitelistCount()==2;
+
+            if(feedItemData.type.equals(FeedItemType.REMOVEPEER)){
+                //收到自己被移出群组的消息，就要手动删除这个群组
+                String removeThreadId=thread.getId();
+                try {
+                    Textile.instance().threads.remove(removeThreadId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                DBoperator.deleteDialogByThreadID(appdb,removeThreadId);
+            }
+
             if(feedItemData.type.equals(FeedItemType.JOIN)){
+                if(DBoperator.queryDialogByThreadID(appdb,threadId)!=null){ //如果已经有了就不要再插入了
+                    return;
+                }
                 System.out.println("=========收到JOIN消息，thread白名单个数："+thread.getWhitelistCount());
                 String myAddr=Textile.instance().account.address();
                 int whiteListCount=thread.getWhitelistCount();
@@ -400,6 +426,9 @@ public class ForeGroundService extends Service {
             }
 
             if(feedItemData.type.equals(FeedItemType.TEXT)){ //如果是文本消息
+                if(DBoperator.queryDialogByThreadID(appdb,threadId)!=null){ //如果已经有了就不要再插入了
+                    return;
+                }
                 System.out.println("=================收到文本消息："+feedItemData.text.getBody());
                 int ismine=0;
                 if(feedItemData.text.getUser().getAddress().equals(Textile.instance().account.address())){
