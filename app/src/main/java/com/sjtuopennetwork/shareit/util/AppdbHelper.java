@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class AppdbHelper extends SQLiteOpenHelper {
-
     private static AppdbHelper singleInstance=null;
     public synchronized static AppdbHelper getInstance(Context context,String dbname){
         if(singleInstance==null){
@@ -45,7 +44,6 @@ public class AppdbHelper extends SQLiteOpenHelper {
             "body text," + //内容，文本消息就是消息，图片消息是图片的hash值（adapter中加载图片）
             "sendtime integer," +
             "ismine integer)"; //1表示是我的消息，0为别人消息
-
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {

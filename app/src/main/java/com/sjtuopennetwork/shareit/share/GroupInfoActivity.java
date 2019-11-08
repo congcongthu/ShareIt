@@ -83,7 +83,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         //显示成员列表
         GroupMemberAdapter adapter=new GroupMemberAdapter(this,allMembers);
         FlowLayoutManager flowLayoutManager=new FlowLayoutManager();
-        group_members.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
+//        group_members.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
         group_members.setLayoutManager(flowLayoutManager);
         group_members.setAdapter(adapter);
     }

@@ -8,5 +8,8 @@ public enum FeedItemType {
     IGNORE,
     JOIN,
     LEAVE,
-    ANNOUNCE
+    ANNOUNCE,
+    ADDADMIN,
+    REMOVEPEER,
+    VIDEO
 }

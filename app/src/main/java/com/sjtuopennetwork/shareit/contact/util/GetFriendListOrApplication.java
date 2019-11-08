@@ -38,7 +38,6 @@ public class GetFriendListOrApplication {
         }
         return result;
     }
-
     public static Pair<List<View.InviteView>,List<ResultContact>> getApplication(){
         List<ResultContact> applications=new LinkedList<>();
         List<View.InviteView> friendApplications=new LinkedList<>();

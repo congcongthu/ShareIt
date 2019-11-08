@@ -10486,6 +10486,10 @@ public final class Model {
        * <code>REMOVEPEER = 101;</code>
        */
       REMOVEPEER(101),
+      /**
+       * <code>VIDEO = 102;</code>
+       */
+      VIDEO(102),
       UNRECOGNIZED(-1),
       ;
 
@@ -10549,6 +10553,10 @@ public final class Model {
        * <code>REMOVEPEER = 101;</code>
        */
       public static final int REMOVEPEER_VALUE = 101;
+      /**
+       * <code>VIDEO = 102;</code>
+       */
+      public static final int VIDEO_VALUE = 102;
 
 
       public final int getNumber() {
@@ -10582,6 +10590,7 @@ public final class Model {
           case 50: return ADD;
           case 100: return ADDADMIN;
           case 101: return REMOVEPEER;
+          case 102: return VIDEO;
           default: return null;
         }
       }
@@ -21961,6 +21970,10 @@ public final class Model {
        * <code>PEER_REMOVED = 101;</code>
        */
       PEER_REMOVED(101),
+      /**
+       * <code>VIDEO_ADDED = 102;</code>
+       */
+      VIDEO_ADDED(102),
       UNRECOGNIZED(-1),
       ;
 
@@ -22008,6 +22021,10 @@ public final class Model {
        * <code>PEER_REMOVED = 101;</code>
        */
       public static final int PEER_REMOVED_VALUE = 101;
+      /**
+       * <code>VIDEO_ADDED = 102;</code>
+       */
+      public static final int VIDEO_ADDED_VALUE = 102;
 
 
       public final int getNumber() {
@@ -22039,6 +22056,7 @@ public final class Model {
           case 7: return LIKE_ADDED;
           case 100: return ADMIN_ADDED;
           case 101: return PEER_REMOVED;
+          case 102: return VIDEO_ADDED;
           default: return null;
         }
       }
@@ -28576,6 +28594,14 @@ public final class Model {
        * <code>INBOX = 2;</code>
        */
       INBOX(2),
+      /**
+       * <code>STORE_VIDEO = 10;</code>
+       */
+      STORE_VIDEO(10),
+      /**
+       * <code>STORE_VIDEO_CHUNK = 11;</code>
+       */
+      STORE_VIDEO_CHUNK(11),
       UNRECOGNIZED(-1),
       ;
 
@@ -28599,6 +28625,14 @@ public final class Model {
        * <code>INBOX = 2;</code>
        */
       public static final int INBOX_VALUE = 2;
+      /**
+       * <code>STORE_VIDEO = 10;</code>
+       */
+      public static final int STORE_VIDEO_VALUE = 10;
+      /**
+       * <code>STORE_VIDEO_CHUNK = 11;</code>
+       */
+      public static final int STORE_VIDEO_CHUNK_VALUE = 11;
 
 
       public final int getNumber() {
@@ -28624,6 +28658,8 @@ public final class Model {
           case 1: return STORE_THREAD;
           case 4: return UNSTORE_THREAD;
           case 2: return INBOX;
+          case 10: return STORE_VIDEO;
+          case 11: return STORE_VIDEO_CHUNK;
           default: return null;
         }
       }
@@ -39177,6 +39213,2625 @@ public final class Model {
 
   }
 
+  public interface VideoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Video)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string id = 1;</code>
+     */
+    java.lang.String getId();
+    /**
+     * <code>string id = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getIdBytes();
+
+    /**
+     * <code>string caption = 2;</code>
+     */
+    java.lang.String getCaption();
+    /**
+     * <code>string caption = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getCaptionBytes();
+
+    /**
+     * <code>int32 videoLength = 3;</code>
+     */
+    int getVideoLength();
+
+    /**
+     * <code>string poster = 4;</code>
+     */
+    java.lang.String getPoster();
+    /**
+     * <code>string poster = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getPosterBytes();
+  }
+  /**
+   * Protobuf type {@code Video}
+   */
+  public  static final class Video extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Video)
+      VideoOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Video.newBuilder() to construct.
+    private Video(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Video() {
+      id_ = "";
+      caption_ = "";
+      videoLength_ = 0;
+      poster_ = "";
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Video(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              id_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              caption_ = s;
+              break;
+            }
+            case 24: {
+
+              videoLength_ = input.readInt32();
+              break;
+            }
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              poster_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return sjtu.opennet.textilepb.Model.internal_static_Video_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return sjtu.opennet.textilepb.Model.internal_static_Video_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              sjtu.opennet.textilepb.Model.Video.class, sjtu.opennet.textilepb.Model.Video.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private volatile java.lang.Object id_;
+    /**
+     * <code>string id = 1;</code>
+     */
+    public java.lang.String getId() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        id_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string id = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getIdBytes() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        id_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CAPTION_FIELD_NUMBER = 2;
+    private volatile java.lang.Object caption_;
+    /**
+     * <code>string caption = 2;</code>
+     */
+    public java.lang.String getCaption() {
+      java.lang.Object ref = caption_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        caption_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string caption = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getCaptionBytes() {
+      java.lang.Object ref = caption_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        caption_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int VIDEOLENGTH_FIELD_NUMBER = 3;
+    private int videoLength_;
+    /**
+     * <code>int32 videoLength = 3;</code>
+     */
+    public int getVideoLength() {
+      return videoLength_;
+    }
+
+    public static final int POSTER_FIELD_NUMBER = 4;
+    private volatile java.lang.Object poster_;
+    /**
+     * <code>string poster = 4;</code>
+     */
+    public java.lang.String getPoster() {
+      java.lang.Object ref = poster_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        poster_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string poster = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getPosterBytes() {
+      java.lang.Object ref = poster_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        poster_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
+      }
+      if (!getCaptionBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, caption_);
+      }
+      if (videoLength_ != 0) {
+        output.writeInt32(3, videoLength_);
+      }
+      if (!getPosterBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, poster_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
+      }
+      if (!getCaptionBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, caption_);
+      }
+      if (videoLength_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, videoLength_);
+      }
+      if (!getPosterBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, poster_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof sjtu.opennet.textilepb.Model.Video)) {
+        return super.equals(obj);
+      }
+      sjtu.opennet.textilepb.Model.Video other = (sjtu.opennet.textilepb.Model.Video) obj;
+
+      boolean result = true;
+      result = result && getId()
+          .equals(other.getId());
+      result = result && getCaption()
+          .equals(other.getCaption());
+      result = result && (getVideoLength()
+          == other.getVideoLength());
+      result = result && getPoster()
+          .equals(other.getPoster());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
+      hash = (37 * hash) + CAPTION_FIELD_NUMBER;
+      hash = (53 * hash) + getCaption().hashCode();
+      hash = (37 * hash) + VIDEOLENGTH_FIELD_NUMBER;
+      hash = (53 * hash) + getVideoLength();
+      hash = (37 * hash) + POSTER_FIELD_NUMBER;
+      hash = (53 * hash) + getPoster().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static sjtu.opennet.textilepb.Model.Video parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.Video parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.Video parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.Video parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.Video parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.Video parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.Video parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.Video parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.Video parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.Video parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.Video parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.Video parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(sjtu.opennet.textilepb.Model.Video prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Video}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Video)
+        sjtu.opennet.textilepb.Model.VideoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return sjtu.opennet.textilepb.Model.internal_static_Video_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return sjtu.opennet.textilepb.Model.internal_static_Video_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                sjtu.opennet.textilepb.Model.Video.class, sjtu.opennet.textilepb.Model.Video.Builder.class);
+      }
+
+      // Construct using sjtu.opennet.textilepb.Model.Video.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        id_ = "";
+
+        caption_ = "";
+
+        videoLength_ = 0;
+
+        poster_ = "";
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return sjtu.opennet.textilepb.Model.internal_static_Video_descriptor;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.Video getDefaultInstanceForType() {
+        return sjtu.opennet.textilepb.Model.Video.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.Video build() {
+        sjtu.opennet.textilepb.Model.Video result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.Video buildPartial() {
+        sjtu.opennet.textilepb.Model.Video result = new sjtu.opennet.textilepb.Model.Video(this);
+        result.id_ = id_;
+        result.caption_ = caption_;
+        result.videoLength_ = videoLength_;
+        result.poster_ = poster_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof sjtu.opennet.textilepb.Model.Video) {
+          return mergeFrom((sjtu.opennet.textilepb.Model.Video)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(sjtu.opennet.textilepb.Model.Video other) {
+        if (other == sjtu.opennet.textilepb.Model.Video.getDefaultInstance()) return this;
+        if (!other.getId().isEmpty()) {
+          id_ = other.id_;
+          onChanged();
+        }
+        if (!other.getCaption().isEmpty()) {
+          caption_ = other.caption_;
+          onChanged();
+        }
+        if (other.getVideoLength() != 0) {
+          setVideoLength(other.getVideoLength());
+        }
+        if (!other.getPoster().isEmpty()) {
+          poster_ = other.poster_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        sjtu.opennet.textilepb.Model.Video parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (sjtu.opennet.textilepb.Model.Video) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object id_ = "";
+      /**
+       * <code>string id = 1;</code>
+       */
+      public java.lang.String getId() {
+        java.lang.Object ref = id_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          id_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string id = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getIdBytes() {
+        java.lang.Object ref = id_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          id_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string id = 1;</code>
+       */
+      public Builder setId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string id = 1;</code>
+       */
+      public Builder clearId() {
+        
+        id_ = getDefaultInstance().getId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string id = 1;</code>
+       */
+      public Builder setIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object caption_ = "";
+      /**
+       * <code>string caption = 2;</code>
+       */
+      public java.lang.String getCaption() {
+        java.lang.Object ref = caption_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          caption_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string caption = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getCaptionBytes() {
+        java.lang.Object ref = caption_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          caption_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string caption = 2;</code>
+       */
+      public Builder setCaption(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        caption_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string caption = 2;</code>
+       */
+      public Builder clearCaption() {
+        
+        caption_ = getDefaultInstance().getCaption();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string caption = 2;</code>
+       */
+      public Builder setCaptionBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        caption_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int videoLength_ ;
+      /**
+       * <code>int32 videoLength = 3;</code>
+       */
+      public int getVideoLength() {
+        return videoLength_;
+      }
+      /**
+       * <code>int32 videoLength = 3;</code>
+       */
+      public Builder setVideoLength(int value) {
+        
+        videoLength_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 videoLength = 3;</code>
+       */
+      public Builder clearVideoLength() {
+        
+        videoLength_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object poster_ = "";
+      /**
+       * <code>string poster = 4;</code>
+       */
+      public java.lang.String getPoster() {
+        java.lang.Object ref = poster_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          poster_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string poster = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPosterBytes() {
+        java.lang.Object ref = poster_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          poster_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string poster = 4;</code>
+       */
+      public Builder setPoster(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        poster_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string poster = 4;</code>
+       */
+      public Builder clearPoster() {
+        
+        poster_ = getDefaultInstance().getPoster();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string poster = 4;</code>
+       */
+      public Builder setPosterBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        poster_ = value;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Video)
+    }
+
+    // @@protoc_insertion_point(class_scope:Video)
+    private static final sjtu.opennet.textilepb.Model.Video DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new sjtu.opennet.textilepb.Model.Video();
+    }
+
+    public static sjtu.opennet.textilepb.Model.Video getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Video>
+        PARSER = new com.google.protobuf.AbstractParser<Video>() {
+      @java.lang.Override
+      public Video parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Video(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Video> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Video> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public sjtu.opennet.textilepb.Model.Video getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface VideoChunkOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:VideoChunk)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string id = 1;</code>
+     */
+    java.lang.String getId();
+    /**
+     * <code>string id = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getIdBytes();
+
+    /**
+     * <code>string chunk = 2;</code>
+     */
+    java.lang.String getChunk();
+    /**
+     * <code>string chunk = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getChunkBytes();
+
+    /**
+     * <code>string address = 3;</code>
+     */
+    java.lang.String getAddress();
+    /**
+     * <code>string address = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getAddressBytes();
+
+    /**
+     * <code>int32 startTime = 4;</code>
+     */
+    int getStartTime();
+
+    /**
+     * <code>int32 endTime = 5;</code>
+     */
+    int getEndTime();
+  }
+  /**
+   * Protobuf type {@code VideoChunk}
+   */
+  public  static final class VideoChunk extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:VideoChunk)
+      VideoChunkOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use VideoChunk.newBuilder() to construct.
+    private VideoChunk(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private VideoChunk() {
+      id_ = "";
+      chunk_ = "";
+      address_ = "";
+      startTime_ = 0;
+      endTime_ = 0;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private VideoChunk(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              id_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              chunk_ = s;
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              address_ = s;
+              break;
+            }
+            case 32: {
+
+              startTime_ = input.readInt32();
+              break;
+            }
+            case 40: {
+
+              endTime_ = input.readInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return sjtu.opennet.textilepb.Model.internal_static_VideoChunk_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return sjtu.opennet.textilepb.Model.internal_static_VideoChunk_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              sjtu.opennet.textilepb.Model.VideoChunk.class, sjtu.opennet.textilepb.Model.VideoChunk.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private volatile java.lang.Object id_;
+    /**
+     * <code>string id = 1;</code>
+     */
+    public java.lang.String getId() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        id_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string id = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getIdBytes() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        id_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CHUNK_FIELD_NUMBER = 2;
+    private volatile java.lang.Object chunk_;
+    /**
+     * <code>string chunk = 2;</code>
+     */
+    public java.lang.String getChunk() {
+      java.lang.Object ref = chunk_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        chunk_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string chunk = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getChunkBytes() {
+      java.lang.Object ref = chunk_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        chunk_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ADDRESS_FIELD_NUMBER = 3;
+    private volatile java.lang.Object address_;
+    /**
+     * <code>string address = 3;</code>
+     */
+    public java.lang.String getAddress() {
+      java.lang.Object ref = address_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        address_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string address = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getAddressBytes() {
+      java.lang.Object ref = address_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        address_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int STARTTIME_FIELD_NUMBER = 4;
+    private int startTime_;
+    /**
+     * <code>int32 startTime = 4;</code>
+     */
+    public int getStartTime() {
+      return startTime_;
+    }
+
+    public static final int ENDTIME_FIELD_NUMBER = 5;
+    private int endTime_;
+    /**
+     * <code>int32 endTime = 5;</code>
+     */
+    public int getEndTime() {
+      return endTime_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
+      }
+      if (!getChunkBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, chunk_);
+      }
+      if (!getAddressBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, address_);
+      }
+      if (startTime_ != 0) {
+        output.writeInt32(4, startTime_);
+      }
+      if (endTime_ != 0) {
+        output.writeInt32(5, endTime_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
+      }
+      if (!getChunkBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, chunk_);
+      }
+      if (!getAddressBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, address_);
+      }
+      if (startTime_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, startTime_);
+      }
+      if (endTime_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, endTime_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof sjtu.opennet.textilepb.Model.VideoChunk)) {
+        return super.equals(obj);
+      }
+      sjtu.opennet.textilepb.Model.VideoChunk other = (sjtu.opennet.textilepb.Model.VideoChunk) obj;
+
+      boolean result = true;
+      result = result && getId()
+          .equals(other.getId());
+      result = result && getChunk()
+          .equals(other.getChunk());
+      result = result && getAddress()
+          .equals(other.getAddress());
+      result = result && (getStartTime()
+          == other.getStartTime());
+      result = result && (getEndTime()
+          == other.getEndTime());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
+      hash = (37 * hash) + CHUNK_FIELD_NUMBER;
+      hash = (53 * hash) + getChunk().hashCode();
+      hash = (37 * hash) + ADDRESS_FIELD_NUMBER;
+      hash = (53 * hash) + getAddress().hashCode();
+      hash = (37 * hash) + STARTTIME_FIELD_NUMBER;
+      hash = (53 * hash) + getStartTime();
+      hash = (37 * hash) + ENDTIME_FIELD_NUMBER;
+      hash = (53 * hash) + getEndTime();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static sjtu.opennet.textilepb.Model.VideoChunk parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunk parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunk parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunk parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunk parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunk parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunk parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunk parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunk parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunk parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunk parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunk parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(sjtu.opennet.textilepb.Model.VideoChunk prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code VideoChunk}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:VideoChunk)
+        sjtu.opennet.textilepb.Model.VideoChunkOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return sjtu.opennet.textilepb.Model.internal_static_VideoChunk_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return sjtu.opennet.textilepb.Model.internal_static_VideoChunk_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                sjtu.opennet.textilepb.Model.VideoChunk.class, sjtu.opennet.textilepb.Model.VideoChunk.Builder.class);
+      }
+
+      // Construct using sjtu.opennet.textilepb.Model.VideoChunk.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        id_ = "";
+
+        chunk_ = "";
+
+        address_ = "";
+
+        startTime_ = 0;
+
+        endTime_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return sjtu.opennet.textilepb.Model.internal_static_VideoChunk_descriptor;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.VideoChunk getDefaultInstanceForType() {
+        return sjtu.opennet.textilepb.Model.VideoChunk.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.VideoChunk build() {
+        sjtu.opennet.textilepb.Model.VideoChunk result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.VideoChunk buildPartial() {
+        sjtu.opennet.textilepb.Model.VideoChunk result = new sjtu.opennet.textilepb.Model.VideoChunk(this);
+        result.id_ = id_;
+        result.chunk_ = chunk_;
+        result.address_ = address_;
+        result.startTime_ = startTime_;
+        result.endTime_ = endTime_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof sjtu.opennet.textilepb.Model.VideoChunk) {
+          return mergeFrom((sjtu.opennet.textilepb.Model.VideoChunk)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(sjtu.opennet.textilepb.Model.VideoChunk other) {
+        if (other == sjtu.opennet.textilepb.Model.VideoChunk.getDefaultInstance()) return this;
+        if (!other.getId().isEmpty()) {
+          id_ = other.id_;
+          onChanged();
+        }
+        if (!other.getChunk().isEmpty()) {
+          chunk_ = other.chunk_;
+          onChanged();
+        }
+        if (!other.getAddress().isEmpty()) {
+          address_ = other.address_;
+          onChanged();
+        }
+        if (other.getStartTime() != 0) {
+          setStartTime(other.getStartTime());
+        }
+        if (other.getEndTime() != 0) {
+          setEndTime(other.getEndTime());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        sjtu.opennet.textilepb.Model.VideoChunk parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (sjtu.opennet.textilepb.Model.VideoChunk) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object id_ = "";
+      /**
+       * <code>string id = 1;</code>
+       */
+      public java.lang.String getId() {
+        java.lang.Object ref = id_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          id_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string id = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getIdBytes() {
+        java.lang.Object ref = id_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          id_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string id = 1;</code>
+       */
+      public Builder setId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string id = 1;</code>
+       */
+      public Builder clearId() {
+        
+        id_ = getDefaultInstance().getId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string id = 1;</code>
+       */
+      public Builder setIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object chunk_ = "";
+      /**
+       * <code>string chunk = 2;</code>
+       */
+      public java.lang.String getChunk() {
+        java.lang.Object ref = chunk_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          chunk_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string chunk = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getChunkBytes() {
+        java.lang.Object ref = chunk_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          chunk_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string chunk = 2;</code>
+       */
+      public Builder setChunk(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        chunk_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string chunk = 2;</code>
+       */
+      public Builder clearChunk() {
+        
+        chunk_ = getDefaultInstance().getChunk();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string chunk = 2;</code>
+       */
+      public Builder setChunkBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        chunk_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object address_ = "";
+      /**
+       * <code>string address = 3;</code>
+       */
+      public java.lang.String getAddress() {
+        java.lang.Object ref = address_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          address_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string address = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getAddressBytes() {
+        java.lang.Object ref = address_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          address_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string address = 3;</code>
+       */
+      public Builder setAddress(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        address_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string address = 3;</code>
+       */
+      public Builder clearAddress() {
+        
+        address_ = getDefaultInstance().getAddress();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string address = 3;</code>
+       */
+      public Builder setAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        address_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int startTime_ ;
+      /**
+       * <code>int32 startTime = 4;</code>
+       */
+      public int getStartTime() {
+        return startTime_;
+      }
+      /**
+       * <code>int32 startTime = 4;</code>
+       */
+      public Builder setStartTime(int value) {
+        
+        startTime_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 startTime = 4;</code>
+       */
+      public Builder clearStartTime() {
+        
+        startTime_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int endTime_ ;
+      /**
+       * <code>int32 endTime = 5;</code>
+       */
+      public int getEndTime() {
+        return endTime_;
+      }
+      /**
+       * <code>int32 endTime = 5;</code>
+       */
+      public Builder setEndTime(int value) {
+        
+        endTime_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 endTime = 5;</code>
+       */
+      public Builder clearEndTime() {
+        
+        endTime_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:VideoChunk)
+    }
+
+    // @@protoc_insertion_point(class_scope:VideoChunk)
+    private static final sjtu.opennet.textilepb.Model.VideoChunk DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new sjtu.opennet.textilepb.Model.VideoChunk();
+    }
+
+    public static sjtu.opennet.textilepb.Model.VideoChunk getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<VideoChunk>
+        PARSER = new com.google.protobuf.AbstractParser<VideoChunk>() {
+      @java.lang.Override
+      public VideoChunk parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new VideoChunk(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<VideoChunk> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<VideoChunk> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public sjtu.opennet.textilepb.Model.VideoChunk getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface VideoChunkListOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:VideoChunkList)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .VideoChunk items = 1;</code>
+     */
+    java.util.List<sjtu.opennet.textilepb.Model.VideoChunk> 
+        getItemsList();
+    /**
+     * <code>repeated .VideoChunk items = 1;</code>
+     */
+    sjtu.opennet.textilepb.Model.VideoChunk getItems(int index);
+    /**
+     * <code>repeated .VideoChunk items = 1;</code>
+     */
+    int getItemsCount();
+    /**
+     * <code>repeated .VideoChunk items = 1;</code>
+     */
+    java.util.List<? extends sjtu.opennet.textilepb.Model.VideoChunkOrBuilder> 
+        getItemsOrBuilderList();
+    /**
+     * <code>repeated .VideoChunk items = 1;</code>
+     */
+    sjtu.opennet.textilepb.Model.VideoChunkOrBuilder getItemsOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code VideoChunkList}
+   */
+  public  static final class VideoChunkList extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:VideoChunkList)
+      VideoChunkListOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use VideoChunkList.newBuilder() to construct.
+    private VideoChunkList(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private VideoChunkList() {
+      items_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private VideoChunkList(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                items_ = new java.util.ArrayList<sjtu.opennet.textilepb.Model.VideoChunk>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              items_.add(
+                  input.readMessage(sjtu.opennet.textilepb.Model.VideoChunk.parser(), extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          items_ = java.util.Collections.unmodifiableList(items_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return sjtu.opennet.textilepb.Model.internal_static_VideoChunkList_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return sjtu.opennet.textilepb.Model.internal_static_VideoChunkList_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              sjtu.opennet.textilepb.Model.VideoChunkList.class, sjtu.opennet.textilepb.Model.VideoChunkList.Builder.class);
+    }
+
+    public static final int ITEMS_FIELD_NUMBER = 1;
+    private java.util.List<sjtu.opennet.textilepb.Model.VideoChunk> items_;
+    /**
+     * <code>repeated .VideoChunk items = 1;</code>
+     */
+    public java.util.List<sjtu.opennet.textilepb.Model.VideoChunk> getItemsList() {
+      return items_;
+    }
+    /**
+     * <code>repeated .VideoChunk items = 1;</code>
+     */
+    public java.util.List<? extends sjtu.opennet.textilepb.Model.VideoChunkOrBuilder> 
+        getItemsOrBuilderList() {
+      return items_;
+    }
+    /**
+     * <code>repeated .VideoChunk items = 1;</code>
+     */
+    public int getItemsCount() {
+      return items_.size();
+    }
+    /**
+     * <code>repeated .VideoChunk items = 1;</code>
+     */
+    public sjtu.opennet.textilepb.Model.VideoChunk getItems(int index) {
+      return items_.get(index);
+    }
+    /**
+     * <code>repeated .VideoChunk items = 1;</code>
+     */
+    public sjtu.opennet.textilepb.Model.VideoChunkOrBuilder getItemsOrBuilder(
+        int index) {
+      return items_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < items_.size(); i++) {
+        output.writeMessage(1, items_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < items_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, items_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof sjtu.opennet.textilepb.Model.VideoChunkList)) {
+        return super.equals(obj);
+      }
+      sjtu.opennet.textilepb.Model.VideoChunkList other = (sjtu.opennet.textilepb.Model.VideoChunkList) obj;
+
+      boolean result = true;
+      result = result && getItemsList()
+          .equals(other.getItemsList());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getItemsCount() > 0) {
+        hash = (37 * hash) + ITEMS_FIELD_NUMBER;
+        hash = (53 * hash) + getItemsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static sjtu.opennet.textilepb.Model.VideoChunkList parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunkList parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunkList parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunkList parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunkList parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunkList parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunkList parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunkList parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunkList parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunkList parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunkList parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.VideoChunkList parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(sjtu.opennet.textilepb.Model.VideoChunkList prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code VideoChunkList}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:VideoChunkList)
+        sjtu.opennet.textilepb.Model.VideoChunkListOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return sjtu.opennet.textilepb.Model.internal_static_VideoChunkList_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return sjtu.opennet.textilepb.Model.internal_static_VideoChunkList_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                sjtu.opennet.textilepb.Model.VideoChunkList.class, sjtu.opennet.textilepb.Model.VideoChunkList.Builder.class);
+      }
+
+      // Construct using sjtu.opennet.textilepb.Model.VideoChunkList.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getItemsFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (itemsBuilder_ == null) {
+          items_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          itemsBuilder_.clear();
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return sjtu.opennet.textilepb.Model.internal_static_VideoChunkList_descriptor;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.VideoChunkList getDefaultInstanceForType() {
+        return sjtu.opennet.textilepb.Model.VideoChunkList.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.VideoChunkList build() {
+        sjtu.opennet.textilepb.Model.VideoChunkList result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.VideoChunkList buildPartial() {
+        sjtu.opennet.textilepb.Model.VideoChunkList result = new sjtu.opennet.textilepb.Model.VideoChunkList(this);
+        int from_bitField0_ = bitField0_;
+        if (itemsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            items_ = java.util.Collections.unmodifiableList(items_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.items_ = items_;
+        } else {
+          result.items_ = itemsBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof sjtu.opennet.textilepb.Model.VideoChunkList) {
+          return mergeFrom((sjtu.opennet.textilepb.Model.VideoChunkList)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(sjtu.opennet.textilepb.Model.VideoChunkList other) {
+        if (other == sjtu.opennet.textilepb.Model.VideoChunkList.getDefaultInstance()) return this;
+        if (itemsBuilder_ == null) {
+          if (!other.items_.isEmpty()) {
+            if (items_.isEmpty()) {
+              items_ = other.items_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureItemsIsMutable();
+              items_.addAll(other.items_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.items_.isEmpty()) {
+            if (itemsBuilder_.isEmpty()) {
+              itemsBuilder_.dispose();
+              itemsBuilder_ = null;
+              items_ = other.items_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              itemsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getItemsFieldBuilder() : null;
+            } else {
+              itemsBuilder_.addAllMessages(other.items_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        sjtu.opennet.textilepb.Model.VideoChunkList parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (sjtu.opennet.textilepb.Model.VideoChunkList) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<sjtu.opennet.textilepb.Model.VideoChunk> items_ =
+        java.util.Collections.emptyList();
+      private void ensureItemsIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          items_ = new java.util.ArrayList<sjtu.opennet.textilepb.Model.VideoChunk>(items_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          sjtu.opennet.textilepb.Model.VideoChunk, sjtu.opennet.textilepb.Model.VideoChunk.Builder, sjtu.opennet.textilepb.Model.VideoChunkOrBuilder> itemsBuilder_;
+
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public java.util.List<sjtu.opennet.textilepb.Model.VideoChunk> getItemsList() {
+        if (itemsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(items_);
+        } else {
+          return itemsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public int getItemsCount() {
+        if (itemsBuilder_ == null) {
+          return items_.size();
+        } else {
+          return itemsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public sjtu.opennet.textilepb.Model.VideoChunk getItems(int index) {
+        if (itemsBuilder_ == null) {
+          return items_.get(index);
+        } else {
+          return itemsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public Builder setItems(
+          int index, sjtu.opennet.textilepb.Model.VideoChunk value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.set(index, value);
+          onChanged();
+        } else {
+          itemsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public Builder setItems(
+          int index, sjtu.opennet.textilepb.Model.VideoChunk.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public Builder addItems(sjtu.opennet.textilepb.Model.VideoChunk value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.add(value);
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public Builder addItems(
+          int index, sjtu.opennet.textilepb.Model.VideoChunk value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.add(index, value);
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public Builder addItems(
+          sjtu.opennet.textilepb.Model.VideoChunk.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.add(builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public Builder addItems(
+          int index, sjtu.opennet.textilepb.Model.VideoChunk.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public Builder addAllItems(
+          java.lang.Iterable<? extends sjtu.opennet.textilepb.Model.VideoChunk> values) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, items_);
+          onChanged();
+        } else {
+          itemsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public Builder clearItems() {
+        if (itemsBuilder_ == null) {
+          items_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          itemsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public Builder removeItems(int index) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.remove(index);
+          onChanged();
+        } else {
+          itemsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public sjtu.opennet.textilepb.Model.VideoChunk.Builder getItemsBuilder(
+          int index) {
+        return getItemsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public sjtu.opennet.textilepb.Model.VideoChunkOrBuilder getItemsOrBuilder(
+          int index) {
+        if (itemsBuilder_ == null) {
+          return items_.get(index);  } else {
+          return itemsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public java.util.List<? extends sjtu.opennet.textilepb.Model.VideoChunkOrBuilder> 
+           getItemsOrBuilderList() {
+        if (itemsBuilder_ != null) {
+          return itemsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(items_);
+        }
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public sjtu.opennet.textilepb.Model.VideoChunk.Builder addItemsBuilder() {
+        return getItemsFieldBuilder().addBuilder(
+            sjtu.opennet.textilepb.Model.VideoChunk.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public sjtu.opennet.textilepb.Model.VideoChunk.Builder addItemsBuilder(
+          int index) {
+        return getItemsFieldBuilder().addBuilder(
+            index, sjtu.opennet.textilepb.Model.VideoChunk.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .VideoChunk items = 1;</code>
+       */
+      public java.util.List<sjtu.opennet.textilepb.Model.VideoChunk.Builder> 
+           getItemsBuilderList() {
+        return getItemsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          sjtu.opennet.textilepb.Model.VideoChunk, sjtu.opennet.textilepb.Model.VideoChunk.Builder, sjtu.opennet.textilepb.Model.VideoChunkOrBuilder> 
+          getItemsFieldBuilder() {
+        if (itemsBuilder_ == null) {
+          itemsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              sjtu.opennet.textilepb.Model.VideoChunk, sjtu.opennet.textilepb.Model.VideoChunk.Builder, sjtu.opennet.textilepb.Model.VideoChunkOrBuilder>(
+                  items_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          items_ = null;
+        }
+        return itemsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:VideoChunkList)
+    }
+
+    // @@protoc_insertion_point(class_scope:VideoChunkList)
+    private static final sjtu.opennet.textilepb.Model.VideoChunkList DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new sjtu.opennet.textilepb.Model.VideoChunkList();
+    }
+
+    public static sjtu.opennet.textilepb.Model.VideoChunkList getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<VideoChunkList>
+        PARSER = new com.google.protobuf.AbstractParser<VideoChunkList>() {
+      @java.lang.Override
+      public VideoChunkList parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new VideoChunkList(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<VideoChunkList> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<VideoChunkList> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public sjtu.opennet.textilepb.Model.VideoChunkList getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface CafeClientMessageOrBuilder extends
       // @@protoc_insertion_point(interface_extends:CafeClientMessage)
       com.google.protobuf.MessageOrBuilder {
@@ -41383,6 +44038,21 @@ public final class Model {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_CafeClientThread_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Video_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Video_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_VideoChunk_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_VideoChunk_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_VideoChunkList_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_VideoChunkList_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_CafeClientMessage_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -41428,110 +44098,117 @@ public final class Model {
       "IL\020\000\022\n\n\006LOADED\020\001\022\020\n\014LOADING_HEAD\020\002\"$\n\nTh" +
       "readList\022\026\n\005items\030\001 \003(\0132\007.Thread\"I\n\nThre" +
       "adPeer\022\n\n\002id\030\001 \001(\t\022\016\n\006thread\030\002 \001(\t\022\020\n\010we" +
-      "lcomed\030\003 \001(\010\022\r\n\005admin\030\004 \001(\010\"\345\003\n\005Block\022\n\n" +
+      "lcomed\030\003 \001(\010\022\r\n\005admin\030\004 \001(\010\"\360\003\n\005Block\022\n\n" +
       "\002id\030\001 \001(\t\022\016\n\006thread\030\002 \001(\t\022\016\n\006author\030\003 \001(" +
       "\t\022\036\n\004type\030\004 \001(\0162\020.Block.BlockType\022(\n\004dat" +
       "e\030\005 \001(\0132\032.google.protobuf.Timestamp\022\017\n\007p" +
       "arents\030\006 \003(\t\022\016\n\006target\030\007 \001(\t\022\014\n\004data\030\t \001" +
       "(\t\022\014\n\004body\030\010 \001(\t\022\"\n\006status\030\n \001(\0162\022.Block" +
       ".BlockStatus\022\020\n\010attempts\030\013 \001(\005\022\023\n\004user\030e" +
-      " \001(\0132\005.User\"\252\001\n\tBlockType\022\r\n\005MERGE\020\000\032\002\010\001" +
+      " \001(\0132\005.User\"\265\001\n\tBlockType\022\r\n\005MERGE\020\000\032\002\010\001" +
       "\022\n\n\006IGNORE\020\001\022\010\n\004FLAG\020\002\022\010\n\004JOIN\020\003\022\014\n\010ANNO" +
       "UNCE\020\004\022\t\n\005LEAVE\020\005\022\010\n\004TEXT\020\006\022\t\n\005FILES\020\007\022\017" +
       "\n\007COMMENT\020\010\032\002\010\001\022\010\n\004LIKE\020\t\022\007\n\003ADD\0202\022\014\n\010AD" +
-      "DADMIN\020d\022\016\n\nREMOVEPEER\020e\"1\n\013BlockStatus\022" +
-      "\t\n\005READY\020\000\022\n\n\006QUEUED\020\001\022\013\n\007PENDING\020\002\"\"\n\tB" +
-      "lockList\022\025\n\005items\030\001 \003(\0132\006.Block\"j\n\014Block" +
-      "Message\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022\026\n\003env" +
-      "\030\003 \001(\0132\t.Envelope\022(\n\004date\030\004 \001(\0132\032.google" +
-      ".protobuf.Timestamp\"\204\001\n\006Invite\022\n\n\002id\030\001 \001" +
-      "(\t\022\r\n\005block\030\002 \001(\014\022\014\n\004name\030\003 \001(\t\022\026\n\007invit" +
-      "er\030\004 \001(\0132\005.Peer\022(\n\004date\030\005 \001(\0132\032.google.p" +
-      "rotobuf.Timestamp\022\017\n\007parents\030\006 \003(\t\"$\n\nIn" +
-      "viteList\022\026\n\005items\030\001 \003(\0132\007.Invite\"\362\001\n\tFil" +
-      "eIndex\022\014\n\004mill\030\001 \001(\t\022\020\n\010checksum\030\002 \001(\t\022\016" +
-      "\n\006source\030\003 \001(\t\022\014\n\004opts\030\004 \001(\t\022\014\n\004hash\030\005 \001" +
-      "(\t\022\013\n\003key\030\006 \001(\t\022\r\n\005media\030\007 \001(\t\022\014\n\004name\030\010" +
-      " \001(\t\022\014\n\004size\030\t \001(\003\022)\n\005added\030\n \001(\0132\032.goog" +
-      "le.protobuf.Timestamp\022%\n\004meta\030\013 \001(\0132\027.go" +
-      "ogle.protobuf.Struct\022\017\n\007targets\030\014 \003(\t\"\222\002" +
-      "\n\004Node\022\014\n\004name\030\001 \001(\t\022\013\n\003pin\030\002 \001(\010\022\021\n\tpla" +
-      "intext\030\003 \001(\010\022\014\n\004mill\030\004 \001(\t\022\035\n\004opts\030\005 \003(\013" +
-      "2\017.Node.OptsEntry\022,\n\013json_schema\030\006 \001(\0132\027" +
-      ".google.protobuf.Struct\022\037\n\005links\030\010 \003(\0132\020" +
-      ".Node.LinksEntry\032+\n\tOptsEntry\022\013\n\003key\030\001 \001" +
-      "(\t\022\r\n\005value\030\002 \001(\t:\0028\001\0323\n\nLinksEntry\022\013\n\003k" +
-      "ey\030\001 \001(\t\022\024\n\005value\030\002 \001(\0132\005.Link:\0028\001\"\273\001\n\004L" +
-      "ink\022\013\n\003use\030\001 \001(\t\022\013\n\003pin\030\002 \001(\010\022\021\n\tplainte" +
-      "xt\030\003 \001(\010\022\014\n\004mill\030\004 \001(\t\022\035\n\004opts\030\005 \003(\0132\017.L" +
-      "ink.OptsEntry\022,\n\013json_schema\030\006 \001(\0132\027.goo" +
-      "gle.protobuf.Struct\032+\n\tOptsEntry\022\013\n\003key\030" +
-      "\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\304\003\n\014Notificatio" +
-      "n\022\n\n\002id\030\001 \001(\t\022(\n\004date\030\002 \001(\0132\032.google.pro" +
-      "tobuf.Timestamp\022\r\n\005actor\030\003 \001(\t\022\017\n\007subjec" +
-      "t\030\004 \001(\t\022\024\n\014subject_desc\030\005 \001(\t\022\r\n\005block\030\006" +
-      " \001(\t\022\016\n\006target\030\007 \001(\t\022 \n\004type\030\010 \001(\0162\022.Not" +
-      "ification.Type\022\014\n\004body\030\t \001(\t\022\014\n\004read\030\n \001" +
-      "(\010\022\023\n\004user\030e \001(\0132\005.User\"\325\001\n\004Type\022\023\n\017INVI" +
-      "TE_RECEIVED\020\000\022\027\n\023ACCOUNT_PEER_JOINED\020\001\022\025" +
-      "\n\021ACCOUNT_PEER_LEFT\020\010\022\017\n\013PEER_JOINED\020\002\022\r" +
-      "\n\tPEER_LEFT\020\003\022\021\n\rMESSAGE_ADDED\020\004\022\017\n\013FILE" +
-      "S_ADDED\020\005\022\021\n\rCOMMENT_ADDED\020\006\022\016\n\nLIKE_ADD" +
-      "ED\020\007\022\017\n\013ADMIN_ADDED\020d\022\020\n\014PEER_REMOVED\020e\"" +
-      "0\n\020NotificationList\022\034\n\005items\030\001 \003(\0132\r.Not" +
-      "ification\"_\n\004Cafe\022\014\n\004peer\030\001 \001(\t\022\017\n\007addre" +
-      "ss\030\002 \001(\t\022\013\n\003api\030\003 \001(\t\022\020\n\010protocol\030\004 \001(\t\022" +
-      "\014\n\004node\030\005 \001(\t\022\013\n\003url\030\006 \001(\t\"\301\001\n\013CafeSessi" +
-      "on\022\n\n\002id\030\001 \001(\t\022\016\n\006access\030\002 \001(\t\022\'\n\003exp\030\003 " +
-      "\001(\0132\032.google.protobuf.Timestamp\022\017\n\007refre" +
-      "sh\030\004 \001(\t\022(\n\004rexp\030\005 \001(\0132\032.google.protobuf" +
-      ".Timestamp\022\017\n\007subject\030\006 \001(\t\022\014\n\004type\030\007 \001(" +
-      "\t\022\023\n\004cafe\030\010 \001(\0132\005.Cafe\".\n\017CafeSessionLis" +
-      "t\022\033\n\005items\030\001 \003(\0132\014.CafeSession\"\255\003\n\013CafeR" +
-      "equest\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022\016\n\006targ" +
-      "et\030\003 \001(\t\022\023\n\004cafe\030\004 \001(\0132\005.Cafe\022\r\n\005group\030\010" +
-      " \001(\t\022\022\n\nsync_group\030\n \001(\t\022\037\n\004type\030\005 \001(\0162\021" +
-      ".CafeRequest.Type\022(\n\004date\030\006 \001(\0132\032.google" +
-      ".protobuf.Timestamp\022\014\n\004size\030\007 \001(\003\022#\n\006sta" +
-      "tus\030\t \001(\0162\023.CafeRequest.Status\022\020\n\010attemp" +
-      "ts\030\013 \001(\005\022\022\n\ngroup_size\030\014 \001(\003\022\031\n\021group_tr" +
-      "ansferred\030\r \001(\003\"O\n\004Type\022\t\n\005STORE\020\000\022\013\n\007UN" +
-      "STORE\020\003\022\020\n\014STORE_THREAD\020\001\022\022\n\016UNSTORE_THR" +
-      "EAD\020\004\022\t\n\005INBOX\020\002\",\n\006Status\022\007\n\003NEW\020\000\022\013\n\007P" +
-      "ENDING\020\001\022\014\n\010COMPLETE\020\002\".\n\017CafeRequestLis" +
-      "t\022\033\n\005items\030\001 \003(\0132\014.CafeRequest\"\372\001\n\023CafeS" +
-      "yncGroupStatus\022\n\n\002id\030\001 \001(\t\022\021\n\tnum_total\030" +
-      "\002 \001(\005\022\023\n\013num_pending\030\003 \001(\005\022\024\n\014num_comple" +
-      "te\030\004 \001(\005\022\022\n\nsize_total\030\005 \001(\003\022\024\n\014size_pen" +
-      "ding\030\006 \001(\003\022\025\n\rsize_complete\030\007 \001(\003\022\031\n\021gro" +
-      "ups_size_total\030\010 \001(\003\022\034\n\024groups_size_comp" +
-      "lete\030\t \001(\003\022\r\n\005error\0302 \001(\t\022\020\n\010error_id\0303 " +
-      "\001(\t\"\330\001\n\017CafeHTTPRequest\022#\n\004type\030\001 \001(\0162\025." +
-      "CafeHTTPRequest.Type\022\013\n\003url\030\002 \001(\t\022.\n\007hea" +
-      "ders\030\003 \003(\0132\035.CafeHTTPRequest.HeadersEntr" +
-      "y\022\014\n\004path\030\004 \001(\t\032.\n\014HeadersEntry\022\013\n\003key\030\001" +
-      " \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"%\n\004Type\022\007\n\003PUT\020\000" +
-      "\022\010\n\004POST\020\001\022\n\n\006DELETE\020\002\"c\n\013CafeMessage\022\n\n" +
-      "\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022(\n\004date\030\003 \001(\0132\032." +
-      "google.protobuf.Timestamp\022\020\n\010attempts\030\004 " +
-      "\001(\005\"[\n\017CafeClientNonce\022\r\n\005value\030\001 \001(\t\022\017\n" +
-      "\007address\030\002 \001(\t\022(\n\004date\030\003 \001(\0132\032.google.pr" +
-      "otobuf.Timestamp\"\217\001\n\nCafeClient\022\n\n\002id\030\001 " +
-      "\001(\t\022\017\n\007address\030\002 \001(\t\022+\n\007created\030\003 \001(\0132\032." +
-      "google.protobuf.Timestamp\022(\n\004seen\030\004 \001(\0132" +
-      "\032.google.protobuf.Timestamp\022\r\n\005token\030\005 \001" +
-      "(\t\",\n\016CafeClientList\022\032\n\005items\030\001 \003(\0132\013.Ca" +
-      "feClient\"P\n\tCafeToken\022\n\n\002id\030\001 \001(\t\022\r\n\005val" +
-      "ue\030\002 \001(\014\022(\n\004date\030\003 \001(\0132\032.google.protobuf" +
-      ".Timestamp\"B\n\020CafeClientThread\022\n\n\002id\030\001 \001" +
-      "(\t\022\016\n\006client\030\002 \001(\t\022\022\n\nciphertext\030\003 \001(\014\"g" +
-      "\n\021CafeClientMessage\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030" +
-      "\002 \001(\t\022\016\n\006client\030\003 \001(\t\022(\n\004date\030\004 \001(\0132\032.go" +
-      "ogle.protobuf.Timestamp\"}\n\005BotKV\022\013\n\003key\030" +
-      "\001 \001(\t\022\r\n\005value\030\002 \001(\014\022+\n\007created\030\003 \001(\0132\032." +
-      "google.protobuf.Timestamp\022+\n\007updated\030\004 \001" +
-      "(\0132\032.google.protobuf.TimestampB\034\n\026sjtu.o" +
-      "pennet.textilepbZ\002pbb\006proto3"
+      "DADMIN\020d\022\016\n\nREMOVEPEER\020e\022\t\n\005VIDEO\020f\"1\n\013B" +
+      "lockStatus\022\t\n\005READY\020\000\022\n\n\006QUEUED\020\001\022\013\n\007PEN" +
+      "DING\020\002\"\"\n\tBlockList\022\025\n\005items\030\001 \003(\0132\006.Blo" +
+      "ck\"j\n\014BlockMessage\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030\002" +
+      " \001(\t\022\026\n\003env\030\003 \001(\0132\t.Envelope\022(\n\004date\030\004 \001" +
+      "(\0132\032.google.protobuf.Timestamp\"\204\001\n\006Invit" +
+      "e\022\n\n\002id\030\001 \001(\t\022\r\n\005block\030\002 \001(\014\022\014\n\004name\030\003 \001" +
+      "(\t\022\026\n\007inviter\030\004 \001(\0132\005.Peer\022(\n\004date\030\005 \001(\013" +
+      "2\032.google.protobuf.Timestamp\022\017\n\007parents\030" +
+      "\006 \003(\t\"$\n\nInviteList\022\026\n\005items\030\001 \003(\0132\007.Inv" +
+      "ite\"\362\001\n\tFileIndex\022\014\n\004mill\030\001 \001(\t\022\020\n\010check" +
+      "sum\030\002 \001(\t\022\016\n\006source\030\003 \001(\t\022\014\n\004opts\030\004 \001(\t\022" +
+      "\014\n\004hash\030\005 \001(\t\022\013\n\003key\030\006 \001(\t\022\r\n\005media\030\007 \001(" +
+      "\t\022\014\n\004name\030\010 \001(\t\022\014\n\004size\030\t \001(\003\022)\n\005added\030\n" +
+      " \001(\0132\032.google.protobuf.Timestamp\022%\n\004meta" +
+      "\030\013 \001(\0132\027.google.protobuf.Struct\022\017\n\007targe" +
+      "ts\030\014 \003(\t\"\222\002\n\004Node\022\014\n\004name\030\001 \001(\t\022\013\n\003pin\030\002" +
+      " \001(\010\022\021\n\tplaintext\030\003 \001(\010\022\014\n\004mill\030\004 \001(\t\022\035\n" +
+      "\004opts\030\005 \003(\0132\017.Node.OptsEntry\022,\n\013json_sch" +
+      "ema\030\006 \001(\0132\027.google.protobuf.Struct\022\037\n\005li" +
+      "nks\030\010 \003(\0132\020.Node.LinksEntry\032+\n\tOptsEntry" +
+      "\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\0323\n\nLink" +
+      "sEntry\022\013\n\003key\030\001 \001(\t\022\024\n\005value\030\002 \001(\0132\005.Lin" +
+      "k:\0028\001\"\273\001\n\004Link\022\013\n\003use\030\001 \001(\t\022\013\n\003pin\030\002 \001(\010" +
+      "\022\021\n\tplaintext\030\003 \001(\010\022\014\n\004mill\030\004 \001(\t\022\035\n\004opt" +
+      "s\030\005 \003(\0132\017.Link.OptsEntry\022,\n\013json_schema\030" +
+      "\006 \001(\0132\027.google.protobuf.Struct\032+\n\tOptsEn" +
+      "try\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\325\003\n\014" +
+      "Notification\022\n\n\002id\030\001 \001(\t\022(\n\004date\030\002 \001(\0132\032" +
+      ".google.protobuf.Timestamp\022\r\n\005actor\030\003 \001(" +
+      "\t\022\017\n\007subject\030\004 \001(\t\022\024\n\014subject_desc\030\005 \001(\t" +
+      "\022\r\n\005block\030\006 \001(\t\022\016\n\006target\030\007 \001(\t\022 \n\004type\030" +
+      "\010 \001(\0162\022.Notification.Type\022\014\n\004body\030\t \001(\t\022" +
+      "\014\n\004read\030\n \001(\010\022\023\n\004user\030e \001(\0132\005.User\"\346\001\n\004T" +
+      "ype\022\023\n\017INVITE_RECEIVED\020\000\022\027\n\023ACCOUNT_PEER" +
+      "_JOINED\020\001\022\025\n\021ACCOUNT_PEER_LEFT\020\010\022\017\n\013PEER" +
+      "_JOINED\020\002\022\r\n\tPEER_LEFT\020\003\022\021\n\rMESSAGE_ADDE" +
+      "D\020\004\022\017\n\013FILES_ADDED\020\005\022\021\n\rCOMMENT_ADDED\020\006\022" +
+      "\016\n\nLIKE_ADDED\020\007\022\017\n\013ADMIN_ADDED\020d\022\020\n\014PEER" +
+      "_REMOVED\020e\022\017\n\013VIDEO_ADDED\020f\"0\n\020Notificat" +
+      "ionList\022\034\n\005items\030\001 \003(\0132\r.Notification\"_\n" +
+      "\004Cafe\022\014\n\004peer\030\001 \001(\t\022\017\n\007address\030\002 \001(\t\022\013\n\003" +
+      "api\030\003 \001(\t\022\020\n\010protocol\030\004 \001(\t\022\014\n\004node\030\005 \001(" +
+      "\t\022\013\n\003url\030\006 \001(\t\"\301\001\n\013CafeSession\022\n\n\002id\030\001 \001" +
+      "(\t\022\016\n\006access\030\002 \001(\t\022\'\n\003exp\030\003 \001(\0132\032.google" +
+      ".protobuf.Timestamp\022\017\n\007refresh\030\004 \001(\t\022(\n\004" +
+      "rexp\030\005 \001(\0132\032.google.protobuf.Timestamp\022\017" +
+      "\n\007subject\030\006 \001(\t\022\014\n\004type\030\007 \001(\t\022\023\n\004cafe\030\010 " +
+      "\001(\0132\005.Cafe\".\n\017CafeSessionList\022\033\n\005items\030\001" +
+      " \003(\0132\014.CafeSession\"\325\003\n\013CafeRequest\022\n\n\002id" +
+      "\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022\016\n\006target\030\003 \001(\t\022\023\n\004" +
+      "cafe\030\004 \001(\0132\005.Cafe\022\r\n\005group\030\010 \001(\t\022\022\n\nsync" +
+      "_group\030\n \001(\t\022\037\n\004type\030\005 \001(\0162\021.CafeRequest" +
+      ".Type\022(\n\004date\030\006 \001(\0132\032.google.protobuf.Ti" +
+      "mestamp\022\014\n\004size\030\007 \001(\003\022#\n\006status\030\t \001(\0162\023." +
+      "CafeRequest.Status\022\020\n\010attempts\030\013 \001(\005\022\022\n\n" +
+      "group_size\030\014 \001(\003\022\031\n\021group_transferred\030\r " +
+      "\001(\003\"w\n\004Type\022\t\n\005STORE\020\000\022\013\n\007UNSTORE\020\003\022\020\n\014S" +
+      "TORE_THREAD\020\001\022\022\n\016UNSTORE_THREAD\020\004\022\t\n\005INB" +
+      "OX\020\002\022\017\n\013STORE_VIDEO\020\n\022\025\n\021STORE_VIDEO_CHU" +
+      "NK\020\013\",\n\006Status\022\007\n\003NEW\020\000\022\013\n\007PENDING\020\001\022\014\n\010" +
+      "COMPLETE\020\002\".\n\017CafeRequestList\022\033\n\005items\030\001" +
+      " \003(\0132\014.CafeRequest\"\372\001\n\023CafeSyncGroupStat" +
+      "us\022\n\n\002id\030\001 \001(\t\022\021\n\tnum_total\030\002 \001(\005\022\023\n\013num" +
+      "_pending\030\003 \001(\005\022\024\n\014num_complete\030\004 \001(\005\022\022\n\n" +
+      "size_total\030\005 \001(\003\022\024\n\014size_pending\030\006 \001(\003\022\025" +
+      "\n\rsize_complete\030\007 \001(\003\022\031\n\021groups_size_tot" +
+      "al\030\010 \001(\003\022\034\n\024groups_size_complete\030\t \001(\003\022\r" +
+      "\n\005error\0302 \001(\t\022\020\n\010error_id\0303 \001(\t\"\330\001\n\017Cafe" +
+      "HTTPRequest\022#\n\004type\030\001 \001(\0162\025.CafeHTTPRequ" +
+      "est.Type\022\013\n\003url\030\002 \001(\t\022.\n\007headers\030\003 \003(\0132\035" +
+      ".CafeHTTPRequest.HeadersEntry\022\014\n\004path\030\004 " +
+      "\001(\t\032.\n\014HeadersEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005valu" +
+      "e\030\002 \001(\t:\0028\001\"%\n\004Type\022\007\n\003PUT\020\000\022\010\n\004POST\020\001\022\n" +
+      "\n\006DELETE\020\002\"c\n\013CafeMessage\022\n\n\002id\030\001 \001(\t\022\014\n" +
+      "\004peer\030\002 \001(\t\022(\n\004date\030\003 \001(\0132\032.google.proto" +
+      "buf.Timestamp\022\020\n\010attempts\030\004 \001(\005\"[\n\017CafeC" +
+      "lientNonce\022\r\n\005value\030\001 \001(\t\022\017\n\007address\030\002 \001" +
+      "(\t\022(\n\004date\030\003 \001(\0132\032.google.protobuf.Times" +
+      "tamp\"\217\001\n\nCafeClient\022\n\n\002id\030\001 \001(\t\022\017\n\007addre" +
+      "ss\030\002 \001(\t\022+\n\007created\030\003 \001(\0132\032.google.proto" +
+      "buf.Timestamp\022(\n\004seen\030\004 \001(\0132\032.google.pro" +
+      "tobuf.Timestamp\022\r\n\005token\030\005 \001(\t\",\n\016CafeCl" +
+      "ientList\022\032\n\005items\030\001 \003(\0132\013.CafeClient\"P\n\t" +
+      "CafeToken\022\n\n\002id\030\001 \001(\t\022\r\n\005value\030\002 \001(\014\022(\n\004" +
+      "date\030\003 \001(\0132\032.google.protobuf.Timestamp\"B" +
+      "\n\020CafeClientThread\022\n\n\002id\030\001 \001(\t\022\016\n\006client" +
+      "\030\002 \001(\t\022\022\n\nciphertext\030\003 \001(\014\"I\n\005Video\022\n\n\002i" +
+      "d\030\001 \001(\t\022\017\n\007caption\030\002 \001(\t\022\023\n\013videoLength\030" +
+      "\003 \001(\005\022\016\n\006poster\030\004 \001(\t\"\\\n\nVideoChunk\022\n\n\002i" +
+      "d\030\001 \001(\t\022\r\n\005chunk\030\002 \001(\t\022\017\n\007address\030\003 \001(\t\022" +
+      "\021\n\tstartTime\030\004 \001(\005\022\017\n\007endTime\030\005 \001(\005\",\n\016V" +
+      "ideoChunkList\022\032\n\005items\030\001 \003(\0132\013.VideoChun" +
+      "k\"g\n\021CafeClientMessage\022\n\n\002id\030\001 \001(\t\022\014\n\004pe" +
+      "er\030\002 \001(\t\022\016\n\006client\030\003 \001(\t\022(\n\004date\030\004 \001(\0132\032" +
+      ".google.protobuf.Timestamp\"}\n\005BotKV\022\013\n\003k" +
+      "ey\030\001 \001(\t\022\r\n\005value\030\002 \001(\014\022+\n\007created\030\003 \001(\013" +
+      "2\032.google.protobuf.Timestamp\022+\n\007updated\030" +
+      "\004 \001(\0132\032.google.protobuf.TimestampB\034\n\026sjt" +
+      "u.opennet.textilepbZ\002pbb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -41758,14 +44435,32 @@ public final class Model {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeClientThread_descriptor,
         new java.lang.String[] { "Id", "Client", "Ciphertext", });
-    internal_static_CafeClientMessage_descriptor =
+    internal_static_Video_descriptor =
       getDescriptor().getMessageTypes().get(31);
+    internal_static_Video_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Video_descriptor,
+        new java.lang.String[] { "Id", "Caption", "VideoLength", "Poster", });
+    internal_static_VideoChunk_descriptor =
+      getDescriptor().getMessageTypes().get(32);
+    internal_static_VideoChunk_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_VideoChunk_descriptor,
+        new java.lang.String[] { "Id", "Chunk", "Address", "StartTime", "EndTime", });
+    internal_static_VideoChunkList_descriptor =
+      getDescriptor().getMessageTypes().get(33);
+    internal_static_VideoChunkList_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_VideoChunkList_descriptor,
+        new java.lang.String[] { "Items", });
+    internal_static_CafeClientMessage_descriptor =
+      getDescriptor().getMessageTypes().get(34);
     internal_static_CafeClientMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeClientMessage_descriptor,
         new java.lang.String[] { "Id", "Peer", "Client", "Date", });
     internal_static_BotKV_descriptor =
-      getDescriptor().getMessageTypes().get(32);
+      getDescriptor().getMessageTypes().get(35);
     internal_static_BotKV_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_BotKV_descriptor,

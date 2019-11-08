@@ -116,6 +116,7 @@ public class ContactInfoActivity extends AppCompatActivity {
             if(t.getWhitelistCount()==2){
                 if(t.getWhitelist(0).equals(address) || t.getWhitelist(1).equals(address)){
                     threadid=t.getId();
+                    System.out.println("================threadID："+threadid);
                 }
             }
         }
@@ -123,13 +124,12 @@ public class ContactInfoActivity extends AppCompatActivity {
         contact_del.setOnClickListener(v -> {
             //删除好友,removeThread，并在自己的数据库中删除记录
             try {
-                Textile.instance().threads.removePeer(threadid,peer.getId());
-                Textile.instance().threads.remove(threadid);
+                Textile.instance().threads.removePeer(threadid, peer.getId()); //将对方移出peer
+                Textile.instance().threads.remove(threadid); //将自己的thread删除
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            DBoperator.deleteDialogByThreadID(appdb,threadid);
+            DBoperator.deleteDialogByThreadID(appdb,threadid); //将自己的对话数据库中的记录删除
 
             finish();
         });
