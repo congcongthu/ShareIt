@@ -1,4 +1,4 @@
-package sjtu.opennet.hon;
+package sjtu.opennet.honvideo;
 
 import org.junit.Test;
 
