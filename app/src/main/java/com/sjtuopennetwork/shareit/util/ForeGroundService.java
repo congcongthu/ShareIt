@@ -339,6 +339,9 @@ public class ForeGroundService extends Service {
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
             //要保证在所有界面收到消息，就只能是在这里更新数据库了。默认是未读的，但是在聊天界面得到消息就要改为已读
             //发送消息的目的就是更新界面，所以不用sticky
+            System.out.println("============收到么么么么么"+feedItemData.type.name());
+
+
             Model.Thread thread=null;
             try {
                 thread=Textile.instance().threads.get(threadId);
@@ -352,30 +355,6 @@ public class ForeGroundService extends Service {
             }
 
             boolean isSingle=thread.getWhitelistCount()==2;
-
-            if(feedItemData.type.equals(FeedItemType.REMOVEPEER)){
-                //收到自己被移出群组的消息，就要手动删除这个群组
-                String removeThreadId=thread.getId();
-
-                //判断是不是删自己，如果是的就把相应的thread和dialog删掉
-                String peerId=feedItemData.removePeer.getTarget();
-                List<Model.Peer> peers= null;
-                try {
-                    peers = Textile.instance().threads.peers(threadId).getItemsList();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                for(Model.Peer p:peers){
-                    if(p.getAddress().equals(Textile.instance().account.address())){
-                        try {
-                            Textile.instance().threads.remove(removeThreadId);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        DBoperator.deleteDialogByThreadID(appdb,removeThreadId);
-                    }
-                }
-            }
 
             if(feedItemData.type.equals(FeedItemType.JOIN)){
                 if(DBoperator.queryDialogByThreadID(appdb,threadId)!=null){ //如果已经有了就不要再插入了
@@ -439,9 +418,6 @@ public class ForeGroundService extends Service {
             }
 
             if(feedItemData.type.equals(FeedItemType.TEXT)){ //如果是文本消息
-                if(DBoperator.queryDialogByThreadID(appdb,threadId)!=null){ //如果已经有了就不要再插入了
-                    return;
-                }
                 System.out.println("=================收到文本消息："+feedItemData.text.getBody());
                 int ismine=0;
                 if(feedItemData.text.getUser().getAddress().equals(Textile.instance().account.address())){
@@ -510,6 +486,32 @@ public class ForeGroundService extends Service {
                     EventBus.getDefault().post(tMsg);
                 }
             }
+
+
+            if(feedItemData.type.equals(FeedItemType.REMOVEPEER)){
+                //收到自己被移出群组的消息，就要手动删除这个群组
+                String removeThreadId=thread.getId();
+
+                System.out.println("================收到删除消息");
+
+                //判断是不是删自己，如果是的就把相应的thread和dialog删掉
+                String peerId=feedItemData.removePeer.getTarget();
+                Model.User user = null;
+                try {
+                    user = Textile.instance().peers.peerUser(peerId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if(user.getAddress().equals(Textile.instance().account.address())){
+                    try {
+                        Textile.instance().threads.remove(removeThreadId);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    DBoperator.deleteDialogByThreadID(appdb,removeThreadId);
+                }
+            }
+
         }
     }
 

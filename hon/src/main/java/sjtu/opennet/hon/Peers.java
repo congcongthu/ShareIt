@@ -13,8 +13,8 @@ public class Peers extends NodeDependent {
         super(node);
     }
 
-    public User bestUser(final String peerId) throws Exception {
-        final byte[] bytes = node.bestUser(peerId);
+    public User peerUser(final String peerId) throws Exception {
+        final byte[] bytes = node.peerUser(peerId);
         return User.parseFrom(bytes);
     }
     
