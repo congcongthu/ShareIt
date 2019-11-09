@@ -17,6 +17,7 @@ import java.util.List;
 
 import sjtu.opennet.honvideo.Segmenter;
 import sjtu.opennet.honvideo.VideoMeta;
+import com.sjtuopennetwork.shareit.util.FileUtil;
 
 
 public class VideoActivity extends AppCompatActivity {
@@ -48,6 +49,8 @@ public class VideoActivity extends AppCompatActivity {
             }catch(Exception e){
                 e.printStackTrace();
             }
+            String testpath = FileUtil.getAppExternalPath(this,"");
+            Log.i(TAG, String.format("External storage path %s", testpath));
             //Segmenter.segment("aaa", "aaa");
         });
         video_add.setOnClickListener(video_add -> {
