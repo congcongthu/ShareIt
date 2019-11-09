@@ -35,7 +35,7 @@ public class Videos extends NodeDependent {
     }
 
     public void threadAddVideo(final String threadId, final String videoId) throws Exception {
-        node.threadAddVideo(threadId, videoId)
+        node.threadAddVideo(threadId, videoId);
     }
 
     public void publishVideo(final Video video) throws Exception {

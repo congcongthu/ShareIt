@@ -52,7 +52,7 @@ dependencies {
 //    implementation 'sjtu.opennet:hon:0.1.2'
     implementation project(':hon')
     implementation project(':textilepb')
-    implementation "sjtu.opennet:hon-textile-mobile:0.1.25"
+    implementation "sjtu.opennet:hon-textile-mobile:0.1.26"
     implementation "com.google.protobuf:protobuf-java:3.9.2"
 
     //EventBus，用于异步消息通信

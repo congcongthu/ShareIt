@@ -50,7 +50,7 @@ public class ContactDiscoverActivity extends AppCompatActivity {
         //搜索
         QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder()
                 .setWait(10)
-                .setLimit(1)
+                .setLimit(100)
                 .build();
         try {
             Textile.instance().contacts.discover(options);

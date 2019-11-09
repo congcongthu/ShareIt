@@ -1,8 +1,10 @@
 package com.sjtuopennetwork.shareit.util;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,7 +15,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class FileUtil {
-
+    private static final String TAG = "FileUtil";
     private static String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtlimg/";
 
     /**
@@ -111,5 +113,29 @@ public class FileUtil {
             e.printStackTrace();
         }
         return finalNameWithDir;
+    }
+
+    /**
+     * Get Application's external storage file path.
+     * @param context Activity context.
+     * @param dirName If given, this method will try to find the specific sub directory in storage.
+     *                And create one if it does not exist.
+     * @return The absolute path of required directory.
+     */
+    public static String getAppExternalPath(Context context, String dirName){
+        Log.i(TAG, String.format("Get path of %s dir in app external file directory.", dirName));
+        String directoryPath = "";
+        if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
+            directoryPath = context.getExternalFilesDir(dirName).getAbsolutePath();
+        }else{
+            Log.w(TAG, "No external storage available, try to use internal storage. (Time to buy a new phone :)");
+            directoryPath = context.getFilesDir() + File.separator + dirName;
+        }
+        File file = new File(directoryPath);
+        if(!file.exists()){
+            Log.i(TAG, "Directory does not exists. Try to create one.");
+            file.mkdir();
+        }
+        return directoryPath;
     }
 }
