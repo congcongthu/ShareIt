@@ -128,6 +128,11 @@ public class Textile implements LifecycleObserver {
     public Videos videos;
 
     /**
+     * Provides access to Textile videos related APIs
+     */
+    public Peers peers;
+
+    /**
      * The number of words to use in the wallet's mnemonic phrase
      */
     public static int WALLET_WORD_COUNT = 12;
@@ -502,6 +507,7 @@ public class Textile implements LifecycleObserver {
         schemas = new Schemas(node);
         threads = new Threads(node);
         videos = new Videos(node);
+        peers = new Peers(node);
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)

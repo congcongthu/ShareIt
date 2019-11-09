@@ -34,6 +34,10 @@ public class Videos extends NodeDependent {
         node.addVideoChunk(vchunk.toByteArray());
     }
 
+    public void threadAddVideo(final String threadId, final String videoId) throws Exception {
+        node.threadAddVideo(threadId, videoId)
+    }
+
     public void publishVideo(final Video video) throws Exception {
         node.publishVideo(video.toByteArray());
     }
