@@ -356,12 +356,25 @@ public class ForeGroundService extends Service {
             if(feedItemData.type.equals(FeedItemType.REMOVEPEER)){
                 //收到自己被移出群组的消息，就要手动删除这个群组
                 String removeThreadId=thread.getId();
+
+                //判断是不是删自己，如果是的就把相应的thread和dialog删掉
+                String peerId=feedItemData.removePeer.getTarget();
+                List<Model.Peer> peers= null;
                 try {
-                    Textile.instance().threads.remove(removeThreadId);
+                    peers = Textile.instance().threads.peers(threadId).getItemsList();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                DBoperator.deleteDialogByThreadID(appdb,removeThreadId);
+                for(Model.Peer p:peers){
+                    if(p.getAddress().equals(Textile.instance().account.address())){
+                        try {
+                            Textile.instance().threads.remove(removeThreadId);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        DBoperator.deleteDialogByThreadID(appdb,removeThreadId);
+                    }
+                }
             }
 
             if(feedItemData.type.equals(FeedItemType.JOIN)){
