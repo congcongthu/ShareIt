@@ -76,19 +76,6 @@ public class ContactInfoActivity extends AppCompatActivity {
         pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
         appdb= AppdbHelper.getInstance(this,pref.getString("loginAccount","")).getWritableDatabase();
 
-        //从address得到peerid
-        try {
-            List<Model.Peer> peers=Textile.instance().threads.peers(threadid).getItemsList();
-            for(Model.Peer p:peers){
-                if(p.getAddress().equals(address)){
-                    peer=p;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
         //显示头像
         String avatarPath= FileUtil.getFilePath(contact.getAvatar());
         if(avatarPath.equals("null")){ //如果没有存储过这个头像文件
@@ -108,22 +95,35 @@ public class ContactInfoActivity extends AppCompatActivity {
 
         List<Model.Thread> devicethreads= null;
         try {
-            devicethreads = Textile.instance().threads.list().getItemsList();
+            devicethreads = Textile.instance().threads.list().getItemsList(); //所有的threads
         } catch (Exception e) {
             e.printStackTrace();
         }
         for(Model.Thread t:devicethreads){
-            if(t.getWhitelistCount()==2){
+            if(t.getWhitelistCount()==2){ //如果
                 if(t.getWhitelist(0).equals(address) || t.getWhitelist(1).equals(address)){
                     threadid=t.getId();
-                    System.out.println("================threadID："+threadid);
                 }
             }
+        }
+
+        //从address得到peerid
+        try {
+            System.out.println("===========用户详情的threaid："+threadid);
+            List<Model.Peer> peers=Textile.instance().threads.peers(threadid).getItemsList();
+            for(Model.Peer p:peers){
+                if(p.getAddress().equals(address)){
+                    peer=p;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         contact_del.setOnClickListener(v -> {
             //删除好友,removeThread，并在自己的数据库中删除记录
             try {
+                System.out.println("================将要removePeer：threadid/peeraId"+threadid+" "+peer.getId());
                 Textile.instance().threads.removePeer(threadid, peer.getId()); //将对方移出peer
                 Textile.instance().threads.remove(threadid); //将自己的thread删除
             } catch (Exception e) {

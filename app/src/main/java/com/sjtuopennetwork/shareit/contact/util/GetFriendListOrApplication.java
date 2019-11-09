@@ -28,6 +28,10 @@ public class GetFriendListOrApplication {
                     for(Model.Peer p:peers){
                         System.out.println("==============peer:"+p.getName()+" "+p.getAddress());
                         if(!p.getAddress().equals(Textile.instance().account.address())){ //不是自己就是好友
+                            if(t.getKey().equals(p.getAddress()) && //thread的key等于这个peer的address，说明自己是申请者
+                                    !Textile.instance().threads.isAdmin(t.getId(),p.getId())){ //如果好友不是管理员
+                                Textile.instance().threads.addAdmin(t.getId(),p.getId()); //将其设为管理员
+                            }
                             result.add(p);
                         }
                     }
