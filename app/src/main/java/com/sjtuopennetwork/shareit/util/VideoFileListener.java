@@ -5,8 +5,10 @@ import android.util.Log;
 
 public class VideoFileListener extends FileObserver {
     private final String TAG = "VideoFileListener";
+    private String observeredDir;
     public VideoFileListener(String path){
         super(path);
+        observeredDir = path;
     }
 
     @Override

@@ -69,8 +69,6 @@ public class VideoHelper {
         m3u8Path = String.format("%s/playlist.m3u8", videoPath);
 
         vObserver = new VideoFileListener(chunkPath);
-
-
     }
 
     public void segment(){
