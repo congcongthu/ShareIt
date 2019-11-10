@@ -53,6 +53,7 @@ public class ChatActivity extends AppCompatActivity {
     ImageView group_menu;
     LinearLayout add_file_layout;
     TextView bt_send_img;
+    LinearLayout chat_backgroud;
 
     //持久化数据
     public SQLiteDatabase appdb;
@@ -107,7 +108,15 @@ public class ChatActivity extends AppCompatActivity {
         group_menu=findViewById(R.id.group_menu);
         add_file_layout=findViewById(R.id.file_layout);
         add_file_layout.setVisibility(View.GONE);
-        
+        chat_backgroud=findViewById(R.id.chat_backgroud);
+
+        chat_backgroud.setOnClickListener(view -> {
+            if(addingFIle){
+                addingFIle=false;
+                add_file_layout.setVisibility(View.GONE);
+            }
+        });
+
         bt_add_file.setOnClickListener(view -> {
             if(addingFIle){
                 addingFIle=false;

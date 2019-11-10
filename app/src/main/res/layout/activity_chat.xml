@@ -33,15 +33,26 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <ListView
-        android:id="@+id/chat_lv"
-        android:stackFromBottom="true"
-        android:transcriptMode="alwaysScroll"
+
+
+    <LinearLayout
+        android:id="@+id/chat_backgroud"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:divider="@null">
-    </ListView>
+        android:layout_weight="1">
+
+        <ListView
+            android:id="@+id/chat_lv"
+            android:stackFromBottom="true"
+            android:transcriptMode="alwaysScroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null">
+        </ListView>
+
+    </LinearLayout>
+
+
 
     <LinearLayout
         android:background="@color/white"

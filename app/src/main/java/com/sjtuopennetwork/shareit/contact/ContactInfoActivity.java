@@ -5,13 +5,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.ChatActivity;
+import com.sjtuopennetwork.shareit.share.GroupInfoActivity;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
 import com.sjtuopennetwork.shareit.util.FileUtil;
@@ -121,17 +124,25 @@ public class ContactInfoActivity extends AppCompatActivity {
         }
 
         contact_del.setOnClickListener(v -> {
-            //删除好友,removeThread，并在自己的数据库中删除记录
-            try {
-                System.out.println("================将要removePeer：threadid/peeraId"+threadid+" "+peer.getId());
-                Textile.instance().threads.removePeer(threadid, peer.getId()); //将对方移出peer
-                Textile.instance().threads.remove(threadid); //将自己的thread删除
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            DBoperator.deleteDialogByThreadID(appdb,threadid); //将自己的对话数据库中的记录删除
+            //先弹出对话框
+            AlertDialog.Builder delFriend=new AlertDialog.Builder(ContactInfoActivity.this);
+            delFriend.setTitle("删除好友");
+            delFriend.setMessage("确定删除 "+peer.getName()+" 吗？");
+            delFriend.setPositiveButton("确定", (dialog, which) -> {
+                //删除好友,removeThread，并在自己的数据库中删除记录
+                try {
+                    System.out.println("================将要removePeer：threadid/peeraId"+threadid+" "+peer.getId());
+                    Textile.instance().threads.removePeer(threadid, peer.getId()); //将对方移出peer
+                    Textile.instance().threads.remove(threadid); //将自己的thread删除
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                DBoperator.deleteDialogByThreadID(appdb,threadid); //将自己的对话数据库中的记录删除
 
-            finish();
+                finish();
+            });
+            delFriend.setNegativeButton("取消", (dialog, which) -> Toast.makeText(ContactInfoActivity.this,"已取消",Toast.LENGTH_SHORT).show());
+            delFriend.show();
         });
 
         contact_send.setOnClickListener(v -> {
