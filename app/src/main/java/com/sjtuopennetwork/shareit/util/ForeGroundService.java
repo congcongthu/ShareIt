@@ -487,6 +487,10 @@ public class ForeGroundService extends Service {
                 }
             }
 
+            if(feedItemData.type.equals(FeedItemType.VIDEO)){
+                //metadata，
+            }
+
             if(feedItemData.type.equals(FeedItemType.ADDADMIN)){
                 System.out.println("============收到添加管理员："+feedItemData.addAdmin.getUser().getName());
             }

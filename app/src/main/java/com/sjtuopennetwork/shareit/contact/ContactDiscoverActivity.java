@@ -97,11 +97,11 @@ public class ContactDiscoverActivity extends AppCompatActivity {
         System.out.println("========本地发现得到搜索结果："+c.getName()+" "+c.getAddress());
 
         //要过滤一下，首先看是不是自己的好友，如果是就过滤掉。
-        for(Model.Peer p:myFriends){
-            if(p.getAddress().equals(c.getAddress())){
-                return; //如果已经添加过这个联系人直接返回
-            }
-        }
+//        for(Model.Peer p:myFriends){
+//            if(p.getAddress().equals(c.getAddress())){
+//                return; //如果已经添加过这个联系人直接返回
+//            }
+//        }
         //再看是不是已经添加过了，如果已经有了也要过滤掉。
         for(Model.Contact contact:newContacts){
             if(contact.getAddress().equals(c.getAddress())){

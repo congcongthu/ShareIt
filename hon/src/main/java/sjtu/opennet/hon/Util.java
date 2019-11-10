@@ -61,7 +61,7 @@ public class Util {
             case "/Leave":
                 feedItemData.type = FeedItemType.LEAVE;
                 feedItemData.leave = Leave.parseFrom(bytes);
-            case "/RemovePeer":
+            case "/Removepeer":
                 feedItemData.type = FeedItemType.REMOVEPEER;
                 feedItemData.removePeer = RemovePeer.parseFrom(bytes);
                 break;
@@ -69,7 +69,7 @@ public class Util {
                 feedItemData.type = FeedItemType.ADDADMIN;
                 feedItemData.addAdmin = AddAdmin.parseFrom(bytes);
                 break;
-            case "/FeedVideo":
+            case "/Feedvideo":
                 feedItemData.type = FeedItemType.VIDEO;
                 feedItemData.feedVideo = FeedVideo.parseFrom(bytes);
                 break;
