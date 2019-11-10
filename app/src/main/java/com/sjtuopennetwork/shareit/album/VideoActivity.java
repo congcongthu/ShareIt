@@ -18,41 +18,50 @@ import java.util.List;
 import sjtu.opennet.honvideo.Segmenter;
 import sjtu.opennet.honvideo.VideoMeta;
 import com.sjtuopennetwork.shareit.util.FileUtil;
-
+import com.sjtuopennetwork.shareit.util.VideoHelper;
 
 public class VideoActivity extends AppCompatActivity {
     // UI Gadget
     ImageView video_sync;
     ImageView video_add;
-
+    ImageView video_delete;
     List<LocalMedia> chooseVid;
 
     private static final String TAG = "VideoActivity";
-    private static final int REQUEST_CODE_PICK_VIDEO = 42;
+    private String videoDir;
+    // videoDir can not be static as we need VideoActivity.context
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
 
+        //Initialize ffmpeg binary
+        try{
+            Segmenter.initFfmpeg(this);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        //Initialize video directory.
+        videoDir = FileUtil.getAppExternalPath(this, "video");
+
+        //Initialize UI gadget.
         initUI();
     }
-
-
 
     public void initUI(){
         video_sync=findViewById(R.id.video_sync);
         video_add=findViewById(R.id.video_add);
+        video_delete=findViewById(R.id.video_delete);
+        //Listener for video sync
         video_sync.setOnClickListener(view -> {
-            try{
-                Segmenter.initFfmpeg(this);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
+
             String testpath = FileUtil.getAppExternalPath(this,"");
             Log.i(TAG, String.format("External storage path %s", testpath));
             //Segmenter.segment("aaa", "aaa");
         });
+
+        //Listener for video add
         video_add.setOnClickListener(video_add -> {
             Log.i(TAG, "Video Add Clicked.");
             PictureSelector.create(VideoActivity.this)
@@ -60,28 +69,49 @@ public class VideoActivity extends AppCompatActivity {
                     .maxSelectNum(1)//最大选择数量
                     .compress(false)//是否压缩
                     .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调 onActivityResult code
-
             //Segmenter.testFFresume(this);
+        });
+
+        //Listener for video delete
+        video_delete.setOnClickListener(view->{
+            VideoHelper.cleanAll(this);
         });
     }
 
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode==PictureConfig.CHOOSE_REQUEST && resultCode==RESULT_OK){
-            //选择或拍摄照片之后的回调，将对应图片添加到photo_thread中
-            chooseVid=PictureSelector.obtainMultipleResult(data);
-            String filePath=chooseVid.get(0).getPath();
+        if (requestCode == PictureConfig.CHOOSE_REQUEST && resultCode == RESULT_OK) {
+            chooseVid = PictureSelector.obtainMultipleResult(data);
+            String filePath = chooseVid.get(0).getPath();
 
             Log.i(TAG, String.format("Add video from file %s.", filePath));
-            Log.i(TAG, "Extract video meta data");
-            VideoMeta vMeta = new VideoMeta(filePath);
-            vMeta.logCatPrint();
+            Log.i(TAG, "Meta get start");
+            long startTime = System.currentTimeMillis();
+            //VideoMeta vMeta = new VideoMeta(filePath);
+            //vMeta.logCatPrint();
+            VideoHelper vHelper = new VideoHelper(this, filePath);
+            long endTime = System.currentTimeMillis();
+            Log.i(TAG, "Meta get end");
+            Log.i(TAG, String.format("Meta get time %d ms", endTime - startTime));
             Log.i(TAG, String.format("Try to stream video"));
+            vHelper.segment();
             //Segmenter.getFrame(filePath);
             //Segmenter.testSegment(this, filePath);
-        }
-        else{
+            /*
+            Log.i(TAG, String.format("Try to get video info."));
+            try{
+                Segmenter.getInfo(this, filePath);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+             */
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
+
+    private void doVideoAdd(){
+
+    }
 }

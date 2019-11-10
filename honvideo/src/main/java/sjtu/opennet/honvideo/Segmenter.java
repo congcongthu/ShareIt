@@ -15,7 +15,7 @@ public class Segmenter {
     public static final String TAG = "Segmenter";
     public static boolean isInit = false;
     private static int progressCounter = 0;
-    public static ExecuteBinaryResponseHandler segHandler = new ExecuteBinaryResponseHandler(){
+    public static ExecuteBinaryResponseHandler defaultHandler = new ExecuteBinaryResponseHandler(){
         @Override
         public void onSuccess(String message) {
             Log.i(TAG, String.format("Command success\n%s", message));
@@ -61,7 +61,7 @@ public class Segmenter {
         isInit = true;
     }
 
-    public static void segment(Context context, String filePath, String outDir) throws Exception{
+    public static void segment(Context context, int segTime, String filePath, String m3u8Path, String outDir, ExecuteBinaryResponseHandler handler) throws Exception{
         Log.i(TAG, String.format("Segment file %s into %s.", filePath, outDir));
         if(!isInit){
             Log.w(TAG, "FFmpeg has not be loaded. Try to load it.");
@@ -72,13 +72,15 @@ public class Segmenter {
             outDirf.mkdir();
         }
         //String command = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -f segment -segment_time 10 -segment_list %s/out.m3u8 %s/out%%04d.ts", filePath, outDir, outDir);
-        String command = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -f segment -segment_time 10 %s/out%%04d.ts", filePath, outDir);
+        String command = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -f segment " +
+                "-segment_time %d " +
+                "-segment_list %s " +
+                "%s/out%%04d.ts", filePath, segTime, m3u8Path, outDir);
         FFmpeg ffmpeg = FFmpeg.getInstance(context);
-        ffmpeg.execute(command.split(" "), segHandler);
+        if(handler!=null){
+            ffmpeg.execute(command.split(" "), handler);
+        }else{
+            ffmpeg.execute(command.split(" "), defaultHandler);
+        }
     }
-
-    public static void metaGet(){
-
-    }
-
 }

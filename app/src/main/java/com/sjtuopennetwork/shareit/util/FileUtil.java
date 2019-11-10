@@ -138,4 +138,22 @@ public class FileUtil {
         }
         return directoryPath;
     }
+
+    public static void deleteRecursive(File fileOrDir){
+        if (fileOrDir.isDirectory())
+            for (File child : fileOrDir.listFiles())
+                deleteRecursive(child);
+        fileOrDir.delete();
+    }
+
+    public static void deleteContents(File directory){
+        if (!directory.isDirectory()){
+            Log.e(TAG, "%s is not a directory.\n" +
+                    "This func is used to delete contents inside a directory.");
+        }else{
+            for (File child : directory.listFiles())
+                deleteRecursive(child);
+        }
+    }
+
 }

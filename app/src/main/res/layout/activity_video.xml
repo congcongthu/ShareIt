@@ -39,7 +39,16 @@
             android:layout_marginRight="5dp"
             android:src="@drawable/ic_sync" />
 
-
+        <ImageView
+            android:id="@+id/video_delete"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="right"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
+            android:padding="10dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/ic_delete" />
 
 
     </android.support.v7.widget.Toolbar>
