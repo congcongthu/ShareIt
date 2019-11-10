@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import com.example.qrlibrary.qrcode.utils.PermissionUtils;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.contact.util.GetFriendListOrApplication;
+import com.sjtuopennetwork.shareit.setting.NotificationActivity;
 import com.sjtuopennetwork.shareit.share.util.DialogAdapter;
 import com.sjtuopennetwork.shareit.share.util.TDialog;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
@@ -115,29 +117,52 @@ public class ShareFragment extends Fragment {
         dialogs= DBoperator.queryAllDIalogs(appdb);
         System.out.println("================数据库中dialog数："+dialogs.size());
 
-        //查出邀请中最近的一个，添加到头部。包括好友申请的邀请，也包括群组的邀请，不过要一下类
-
+        //查出邀请中最近的一个，添加到头部。
+        int gpinvite=0;
+        sjtu.opennet.textilepb.View.InviteView lastInvite=null;
+        try {
+            List<Model.Peer> friends= GetFriendListOrApplication.getFriendList();
+            List<sjtu.opennet.textilepb.View.InviteView> invites = Textile.instance().invites.list().getItemsList();
+            for(sjtu.opennet.textilepb.View.InviteView v:invites){ //遍历所有的邀请
+                for(Model.Peer p:friends){ //如果是好友发来的邀请，就一定是多人群组，就要++
+                    if(v.getInviter().getAddress().equals(p.getAddress())){
+                        gpinvite++;
+                        lastInvite=v;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("=============邀请："+gpinvite);
+        if(gpinvite>0){ //如果有群组邀请就要显示出来
+            TDialog noti=new TDialog(1,"","通知",lastInvite.getInviter().getName()+" 邀请你",
+                    lastInvite.getDate().getSeconds(),false,"tongzhi",true,true);
+            dialogs.add(0,noti);
+        }
 
         dialogAdapter=new DialogAdapter(getContext(),R.layout.item_share_dialog,dialogs);
         dialogAdapter.notifyDataSetChanged();
         dialoglistView.setAdapter(dialogAdapter);
 
         dialoglistView.setOnItemClickListener((parent, view, position, id) -> {
-            String threadid=dialogs.get(position).threadid;
+            if(dialogs.get(position).imgpath.equals("tongzhi")){ //如果是通知，就跳转过去
+                Intent intent=new Intent(getActivity(), NotificationActivity.class);
+                startActivity(intent);
+            }else{ //如果是对话就进入聊天
+                String threadid=dialogs.get(position).threadid;
+                //数据库中修改为已读
+                //先将对应threadlook的状态设为已读
+                ContentValues v=new ContentValues();
+                v.put("isread",1);
+                appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
 
-            //数据库中修改为已读
-            //先将对应threadlook的状态设为已读
-            ContentValues v=new ContentValues();
-            v.put("isread",1);
-            appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
-
-            Intent it=new Intent(getActivity(), ChatActivity.class);
-            it.putExtra("threadid",threadid);
-            startActivity(it);
+                Intent it=new Intent(getActivity(), ChatActivity.class);
+                it.putExtra("threadid",threadid);
+                startActivity(it);
+            }
         });
     }
-
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getNewMsg(TDialog tDialog){ //获取到新的消息后要更新显示
@@ -152,7 +177,6 @@ public class ShareFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-
         if(EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().unregister(this);
         }

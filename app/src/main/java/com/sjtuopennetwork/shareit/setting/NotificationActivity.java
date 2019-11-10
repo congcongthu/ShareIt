@@ -42,9 +42,14 @@ public class NotificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         init();
     }
+
     private void init() {
         mContext=NotificationActivity.this;
         listView=findViewById(R.id.notification_listView);
@@ -80,6 +85,11 @@ public class NotificationActivity extends AppCompatActivity {
 
             return true;
         });
+
+        for(int i=0;i<gData.size();i++){
+            notification_listView.collapseGroup(i);
+            notification_listView.expandGroup(i);
+        }
     }
     private void initData() {
         inviteData = new ArrayList<>();
@@ -134,6 +144,7 @@ public class NotificationActivity extends AppCompatActivity {
                 iData.add(commentData);
             if (likeData != null)
                 iData.add(likeData);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -5,13 +5,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.ChatActivity;
+import com.sjtuopennetwork.shareit.share.GroupInfoActivity;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
 import com.sjtuopennetwork.shareit.util.FileUtil;
@@ -76,19 +79,6 @@ public class ContactInfoActivity extends AppCompatActivity {
         pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
         appdb= AppdbHelper.getInstance(this,pref.getString("loginAccount","")).getWritableDatabase();
 
-        //从address得到peerid
-        try {
-            List<Model.Peer> peers=Textile.instance().threads.peers(threadid).getItemsList();
-            for(Model.Peer p:peers){
-                if(p.getAddress().equals(address)){
-                    peer=p;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
         //显示头像
         String avatarPath= FileUtil.getFilePath(contact.getAvatar());
         if(avatarPath.equals("null")){ //如果没有存储过这个头像文件
@@ -108,30 +98,51 @@ public class ContactInfoActivity extends AppCompatActivity {
 
         List<Model.Thread> devicethreads= null;
         try {
-            devicethreads = Textile.instance().threads.list().getItemsList();
+            devicethreads = Textile.instance().threads.list().getItemsList(); //所有的threads
         } catch (Exception e) {
             e.printStackTrace();
         }
         for(Model.Thread t:devicethreads){
-            if(t.getWhitelistCount()==2){
+            if(t.getWhitelistCount()==2){ //如果
                 if(t.getWhitelist(0).equals(address) || t.getWhitelist(1).equals(address)){
                     threadid=t.getId();
-                    System.out.println("================threadID："+threadid);
                 }
             }
         }
 
-        contact_del.setOnClickListener(v -> {
-            //删除好友,removeThread，并在自己的数据库中删除记录
-            try {
-                Textile.instance().threads.removePeer(threadid, peer.getId()); //将对方移出peer
-                Textile.instance().threads.remove(threadid); //将自己的thread删除
-            } catch (Exception e) {
-                e.printStackTrace();
+        //从address得到peerid
+        try {
+            System.out.println("===========用户详情的threaid："+threadid);
+            List<Model.Peer> peers=Textile.instance().threads.peers(threadid).getItemsList();
+            for(Model.Peer p:peers){
+                if(p.getAddress().equals(address)){
+                    peer=p;
+                }
             }
-            DBoperator.deleteDialogByThreadID(appdb,threadid); //将自己的对话数据库中的记录删除
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            finish();
+        contact_del.setOnClickListener(v -> {
+            //先弹出对话框
+            AlertDialog.Builder delFriend=new AlertDialog.Builder(ContactInfoActivity.this);
+            delFriend.setTitle("删除好友");
+            delFriend.setMessage("确定删除 "+peer.getName()+" 吗？");
+            delFriend.setPositiveButton("确定", (dialog, which) -> {
+                //删除好友,removeThread，并在自己的数据库中删除记录
+                try {
+                    System.out.println("================将要removePeer：threadid/peeraId"+threadid+" "+peer.getId());
+                    Textile.instance().threads.removePeer(threadid, peer.getId()); //将对方移出peer
+                    Textile.instance().threads.remove(threadid); //将自己的thread删除
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                DBoperator.deleteDialogByThreadID(appdb,threadid); //将自己的对话数据库中的记录删除
+
+                finish();
+            });
+            delFriend.setNegativeButton("取消", (dialog, which) -> Toast.makeText(ContactInfoActivity.this,"已取消",Toast.LENGTH_SHORT).show());
+            delFriend.show();
         });
 
         contact_send.setOnClickListener(v -> {

@@ -14,6 +14,9 @@ import sjtu.opennet.textilepb.View.Join;
 import sjtu.opennet.textilepb.View.Leave;
 import sjtu.opennet.textilepb.View.Like;
 import sjtu.opennet.textilepb.View.Text;
+import sjtu.opennet.textilepb.View.RemovePeer;
+import sjtu.opennet.textilepb.View.AddAdmin;
+import sjtu.opennet.textilepb.View.FeedVideo;
 
 
 public class Util {
@@ -58,6 +61,18 @@ public class Util {
             case "/Leave":
                 feedItemData.type = FeedItemType.LEAVE;
                 feedItemData.leave = Leave.parseFrom(bytes);
+            case "/Removepeer":
+                feedItemData.type = FeedItemType.REMOVEPEER;
+                feedItemData.removePeer = RemovePeer.parseFrom(bytes);
+                break;
+            case "/Addadmin":
+                feedItemData.type = FeedItemType.ADDADMIN;
+                feedItemData.addAdmin = AddAdmin.parseFrom(bytes);
+                break;
+            case "/Feedvideo":
+                feedItemData.type = FeedItemType.VIDEO;
+                feedItemData.feedVideo = FeedVideo.parseFrom(bytes);
+                break;
             case "/Announce":
                 feedItemData.type = FeedItemType.ANNOUNCE;
                 feedItemData.announce = Announce.parseFrom(bytes);

@@ -45,7 +45,6 @@ public class NewGroupActivity extends AppCompatActivity {
 
         initData();
 
-
     }
 
     @Override
@@ -73,8 +72,7 @@ public class NewGroupActivity extends AppCompatActivity {
         contactView.setData(contactBeans,true);
         contactView.setContactListener(new ContactListener<ContactBean>() {
             @Override
-            public void onClick(ContactBean item) {
-            }
+            public void onClick(ContactBean item) { }
             @Override
             public void onLongClick(ContactBean item) { }
             @Override
@@ -87,7 +85,6 @@ public class NewGroupActivity extends AppCompatActivity {
 
             //创建一个多人的群组：
             addNewThreads(threadname);
-
 
         });
     }

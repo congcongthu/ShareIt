@@ -487,6 +487,13 @@ public class ForeGroundService extends Service {
                 }
             }
 
+            if(feedItemData.type.equals(FeedItemType.VIDEO)){
+                //metadata，
+            }
+
+            if(feedItemData.type.equals(FeedItemType.ADDADMIN)){
+                System.out.println("============收到添加管理员："+feedItemData.addAdmin.getUser().getName());
+            }
 
             if(feedItemData.type.equals(FeedItemType.REMOVEPEER)){
                 //收到自己被移出群组的消息，就要手动删除这个群组
@@ -496,6 +503,7 @@ public class ForeGroundService extends Service {
 
                 //判断是不是删自己，如果是的就把相应的thread和dialog删掉
                 String peerId=feedItemData.removePeer.getTarget();
+                System.out.println("==============删除："+peerId);
                 Model.User user = null;
                 try {
                     user = Textile.instance().peers.peerUser(peerId);
@@ -511,37 +519,36 @@ public class ForeGroundService extends Service {
                     DBoperator.deleteDialogByThreadID(appdb,removeThreadId);
                 }
             }
-
         }
-    }
 
-    private void createDeviceThread() {
-        //看有没有"mydevice1219"，没有就新建
-        try {
-            List<Model.Thread> devicethreads=Textile.instance().threads.list().getItemsList();
-            boolean hasDevice=false;
-            for(Model.Thread t:devicethreads){
-                if(t.getName().equals("mydevice1219")){
-                    hasDevice=true;
-                    System.out.println("=============已经有mydevice1219");
-                    break;
+        private void createDeviceThread() {
+            //看有没有"mydevice1219"，没有就新建
+            try {
+                List<Model.Thread> devicethreads=Textile.instance().threads.list().getItemsList();
+                boolean hasDevice=false;
+                for(Model.Thread t:devicethreads){
+                    if(t.getName().equals("mydevice1219")){
+                        hasDevice=true;
+                        System.out.println("=============已经有mydevice1219");
+                        break;
+                    }
                 }
+                if(!hasDevice){
+                    String key= UUID.randomUUID().toString();
+                    sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
+                            .setPreset(View.AddThreadConfig.Schema.Preset.BLOB)
+                            .build();
+                    sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
+                            .setSharing(Model.Thread.Sharing.NOT_SHARED)
+                            .setType(Model.Thread.Type.PRIVATE)
+                            .setKey(key).setName("mydevice1219")
+                            .setSchema(schema)
+                            .build();
+                    Textile.instance().threads.add(config);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            if(!hasDevice){
-                String key= UUID.randomUUID().toString();
-                sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
-                        .setPreset(View.AddThreadConfig.Schema.Preset.BLOB)
-                        .build();
-                sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
-                        .setSharing(Model.Thread.Sharing.NOT_SHARED)
-                        .setType(Model.Thread.Type.PRIVATE)
-                        .setKey(key).setName("mydevice1219")
-                        .setSchema(schema)
-                        .build();
-                Textile.instance().threads.add(config);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

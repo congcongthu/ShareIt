@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,10 +13,12 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.library.flowlayout.FlowLayoutManager;
 import com.library.flowlayout.SpaceItemDecoration;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.contact.SearchContactActivity;
 import com.sjtuopennetwork.shareit.share.util.GroupMemberAdapter;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
@@ -125,19 +128,27 @@ public class GroupInfoActivity extends AppCompatActivity {
             startActivity(it);
         });
         leave_group.setOnClickListener(v -> {
-            //自己退出群组,removeThread，自己removeThread
-            try {
-                Textile.instance().threads.remove(threadid);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            DBoperator.deleteDialogByThreadID(appdb,threadid);
+            //还是先弹出对话框吧，防止误触
+            AlertDialog.Builder leave=new AlertDialog.Builder(GroupInfoActivity.this);
+            leave.setTitle("退出群组");
+            leave.setMessage("确定退出群组吗？");
+            leave.setPositiveButton("确定", (dialog, which) -> {
+                //自己退出群组,removeThread，自己removeThread
+                try {
+                    Textile.instance().threads.remove(threadid);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                DBoperator.deleteDialogByThreadID(appdb,threadid);
 
-            //广播ChatActivity清除
-            Intent intent=new Intent(ChatActivity.REMOVE_DIALOG);
-            sendBroadcast(intent);
+                //广播ChatActivity清除
+                Intent intent=new Intent(ChatActivity.REMOVE_DIALOG);
+                sendBroadcast(intent);
 
-            finish();
+                finish();
+            });
+            leave.setNegativeButton("取消", (dialog, which) -> Toast.makeText(GroupInfoActivity.this,"已取消",Toast.LENGTH_SHORT).show());
+            leave.show();
         });
 
         group_qrcode.setOnClickListener(v -> {

@@ -52,6 +52,9 @@ public class HomeActivity extends AppCompatActivity {
     private AlbumFragment albumFragment;
     private ContactFragment contactFragment;
     CircleProgressDialog circleProgressDialog;
+    FragmentManager fragmentManager;
+    FragmentTransaction transaction;
+
     //内存数据
     boolean nodeOnline=false;
     int login;
@@ -140,9 +143,9 @@ public class HomeActivity extends AppCompatActivity {
 
     //切换Fragment
     private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        fragmentManager = getSupportFragmentManager();
+        transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.rep_layout, fragment);
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 }

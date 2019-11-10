@@ -81,6 +81,8 @@ public class GroupSetAdminActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
+
+            finish();
         });
     }
 }
