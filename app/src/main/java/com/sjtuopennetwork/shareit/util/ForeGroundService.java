@@ -177,7 +177,7 @@ public class ForeGroundService extends Service {
         if(integer==9){
             Textile.instance().cafes.register(
                     "http://202.120.38.131:40601",
-                    "2HgCmu3Gk72XkVbccXGA14JehiwL9tfT9tLueVc1FTRhX1UJzZRX9vhy1dkTB",
+                    "2GmWwR2S2cW9UPe1tD3an4QzbUxo7hodsGef8reSLrL6sf4uCo77qrGqcw98m",
                     new Handlers.ErrorHandler() {
                         @Override
                         public void onComplete() {
@@ -488,7 +488,10 @@ public class ForeGroundService extends Service {
             }
 
             if(feedItemData.type.equals(FeedItemType.VIDEO)){
-                //metadata，
+                //metadata
+                Model.Video video=feedItemData.feedVideo.getVideo();
+                System.out.println("==========收到视频："+video.getCaption()
+                        +" "+video.getPoster()+" "+video.getId());
             }
 
             if(feedItemData.type.equals(FeedItemType.ADDADMIN)){

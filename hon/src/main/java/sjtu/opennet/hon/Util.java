@@ -69,7 +69,7 @@ public class Util {
                 feedItemData.type = FeedItemType.ADDADMIN;
                 feedItemData.addAdmin = AddAdmin.parseFrom(bytes);
                 break;
-            case "/Feedvideo":
+            case "/Video":
                 feedItemData.type = FeedItemType.VIDEO;
                 feedItemData.feedVideo = FeedVideo.parseFrom(bytes);
                 break;

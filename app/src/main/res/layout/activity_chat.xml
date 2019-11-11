@@ -110,6 +110,7 @@
             android:layout_height="50dp" />
 
         <TextView
+            android:id="@+id/bt_send_video"
             android:layout_margin="10dp"
             android:background="@drawable/rect_search_contact"
             android:gravity="center"

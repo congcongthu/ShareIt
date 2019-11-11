@@ -39,6 +39,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
+import sjtu.opennet.honvideo.VideoMeta;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
@@ -54,6 +55,7 @@ public class ChatActivity extends AppCompatActivity {
     LinearLayout add_file_layout;
     TextView bt_send_img;
     LinearLayout chat_backgroud;
+    TextView bt_send_video;
 
     //持久化数据
     public SQLiteDatabase appdb;
@@ -66,6 +68,7 @@ public class ChatActivity extends AppCompatActivity {
     List<TMsg> msgList;
 //    MsgAdapter msgAdapter;
     List<LocalMedia> choosePic;
+    List<LocalMedia> chooseVideo;
     String avatarpath;
 
     //退出群组相关
@@ -101,6 +104,7 @@ public class ChatActivity extends AppCompatActivity {
     private void initUI() {
         chat_lv=findViewById(R.id.chat_lv);
         bt_send_img=findViewById(R.id.bt_send_img);
+        bt_send_video=findViewById(R.id.bt_send_video);
         chat_name_toolbar=findViewById(R.id.chat_name_toolbar);
         send_msg=findViewById(R.id.chat_send_text);
         bt_add_file=findViewById(R.id.bt_add_file);
@@ -140,13 +144,19 @@ public class ChatActivity extends AppCompatActivity {
             chat_thread = Textile.instance().threads.get(threadid);
             if(chat_thread.getWhitelistCount()==2){ //如果是双人thread
                 group_menu.setVisibility(View.GONE);
+                Model.Peer peer1=Textile.instance().threads.peers(threadid).getItems(0);
+                if(peer1.getName().equals(Textile.instance().profile.name())){ //如果第一个名字是我的，就设置下一个名字
+                    chat_name_toolbar.setText(Textile.instance().threads.peers(threadid).getItems(1).getName());
+                }else{ //第一个名字不是我就直接设置
+                    chat_name_toolbar.setText(peer1.getName());
+                }
+            }else{
+                chat_name_toolbar.setText(chat_thread.getName());
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        chat_name_toolbar.setText(chat_thread.getName());
 
         send_msg.setOnClickListener(view -> {
             final String msg=chat_text_edt.getText().toString();
@@ -178,7 +188,15 @@ public class ChatActivity extends AppCompatActivity {
                     .openGallery(PictureMimeType.ofImage())
                     .maxSelectNum(1)
                     .compress(false)
-                    .forResult(PictureConfig.CHOOSE_REQUEST);
+                    .forResult(PictureConfig.TYPE_IMAGE);
+        });
+
+        bt_send_video.setOnClickListener(view -> {
+            PictureSelector.create(ChatActivity.this)
+                    .openGallery(PictureMimeType.ofVideo())
+                    .maxSelectNum(1)
+                    .compress(false)
+                    .forResult(PictureConfig.TYPE_VIDEO);
         });
 
         group_menu.setOnClickListener(v -> {
@@ -212,7 +230,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==PictureConfig.CHOOSE_REQUEST && resultCode==RESULT_OK){
+        if(requestCode==PictureConfig.TYPE_IMAGE && resultCode==RESULT_OK){
             choosePic=PictureSelector.obtainMultipleResult(data);
             String filePath=choosePic.get(0).getPath();
             //发送照片
@@ -235,6 +253,19 @@ public class ChatActivity extends AppCompatActivity {
             }
             msgList.add(tMsg);
             chat_lv.setSelection(msgList.size());
+        }else if(requestCode==PictureConfig.TYPE_VIDEO && resultCode==RESULT_OK){ //如果是选择了视频
+            chooseVideo=PictureSelector.obtainMultipleResult(data);
+            String filePath=chooseVideo.get(0).getPath();
+            System.out.println("=================选择了视频："+filePath);
+
+            VideoMeta videoMeta=new VideoMeta(filePath);
+            try {
+                Textile.instance().videos.addVideo(videoMeta.getPb()); //添加到本地库
+                Textile.instance().videos.publishVideo(videoMeta.getPb()); //上传到cafe
+                Textile.instance().videos.threadAddVideo(threadid,videoMeta.getPb().getId()); //向thread中添加
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
