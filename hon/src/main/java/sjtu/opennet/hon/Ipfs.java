@@ -49,4 +49,25 @@ public class Ipfs extends NodeDependent {
             }
         });
     }
+    
+    /**
+     * Add raw data to IPFS
+     * @param data Raw data to be added
+     * @param pin Whether or not to pin it
+     * @param hashOnly Whether or not only hash it
+     * @param handler An object that will get called with the resulting data and media type
+     */
+    public void ipfsAddData(final byte[] data, boolean pin, boolean hashOnly, final Handlers.IpfsAddDataHandler handler) {
+        node.ipfsAddData(data, pin, hashOnly, (path, e) -> {
+            if (e != null) {
+                handler.onError(e);
+                return;
+            }
+            try {
+                handler.onComplete(path);
+            } catch (final Exception exception) {
+                handler.onError(exception);
+            }
+        });
+    }
 }
