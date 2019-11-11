@@ -1,8 +1,14 @@
 package com.sjtuopennetwork.shareit.util;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
@@ -28,6 +34,8 @@ public class VideoHelper {
     private Context context;
     private String filePath;
     private Video videoPb;
+
+    static private Bitmap bitmapFromIpfs;
 
     private ExecuteBinaryResponseHandler segHandler = new ExecuteBinaryResponseHandler(){
         @Override
@@ -71,11 +79,24 @@ public class VideoHelper {
         }
     };
 
+    static private Handlers.DataHandler posterReceiveHandler = new Handlers.DataHandler() {
+        @Override
+        public void onComplete(byte[] data, String media) {
+            Log.d(TAG, String.format("Received media: %s", media));
+            bitmapFromIpfs = BitmapFactory.decodeByteArray(data,0,data.length);
+        }
+
+        @Override
+        public void onError(Exception e) {
+
+        }
+    };
+
     public VideoHelper(Context context, String filePath){
         this.context = context;
         this.filePath = filePath;
         vMeta = new VideoMeta(filePath);
-        getVideoPb();
+        setVideoPb();
         rootPath = FileUtil.getAppExternalPath(context,"video");
         String tmpPath = String.format("video/%s", vMeta.getHash());
         videoPath = FileUtil.getAppExternalPath(context, tmpPath);
@@ -111,10 +132,40 @@ public class VideoHelper {
         FileUtil.deleteContents(rmFile);
     }
 
-    private void getVideoPb(){
+    /**
+     * setVideoPb will add poster to ipfs and use the ipfs hash path to create video protobuf object.
+     * It will called when create the new helper instance and assigned protobuf object to variable videoPb.
+     */
+    private void setVideoPb(){
         Textile.instance().ipfs.ipfsAddData(vMeta.getPosterByte(),true,false,posterHandler);
 
         //Textile.instance().ipfs.ipfsAddData();
         //Textile.instance().ipfs.addObject;
+    }
+
+    public static Bitmap getPosterFromPb(Video vpb){
+        String ipfsHash = vpb.getPoster();
+        Textile.instance().ipfs.dataAtPath(ipfsHash, posterReceiveHandler);
+        return bitmapFromIpfs;
+    }
+
+    public static void saveBitmap(Bitmap bitmapToSave, String outPath){
+        try {
+            File img = new File(outPath);
+            OutputStream fout = new FileOutputStream(img);
+            bitmapToSave.compress(Bitmap.CompressFormat.PNG, 100, fout);
+            fout.flush();
+            fout.close();
+        }catch(FileNotFoundException fe){
+            Log.e(TAG, "File not found");
+            fe.printStackTrace();
+        }catch(IOException ie){
+            Log.e(TAG, "ioerror");
+            ie.printStackTrace();
+        }
+    }
+
+    public Video getVideoPb(){
+        return videoPb;
     }
 }

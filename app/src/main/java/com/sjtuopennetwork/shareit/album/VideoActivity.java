@@ -1,6 +1,7 @@
 package com.sjtuopennetwork.shareit.album;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import java.util.List;
 
 import sjtu.opennet.honvideo.Segmenter;
 import sjtu.opennet.honvideo.VideoMeta;
+import sjtu.opennet.textilepb.Model;
+
 import com.sjtuopennetwork.shareit.util.FileUtil;
 import com.sjtuopennetwork.shareit.util.VideoHelper;
 
@@ -88,17 +91,30 @@ public class VideoActivity extends AppCompatActivity {
             //
 
 
-            Log.i(TAG, String.format("Add video from file %s.", filePath));
-            Log.i(TAG, "Meta get start");
+            Log.d(TAG, String.format("Add video from file %s.", filePath));
+            Log.d(TAG, "Meta get start");
             long startTime = System.currentTimeMillis();
             //VideoMeta vMeta = new VideoMeta(filePath);
             //vMeta.logCatPrint();
             VideoHelper vHelper = new VideoHelper(this, filePath);
             long endTime = System.currentTimeMillis();
-            Log.i(TAG, "Meta get end");
-            Log.i(TAG, String.format("Meta get time %d ms", endTime - startTime));
-            Log.i(TAG, String.format("Try to stream video"));
+            Log.d(TAG, "Meta get end");
+            Log.d(TAG, String.format("Meta get time %d ms", endTime - startTime));
+            Log.d(TAG, "Try to publish video meta");
+            startTime = System.currentTimeMillis();
+            vHelper.publishMeta();
+            endTime = System.currentTimeMillis();
+            Log.d(TAG, String.format("Meta publish time %d ms", endTime - startTime));
+            Log.d(TAG, "Try to stream video");
             vHelper.segment();
+
+            Log.d(TAG, "Try to receive thumbnail from ipfs");
+            Model.Video tmpVpb = vHelper.getVideoPb();
+            Bitmap tmpBmap = VideoHelper.getPosterFromPb(tmpVpb);
+            String tmpdir = FileUtil.getAppExternalPath(this, "temp");
+            VideoHelper.saveBitmap(tmpBmap, String.format(tmpdir, "/receivedThumbnail.png"));
+
+
             //Segmenter.getFrame(filePath);
             //Segmenter.testSegment(this, filePath);
             /*
