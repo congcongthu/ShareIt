@@ -327,11 +327,13 @@ public class VideoMeta {
     public Video getPb(String posterHash){
         Video videopb = Video.newBuilder()
                 .setId(videoHash)
-                .setCaption(stringInfo())
+                //.setCaption(stringInfo())
+                .setCaption(filename)
                 .setVideoLength((int)duration_long)
                 .setPoster(posterHash)
                 .build();
 
+        //videopb.writeTo();
         return videopb;
     }
 

@@ -18,6 +18,8 @@ import sjtu.opennet.honvideo.VideoMeta;
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 import sjtu.opennet.textilepb.Model.Video;
+import org.apache.commons.io.input.Tailer;
+
 
 /**
  *
@@ -30,7 +32,13 @@ public class VideoHelper {
     private String chunkPath;
     private String thumbPath;
     private String m3u8Path;
-    private VideoFileListener vObserver;
+    private File m3u8;
+    private VideoFileListener vObserver;    //Observer to listen the close of ts chunk file.
+    private boolean tailerRunning;
+
+    private Tailer tailer;
+    private  VideoListListener vListObserver;
+
     private Context context;
     private String filePath;
     private Video videoPb;
@@ -41,23 +49,41 @@ public class VideoHelper {
         @Override
         public void onSuccess(String message) {
             Log.d(TAG, String.format("FFmpeg segment success\n%s", message));
+            vObserver.stopWatching();
+            tailer.stop();
+            tailerRunning = false;
         }
 
         @Override
         public void onProgress(String message){
             //Log.d(TAG, String.format("command get %s at %d.", message, System.currentTimeMillis()));
+            if(!m3u8.exists()){
+                Log.d(TAG, String.format("%s does not exists", m3u8Path));
+            }
+            if(!tailerRunning && m3u8.exists()){
+                tailer = new Tailer(m3u8, vListObserver, 200);
+                tailerRunning = true;
+                tailer.run();
+            }
         }
 
         @Override
         public void onFailure(String message) {
             Log.e(TAG, "Command failure.");
             vObserver.stopWatching();
+            tailer.stop();
+            tailerRunning = false;
         }
 
         @Override
         public void onStart() {
             Log.d(TAG, "FFmpeg segment start.");
             vObserver.startWatching();
+
+
+
+            //tailer = new Tailer(m3u8, vListObserver, 200);
+            //tailer.run();
         }
 
         @Override
@@ -106,12 +132,17 @@ public class VideoHelper {
         thumbPath = vMeta.saveThumbnail(videoPath);
         m3u8Path = String.format("%s/playlist.m3u8", videoPath);
 
+        m3u8 = new File(m3u8Path);
         vObserver = new VideoFileListener(chunkPath);
+        vListObserver = new VideoListListener();
+
+        tailerRunning = false;
     }
 
     public void segment(){
         try {
             Segmenter.segment(context, 10, filePath, m3u8Path, chunkPath, segHandler);
+            //Segmenter.segment(context, 10, filePath, m3u8Path, chunkPath, null);
         }catch(Exception e){
             e.printStackTrace();
         }

@@ -106,7 +106,7 @@ public class VideoActivity extends AppCompatActivity {
             endTime = System.currentTimeMillis();
             Log.d(TAG, String.format("Meta publish time %d ms", endTime - startTime));
             Log.d(TAG, "Try to stream video");
-            //vHelper.segment();
+            vHelper.segment();
 
             /*
             Log.d(TAG, "Try to receive thumbnail from ipfs");

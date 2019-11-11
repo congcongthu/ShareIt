@@ -23,10 +23,12 @@ public class VideoFileListener extends FileObserver {
         @Override
         public void onComplete(String path) {
             Log.d(TAG, String.format("ts chunk ipfs path: %s", path));
+            //Textile.instance().videos.addVideoChunk();
         }
 
         @Override
         public void onError(Exception e) {
+            Log.e(TAG, String.format("ts upload failed"));
             e.printStackTrace();
         }
     };
@@ -39,12 +41,15 @@ public class VideoFileListener extends FileObserver {
 
                 //addVideoChunk
                 //String fileAbsolutePath = String.format("%s/%s", observeredDir, path);
+                /*
                 try {
                     byte[] fileContent = Files.readAllBytes(Paths.get(observeredDir, path));
                     Textile.instance().ipfs.ipfsAddData(fileContent, true, false, tsHandler);
                 }catch(IOException ie){
                     ie.printStackTrace();
                 }
+
+                 */
         }
     }
 }

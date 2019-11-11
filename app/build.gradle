@@ -108,4 +108,7 @@ dependencies {
 
     //Video Support
     implementation project(path: ':honvideo')
+
+    //Log observer used to observe the video chunk list file
+    compile "commons-io:commons-io:+"
 }
