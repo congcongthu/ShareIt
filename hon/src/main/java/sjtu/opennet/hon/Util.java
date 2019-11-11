@@ -58,9 +58,6 @@ public class Util {
                 feedItemData.type = FeedItemType.JOIN;
                 feedItemData.join = Join.parseFrom(bytes);
                 break;
-            case "/Leave":
-                feedItemData.type = FeedItemType.LEAVE;
-                feedItemData.leave = Leave.parseFrom(bytes);
             case "/Removepeer":
                 feedItemData.type = FeedItemType.REMOVEPEER;
                 feedItemData.removePeer = RemovePeer.parseFrom(bytes);
@@ -72,6 +69,10 @@ public class Util {
             case "/Feedvideo":
                 feedItemData.type = FeedItemType.VIDEO;
                 feedItemData.feedVideo = FeedVideo.parseFrom(bytes);
+                break;
+            case "/Leave":
+                feedItemData.type = FeedItemType.LEAVE;
+                feedItemData.leave = Leave.parseFrom(bytes);
                 break;
             case "/Announce":
                 feedItemData.type = FeedItemType.ANNOUNCE;
