@@ -149,7 +149,7 @@ public class SettingFragment extends Fragment {
             threads=threadList.getItemsList();
             for(Model.Thread t:threads){
                 if (t.getName().equals("mydevice1219")) {//找到mydevice1219这个thread
-                    String device ="厂商："+ android.os.Build.BRAND + "  型号：" + Build.MODEL;//获取设备厂商和型号
+                    String device ="厂商："+ android.os.Build.BRAND + "  型号：" + Build.MODEL+"#"+Build.SERIAL;//获取设备厂商、型号、序列号
                     Boolean flag = true;
                     sjtu.opennet.textilepb.View.TextList textList=Textile.instance().messages.list("",100,t.getId());
                     for (int i=0;i<textList.getItemsCount();i++) {
