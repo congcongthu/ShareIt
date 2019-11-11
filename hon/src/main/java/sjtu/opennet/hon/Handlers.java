@@ -42,6 +42,24 @@ public class Handlers {
          */
         void onError(final Exception e);
     }
+    
+    /**
+     * Interface representing an object that can be
+     * called when adding raw data to ipfs
+     */
+    public interface IpfsAddDataHandler {
+        /**
+         * Called with a path
+         * @param path The returned path
+         */
+        void onComplete(final String path);
+
+        /**
+         * Called in the case of an error
+         * @param e The exception
+         */
+        void onError(final Exception e);
+    }
 
     /**
      * Interface representing an object that can be

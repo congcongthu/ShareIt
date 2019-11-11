@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,7 @@ import com.sjtuopennetwork.shareit.share.util.TMsg;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
 import com.sjtuopennetwork.shareit.util.FileUtil;
+import com.sjtuopennetwork.shareit.util.VideoHelper;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -257,15 +259,29 @@ public class ChatActivity extends AppCompatActivity {
             chooseVideo=PictureSelector.obtainMultipleResult(data);
             String filePath=chooseVideo.get(0).getPath();
             System.out.println("=================选择了视频："+filePath);
-
-            VideoMeta videoMeta=new VideoMeta(filePath);
-            try {
-                Textile.instance().videos.addVideo(videoMeta.getPb()); //添加到本地库
-                Textile.instance().videos.publishVideo(videoMeta.getPb()); //上传到cafe
-                Textile.instance().videos.threadAddVideo(threadid,videoMeta.getPb().getId()); //向thread中添加
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//
+//            VideoHelper videoHelper=new VideoHelper(this,filePath);
+//            videoHelper.publishMeta(); //添加到本地、上传到cafe
+//            Model.Video video=videoHelper.getVideoPb();
+//            try {
+//                Textile.instance().videos.threadAddVideo(threadid,video.getId()); //向thread中添加
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            Bitmap tmpBmap = VideoHelper.getPosterFromPb(video);
+//            String tmpdir = FileUtil.getAppExternalPath(this, "temp");
+//            String videoHeadPath=tmpdir+"s";
+//            videoHelper.saveBitmap(tmpBmap,videoHeadPath);
+//
+//            TMsg tMsg= null;
+//            try {
+//                tMsg = new TMsg(1,threadid,1,"",
+//                        Textile.instance().profile.name(),Textile.instance().profile.avatar(),videoHeadPath,System.currentTimeMillis()/1000,true);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            msgList.add(tMsg);
+//            chat_lv.setSelection(msgList.size());
         }
     }
 

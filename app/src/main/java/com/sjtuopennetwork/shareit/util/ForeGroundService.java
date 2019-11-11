@@ -488,10 +488,11 @@ public class ForeGroundService extends Service {
             }
 
             if(feedItemData.type.equals(FeedItemType.VIDEO)){
-                //metadata
                 Model.Video video=feedItemData.feedVideo.getVideo();
                 System.out.println("==========收到视频："+video.getCaption()
                         +" "+video.getPoster()+" "+video.getId());
+
+
             }
 
             if(feedItemData.type.equals(FeedItemType.ADDADMIN)){
