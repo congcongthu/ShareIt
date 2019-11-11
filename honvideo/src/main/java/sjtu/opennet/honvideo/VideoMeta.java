@@ -43,6 +43,7 @@ public class VideoMeta {
     //private String bitrate_fmt;     //formatted bitrate (KB/S)
     private String creation;
     private Bitmap thumbnail;
+    private byte[] thumbnail_byte;
     private String videoHash = "";
 
     //private String date;            //the date when the data source was created or modified
@@ -95,6 +96,7 @@ public class VideoMeta {
                 thumbnail = extractFrameFFmpeg(duration_long / 10);
             }
         }
+        thumbnail_byte = Bitmap2Bytes(thumbnail);
         //bitrate = fmdataReceiver.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VARIANT_BITRATE);
         //bitrate_fmt = formatBitrate(bitrate);
         //date = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
@@ -219,17 +221,18 @@ public class VideoMeta {
         //Log.d(TAG, stringInfo());
 
         byte[] metaInfo = stringInfo().getBytes();
-        byte[] metaThumb = Bitmap2Bytes(thumbnail);
-        byte[] meta = new byte[metaInfo.length + metaThumb.length];
+        //byte[] metaThumb = Bitmap2Bytes(thumbnail);
+        byte[] meta = new byte[metaInfo.length + thumbnail_byte.length];
         System.arraycopy(metaInfo, 0, meta, 0, metaInfo.length);
-        System.arraycopy(metaThumb, 0, meta, metaInfo.length, metaThumb.length);
+        System.arraycopy(thumbnail_byte, 0, meta, metaInfo.length, thumbnail_byte.length);
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] hash = digest.digest(meta);
 
-        // make sure to remove this before release
-        /*
-        Log.d(TAG, String.format("metaInfo:\n%s\nmetaThumb:\n%s", new String(metaInfo), new String(metaThumb), new String(meta)));
-        */
+        //make sure to remove this before release
+
+        Log.d(TAG, String.format("metaInfo:\n%s\nmetaThumb:\n%s", new String(metaInfo), new String(thumbnail_byte)));
+        Log.d(TAG, String.format("meta:========\n%s", new String(meta)));
+
         //return java.util.Base64.getEncoder().encodeToString(hash);
         return bytesToHex(hash);
     }
@@ -321,11 +324,12 @@ public class VideoMeta {
         //String ftitle =
     }
 
-    public Video getPb(){
+    public Video getPb(String posterHash){
         Video videopb = Video.newBuilder()
                 .setId(videoHash)
                 .setCaption(stringInfo())
                 .setVideoLength((int)duration_long)
+                .setPoster(posterHash)
                 .build();
 
         return videopb;
@@ -333,5 +337,8 @@ public class VideoMeta {
 
     public String getHash(){
         return videoHash;
+    }
+    public byte[] getPosterByte(){
+        return thumbnail_byte;
     }
 }

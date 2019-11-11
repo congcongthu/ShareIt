@@ -4,12 +4,14 @@ import android.util.Log;
 
 import java.io.File;
 
+import sjtu.opennet.hon.Handlers;
+import sjtu.opennet.hon.Textile;
 import sjtu.opennet.honvideo.Segmenter;
 import sjtu.opennet.honvideo.VideoMeta;
 
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.sjtuopennetwork.shareit.util.FileUtil;
-
+import sjtu.opennet.textilepb.Model.Video;
 
 /**
  *
@@ -25,6 +27,7 @@ public class VideoHelper {
     private VideoFileListener vObserver;
     private Context context;
     private String filePath;
+    private Video videoPb;
 
     private ExecuteBinaryResponseHandler segHandler = new ExecuteBinaryResponseHandler(){
         @Override
@@ -34,7 +37,7 @@ public class VideoHelper {
 
         @Override
         public void onProgress(String message){
-            Log.d(TAG, String.format("command get %s at %d.", message, System.currentTimeMillis()));
+            //Log.d(TAG, String.format("command get %s at %d.", message, System.currentTimeMillis()));
         }
 
         @Override
@@ -55,10 +58,24 @@ public class VideoHelper {
         }
     };
 
+    private Handlers.IpfsAddDataHandler posterHandler = new Handlers.IpfsAddDataHandler() {
+        @Override
+        public void onComplete(String path) {
+            Log.d(TAG, String.format("poster ipfs path: %s", path));
+            videoPb = vMeta.getPb(path);
+        }
+
+        @Override
+        public void onError(Exception e) {
+            e.printStackTrace();
+        }
+    };
+
     public VideoHelper(Context context, String filePath){
         this.context = context;
         this.filePath = filePath;
         vMeta = new VideoMeta(filePath);
+        getVideoPb();
         rootPath = FileUtil.getAppExternalPath(context,"video");
         String tmpPath = String.format("video/%s", vMeta.getHash());
         videoPath = FileUtil.getAppExternalPath(context, tmpPath);
@@ -79,9 +96,25 @@ public class VideoHelper {
         }
     }
 
+    public void publishMeta(){
+        try {
+            Textile.instance().videos.addVideo(videoPb);
+            Textile.instance().videos.publishVideo(videoPb);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public static void cleanAll(Context context){
         String rootPath = FileUtil.getAppExternalPath(context, "video");
         File rmFile = new File(rootPath);
         FileUtil.deleteContents(rmFile);
+    }
+
+    private void getVideoPb(){
+        Textile.instance().ipfs.ipfsAddData(vMeta.getPosterByte(),true,false,posterHandler);
+
+        //Textile.instance().ipfs.ipfsAddData();
+        //Textile.instance().ipfs.addObject;
     }
 }
