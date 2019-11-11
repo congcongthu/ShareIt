@@ -19,7 +19,7 @@ import com.chezi008.libcontacts.listener.ContactListener;
 import com.chezi008.libcontacts.widget.ContactView;
 import com.example.qrlibrary.qrcode.utils.PermissionUtils;
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.contact.util.GetFriendListOrApplication;
+import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 
@@ -75,7 +75,7 @@ public class ContactFragment extends Fragment {
         appdb=AppdbHelper.getInstance(getContext(),pref.getString("loginAccount","")).getWritableDatabase();
 
         //显示好友列表
-        myFriends= GetFriendListOrApplication.getFriendList();
+        myFriends= ContactUtil.getFriendList();
         System.out.println("=============myFriends数量："+myFriends.size());
         contactBeans=new LinkedList<>();
 
@@ -129,7 +129,7 @@ public class ContactFragment extends Fragment {
             startActivity(it);
         });
 
-        if(GetFriendListOrApplication.getApplication().second.size()==0){
+        if(ContactUtil.getApplication().second.size()==0){
             application_badge.setVisibility(View.GONE);
         }
     }

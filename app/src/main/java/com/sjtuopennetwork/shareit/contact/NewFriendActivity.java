@@ -4,20 +4,16 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Pair;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.contact.util.GetFriendListOrApplication;
+import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
 import com.sjtuopennetwork.shareit.contact.util.ResultAdapter;
 import com.sjtuopennetwork.shareit.contact.util.ResultContact;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.View;
 import sjtu.opennet.hon.Textile;
 
@@ -45,7 +41,7 @@ public class NewFriendActivity extends AppCompatActivity {
     }
 
     private void showApplications() {
-        result= GetFriendListOrApplication.getApplication();
+        result= ContactUtil.getApplication();
         friendApplications=result.first;
         applications=result.second;
 

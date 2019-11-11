@@ -9,7 +9,6 @@ import com.chezi008.libcontacts.bean.ContactBean;
 import com.chezi008.libcontacts.listener.ContactListener;
 import com.chezi008.libcontacts.widget.ContactView;
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.contact.util.GetFriendListOrApplication;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 
 import java.util.LinkedList;

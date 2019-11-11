@@ -3,13 +3,12 @@ package com.sjtuopennetwork.shareit.contact;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Pair;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.contact.util.GetFriendListOrApplication;
+import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
 import com.sjtuopennetwork.shareit.contact.util.ResultAdapter;
 import com.sjtuopennetwork.shareit.contact.util.ResultContact;
 
@@ -55,7 +54,7 @@ public class SearchContactActivity extends AppCompatActivity {
 
     private void initData() {
         //初始化已添加的联系人列表，这里还是应该从threa查出来
-        myFriends= GetFriendListOrApplication.getFriendList();
+        myFriends= ContactUtil.getFriendList();
 
         searchView.setIconifiedByDefault(false);
         searchView.setQueryHint("请输入昵称");
@@ -104,7 +103,7 @@ public class SearchContactActivity extends AppCompatActivity {
                 }
                 inviteAddr.add(wantToAdd.getAddress()); //添加到申请列表
                 targetAddress=wantToAdd.getAddress();
-                createTwoPersonThread(wantToAdd.getName()); //创建双人thread,key就是那个人的地址
+                ContactUtil.createTwoPersonThread(targetAddress); //创建双人thread,key就是那个人的地址
             });
             addContact.setNegativeButton("取消", (dialog, which) -> Toast.makeText(SearchContactActivity.this,"已取消",Toast.LENGTH_SHORT).show());
             addContact.show();
@@ -136,29 +135,9 @@ public class SearchContactActivity extends AppCompatActivity {
         String addr=c.getAddress();
         String addr_last10="address: "+addr.substring(addr.length()-10);
         newContacts.add(c);
-        resultContacts.add(new ResultContact(addr_last10,c.getName(),c.getAvatar(),null));
+        resultContacts.add(new ResultContact(addr_last10,c.getName(),c.getAvatar(),null,false));
         searchView.clearFocus();
         System.out.println("===============结果长度："+resultContacts.size());
-    }
-
-    //创建一个新的双人thread
-    private void createTwoPersonThread(String threadName){
-        sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema=
-                sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
-                .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.MEDIA)
-                .build();
-        sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
-                .setSharing(Model.Thread.Sharing.SHARED)
-                .setType(Model.Thread.Type.OPEN)
-                .setKey(targetAddress).setName(threadName)
-                .addWhitelist(targetAddress).addWhitelist(Textile.instance().account.address()) //两个人添加到白名单
-                .setSchema(schema)
-                .build();
-        try {
-            Textile.instance().threads.add(config);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     //双人thread创建成功后就发送邀请，用户看起来就是好友申请

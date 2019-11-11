@@ -2,7 +2,6 @@ package com.sjtuopennetwork.shareit.share;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Pair;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -11,7 +10,7 @@ import com.chezi008.libcontacts.bean.ContactBean;
 import com.chezi008.libcontacts.listener.ContactListener;
 import com.chezi008.libcontacts.widget.ContactView;
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.contact.util.GetFriendListOrApplication;
+import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -57,7 +56,7 @@ public class NewGroupActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        myFriends= GetFriendListOrApplication.getFriendList();
+        myFriends= ContactUtil.getFriendList();
         contactBeans=new LinkedList<>();
 
         for(Model.Peer p:myFriends){

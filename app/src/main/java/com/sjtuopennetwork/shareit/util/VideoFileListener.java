@@ -16,6 +16,8 @@ public class VideoFileListener extends FileObserver {
         switch(event){
             case FileObserver.CLOSE_WRITE:
                 Log.d(TAG, String.format("%s closed at %d", path, System.currentTimeMillis()));
+
+                //addVideoChunk
         }
     }
 }

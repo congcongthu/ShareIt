@@ -6,17 +6,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.View;
 import sjtu.opennet.hon.Textile;
 
-public class GetFriendListOrApplication {
+public class ContactUtil {
 
     public static List<Model.Peer> getFriendList(){
         List<Model.Peer> result=new LinkedList<>();
         List<Model.Thread> threads;
-
         try {
             threads=Textile.instance().threads.list().getItemsList();
             System.out.println("==============thread数量"+threads.size());
@@ -42,6 +42,7 @@ public class GetFriendListOrApplication {
         }
         return result;
     }
+
     public static Pair<List<View.InviteView>,List<ResultContact>> getApplication(){
         List<ResultContact> applications=new LinkedList<>();
         List<View.InviteView> friendApplications=new LinkedList<>();
@@ -49,16 +50,8 @@ public class GetFriendListOrApplication {
             List<View.InviteView> invites = Textile.instance().invites.list().getItemsList();
             System.out.println("=============invite数量："+invites.size());
             for (View.InviteView inviteView : invites) {
-                String friendaddress = inviteView.getInviter().getAddress();
-                boolean isApplication = true;
-                for (Model.Contact c : Textile.instance().contacts.list().getItemsList()) {
-                    if (c.getAddress().equals(friendaddress)) { //如果查到是好友发来的通知就不添加
-                        isApplication = false;
-                        break;
-                    }
-                }
-                if (isApplication) {
-                    ResultContact resultContact=new ResultContact(friendaddress,inviteView.getInviter().getName(),inviteView.getInviter().getAvatar(),null);
+                if(inviteView.getName().equals("FriendThread1219")){ //找到好友申请的邀请
+                    ResultContact resultContact=new ResultContact(inviteView.getInviter().getAddress(),inviteView.getInviter().getName(),inviteView.getInviter().getAvatar(),null,false);
                     applications.add(resultContact);
                     friendApplications.add(inviteView);
                 }
@@ -70,4 +63,42 @@ public class GetFriendListOrApplication {
         return result;
     }
 
+    //创建一个新的双人thread
+    public static void createTwoPersonThread(String targetAddress){
+        sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema=
+                sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
+                        .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.MEDIA)
+                        .build();
+        sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
+                .setSharing(Model.Thread.Sharing.SHARED)
+                .setType(Model.Thread.Type.OPEN)
+                .setKey(targetAddress).setName("FriendThread1219")
+                .addWhitelist(targetAddress).addWhitelist(Textile.instance().account.address()) //两个人添加到白名单
+                .setSchema(schema)
+                .build();
+        try {
+            Textile.instance().threads.add(config);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //创建一个新的多人thread
+    public static void createMultiPersonThread(String threadName){
+        String key= UUID.randomUUID().toString();
+        sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
+                .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.MEDIA)
+                .build();
+        sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
+                .setSharing(Model.Thread.Sharing.SHARED)
+                .setType(Model.Thread.Type.OPEN)
+                .setKey(key).setName(threadName)
+                .setSchema(schema)
+                .build();
+        try {
+            Textile.instance().threads.add(config);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -9,7 +9,7 @@ import com.chezi008.libcontacts.bean.ContactBean;
 import com.chezi008.libcontacts.listener.ContactListener;
 import com.chezi008.libcontacts.widget.ContactView;
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.contact.util.GetFriendListOrApplication;
+import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 
 import java.util.LinkedList;
@@ -55,7 +55,7 @@ public class GroupAddMemberActivity extends AppCompatActivity {
         try {
             threadid=getIntent().getStringExtra("threadid");
             allMembers= Textile.instance().threads.peers(threadid).getItemsList();
-            myFriends= GetFriendListOrApplication.getFriendList();
+            myFriends= ContactUtil.getFriendList();
         } catch (Exception e) {
             e.printStackTrace();
         }

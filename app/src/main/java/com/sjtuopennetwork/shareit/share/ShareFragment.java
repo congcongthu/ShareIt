@@ -5,31 +5,23 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.qrlibrary.qrcode.utils.PermissionUtils;
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.contact.util.GetFriendListOrApplication;
+import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
 import com.sjtuopennetwork.shareit.setting.NotificationActivity;
 import com.sjtuopennetwork.shareit.share.util.DialogAdapter;
 import com.sjtuopennetwork.shareit.share.util.TDialog;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
-import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -37,11 +29,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Textile;
-import razerdp.basepopup.BasePopupWindow;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -121,14 +111,12 @@ public class ShareFragment extends Fragment {
         int gpinvite=0;
         sjtu.opennet.textilepb.View.InviteView lastInvite=null;
         try {
-            List<Model.Peer> friends= GetFriendListOrApplication.getFriendList();
+            List<Model.Peer> friends= ContactUtil.getFriendList();
             List<sjtu.opennet.textilepb.View.InviteView> invites = Textile.instance().invites.list().getItemsList();
             for(sjtu.opennet.textilepb.View.InviteView v:invites){ //遍历所有的邀请
-                for(Model.Peer p:friends){ //如果是好友发来的邀请，就一定是多人群组，就要++
-                    if(v.getInviter().getAddress().equals(p.getAddress())){
-                        gpinvite++;
-                        lastInvite=v;
-                    }
+                if(!v.getName().equals("FriendThread1219")){ //只要群组名不等于这个那就是好友邀请
+                    gpinvite++;
+                    lastInvite=v;
                 }
             }
         } catch (Exception e) {

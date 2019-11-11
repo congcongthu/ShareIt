@@ -3,11 +3,15 @@ package com.sjtuopennetwork.shareit.contact;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.contact.util.GetFriendListOrApplication;
+import com.sjtuopennetwork.shareit.contact.util.DiscoverAdapter;
+import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
 import com.sjtuopennetwork.shareit.contact.util.ResultAdapter;
 import com.sjtuopennetwork.shareit.contact.util.ResultContact;
 
@@ -15,9 +19,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Model;
@@ -28,6 +34,8 @@ public class ContactDiscoverActivity extends AppCompatActivity {
     //UI控件
     ListView discover_lv;
     ResultAdapter searchResultAdapter;  //搜索结果适配器
+    DiscoverAdapter discoverAdapter;
+    Button createNewGroup;
 
 
     //内存数据
@@ -35,6 +43,28 @@ public class ContactDiscoverActivity extends AppCompatActivity {
     List<Model.Contact> newContacts;  //搜索到的结果
     List<ResultContact> resultContacts;  //存放自定义的搜索结果item对象
     String targetAddress;
+    List<Integer> listItemID;
+
+    DiscoverAdapter.MyClickListener myClickListener=new DiscoverAdapter.MyClickListener() {
+        @Override
+        public void myOnClick(int position, View v) {
+            Model.Contact wantToAdd=newContacts.get(position);
+            AlertDialog.Builder addContact=new AlertDialog.Builder(ContactDiscoverActivity.this);
+            addContact.setTitle("添加联系人");
+            addContact.setMessage("确定添加 "+wantToAdd.getName()+" 吗？");
+            addContact.setPositiveButton("添加", (dialog, which) -> {
+                try {
+                    Textile.instance().contacts.add(wantToAdd);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                targetAddress=wantToAdd.getAddress();
+                ContactUtil.createTwoPersonThread(targetAddress); //创建双人thread,key就是那个人的地址
+            });
+            addContact.setNegativeButton("取消", (dialog, which) -> Toast.makeText(ContactDiscoverActivity.this,"已取消",Toast.LENGTH_SHORT).show());
+            addContact.show();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,88 +92,104 @@ public class ContactDiscoverActivity extends AppCompatActivity {
 
     void initData(){
 
+        createNewGroup=findViewById(R.id.bt_create_new_group);
+
         discover_lv=findViewById(R.id.contact_discover_result_lv);
-        myFriends= GetFriendListOrApplication.getFriendList();
+        myFriends= ContactUtil.getFriendList();
 
         resultContacts= Collections.synchronizedList(new LinkedList<>());
         newContacts=Collections.synchronizedList(new LinkedList<>());
-        searchResultAdapter=new ResultAdapter(this,R.layout.item_contact_search_result,resultContacts);
-        searchResultAdapter.notifyDataSetChanged();
-        discover_lv.setAdapter(searchResultAdapter);
+        discoverAdapter=new DiscoverAdapter(this,resultContacts,myClickListener);
+        discoverAdapter.notifyDataSetChanged();
+        discover_lv.setAdapter(discoverAdapter);
 
-        discover_lv.setOnItemClickListener((parent, view, position, id) -> {
-            Model.Contact wantToAdd=newContacts.get(position);
-            AlertDialog.Builder addContact=new AlertDialog.Builder(this);
-            addContact.setTitle("添加联系人");
-            addContact.setMessage("确定添加 "+wantToAdd.getName()+" 吗？");
-            addContact.setPositiveButton("添加", (dialog, which) -> {
-                try {
-                    Textile.instance().contacts.add(wantToAdd);
-                } catch (Exception e) {
-                    e.printStackTrace();
+        createNewGroup.setOnClickListener(view -> {
+            //获得所有的选中的contact
+            listItemID=new ArrayList<>();
+            for(int i=0;i<discoverAdapter.mChecked.size();i++){
+                if(discoverAdapter.mChecked.get(i)){
+                    listItemID.add(i);
                 }
-                targetAddress=wantToAdd.getAddress();
-                createTwoPersonThread(wantToAdd.getName()); //创建双人thread,key就是那个人的地址
+            }
+
+            //对话框得到群组名
+            //先弹出对话框，输入thread名称之后获取到名称，然后调佣addNewThread方法
+            final EditText newThreadEdit=new EditText(this);
+            AlertDialog.Builder addThread=new AlertDialog.Builder(this);
+            addThread.setTitle("新建群组");
+            addThread.setView(newThreadEdit);
+            addThread.setPositiveButton("创建", (dialogInterface, i) -> {
+                String threadname=newThreadEdit.getText().toString();
+                //创建多人thread
+                ContactUtil.createMultiPersonThread(threadname);
             });
-            addContact.setNegativeButton("取消", (dialog, which) -> Toast.makeText(this,"已取消",Toast.LENGTH_SHORT).show());
-            addContact.show();
+            addThread.setNegativeButton("取消", (dialog, which) -> Toast.makeText(this,"已取消",Toast.LENGTH_SHORT).show());
+            addThread.show();
         });
     }
+
 
     //一次得到一个搜索结果
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getAnResult(Model.Contact c){
-        //添加到结果列表
-        System.out.println("========本地发现得到搜索结果："+c.getName()+" "+c.getAddress());
+        System.out.println("===========本地发现得到用户："+c.getName());
 
-        //要过滤一下，首先看是不是自己的好友，如果是就过滤掉。
-//        for(Model.Peer p:myFriends){
-//            if(p.getAddress().equals(c.getAddress())){
-//                return; //如果已经添加过这个联系人直接返回
-//            }
-//        }
-        //再看是不是已经添加过了，如果已经有了也要过滤掉。
+        //看是不是已经添加过了，如果是则过滤掉。
         for(Model.Contact contact:newContacts){
             if(contact.getAddress().equals(c.getAddress())){
                 return;
             }
         }
 
-        newContacts.add(c); //添加
-        resultContacts.add(new ResultContact(c.getAddress(),c.getName(),c.getAvatar(),null));
-        discover_lv.setSelection(0);
-    }
+        //看是不是自己的好友
+        boolean isMyFriend=false;
+        for(Model.Peer p:myFriends){
+            if(p.getAddress().equals(c.getAddress())){
+                isMyFriend=true; //如果已经添加过这个联系人直接返回
+            }
+        }
 
-
-    //创建一个新的双人thread
-    private void createTwoPersonThread(String threadName){
-        sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema=
-                sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
-                        .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.MEDIA)
-                        .build();
-        sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
-                .setSharing(Model.Thread.Sharing.SHARED)
-                .setType(Model.Thread.Type.OPEN)
-                .setKey(targetAddress).setName(threadName)
-                .addWhitelist(targetAddress).addWhitelist(Textile.instance().account.address()) //两个人添加到白名单
-                .setSchema(schema)
-                .build();
         try {
-            Textile.instance().threads.add(config);
+            Textile.instance().contacts.add(c); //添加进来，为了后面能够直接创建群组
         } catch (Exception e) {
             e.printStackTrace();
         }
+        newContacts.add(c); //添加
+        resultContacts.add(new ResultContact(c.getAddress(),c.getName(),c.getAvatar(),null,isMyFriend));
+        discoverAdapter.mChecked.add(false);
+        discover_lv.setSelection(0);
     }
 
     //双人thread创建成功后就发送邀请，用户看起来就是好友申请
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void sendInvite(String threadId){
-        try{
-            Textile.instance().invites.add(threadId,targetAddress); //key就是联系人的address
-            System.out.println("===============发送了邀请");
+        Model.Thread t=null;
+        try {
+            t=Textile.instance().threads.get(threadId);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if(t.getWhitelistCount()==2){ //如果是添加好友的threadAdd
+            try{
+                Textile.instance().invites.add(threadId,targetAddress); //key就是联系人的address
+                System.out.println("===============发送了邀请");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{ //如果是创建群组的threadAdd
+            for (Integer integer:listItemID){
+                System.out.println("================发现选中了："+integer);
+                //逐个发邀请
+                try {
+                    Textile.instance().invites.add(threadId,resultContacts.get(integer).address);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                finish();
+            }
+        }
+
     }
 
     @Override

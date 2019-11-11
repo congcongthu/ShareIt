@@ -83,6 +83,11 @@ public class VideoActivity extends AppCompatActivity {
             chooseVid = PictureSelector.obtainMultipleResult(data);
             String filePath = chooseVid.get(0).getPath();
 
+            //ThreadAddVideo
+
+            //
+
+
             Log.i(TAG, String.format("Add video from file %s.", filePath));
             Log.i(TAG, "Meta get start");
             long startTime = System.currentTimeMillis();
