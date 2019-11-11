@@ -106,14 +106,15 @@ public class VideoActivity extends AppCompatActivity {
             endTime = System.currentTimeMillis();
             Log.d(TAG, String.format("Meta publish time %d ms", endTime - startTime));
             Log.d(TAG, "Try to stream video");
-            vHelper.segment();
+            //vHelper.segment();
 
+            /*
             Log.d(TAG, "Try to receive thumbnail from ipfs");
             Model.Video tmpVpb = vHelper.getVideoPb();
             Bitmap tmpBmap = VideoHelper.getPosterFromPb(tmpVpb);
             String tmpdir = FileUtil.getAppExternalPath(this, "temp");
-            VideoHelper.saveBitmap(tmpBmap, String.format(tmpdir, "/receivedThumbnail.png"));
-
+            VideoHelper.saveBitmap(tmpBmap, String.format("%s/receivedThumbnail.png", tmpdir));
+*           /
 
             //Segmenter.getFrame(filePath);
             //Segmenter.testSegment(this, filePath);

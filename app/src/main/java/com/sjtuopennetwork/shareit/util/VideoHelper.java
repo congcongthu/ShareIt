@@ -143,6 +143,12 @@ public class VideoHelper {
         //Textile.instance().ipfs.addObject;
     }
 
+    /**
+     * Error Report:
+     *      VideoHelper.getPosterFromPb may return null bitmap.
+     *      That is because the bitmap returned is a static private value from VideoHelper.
+     *      In that case, this bitmap may be returned before it was assigned.
+     */
     public static Bitmap getPosterFromPb(Video vpb){
         String ipfsHash = vpb.getPoster();
         Textile.instance().ipfs.dataAtPath(ipfsHash, posterReceiveHandler);
@@ -162,6 +168,9 @@ public class VideoHelper {
         }catch(IOException ie){
             Log.e(TAG, "ioerror");
             ie.printStackTrace();
+        }catch(NullPointerException ne){
+            Log.e(TAG, "Bitmap is NULL.");
+            ne.printStackTrace();
         }
     }
 
