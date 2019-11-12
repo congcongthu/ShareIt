@@ -565,7 +565,6 @@ public class ForeGroundService extends Service {
                     }
                     if(t.getName().equals("!@#$1234FileStorage")){
                         hasStorage=true;
-                        System.out.println("=============已经有mydevice1219");
                         break;
                     }
                 }
