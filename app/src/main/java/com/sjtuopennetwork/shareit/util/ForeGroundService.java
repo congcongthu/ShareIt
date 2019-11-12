@@ -334,7 +334,11 @@ public class ForeGroundService extends Service {
             EventBus.getDefault().post(threadId); //只在添加联系人的时候起作用，创建群组的时候要过滤掉
         }
 
-
+        @Override
+        public void videoChunkQueryResult(String queryId, Model.VideoChunk vchunk) {
+            System.out.println("==========监听器找到VideoChunk："+vchunk.getId());
+            EventBus.getDefault().post(vchunk);
+        }
 
         @Override
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {

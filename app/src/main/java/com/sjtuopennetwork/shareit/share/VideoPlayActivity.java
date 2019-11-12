@@ -65,7 +65,7 @@ public class VideoPlayActivity extends AppCompatActivity {
             System.out.println("=============videoid别人发的："+videoid+ VideoHelper.getVideoPathFromID(this,videoid));
 
             //新线程根据id去ipfs上拿ts,
-            getTsFromIpfs();
+            getVideoChunkFromIpfs();
 
             //播放
 
@@ -74,7 +74,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         }
     }
 
-    public  void getTsFromIpfs(){
+    public  void getVideoChunkFromIpfs(){
         QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder()
                 .setWait(100)
                 .setLimit(1000)
@@ -90,6 +90,18 @@ public class VideoPlayActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getAnResult(Model.VideoChunk videoChunk){
+        System.out.println("==============得到videoChunk:"+videoChunk.getId()
+            +" "+videoChunk.getAddress()+" "+videoChunk.getEndTime());
 
+        //再根据信息去ipfs拿data，
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
     }
 }

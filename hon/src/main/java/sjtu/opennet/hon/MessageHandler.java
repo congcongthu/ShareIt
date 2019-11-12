@@ -1,5 +1,7 @@
 package sjtu.opennet.hon;
 
+import android.util.Log;
+
 import net.gotev.uploadservice.Logger;
 
 import java.util.Set;
@@ -104,6 +106,7 @@ class MessageHandler implements Messenger {
                     switch (queryEvent.getType()) {
                         case DATA:
                             final String type = queryEvent.getData().getValue().getTypeUrl();
+                            Log.d("hon-sdk", "queryEvent.type:"+type);
                             if (type.equals("/Thread")) {
                                 final Thread clientThread = Thread.parseFrom(queryEvent.getData().getValue().getValue());
                                 for (final TextileEventListener listener : listeners) {
