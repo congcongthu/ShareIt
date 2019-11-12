@@ -49,6 +49,8 @@ public class VideoMeta {
     private long duration_long;     // duration with long type (used for computation)
     private String duration_fmt;    // formatted duration (hour:minute:second.mill)
     private byte[] thumbnail_byte;  // thumbnail in byte format
+    private Bitmap thumbnail_small;         //small thumbnail with width 100px.
+    private byte[] thumbnail_small_byte;    //small thumbnail in byte
     private String videoHash = "";
 
     /**
@@ -91,6 +93,8 @@ public class VideoMeta {
                 }
             }
             thumbnail_byte = Bitmap2Bytes(thumbnail);
+            thumbnail_small = getSmallThumbnail(100, thumbnail);
+            thumbnail_small_byte = Bitmap2Bytes(thumbnail_small);
             creation = fmdataReceiver.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_CREATION_TIME);
             rotation = fmdataReceiver.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
             videoHash = getHashFromMeta();
@@ -129,6 +133,15 @@ public class VideoMeta {
         Log.i(TAG, stringInfo() + String.format("\nVideo Hash: %s", videoHash));
     }
 
+    public static Bitmap getSmallThumbnail(int dstWidth, Bitmap sourceBitmap){
+        if(sourceBitmap.getWidth()<=dstWidth){
+            Log.e(TAG, "Source thumbnail is small enough.");
+            return sourceBitmap;
+        }
+        int dstHeight = (int) (((double)dstWidth/(double)sourceBitmap.getWidth())*sourceBitmap.getHeight());
+        Log.d(TAG, String.format("Get small thumbnail with %d x %d", dstWidth, dstHeight));
+        return Bitmap.createScaledBitmap(sourceBitmap, dstWidth, dstHeight, false);
+    }
 
     private String formatDuration(long duration){
 
@@ -267,9 +280,9 @@ public class VideoMeta {
         return videoHash;
     }
     public byte[] getPosterByte(){
-        return thumbnail_byte;
+        return thumbnail_small_byte;
     }
     public Bitmap getPoster(){
-        return thumbnail;
+        return thumbnail_small;
     }
 }

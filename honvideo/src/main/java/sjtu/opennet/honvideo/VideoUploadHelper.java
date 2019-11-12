@@ -19,9 +19,20 @@ import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Model;
 
+/**
+ * The interface for video uploading. This is the only class you should use in your application.
+ * The functionality of VideoUploadHelper includes: <br />
+ *  - Extract video meta from video.<br />
+ *  - Upload video meta to thread and cafe <br />
+ *  - Segment video into small .ts chunks (around 10s for each by default).<br />
+ *  - Add all the video chunks to IPFS and upload them to cafe.
+ *
+ * @TODO
+ * Let helper able to handle ipfs and textile error. Reupload the chunks if failed.<br />
+ * Replace String.format with Path.resolve for path format.
+ */
 public class VideoUploadHelper {
-
-    private static final String TAG = "VideoHelper";
+    private static final String TAG = "HONVIDEO.VideoHelper";
     private VideoMeta vMeta;
     private String rootPath;
     private String videoPath;
@@ -44,7 +55,7 @@ public class VideoUploadHelper {
         this.filePath = filePath;
 
         vMeta = new VideoMeta(filePath);
-        setVideoPb();
+        setVideoPb();   //set the value of videoPb
         rootPath = FileUtil.getAppExternalPath(context,"video");
         String tmpPath = String.format("video/%s", vMeta.getHash());
         videoPath = FileUtil.getAppExternalPath(context, tmpPath);
@@ -55,10 +66,6 @@ public class VideoUploadHelper {
         m3u8Path = String.format("%s/playlist.m3u8", videoPath);
 
         m3u8 = new File(m3u8Path);
-
-        //vListObserver = new VideoListListener();
-
-        //tailerRunning = false;
         videoQueue = new LinkedBlockingQueue<>();
         videoUploader = new VideoUploader(videoQueue);
         vObserver = new VideoFileListener(chunkPath, vMeta.getHash(), videoQueue);
@@ -84,6 +91,9 @@ public class VideoUploadHelper {
         }
     }
 
+    /**
+     * segHandler is called by FFmpeg binary executor within {@link Segmenter#segment}
+     */
     private ExecuteBinaryResponseHandler segHandler = new ExecuteBinaryResponseHandler(){
         @Override
         public void onSuccess(String message) {
@@ -97,18 +107,6 @@ public class VideoUploadHelper {
 
         @Override
         public void onProgress(String message){
-            //Log.d(TAG, String.format("command get %s at %d.", message, System.currentTimeMillis()));
-            //if(!m3u8.exists()){
-            //    Log.d(TAG, String.format("%s does not exists", m3u8Path));
-            //}
-            /*
-            if(!tailerRunning && m3u8.exists()){
-                tailer = new Tailer(m3u8, vListObserver, 200);
-                tailerRunning = true;
-                tailer.run();
-            }
-            */
-
         }
 
         @Override
@@ -117,8 +115,6 @@ public class VideoUploadHelper {
 
             vObserver.stopWatching();
             videoUploader.shutDown();   //shut it down instead of safely exit it using shutDownUploader
-            //tailer.stop();
-            //tailerRunning = false;
         }
 
         @Override
@@ -126,11 +122,6 @@ public class VideoUploadHelper {
             Log.d(TAG, "FFmpeg segment start.");
             videoUploader.start();      //Do not use run!!!!
             vObserver.startWatching();
-
-
-
-            //tailer = new Tailer(m3u8, vListObserver, 200);
-            //tailer.run();
         }
 
         @Override
@@ -170,7 +161,6 @@ public class VideoUploadHelper {
     public void segment(){
         try {
             Segmenter.segment(context, 10, filePath, m3u8Path, chunkPath, segHandler);
-            //Segmenter.segment(context, 10, filePath, m3u8Path, chunkPath, null);
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -245,7 +235,6 @@ public class VideoUploadHelper {
     }
 
     public static String getVideoPathFromID(Context context, String ID){
-        //String tmprootPath = FileUtil.getAppExternalPath(context,"video");
         String tmpPath = String.format("video/%s", ID);
         return FileUtil.getAppExternalPath(context, tmpPath);
     }
