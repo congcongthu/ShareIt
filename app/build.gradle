@@ -50,7 +50,7 @@ dependencies {
     //Textile SDK
     implementation project(':hon')
     implementation project(':textilepb')
-    implementation "sjtu.opennet:hon-textile-mobile:0.1.33"
+    implementation "sjtu.opennet:hon-textile-mobile:0.1.41"
     implementation "com.google.protobuf:protobuf-java:3.9.2"
 
     //EventBus，用于异步消息通信
@@ -108,4 +108,14 @@ dependencies {
 
     //Video Support
     implementation project(path: ':honvideo')
+
+    //Log observer used to observe the video chunk list file
+    implementation "commons-io:commons-io:+"
+
+    //nanohttpd
+//    implementation'org.nanohttpd:nanohttpd:2.2.0'
+
+
+    implementation 'com.google.android.exoplayer:exoplayer:2.9.6'
+
 }

@@ -55,7 +55,9 @@ public class MyDevicesActivity extends AppCompatActivity {
                 if (t.getName().equals("mydevice1219")) {//找到mydevice1219这个thread
                     textList = Textile.instance().messages.list("", 100, t.getId());
                     for(int i=0;i<textList.getItemsCount();i++){
-                        device_list.add(textList.getItems(i).getBody());
+                        String s = textList.getItems(i).getBody();
+                        s = s.substring(0, s.indexOf("#"));//去掉#后面的设备序列号信息
+                        device_list.add(s);
                     }
                 }
             }

@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -154,6 +156,38 @@ public class FileUtil {
             for (File child : directory.listFiles())
                 deleteRecursive(child);
         }
+    }
+
+    public static void saveBitmap(String filename,Bitmap bm){
+        File f = new File(filename);
+        if (f.exists()) {
+            f.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(f);
+            bm.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public static File getM3u8FIle(String dir){
+        String m3u8=dir+"/chunks/playlist.m3u8";
+        File m3u8file=new File(m3u8);
+        try{
+            if(!m3u8file.exists()){ //从dir中找到文件复制到chunks里面
+                m3u8file.createNewFile();
+            }
+            //复制
+            File source=new File(dir+"/playlist.m3u8");
+            FileUtils.copyFile(source,m3u8file);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return m3u8file;
     }
 
 }

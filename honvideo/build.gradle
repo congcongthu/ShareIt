@@ -51,4 +51,5 @@ dependencies {
     compile 'com.github.wseemann:FFmpegMediaMetadataRetriever:1.0.14'
     implementation 'com.google.protobuf:protobuf-java:3.5.1'
     implementation project(':textilepb')
+    implementation project(':hon')
 }

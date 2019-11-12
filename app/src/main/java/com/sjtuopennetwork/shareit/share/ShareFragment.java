@@ -111,7 +111,7 @@ public class ShareFragment extends Fragment {
         int gpinvite=0;
         sjtu.opennet.textilepb.View.InviteView lastInvite=null;
         try {
-            List<Model.Peer> friends= ContactUtil.getFriendList();
+//            List<Model.Peer> friends= ContactUtil.getFriendList();
             List<sjtu.opennet.textilepb.View.InviteView> invites = Textile.instance().invites.list().getItemsList();
             for(sjtu.opennet.textilepb.View.InviteView v:invites){ //遍历所有的邀请
                 if(!v.getName().equals("FriendThread1219")){ //只要群组名不等于这个那就是好友邀请
