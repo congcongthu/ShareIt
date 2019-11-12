@@ -94,6 +94,19 @@ public class VideoPlayActivity extends AppCompatActivity {
             +" "+videoChunk.getAddress()+" "+videoChunk.getEndTime());
 
         //再根据信息去ipfs拿data，
+        String chunckId=videoChunk.getId();
+        Textile.instance().ipfs.dataAtPath(chunckId, new Handlers.DataHandler() {
+            @Override
+            public void onComplete(byte[] data, String media) {
+                //data数组就是视频的二进制数据，存到文件，并写m3u8文件
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
     }
 
     @Override
