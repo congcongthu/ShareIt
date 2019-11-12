@@ -215,6 +215,8 @@ public class VideoHelper {
     }
 
     /**
+     * @TODO
+     * Delete this func and propose another function for sending video.
      * Error Report:
      *      VideoHelper.getPosterFromPb may return null bitmap.
      *      That is because the bitmap returned is a static private value from VideoHelper.
@@ -224,6 +226,10 @@ public class VideoHelper {
         String ipfsHash = vpb.getPoster();
         Textile.instance().ipfs.dataAtPath(ipfsHash, posterReceiveHandler);
         return bitmapFromIpfs;
+    }
+
+    public Bitmap getPoster(){
+        return vMeta.getPoster();
     }
 
     public static void saveBitmap(Bitmap bitmapToSave, String outPath){
