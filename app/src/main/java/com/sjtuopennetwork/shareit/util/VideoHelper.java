@@ -254,4 +254,8 @@ public class VideoHelper {
     public Video getVideoPb(){
         return videoPb;
     }
+
+    public String getVideoPath(){
+        return videoPath;
+    }
 }
