@@ -258,4 +258,10 @@ public class VideoHelper {
     public String getVideoPath(){
         return videoPath;
     }
+
+    public static String getVideoPathFromID(Context context, String ID){
+        //String tmprootPath = FileUtil.getAppExternalPath(context,"video");
+        String tmpPath = String.format("video/%s", ID);
+        return FileUtil.getAppExternalPath(context, tmpPath);
+    }
 }
