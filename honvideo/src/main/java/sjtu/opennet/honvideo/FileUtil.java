@@ -1,10 +1,17 @@
 package sjtu.opennet.honvideo;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 
 public class FileUtil {
     private static final String TAG = "HONVIDEO.FileUtil";
@@ -48,6 +55,32 @@ public class FileUtil {
         }else{
             for (File child : directory.listFiles())
                 deleteRecursive(child);
+        }
+    }
+
+    public static void writeByteArrayToFile(String path, byte[] byteArray){
+        try{
+            File f = new File(path);
+            OutputStream fout = new FileOutputStream(f);
+            fout.write(byteArray);
+            fout.flush();
+            fout.close();
+        }catch(FileNotFoundException fe){
+            Log.e(TAG, String.format("File %s not found.", path));
+            fe.printStackTrace();
+        }catch(IOException ie){
+            Log.e(TAG, "Unknown IOException");
+            ie.printStackTrace();
+        }
+    }
+
+    public static void appendToFileWithNewLine(String filePath, String text){
+        try(FileWriter fw = new FileWriter(filePath, true);
+            PrintWriter out = new PrintWriter(fw))
+        {
+            out.println(text);
+        }catch(IOException ie){
+            Log.e(TAG, String.format("IOException occur when write to %s.", filePath));
         }
     }
 }

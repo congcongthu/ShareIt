@@ -17,6 +17,7 @@ import com.sjtuopennetwork.shareit.R;
 
 import java.util.List;
 
+import sjtu.opennet.hon.Textile;
 import sjtu.opennet.honvideo.ModuleTest;
 import sjtu.opennet.honvideo.Segmenter;
 import sjtu.opennet.honvideo.VideoMeta;
@@ -114,7 +115,6 @@ public class VideoActivity extends AppCompatActivity {
 //            Log.d(TAG, String.format("Meta publish time %d ms", endTime - startTime));
 //            Log.d(TAG, "Try to stream video");
               vHelper.segment();
-
             /*
             Log.d(TAG, "Try to receive thumbnail from ipfs");
             Model.Video tmpVpb = vHelper.getVideoPb();
