@@ -17,7 +17,6 @@ public class VideoFileListener extends FileObserver {
         this.videoQueue = videoQueue;
     }
 
-
     @Override
     public void onEvent(int event, String path){
         switch(event){
