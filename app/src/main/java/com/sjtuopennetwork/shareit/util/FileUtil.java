@@ -21,7 +21,7 @@ public class FileUtil {
     private static String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtlimg/";
 
     /**
-     * 根据hash值获得文件完整路径名
+     * 根据hash值获得文件完整路径名 v
      * @param hash
      * @return 如果文件已经存在则返回文件路径，如果不存在则返回null
      */

@@ -103,7 +103,7 @@ public class ForeGroundService extends Service {
                     loginAccount=m.getAddress();
                     final File repo1 = new File(filesDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
-                    Textile.initialize(repoPath,m.getSeed() , true, false);
+                    Textile.initialize(repoPath,m.getSeed() , true, false, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -131,7 +131,7 @@ public class ForeGroundService extends Service {
                     final File repo1 = new File(filesDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
                     if(!Textile.isInitialized(repoPath)){
-                        Textile.initialize(repoPath,m.getSeed() , true, false);
+                        Textile.initialize(repoPath,m.getSeed() , true, false,true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -160,7 +160,6 @@ public class ForeGroundService extends Service {
             editor.putString("loginAccount",loginAccount);
         }
         editor.commit();
-
 
         try{
             appdb=AppdbHelper.getInstance(this,loginAccount).getWritableDatabase();
@@ -334,6 +333,8 @@ public class ForeGroundService extends Service {
         public void threadAdded(String threadId) {
             EventBus.getDefault().post(threadId); //只在添加联系人的时候起作用，创建群组的时候要过滤掉
         }
+
+
 
         @Override
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {

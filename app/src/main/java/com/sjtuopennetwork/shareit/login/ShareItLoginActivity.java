@@ -54,7 +54,7 @@ public class ShareItLoginActivity extends AppCompatActivity {
                 final File repo1 = new File(filesDir, loginAccount);
                 repoPath = repo1.getAbsolutePath();
                 if (!Textile.isInitialized(repoPath)){
-                    Textile.initialize(repoPath,m.getSeed() , true, false);
+                    Textile.initialize(repoPath,m.getSeed() , true, false,true);
                 }
             } catch (Exception e) {
                 loginWrong=true;

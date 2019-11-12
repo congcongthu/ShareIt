@@ -165,6 +165,7 @@ public class ChatActivity extends AppCompatActivity {
 
             if(!msg.equals("")){
                 chat_text_edt.setText("");
+
                 try {
                     Textile.instance().messages.add(threadid,msg);
                 } catch (Exception e) {
@@ -283,7 +284,7 @@ public class ChatActivity extends AppCompatActivity {
             msgList.add(tMsg);
             chat_lv.setSelection(msgList.size());
 
-            videoHelper.segment(); //切割并上传
+//            videoHelper.segment(); //切割并上传
         }
     }
 
