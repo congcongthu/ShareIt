@@ -9,6 +9,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
@@ -25,6 +30,8 @@ import org.apache.commons.io.input.Tailer;
  *
  */
 public class VideoHelper {
+
+
     private static final String TAG = "VideoHelper";
     private VideoMeta vMeta;
     private String rootPath;
@@ -34,10 +41,12 @@ public class VideoHelper {
     private String m3u8Path;
     private File m3u8;
     private VideoFileListener vObserver;    //Observer to listen the close of ts chunk file.
-    private boolean tailerRunning;
+    private BlockingQueue<VideoTask> videoQueue;
+    private VideoUploader videoUploader;
+    //private boolean tailerRunning;
 
-    private Tailer tailer;
-    private  VideoListListener vListObserver;
+    //private Tailer tailer;
+    //private  VideoListListener vListObserver;
 
     private Context context;
     private String filePath;
@@ -45,39 +54,66 @@ public class VideoHelper {
 
     static private Bitmap bitmapFromIpfs;
 
+    /**
+     * shutDownUploader is used to stop the uploader binding with this helper.
+     * It will do following things:
+     *  - Run a new thread so the main thread would not be blocked.
+     *  - Sleep for 1 second to make sure that the Observer will add the last task to videoQueue.
+     *  - Add the end task to videoQueue to notify the VideoUploader that these are all the task.
+     */
+    public class shutDownUploader extends Thread{
+        @Override
+        public void run(){
+            try {
+                Thread.sleep(1000);
+                videoQueue.add(VideoTask.endTask());
+            }catch(InterruptedException ie){
+                ie.printStackTrace();
+            }
+        }
+    }
+
     private ExecuteBinaryResponseHandler segHandler = new ExecuteBinaryResponseHandler(){
         @Override
         public void onSuccess(String message) {
             Log.d(TAG, String.format("FFmpeg segment success\n%s", message));
+
             vObserver.stopWatching();
-            tailer.stop();
-            tailerRunning = false;
+            new shutDownUploader().start();
+            //tailer.stop();
+            //tailerRunning = false;
         }
 
         @Override
         public void onProgress(String message){
             //Log.d(TAG, String.format("command get %s at %d.", message, System.currentTimeMillis()));
-            if(!m3u8.exists()){
-                Log.d(TAG, String.format("%s does not exists", m3u8Path));
-            }
+            //if(!m3u8.exists()){
+            //    Log.d(TAG, String.format("%s does not exists", m3u8Path));
+            //}
+            /*
             if(!tailerRunning && m3u8.exists()){
                 tailer = new Tailer(m3u8, vListObserver, 200);
                 tailerRunning = true;
                 tailer.run();
             }
+            */
+
         }
 
         @Override
         public void onFailure(String message) {
             Log.e(TAG, "Command failure.");
+
             vObserver.stopWatching();
-            tailer.stop();
-            tailerRunning = false;
+            videoUploader.shutDown();   //shut it down instead of safely exit it using shutDownUploader
+            //tailer.stop();
+            //tailerRunning = false;
         }
 
         @Override
         public void onStart() {
             Log.d(TAG, "FFmpeg segment start.");
+            videoUploader.start();      //Do not use run!!!!
             vObserver.startWatching();
 
 
@@ -121,6 +157,7 @@ public class VideoHelper {
     public VideoHelper(Context context, String filePath){
         this.context = context;
         this.filePath = filePath;
+
         vMeta = new VideoMeta(filePath);
         setVideoPb();
         rootPath = FileUtil.getAppExternalPath(context,"video");
@@ -133,10 +170,13 @@ public class VideoHelper {
         m3u8Path = String.format("%s/playlist.m3u8", videoPath);
 
         m3u8 = new File(m3u8Path);
-        vObserver = new VideoFileListener(chunkPath);
-        vListObserver = new VideoListListener();
 
-        tailerRunning = false;
+        //vListObserver = new VideoListListener();
+
+        //tailerRunning = false;
+        videoQueue = new LinkedBlockingQueue<>();
+        videoUploader = new VideoUploader(videoQueue);
+        vObserver = new VideoFileListener(chunkPath, vMeta.getHash(), videoQueue);
     }
 
     public void segment(){
@@ -175,6 +215,8 @@ public class VideoHelper {
     }
 
     /**
+     * @TODO
+     * Delete this func and propose another function for sending video.
      * Error Report:
      *      VideoHelper.getPosterFromPb may return null bitmap.
      *      That is because the bitmap returned is a static private value from VideoHelper.
@@ -184,6 +226,10 @@ public class VideoHelper {
         String ipfsHash = vpb.getPoster();
         Textile.instance().ipfs.dataAtPath(ipfsHash, posterReceiveHandler);
         return bitmapFromIpfs;
+    }
+
+    public Bitmap getPoster(){
+        return vMeta.getPoster();
     }
 
     public static void saveBitmap(Bitmap bitmapToSave, String outPath){

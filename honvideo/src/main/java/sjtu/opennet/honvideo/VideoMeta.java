@@ -343,4 +343,7 @@ public class VideoMeta {
     public byte[] getPosterByte(){
         return thumbnail_byte;
     }
+    public Bitmap getPoster(){
+        return thumbnail;
+    }
 }
