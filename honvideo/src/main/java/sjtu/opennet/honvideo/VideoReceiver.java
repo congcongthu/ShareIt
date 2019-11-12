@@ -6,6 +6,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * @TODO stop the thread using stop flag so that we can safely stop this thread when activity is destroy.
+ * Another way to do this is add a special end task with highest priority.
+ */
 public class VideoReceiver extends Thread{
     private final String TAG = "HONVIDEO.VideoReceiver";
 
@@ -13,41 +17,71 @@ public class VideoReceiver extends Thread{
     private String videoPath;
     private String chunkPath;
     private boolean complete = false;
-
+    private boolean stop = false;
 
     private String m3u8Path;
     private String chunkListPath;
     private Set<Integer> chunkIndexSet;
-    private int currentIndex = 0;
+    private int currentIndex = -1;
     public VideoReceiver(BlockingQueue<VideoReceiveTask> vQueue, String videoPath, String chunkPath){
         this.vQueue = vQueue;
         this.videoPath = videoPath;
         this.chunkPath = chunkPath;
 
-        this.m3u8Path = String.format(videoPath, "playList.m3u8");
-        this.chunkListPath = String.format(videoPath, "chunkList");
+        this.m3u8Path = String.format("%s/playList.m3u8", videoPath);
+        this.chunkListPath = String.format("%s/chunkList.txt", videoPath);
 
         chunkIndexSet = new HashSet<>();
-
+        resumeState();
     }
 
     /**
      * resume state from chunklist and m3u8
      */
     private void resumeState(){
+        /**
+         * First read the list and m3u8 file.
+         */
 
+        /**
+         * If they don't exist, create new ones.
+         */
+
+        FileUtil.createNewFile(m3u8Path);
+        FileUtil.createNewFile(chunkListPath);
     }
 
     /**
      * updateState does following things:<br />
-     *  - Add chunk index to chunk index list
+     *  - Add chunk index to chunk index list and list file.
      *  - Update currentIndex if the index if successor of currentIndex
      *  - Write to m3u8 file if currentIndex is updated.
      *  - Further update currentIndex and m3u8 if there is more successors in chunk index list.
      */
-    private void updateState(){
+    private void updateState(int tmpIndex){
+        if(!chunkIndexSet.contains(tmpIndex)){
+            chunkIndexSet.add(tmpIndex);
+            FileUtil.appendToFileWithNewLine(chunkListPath, Integer.toString(tmpIndex));
+        }
+        updateRecursive(tmpIndex);
+    }
 
+    private void updateRecursive(int tmpIndex){
+        if(tmpIndex == (currentIndex + 1)){
+            currentIndex = tmpIndex;
+            updateM3u8(tmpIndex);
+            if(chunkIndexSet.contains(currentIndex + 1)){
+                updateRecursive(currentIndex + 1);
+            }
+        }
+    }
 
+    /**
+     * @TODO Complete this function according to the requirement of media player.
+     * @param tmpIndex
+     */
+    private void updateM3u8(int tmpIndex){
+        return;
     }
 
     public void shutDown(){
@@ -74,6 +108,7 @@ public class VideoReceiver extends Thread{
                     int tmpIndex = Segmenter.getIndFromPath(fileName);
                     if(chunkIndexSet.contains(tmpIndex)){
                         Log.d(TAG, String.format("File %s already received.", fileName));
+                        updateState(tmpIndex);
                     }else{
                         Log.d(TAG, String.format("Task with file %s start.", fileName));
                         boolean success = vTask.process();
@@ -81,6 +116,9 @@ public class VideoReceiver extends Thread{
                             Thread.sleep(1000);
                             vQueue.add(vTask);
                             Log.e(TAG, String.format("Add the failed task %s back to queue", fileName));
+                        }else{
+                            Log.d(TAG, "Task success. Update Receiver State.");
+                            updateState(tmpIndex);
                         }
                     }
 

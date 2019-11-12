@@ -83,4 +83,19 @@ public class FileUtil {
             Log.e(TAG, String.format("IOException occur when write to %s.", filePath));
         }
     }
+
+    public static void createNewFile(String filePath){
+        try {
+            File file = new File(filePath);
+            file.createNewFile();
+        }catch(IOException ie){
+            Log.e(TAG, String.format("IOException occur when create new file %s.", filePath));
+            ie.printStackTrace();
+        }
+    }
+
+    public static boolean fileExists(String filePath){
+        File file = new File(filePath);
+        return file.exists();
+    }
 }

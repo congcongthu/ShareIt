@@ -35,6 +35,7 @@ public class VideoReceiveHelper {
     //Variables set during running
     private String videoPath;
     private String chunkPath;
+    private VideoReceiver receiver;
 
     private BlockingQueue<VideoReceiveTask> vQueue;
 
@@ -44,10 +45,13 @@ public class VideoReceiveHelper {
         videoId = videoPb.getId();
         totalDuration = videoPb.getVideoLength();
         vQueue = new PriorityBlockingQueue<>();
+        buildWorkspace();
+        receiver = new VideoReceiver(vQueue, videoPath, chunkPath);
+        receiver.start();
     }
 
     public void receiveChunk(Model.VideoChunk videoChunk){
-
+        vQueue.add(new VideoReceiveTask(videoChunk, chunkPath, false));
     }
 
     /**
