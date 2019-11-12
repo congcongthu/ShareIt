@@ -556,9 +556,15 @@ public class ForeGroundService extends Service {
             try {
                 List<Model.Thread> devicethreads=Textile.instance().threads.list().getItemsList();
                 boolean hasDevice=false;
+                boolean hasStorage=false;
                 for(Model.Thread t:devicethreads){
                     if(t.getName().equals("mydevice1219")){
                         hasDevice=true;
+                        System.out.println("=============已经有mydevice1219");
+                        break;
+                    }
+                    if(t.getName().equals("!@#$1234FileStorage")){
+                        hasStorage=true;
                         System.out.println("=============已经有mydevice1219");
                         break;
                     }
@@ -572,6 +578,19 @@ public class ForeGroundService extends Service {
                             .setSharing(Model.Thread.Sharing.NOT_SHARED)
                             .setType(Model.Thread.Type.PRIVATE)
                             .setKey(key).setName("mydevice1219")
+                            .setSchema(schema)
+                            .build();
+                    Textile.instance().threads.add(config);
+                }
+                if(!hasStorage){
+                    String key= UUID.randomUUID().toString();
+                    sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
+                            .setPreset(View.AddThreadConfig.Schema.Preset.BLOB)
+                            .build();
+                    sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
+                            .setSharing(Model.Thread.Sharing.NOT_SHARED)
+                            .setType(Model.Thread.Type.PRIVATE)
+                            .setKey(key).setName("!@#$1234FileStorage")
                             .setSchema(schema)
                             .build();
                     Textile.instance().threads.add(config);
