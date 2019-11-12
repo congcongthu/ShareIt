@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,7 @@ import com.sjtuopennetwork.shareit.share.util.TMsg;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
 import com.sjtuopennetwork.shareit.util.FileUtil;
+//import com.sjtuopennetwork.shareit.util.VideoHelper;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -39,6 +41,8 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
+import sjtu.opennet.honvideo.VideoMeta;
+import sjtu.opennet.honvideo.VideoUploadHelper;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
@@ -54,6 +58,7 @@ public class ChatActivity extends AppCompatActivity {
     LinearLayout add_file_layout;
     TextView bt_send_img;
     LinearLayout chat_backgroud;
+    TextView bt_send_video;
 
     //持久化数据
     public SQLiteDatabase appdb;
@@ -66,6 +71,7 @@ public class ChatActivity extends AppCompatActivity {
     List<TMsg> msgList;
 //    MsgAdapter msgAdapter;
     List<LocalMedia> choosePic;
+    List<LocalMedia> chooseVideo;
     String avatarpath;
 
     //退出群组相关
@@ -101,6 +107,7 @@ public class ChatActivity extends AppCompatActivity {
     private void initUI() {
         chat_lv=findViewById(R.id.chat_lv);
         bt_send_img=findViewById(R.id.bt_send_img);
+        bt_send_video=findViewById(R.id.bt_send_video);
         chat_name_toolbar=findViewById(R.id.chat_name_toolbar);
         send_msg=findViewById(R.id.chat_send_text);
         bt_add_file=findViewById(R.id.bt_add_file);
@@ -140,19 +147,26 @@ public class ChatActivity extends AppCompatActivity {
             chat_thread = Textile.instance().threads.get(threadid);
             if(chat_thread.getWhitelistCount()==2){ //如果是双人thread
                 group_menu.setVisibility(View.GONE);
+                Model.Peer peer1=Textile.instance().threads.peers(threadid).getItems(0);
+                if(peer1.getName().equals(Textile.instance().profile.name())){ //如果第一个名字是我的，就设置下一个名字
+                    chat_name_toolbar.setText(Textile.instance().threads.peers(threadid).getItems(1).getName());
+                }else{ //第一个名字不是我就直接设置
+                    chat_name_toolbar.setText(peer1.getName());
+                }
+            }else{
+                chat_name_toolbar.setText(chat_thread.getName());
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        chat_name_toolbar.setText(chat_thread.getName());
-
         send_msg.setOnClickListener(view -> {
             final String msg=chat_text_edt.getText().toString();
 
             if(!msg.equals("")){
                 chat_text_edt.setText("");
+
                 try {
                     Textile.instance().messages.add(threadid,msg);
                 } catch (Exception e) {
@@ -178,7 +192,15 @@ public class ChatActivity extends AppCompatActivity {
                     .openGallery(PictureMimeType.ofImage())
                     .maxSelectNum(1)
                     .compress(false)
-                    .forResult(PictureConfig.CHOOSE_REQUEST);
+                    .forResult(PictureConfig.TYPE_IMAGE);
+        });
+
+        bt_send_video.setOnClickListener(view -> {
+            PictureSelector.create(ChatActivity.this)
+                    .openGallery(PictureMimeType.ofVideo())
+                    .maxSelectNum(1)
+                    .compress(false)
+                    .forResult(PictureConfig.TYPE_VIDEO);
         });
 
         group_menu.setOnClickListener(v -> {
@@ -212,14 +234,13 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==PictureConfig.CHOOSE_REQUEST && resultCode==RESULT_OK){
+        if(requestCode==PictureConfig.TYPE_IMAGE && resultCode==RESULT_OK){
             choosePic=PictureSelector.obtainMultipleResult(data);
             String filePath=choosePic.get(0).getPath();
             //发送照片
             Textile.instance().files.addFiles(filePath, threadid, "", new Handlers.BlockHandler() {
                 @Override
                 public void onComplete(Model.Block block) {
-
                 }
                 @Override
                 public void onError(Exception e) {
@@ -235,6 +256,36 @@ public class ChatActivity extends AppCompatActivity {
             }
             msgList.add(tMsg);
             chat_lv.setSelection(msgList.size());
+        }else if(requestCode==PictureConfig.TYPE_VIDEO && resultCode==RESULT_OK){ //如果是选择了视频
+            chooseVideo=PictureSelector.obtainMultipleResult(data);
+            String filePath=chooseVideo.get(0).getPath();
+            System.out.println("=================选择了视频："+filePath);
+//
+            VideoUploadHelper videoHelper=new VideoUploadHelper(this,filePath);
+//            videoHelper.publishMeta(); //添加到本地、上传到cafe
+            Model.Video video=videoHelper.getVideoPb();
+            try {
+                Textile.instance().videos.threadAddVideo(threadid,video.getId()); //向thread中添加
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Bitmap tmpBmap = videoHelper.getPoster(); //拿到缩略图
+            String tmpdir = FileUtil.getAppExternalPath(this, "temp");
+            String videoHeadPath=tmpdir+System.currentTimeMillis(); //随机给一个名字
+            //将缩略图临时保存到本地
+            FileUtil.saveBitmap(videoHeadPath,tmpBmap);
+            String posterAndId=videoHeadPath+"##"+video.getId();
+            TMsg tMsg= null;
+            try {
+                tMsg = new TMsg(1,threadid,2,"",
+                        Textile.instance().profile.name(),Textile.instance().profile.avatar(),posterAndId,System.currentTimeMillis()/1000,true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            msgList.add(tMsg);
+            chat_lv.setSelection(msgList.size());
+
+            videoHelper.segment(); //切割并上传
         }
     }
 

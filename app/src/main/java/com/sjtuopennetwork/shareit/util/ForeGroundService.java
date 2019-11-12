@@ -103,7 +103,7 @@ public class ForeGroundService extends Service {
                     loginAccount=m.getAddress();
                     final File repo1 = new File(filesDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
-                    Textile.initialize(repoPath,m.getSeed() , true, false);
+                    Textile.initialize(repoPath,m.getSeed() , true, false, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -131,7 +131,7 @@ public class ForeGroundService extends Service {
                     final File repo1 = new File(filesDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
                     if(!Textile.isInitialized(repoPath)){
-                        Textile.initialize(repoPath,m.getSeed() , true, false);
+                        Textile.initialize(repoPath,m.getSeed() , true, false,true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -160,7 +160,6 @@ public class ForeGroundService extends Service {
             editor.putString("loginAccount",loginAccount);
         }
         editor.commit();
-
 
         try{
             appdb=AppdbHelper.getInstance(this,loginAccount).getWritableDatabase();
@@ -336,11 +335,16 @@ public class ForeGroundService extends Service {
         }
 
         @Override
+        public void videoChunkQueryResult(String queryId, Model.VideoChunk vchunk) {
+            System.out.println("==========监听器找到VideoChunk："+vchunk.getId());
+            EventBus.getDefault().post(vchunk);
+        }
+
+        @Override
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
             //要保证在所有界面收到消息，就只能是在这里更新数据库了。默认是未读的，但是在聊天界面得到消息就要改为已读
             //发送消息的目的就是更新界面，所以不用sticky
             System.out.println("============收到么么么么么"+feedItemData.type.name());
-
 
             Model.Thread thread=null;
             try {
@@ -466,7 +470,6 @@ public class ForeGroundService extends Service {
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
                         feedItemData.files.getUser().getName()+"分享了图片", feedItemData.files.getDate().getSeconds(),
                         dialogimg);
-                System.out.println("====================这个执行了吗");
 
                 //Msg
                 int ismine=0;
@@ -488,7 +491,34 @@ public class ForeGroundService extends Service {
             }
 
             if(feedItemData.type.equals(FeedItemType.VIDEO)){
-                //metadata，
+                Model.Video video=feedItemData.feedVideo.getVideo();
+                System.out.println("==========收到视频："+video.getCaption()
+                        +" "+video.getPoster()  //这个就是缩略图的ipfs哈希值，使用ipfs.dataAtPath就能够得到
+                        +" "+video.getId());
+
+                //DIalog
+                TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
+                TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
+                        feedItemData.feedVideo.getUser().getName()+"分享了视频", feedItemData.feedVideo.getDate().getSeconds(),
+                        tDialog.imgpath);
+
+                //Msg
+                int ismine=0;
+                if(feedItemData.feedVideo.getUser().getAddress().equals(Textile.instance().account.address())){
+                    ismine=1;
+                }
+                String posterAndId=video.getPoster()+"##"+video.getId();
+                //插入msgs表
+                TMsg tMsg=DBoperator.insertMsg(appdb,threadId,2, feedItemData.feedVideo.getBlock(),
+                        feedItemData.feedVideo.getUser().getName(),
+                        feedItemData.feedVideo.getUser().getAvatar(),
+                        posterAndId, //poster和id的hash值
+                        feedItemData.feedVideo.getDate().getSeconds(), ismine);
+
+                EventBus.getDefault().post(updateDialog);
+                if(ismine==0){  //不是我的图片才广播出去，因为我自己的消息直接显示了
+                    EventBus.getDefault().post(tMsg);
+                }
             }
 
             if(feedItemData.type.equals(FeedItemType.ADDADMIN)){
@@ -526,10 +556,15 @@ public class ForeGroundService extends Service {
             try {
                 List<Model.Thread> devicethreads=Textile.instance().threads.list().getItemsList();
                 boolean hasDevice=false;
+                boolean hasStorage=false;
                 for(Model.Thread t:devicethreads){
                     if(t.getName().equals("mydevice1219")){
                         hasDevice=true;
                         System.out.println("=============已经有mydevice1219");
+                        break;
+                    }
+                    if(t.getName().equals("!@#$1234FileStorage")){
+                        hasStorage=true;
                         break;
                     }
                 }
@@ -542,6 +577,19 @@ public class ForeGroundService extends Service {
                             .setSharing(Model.Thread.Sharing.NOT_SHARED)
                             .setType(Model.Thread.Type.PRIVATE)
                             .setKey(key).setName("mydevice1219")
+                            .setSchema(schema)
+                            .build();
+                    Textile.instance().threads.add(config);
+                }
+                if(!hasStorage){
+                    String key= UUID.randomUUID().toString();
+                    sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
+                            .setPreset(View.AddThreadConfig.Schema.Preset.BLOB)
+                            .build();
+                    sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
+                            .setSharing(Model.Thread.Sharing.NOT_SHARED)
+                            .setType(Model.Thread.Type.PRIVATE)
+                            .setKey(key).setName("!@#$1234FileStorage")
                             .setSchema(schema)
                             .build();
                     Textile.instance().threads.add(config);

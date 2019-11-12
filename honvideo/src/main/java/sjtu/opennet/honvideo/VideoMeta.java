@@ -4,8 +4,6 @@ import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
-//import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -15,39 +13,109 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 
 import wseemann.media.FFmpegMediaMetadataRetriever;
 import sjtu.opennet.textilepb.Model.Video;
-import static java.lang.Long.getLong;
 
+/**
+ * This class extract the meta info from video file.
+ * It can also generate HASH ID for a video.
+ */
 public class VideoMeta {
     private static final String TAG = "VideoMeta";
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private MediaMetadataRetriever mdataReceiver;
     private FFmpegMediaMetadataRetriever fmdataReceiver;
 
-    //private String title;
-    private String path;
-    private String filename;
-    private String filesize;
-    private String filesize_fmt;
-    private String width;
-    private String height;
-    private String rotation;
-    private String duration;        //duration in mill second
-    private long duration_long;     //duration with long type (used for computation)
-    private String duration_fmt;    //formatted duration (hour:minute:second.mill)
-    //private String bitrate;         //the average bitrate (in bits/sec)
-    //private String bitrate_fmt;     //formatted bitrate (KB/S)
+    // Info contains
+    // Info from input
+    private String path;            // The Absolute path of local path.
+
+    // Info extract from MediaMetadataRetriever
+    private String width;           // Video width
+    private String height;          // Video height
+    private String duration;        // duration in mill second
+
+    // Info extract from FmpegMediaMetadataRetriever
+    private String filesize;        // File size in byte.
     private String creation;
+    private String rotation;        // Video rotation
     private Bitmap thumbnail;
-    private byte[] thumbnail_byte;
+
+    // Info get from further process
+    private String filename;        // File name read from file path.
+    private String filesize_fmt;    // Formatted file size in KB/MB/GB/TB
+    private long duration_long;     // duration with long type (used for computation)
+    private String duration_fmt;    // formatted duration (hour:minute:second.mill)
+    private byte[] thumbnail_byte;  // thumbnail in byte format
+    private Bitmap thumbnail_small;         //small thumbnail with width 100px.
+    private byte[] thumbnail_small_byte;    //small thumbnail in byte
     private String videoHash = "";
 
-    //private String date;            //the date when the data source was created or modified
-    //private String genre;           //the content type or genre of the data source.
+    /**
+     * Constructor of VideoMeta.
+     * All the Meta info is either extracted or computed within constructor.
+     * @param filePath The absolute path of video. VideoMeta is video specified.
+     */
+    public VideoMeta(String filePath){
+        path = filePath;
+        mdataReceiver = new MediaMetadataRetriever();
+        fmdataReceiver = new FFmpegMediaMetadataRetriever();
+
+        try{
+            mdataReceiver.setDataSource(filePath);
+            fmdataReceiver.setDataSource(filePath);
+            String[] pathSep = filePath.split(File.separator);
+            filename = pathSep[pathSep.length-1];
+            filesize = fmdataReceiver.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_FILESIZE);
+            if(filesize == null){
+                Log.w(TAG, "Can not extract file size.");
+            }
+            else {
+                filesize_fmt = formatFilesize(filesize);
+            }
+            width = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
+            height = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
+            duration = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            if(duration == null){
+                Log.w(TAG, "Can not extract dutation.");
+                thumbnail = extractFrameFFmpeg(1);
+            }
+            else {
+                duration_long = Long.parseLong(duration);
+                duration_fmt = formatDuration(duration_long);
+
+                if (duration_long < 60000) {
+                    thumbnail = extractFrameFFmpeg(1);
+                } else {
+                    thumbnail = extractFrameFFmpeg(duration_long / 10);
+                }
+            }
+            thumbnail_byte = Bitmap2Bytes(thumbnail);
+            thumbnail_small = getSmallThumbnail(100, thumbnail);
+            thumbnail_small_byte = Bitmap2Bytes(thumbnail_small);
+            creation = fmdataReceiver.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_CREATION_TIME);
+            rotation = fmdataReceiver.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+            videoHash = getHashFromMeta();
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            //Release the receiver no matter what.
+            //Otherwise it may cause error when we use other receivers in future.
+            mdataReceiver.release();
+            fmdataReceiver.release();
+        }
+    }
+
+    /**
+     * List all the video info as a string.
+     * It is a private method used by {@link #getHashFromMeta()} and {@link #logCatPrint()}<br />
+     * <b>Note:<b/> stringInfo does not contain the video hash ID.
+     * That is because the hash ID is exactly generated from stringInfo and thumbnail.
+     *
+     * @return A string shows all the meta info.
+     */
     private String stringInfo(){
         return String.format("File Name: %s\n" +
                         "File Size: %s\n" +
@@ -58,80 +126,21 @@ public class VideoMeta {
                 filename, filesize_fmt, width, height, rotation, duration_fmt, creation);
     }
 
+    /**
+     * Output the meta info in logcat.
+     */
     public void logCatPrint(){
         Log.i(TAG, stringInfo() + String.format("\nVideo Hash: %s", videoHash));
     }
-    public VideoMeta(String filePath){
-        path = filePath;
 
-        mdataReceiver = new MediaMetadataRetriever();
-        fmdataReceiver = new FFmpegMediaMetadataRetriever();
-
-        mdataReceiver.setDataSource(filePath);
-        fmdataReceiver.setDataSource(filePath);
-        String[] pathSep = filePath.split(File.separator);
-        filename = pathSep[pathSep.length-1];
-        filesize = fmdataReceiver.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_FILESIZE);
-        if(filesize == null){
-            Log.w(TAG, "Can not extract file size.");
+    public static Bitmap getSmallThumbnail(int dstWidth, Bitmap sourceBitmap){
+        if(sourceBitmap.getWidth()<=dstWidth){
+            Log.e(TAG, "Source thumbnail is small enough.");
+            return sourceBitmap;
         }
-        else {
-            filesize_fmt = formatFilesize(filesize);
-        }
-        //title = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-        width = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
-        height = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
-        duration = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-        if(duration == null){
-            Log.w(TAG, "Can not extract dutation.");
-            thumbnail = extractFrameFFmpeg(1);
-        }
-        else {
-            duration_long = Long.parseLong(duration);
-            duration_fmt = formatDuration(duration_long);
-
-            if (duration_long < 60000) {
-                thumbnail = extractFrameFFmpeg(1);
-            } else {
-                thumbnail = extractFrameFFmpeg(duration_long / 10);
-            }
-        }
-        thumbnail_byte = Bitmap2Bytes(thumbnail);
-        //bitrate = fmdataReceiver.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VARIANT_BITRATE);
-        //bitrate_fmt = formatBitrate(bitrate);
-        //date = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
-        creation = fmdataReceiver.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_CREATION_TIME);
-        //genre = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
-        rotation = fmdataReceiver.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
-
-        try{
-            videoHash = getHashFromMeta();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-
-        mdataReceiver.release();
-        fmdataReceiver.release();
-    }
-
-
-    /**
-     * Create video meta.
-     * @param filePath
-     * @param hashvideo Whether to hash the whole video.
-     *                  true: hash the whole video. Around 5 sec/GB.
-     *                  false: hash meta only. Really fast.
-     */
-    public VideoMeta(String filePath, boolean hashvideo){
-        this(filePath);
-
-        if(hashvideo) {
-            try {
-                videoHash = getHashFromVideo();
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-        }
+        int dstHeight = (int) (((double)dstWidth/(double)sourceBitmap.getWidth())*sourceBitmap.getHeight());
+        Log.d(TAG, String.format("Get small thumbnail with %d x %d", dstWidth, dstHeight));
+        return Bitmap.createScaledBitmap(sourceBitmap, dstWidth, dstHeight, false);
     }
 
     private String formatDuration(long duration){
@@ -157,6 +166,7 @@ public class VideoMeta {
         float rateFloat = Float.parseFloat(rateBits);
         return String.format("%s KB/S", String.valueOf(rateFloat/1024));
     }
+
 
     private Bitmap extractFrame(long timeMs){
         Bitmap bitmap = null;
@@ -230,10 +240,6 @@ public class VideoMeta {
 
         //make sure to remove this before release
 
-        Log.d(TAG, String.format("metaInfo:\n%s\nmetaThumb:\n%s", new String(metaInfo), new String(thumbnail_byte)));
-        Log.d(TAG, String.format("meta:========\n%s", new String(meta)));
-
-        //return java.util.Base64.getEncoder().encodeToString(hash);
         return bytesToHex(hash);
     }
 
@@ -255,74 +261,7 @@ public class VideoMeta {
         return new String(hexChars);
     }
 
-    /**
-     * Test the performance for FFmpegMediaMetadataRetriever
-     * DO NOT FORGET TO REMOVE THIS FUNCTION BEFORE RELEASE
-     * @param filePath
-     * @param tool
-     */
-    public VideoMeta(String filePath, String tool){
-        Log.i(TAG, "Compare the performance of MediaMetadataRetriever and FFmpegMediaMetadataRetriever");
-        Log.i(TAG, "MediaMetadataRetriever:");
 
-        long startTime = System.currentTimeMillis();
-        path = filePath;
-
-        mdataReceiver = new MediaMetadataRetriever();
-        mdataReceiver.setDataSource(filePath);
-
-        //title = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-        width = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
-        height = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
-        duration = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-        duration_long = Long.parseLong(duration);
-        duration_fmt = formatDuration(duration_long);
-
-        if(duration_long < 60000){
-            thumbnail = extractFrame(0);
-        }
-        else{
-            thumbnail = extractFrame(duration_long / 100);
-        }
-        //bitrate = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
-        //date = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
-        //genre = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
-
-        long endTime = System.currentTimeMillis();
-        Log.i(TAG, String.format("%d ms", endTime - startTime));
-        logCatPrint();
-
-        Log.i(TAG, "FFmpegMediaMetadataRetriever:");
-        startTime = System.currentTimeMillis();
-        FFmpegMediaMetadataRetriever mmr = new FFmpegMediaMetadataRetriever();
-        mmr.setDataSource(filePath);
-        String ftitle = mmr.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_TITLE);
-        String fduration = mmr.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION);
-        long fduration_long = Long.parseLong(fduration);
-        String fduration_fmt = formatDuration(fduration_long);
-        String fbitrate = mmr.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VARIANT_BITRATE);
-        String fdate = mmr.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_DATE);
-        String fcreation = mmr.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_CREATION_TIME);
-        String fgenre = mmr.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_GENRE);
-        String ffilesize = mmr.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_FILESIZE);
-
-        Bitmap fb = mmr.getFrameAtTime(2000000, FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC);
-        byte[] artwork = mmr.getEmbeddedPicture();
-        mmr.release();
-        endTime = System.currentTimeMillis();
-
-        Log.i(TAG, String.format("%d ms", endTime - startTime));
-        Log.i(TAG, String.format("Video meta:\n" +
-                        "Video Title: %s\n" +
-                        "Video Duration: %s\n" +
-                        "Video Bitrate: %s\n" +
-                        "Video Date: %s\n" +
-                        "Video Creation: %s\n" +
-                        "Video Genre: %s\n" +
-                        "File Size: %s\n",
-                ftitle, fduration_fmt, fbitrate, fdate, fcreation, fgenre, ffilesize));
-        //String ftitle =
-    }
 
     public Video getPb(String posterHash){
         Video videopb = Video.newBuilder()
@@ -341,6 +280,9 @@ public class VideoMeta {
         return videoHash;
     }
     public byte[] getPosterByte(){
-        return thumbnail_byte;
+        return thumbnail_small_byte;
+    }
+    public Bitmap getPoster(){
+        return thumbnail_small;
     }
 }

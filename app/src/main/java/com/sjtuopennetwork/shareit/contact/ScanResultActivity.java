@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -110,29 +111,9 @@ public class ScanResultActivity extends AppCompatActivity {
 
         add_friend.setOnClickListener(v -> {
             //点击就申请添加好友，逻辑与搜索结果界面的添加是相同的
-            createTwoPersonThread(resultContact.getName());
+//            createTwoPersonThread(resultContact.getName());
+            ContactUtil.createTwoPersonThread(address);
         });
-    }
-
-
-    //创建一个新的双人thread
-    private void createTwoPersonThread(String threadName){
-        sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema=
-                sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
-                        .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.MEDIA)
-                        .build();
-        sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
-                .setSharing(Model.Thread.Sharing.SHARED)
-                .setType(Model.Thread.Type.OPEN)
-                .setKey(address).setName(threadName)
-                .addWhitelist(address).addWhitelist(Textile.instance().account.address()) //两个人添加到白名单
-                .setSchema(schema)
-                .build();
-        try {
-            Textile.instance().threads.add(config);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     //双人thread创建成功后就发送邀请，用户看起来就是好友申请

@@ -1,9 +1,8 @@
-package com.sjtuopennetwork.shareit.util;
+package sjtu.opennet.honvideo;
+
 
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
-
-import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -16,24 +15,30 @@ import sjtu.opennet.textilepb.Model.VideoChunk;
  *
  */
 
-public class VideoTask {
+public class VideoUploadTask {
     //Variables get from constructor
     private String videoId;
     private String tsPath;
     private String tsAbsolutePath;
     private boolean endTag;
-    private final String TAG = "VideoTask";
+    private final String TAG = "HONVIDEO.VideoTask";
 
-    //Variables assigned during running.
-    //private VideoChunk videoChunk;
+    //Variables assigned during running
     private int currentDuration = 0;
     private int duration_int = 0;
 
+    public VideoUploadTask(String videoId, String tsPath, String tsAbsolutePathPath, boolean endTag){
+        this.videoId = videoId;
+        this.tsPath = tsPath;
+        this.tsAbsolutePath = tsAbsolutePathPath;
+        this.endTag = endTag;
+    }
+
     /**
      * This handler is called by ipfsAddData
-     * It does the following things:
-     *  - create VideoChunk proto object
-     *  - add it to thread
+     * It does the following things:<br />
+     *  - create VideoChunk proto object<br />
+     *  - add it to thread<br />
      *  - upload it to cafe peer
      *
      * @TODO:
@@ -57,7 +62,6 @@ public class VideoTask {
                 Log.e(TAG, "Unexpected error when publish video chunk");
                 e.printStackTrace();
             }
-            //Textile.instance().videos.addVideoChunk();
         }
 
         @Override
@@ -67,20 +71,15 @@ public class VideoTask {
         }
     };
 
-    public static VideoTask endTask(){
-        return new VideoTask("","", "", true);
+    public static VideoUploadTask endTask(){
+        return new VideoUploadTask("","", "", true);
     }
 
-    public VideoTask(String videoId, String tsPath, String tsAbsolutePathPath, boolean endTag){
-        this.videoId = videoId;
-        this.tsPath = tsPath;
-        this.tsAbsolutePath = tsAbsolutePathPath;
-        this.endTag = endTag;
-    }
+
 
     /**
-     * The upload did following things:
-     *  - Read duration info [done]
+     * upload does following things:
+     *  - Read duration info
      *  - Upload to IPFS
      *  - Create Video Chunk object
      *  - Upload to Thread
@@ -103,16 +102,6 @@ public class VideoTask {
             String duration = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
 
             byte[] fileContent = Files.readAllBytes(Paths.get(tsAbsolutePath));
-
-            /*
-            Model.Video videopb = Model.Video.newBuilder()
-                    .setId(videoHash)
-                    //.setCaption(stringInfo())
-                    .setCaption(filename)
-                    .setVideoLength((int)duration_long)
-                    .setPoster(posterHash)
-                    .build();
-            */
             if (duration == null) {
                 Log.w(TAG, "Can not extract dutation.");
                 duration_int = -1;
@@ -132,7 +121,5 @@ public class VideoTask {
             }
         }
         return currentDuration + duration_int;
-        //Model.VideoChunk.newBuilder().
-
     }
 }

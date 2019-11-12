@@ -2,6 +2,7 @@ package sjtu.opennet.hon;
 
 import sjtu.opennet.textilepb.Model.CafeSyncGroupStatus;
 import sjtu.opennet.textilepb.Model.Contact;
+import sjtu.opennet.textilepb.Model.VideoChunk;
 import sjtu.opennet.textilepb.Model.Notification;
 import sjtu.opennet.textilepb.Model.Thread;
 
@@ -92,6 +93,11 @@ public abstract class BaseTextileEventListener implements TextileEventListener {
 
     @Override
     public void contactQueryResult(final String queryId, final Contact contact) {
+
+    }
+    
+    @Override
+    public void videoChunkQueryResult(final String queryId, final VideoChunk vchunk) {
 
     }
 

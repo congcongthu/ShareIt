@@ -12,10 +12,12 @@ import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+
 import com.sjtuopennetwork.shareit.R;
 
 import java.util.List;
 
+import sjtu.opennet.honvideo.ModuleTest;
 import sjtu.opennet.honvideo.Segmenter;
 import sjtu.opennet.honvideo.VideoMeta;
 import sjtu.opennet.textilepb.Model;
@@ -93,20 +95,23 @@ public class VideoActivity extends AppCompatActivity {
 
             Log.d(TAG, String.format("Add video from file %s.", filePath));
             Log.d(TAG, "Meta get start");
-            long startTime = System.currentTimeMillis();
+
+            ModuleTest.run(this, filePath);
+
+//            long startTime = System.currentTimeMillis();
             //VideoMeta vMeta = new VideoMeta(filePath);
             //vMeta.logCatPrint();
-            VideoHelper vHelper = new VideoHelper(this, filePath);
-            long endTime = System.currentTimeMillis();
-            Log.d(TAG, "Meta get end");
-            Log.d(TAG, String.format("Meta get time %d ms", endTime - startTime));
-            Log.d(TAG, "Try to publish video meta");
-            startTime = System.currentTimeMillis();
-            vHelper.publishMeta();
-            endTime = System.currentTimeMillis();
-            Log.d(TAG, String.format("Meta publish time %d ms", endTime - startTime));
-            Log.d(TAG, "Try to stream video");
-            vHelper.segment();
+//            VideoHelper vHelper = new VideoHelper(this, filePath);
+//            long endTime = System.currentTimeMillis();
+//            Log.d(TAG, "Meta get end");
+//            Log.d(TAG, String.format("Meta get time %d ms", endTime - startTime));
+//            Log.d(TAG, "Try to publish video meta");
+//            startTime = System.currentTimeMillis();
+//            vHelper.publishMeta();
+//            endTime = System.currentTimeMillis();
+//            Log.d(TAG, String.format("Meta publish time %d ms", endTime - startTime));
+//            Log.d(TAG, "Try to stream video");
+//            vHelper.segment();
 
             /*
             Log.d(TAG, "Try to receive thumbnail from ipfs");

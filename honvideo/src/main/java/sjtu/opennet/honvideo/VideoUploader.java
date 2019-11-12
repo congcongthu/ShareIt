@@ -1,7 +1,6 @@
-package com.sjtuopennetwork.shareit.util;
+package sjtu.opennet.honvideo;
 
 import android.util.Log;
-
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -9,13 +8,12 @@ import java.util.concurrent.BlockingQueue;
  * Each video will have its own VideoUploader (In order to count duration)
  * Uploader should end when all the chunks has been uploaded.
  */
-
 public class VideoUploader extends Thread{
-    private BlockingQueue<VideoTask> videoQueue;
-    private final String TAG = "VideoUploader";
+    private BlockingQueue<VideoUploadTask> videoQueue;
+    private final String TAG = "HONVIDEO.VideoUploader";
     private int currentDuration = 0;
     private boolean complete = false;
-    public VideoUploader(BlockingQueue<VideoTask> bQueue){
+    public VideoUploader(BlockingQueue<VideoUploadTask> bQueue){
         videoQueue = bQueue;
     }
 
@@ -24,12 +22,10 @@ public class VideoUploader extends Thread{
         interrupt();
     }
 
-
-
     @Override
     public void run(){
         Log.d(TAG, "Uploader start to run.");
-        VideoTask vTask;
+        VideoUploadTask vTask;
         int endDuration;
         while(!complete) {
             try {
@@ -38,8 +34,6 @@ public class VideoUploader extends Thread{
                 currentDuration = endDuration;
                 if(endDuration < 0){
                     Log.d(TAG, "End Task received. End the thread.");
-                    //interrupt() should only apply to a blocking thread. So we use a flag "complete" instead.
-                    //interrupt();
                     complete = true;
                 }
             } catch (InterruptedException ie) {
@@ -56,3 +50,4 @@ public class VideoUploader extends Thread{
 
 
 }
+

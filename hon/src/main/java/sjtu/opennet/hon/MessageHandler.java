@@ -1,5 +1,7 @@
 package sjtu.opennet.hon;
 
+import android.util.Log;
+
 import net.gotev.uploadservice.Logger;
 
 import java.util.Set;
@@ -10,6 +12,7 @@ import sjtu.opennet.textilepb.Mobile.MobileEventType;
 import sjtu.opennet.textilepb.Mobile.MobileQueryEvent;
 import sjtu.opennet.textilepb.Model.CafeSyncGroupStatus;
 import sjtu.opennet.textilepb.Model.Contact;
+import sjtu.opennet.textilepb.Model.VideoChunk;
 import sjtu.opennet.textilepb.Model.Notification;
 import sjtu.opennet.textilepb.View.AccountUpdate;
 import sjtu.opennet.textilepb.View.FeedItem;
@@ -103,6 +106,7 @@ class MessageHandler implements Messenger {
                     switch (queryEvent.getType()) {
                         case DATA:
                             final String type = queryEvent.getData().getValue().getTypeUrl();
+                            Log.d("hon-sdk", "queryEvent.type:"+type);
                             if (type.equals("/Thread")) {
                                 final Thread clientThread = Thread.parseFrom(queryEvent.getData().getValue().getValue());
                                 for (final TextileEventListener listener : listeners) {
@@ -112,6 +116,11 @@ class MessageHandler implements Messenger {
                                 final Contact contact = Contact.parseFrom(queryEvent.getData().getValue().getValue());
                                 for (final TextileEventListener listener : listeners) {
                                     listener.contactQueryResult(queryEvent.getId(), contact);
+                                }
+                            } else if (type.equals("/VideoChunk")) {
+                                final VideoChunk vchunk = VideoChunk.parseFrom(queryEvent.getData().getValue().getValue());
+                                for (final TextileEventListener listener : listeners) {
+                                    listener.videoChunkQueryResult(queryEvent.getId(), vchunk);
                                 }
                             }
                             break;
