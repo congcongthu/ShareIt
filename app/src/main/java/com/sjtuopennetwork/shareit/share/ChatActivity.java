@@ -239,7 +239,6 @@ public class ChatActivity extends AppCompatActivity {
             Textile.instance().files.addFiles(filePath, threadid, "", new Handlers.BlockHandler() {
                 @Override
                 public void onComplete(Model.Block block) {
-
                 }
                 @Override
                 public void onError(Exception e) {
@@ -260,28 +259,31 @@ public class ChatActivity extends AppCompatActivity {
             String filePath=chooseVideo.get(0).getPath();
             System.out.println("=================选择了视频："+filePath);
 //
-//            VideoHelper videoHelper=new VideoHelper(this,filePath);
-//            videoHelper.publishMeta(); //添加到本地、上传到cafe
-//            Model.Video video=videoHelper.getVideoPb();
-//            try {
-//                Textile.instance().videos.threadAddVideo(threadid,video.getId()); //向thread中添加
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            Bitmap tmpBmap = VideoHelper.getPosterFromPb(video);
-//            String tmpdir = FileUtil.getAppExternalPath(this, "temp");
-//            String videoHeadPath=tmpdir+"s";
-//            videoHelper.saveBitmap(tmpBmap,videoHeadPath);
-//
-//            TMsg tMsg= null;
-//            try {
-//                tMsg = new TMsg(1,threadid,1,"",
-//                        Textile.instance().profile.name(),Textile.instance().profile.avatar(),videoHeadPath,System.currentTimeMillis()/1000,true);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            msgList.add(tMsg);
-//            chat_lv.setSelection(msgList.size());
+            VideoHelper videoHelper=new VideoHelper(this,filePath);
+            videoHelper.publishMeta(); //添加到本地、上传到cafe
+            Model.Video video=videoHelper.getVideoPb();
+            try {
+                Textile.instance().videos.threadAddVideo(threadid,video.getId()); //向thread中添加
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Bitmap tmpBmap = videoHelper.getPoster(); //拿到缩略图
+            String tmpdir = FileUtil.getAppExternalPath(this, "temp");
+            String videoHeadPath=tmpdir+System.currentTimeMillis(); //随机给一个名字
+            //将缩略图临时保存到本地
+            FileUtil.saveBitmap(videoHeadPath,tmpBmap);
+            String posterAndId=videoHeadPath+"##"+video.getId();
+            TMsg tMsg= null;
+            try {
+                tMsg = new TMsg(1,threadid,2,"",
+                        Textile.instance().profile.name(),Textile.instance().profile.avatar(),posterAndId,System.currentTimeMillis()/1000,true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            msgList.add(tMsg);
+            chat_lv.setSelection(msgList.size());
+
+            videoHelper.segment(); //切割并上传
         }
     }
 

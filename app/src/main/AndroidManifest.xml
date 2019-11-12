@@ -15,7 +15,8 @@
         android:roundIcon="@drawable/ic_share_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".share.GroupCodeActivity"></activity>
+        <activity android:name=".share.VideoPlayActivity"></activity>
+        <activity android:name=".share.GroupCodeActivity" />
 
         <service
             android:name=".util.ForeGroundService"

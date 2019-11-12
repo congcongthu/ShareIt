@@ -62,7 +62,7 @@
                     android:layout_height="160dp" />
 
                 <ImageView
-                    android:id="@+id/videoicon"
+                    android:id="@+id/video_icon"
                     android:src="@drawable/videoplayicon"
                     android:padding="50dp"
                     android:layout_width="match_parent"
@@ -139,7 +139,7 @@
                         android:layout_height="160dp" />
 
                     <ImageView
-                        android:id="@+id/videoicon_r"
+                        android:id="@+id/video_icon_r"
                         android:src="@drawable/videoplayicon"
                         android:padding="50dp"
                         android:layout_width="match_parent"
