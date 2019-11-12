@@ -262,7 +262,7 @@ public class ChatActivity extends AppCompatActivity {
             System.out.println("=================选择了视频："+filePath);
 //
             VideoUploadHelper videoHelper=new VideoUploadHelper(this,filePath);
-            videoHelper.publishMeta(); //添加到本地、上传到cafe
+//            videoHelper.publishMeta(); //添加到本地、上传到cafe
             Model.Video video=videoHelper.getVideoPb();
             try {
                 Textile.instance().videos.threadAddVideo(threadid,video.getId()); //向thread中添加
@@ -285,7 +285,7 @@ public class ChatActivity extends AppCompatActivity {
             msgList.add(tMsg);
             chat_lv.setSelection(msgList.size());
 
-//            videoHelper.segment(); //切割并上传
+            videoHelper.segment(); //切割并上传
         }
     }
 
