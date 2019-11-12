@@ -4,9 +4,12 @@ import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
 import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import sjtu.opennet.hon.Handlers;
-import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.hon.Textile;
+import sjtu.opennet.textilepb.Model.VideoChunk;
 
 /**
  * Video upload task.
@@ -17,11 +20,14 @@ public class VideoTask {
     //Variables get from constructor
     private String videoId;
     private String tsPath;
+    private String tsAbsolutePath;
     private boolean endTag;
     private final String TAG = "VideoTask";
 
     //Variables assigned during running.
-    private Model.VideoChunk videoChunk;
+    //private VideoChunk videoChunk;
+    private int currentDuration = 0;
+    private int duration_int = 0;
 
     /**
      * This handler is called by ipfsAddData
@@ -37,6 +43,20 @@ public class VideoTask {
         @Override
         public void onComplete(String path) {
             Log.d(TAG, String.format("ts chunk ipfs path: %s", path));
+            VideoChunk videoChunk = VideoChunk.newBuilder()
+                    .setId(videoId)
+                    .setChunk(tsPath)
+                    .setAddress(path)
+                    .setStartTime(currentDuration)
+                    .setEndTime(currentDuration + duration_int)
+                    .build();
+            try {
+                Textile.instance().videos.addVideoChunk(videoChunk);
+                Textile.instance().videos.publishVideoChunk(videoChunk);
+            }catch(Exception e){
+                Log.e(TAG, "Unexpected error when publish video chunk");
+                e.printStackTrace();
+            }
             //Textile.instance().videos.addVideoChunk();
         }
 
@@ -48,12 +68,13 @@ public class VideoTask {
     };
 
     public static VideoTask endTask(){
-        return new VideoTask("","",true);
+        return new VideoTask("","", "", true);
     }
 
-    public VideoTask(String videoId, String tsPath, boolean endTag){
+    public VideoTask(String videoId, String tsPath, String tsAbsolutePathPath, boolean endTag){
         this.videoId = videoId;
         this.tsPath = tsPath;
+        this.tsAbsolutePath = tsAbsolutePathPath;
         this.endTag = endTag;
     }
 
@@ -68,25 +89,39 @@ public class VideoTask {
      * @return endTime. Used to update duration in video Uploader.
      */
     public int upload(int currentDuration){
+        this.currentDuration = currentDuration;
         if(endTag){
             Log.d(TAG, "End task received. Return -1 to end the task thread.");
             return -1;
         }
-        int duration_int = 0;
+        Log.d(TAG, String.format("Video Upload Task Begin, Chunk Start Duration %d", currentDuration));
+        //int duration_int = 0;
         MediaMetadataRetriever mdataReceiver = null;
         try {
             mdataReceiver = new MediaMetadataRetriever();
-            mdataReceiver.setDataSource(tsPath);
+            mdataReceiver.setDataSource(tsAbsolutePath);
             String duration = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
 
+            byte[] fileContent = Files.readAllBytes(Paths.get(tsAbsolutePath));
+
+            /*
+            Model.Video videopb = Model.Video.newBuilder()
+                    .setId(videoHash)
+                    //.setCaption(stringInfo())
+                    .setCaption(filename)
+                    .setVideoLength((int)duration_long)
+                    .setPoster(posterHash)
+                    .build();
+            */
             if (duration == null) {
                 Log.w(TAG, "Can not extract dutation.");
                 duration_int = -1;
                 return -1;
             } else {
                 duration_int = Integer.parseInt(duration);
+                Textile.instance().ipfs.ipfsAddData(fileContent, true, false, tsHandler);
             }
-            Log.d(TAG, String.format("Video Upload Execute, chunck duration: %d", duration_int));
+            Log.d(TAG, String.format("Video Upload Task Done, Chunck End Duration: %d", duration_int));
 
         }catch(Exception e){
             e.printStackTrace();
