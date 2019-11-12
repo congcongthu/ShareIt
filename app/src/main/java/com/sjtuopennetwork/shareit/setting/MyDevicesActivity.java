@@ -83,6 +83,7 @@ public class MyDevicesActivity extends AppCompatActivity {
     }
 
     private void noRepeat(List<String> al) {
+        if(al.size()>0){
         for (int i = 0; i < al.size(); i++) {
             for (int j = i + 1; j < al.size(); j++) {
                 String aaa=al.get(i);
@@ -93,7 +94,7 @@ public class MyDevicesActivity extends AppCompatActivity {
                 } else {
                 }
             }
-        }
+        }}
     }
 
 
