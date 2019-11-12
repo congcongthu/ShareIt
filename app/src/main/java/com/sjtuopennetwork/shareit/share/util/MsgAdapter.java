@@ -63,7 +63,7 @@ public class MsgAdapter extends BaseAdapter {
         public TextView photo_name,photo_time;
         public TextView photo_name_r,photo_time_r;
         public NiceImageView photo_avatar,photo_avatar_r;
-        public ImageView chat_photo,chat_photo_r;
+        public ImageView chat_photo,chat_photo_r,video_icon,video_icon_r;
         public LinearLayout send_photo_left,send_photo_right;
 
         public PhotoViewHolder(View v){
@@ -77,6 +77,8 @@ public class MsgAdapter extends BaseAdapter {
             chat_photo_r=v.findViewById(R.id.chat_photo_r);
             send_photo_left=v.findViewById(R.id.send_photo_left);
             send_photo_right=v.findViewById(R.id.send_photo_right);
+            video_icon=v.findViewById(R.id.video_icon);
+            video_icon_r=v.findViewById(R.id.video_icon_r);
         }
     }
 
@@ -112,7 +114,9 @@ public class MsgAdapter extends BaseAdapter {
             case 0: //是文本
                 return handleTextView(i,view,viewGroup);
             case 1: //是照片
-                return handlePhotoView(i,view,viewGroup);
+                return handlePhotoView(i,view,viewGroup,false);
+            case 2:
+                return handlePhotoView(i,view,viewGroup,true);
             default:
                 return null;
         }
@@ -147,7 +151,7 @@ public class MsgAdapter extends BaseAdapter {
         return view;
     }
 
-    private View handlePhotoView(int i, View view, ViewGroup viewGroup){
+    private View handlePhotoView(int i, View view, ViewGroup viewGroup, boolean isVideo){
         if(view==null){
             view=layoutInflater.inflate(R.layout.item_msg_img,viewGroup,false);
             view.setTag(new PhotoViewHolder(view));
@@ -164,6 +168,11 @@ public class MsgAdapter extends BaseAdapter {
                 h.photo_time_r.setText(df.format(msgList.get(i).sendtime*1000));
                 h.photo_avatar_r.setImageBitmap(BitmapFactory.decodeFile(avatarpath));
                 System.out.println("======照片消息的内容："+msgList.get(i).body);
+
+                if(!isVideo){ //不是视频就隐藏播放图标
+                    h.video_icon_r.setVisibility(View.GONE);
+                }
+
                 if(msgBody.charAt(0)=='Q'){ //如果是hash值
                     setPhoto(h.chat_photo_r,filePath,msgList.get(i).body);
                 }else{
@@ -174,6 +183,11 @@ public class MsgAdapter extends BaseAdapter {
                 h.send_photo_right.setVisibility(View.GONE); //右边的隐藏
                 h.photo_name.setText(msgList.get(i).authorname);
                 h.photo_time.setText(df.format(msgList.get(i).sendtime*1000));
+
+                if(!isVideo){ //不是视频就隐藏播放图标
+                    h.video_icon.setVisibility(View.GONE);
+                }
+
                 setAvatar(h.photo_avatar,avatarPath,msgList.get(i).authoravatar);
                 setPhoto(h.chat_photo,filePath,msgList.get(i).body);
             }

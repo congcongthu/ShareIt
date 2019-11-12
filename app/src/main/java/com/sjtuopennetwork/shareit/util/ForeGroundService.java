@@ -466,7 +466,6 @@ public class ForeGroundService extends Service {
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
                         feedItemData.files.getUser().getName()+"分享了图片", feedItemData.files.getDate().getSeconds(),
                         dialogimg);
-                System.out.println("====================这个执行了吗");
 
                 //Msg
                 int ismine=0;
@@ -490,9 +489,31 @@ public class ForeGroundService extends Service {
             if(feedItemData.type.equals(FeedItemType.VIDEO)){
                 Model.Video video=feedItemData.feedVideo.getVideo();
                 System.out.println("==========收到视频："+video.getCaption()
-                        +" "+video.getPoster()+" "+video.getId());
+                        +" "+video.getPoster()  //这个就是缩略图的ipfs哈希值，使用ipfs.dataAtPath就能够得到
+                        +" "+video.getId());
 
+                //DIalog
+                TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
+                TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
+                        feedItemData.feedVideo.getUser().getName()+"分享了视频", feedItemData.feedVideo.getDate().getSeconds(),
+                        tDialog.imgpath);
 
+                //Msg
+                int ismine=0;
+                if(feedItemData.feedVideo.getUser().getAddress().equals(Textile.instance().account.address())){
+                    ismine=1;
+                }
+                //插入msgs表
+                TMsg tMsg=DBoperator.insertMsg(appdb,threadId,2, feedItemData.feedVideo.getBlock(),
+                        feedItemData.feedVideo.getUser().getName(),
+                        feedItemData.feedVideo.getUser().getAvatar(),
+                        video.getPoster(), //视频消息的body应该是缩略图的hash
+                        feedItemData.feedVideo.getDate().getSeconds(), ismine);
+
+                EventBus.getDefault().post(updateDialog);
+                if(ismine==0){  //不是我的图片才广播出去，因为我自己的消息直接显示了
+                    EventBus.getDefault().post(tMsg);
+                }
             }
 
             if(feedItemData.type.equals(FeedItemType.ADDADMIN)){
