@@ -1,8 +1,11 @@
-package com.sjtuopennetwork.shareit.util;
+package sjtu.opennet.honvideo;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+
+import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,21 +17,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
-import sjtu.opennet.honvideo.Segmenter;
-import sjtu.opennet.honvideo.VideoMeta;
+import sjtu.opennet.textilepb.Model;
 
-import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
-import sjtu.opennet.textilepb.Model.Video;
-
-
-/**
- * VideoHelper handles video segment and upload service.
- * It is video specified, which means you should create VideoHelper instance for each video.
- * VideoHelper integrate following tools:
- *  -
- */
-public class VideoHelper {
-
+public class VideoUploadHelper {
 
     private static final String TAG = "VideoHelper";
     private VideoMeta vMeta;
@@ -38,25 +29,47 @@ public class VideoHelper {
     private String thumbPath;
     private String m3u8Path;
     private File m3u8;
-    private VideoFileListener vObserver;    //Observer to listen the close of ts chunk file.
-    private BlockingQueue<VideoTask> videoQueue;
+    private VideoFileListener vObserver;
+    private BlockingQueue<VideoUploadTask> videoQueue;
     private VideoUploader videoUploader;
-    //private boolean tailerRunning;
-
-    //private Tailer tailer;
-    //private  VideoListListener vListObserver;
 
     private Context context;
     private String filePath;
-    private Video videoPb;
+    private Model.Video videoPb;
 
     static private Bitmap bitmapFromIpfs;
 
+    public VideoUploadHelper(Context context, String filePath){
+        this.context = context;
+        this.filePath = filePath;
+
+        vMeta = new VideoMeta(filePath);
+        setVideoPb();
+        rootPath = FileUtil.getAppExternalPath(context,"video");
+        String tmpPath = String.format("video/%s", vMeta.getHash());
+        videoPath = FileUtil.getAppExternalPath(context, tmpPath);
+        tmpPath = String.format("%s/chunks", tmpPath);
+        chunkPath = FileUtil.getAppExternalPath(context, tmpPath);
+
+        thumbPath = vMeta.saveThumbnail(videoPath);
+        m3u8Path = String.format("%s/playlist.m3u8", videoPath);
+
+        m3u8 = new File(m3u8Path);
+
+        //vListObserver = new VideoListListener();
+
+        //tailerRunning = false;
+        videoQueue = new LinkedBlockingQueue<>();
+        videoUploader = new VideoUploader(videoQueue);
+        vObserver = new VideoFileListener(chunkPath, vMeta.getHash(), videoQueue);
+    }
+
+
     /**
      * shutDownUploader is used to stop the uploader binding with this helper.
-     * It will do following things:
-     *  - Run a new thread so the main thread would not be blocked.
-     *  - Sleep for 1 second to make sure that the Observer will add the last task to videoQueue.
+     * It will do following things:<br />
+     *  - Run a new thread so the main thread would not be blocked.<br />
+     *  - Sleep for 1 second to make sure that the Observer will add the last task to videoQueue.<br />
      *  - Add the end task to videoQueue to notify the VideoUploader that these are all the task.
      */
     public class shutDownUploader extends Thread{
@@ -64,7 +77,7 @@ public class VideoHelper {
         public void run(){
             try {
                 Thread.sleep(1000);
-                videoQueue.add(VideoTask.endTask());
+                videoQueue.add(VideoUploadTask.endTask());
             }catch(InterruptedException ie){
                 ie.printStackTrace();
             }
@@ -152,30 +165,7 @@ public class VideoHelper {
         }
     };
 
-    public VideoHelper(Context context, String filePath){
-        this.context = context;
-        this.filePath = filePath;
 
-        vMeta = new VideoMeta(filePath);
-        setVideoPb();
-        rootPath = FileUtil.getAppExternalPath(context,"video");
-        String tmpPath = String.format("video/%s", vMeta.getHash());
-        videoPath = FileUtil.getAppExternalPath(context, tmpPath);
-        tmpPath = String.format("%s/chunks", tmpPath);
-        chunkPath = FileUtil.getAppExternalPath(context, tmpPath);
-
-        thumbPath = vMeta.saveThumbnail(videoPath);
-        m3u8Path = String.format("%s/playlist.m3u8", videoPath);
-
-        m3u8 = new File(m3u8Path);
-
-        //vListObserver = new VideoListListener();
-
-        //tailerRunning = false;
-        videoQueue = new LinkedBlockingQueue<>();
-        videoUploader = new VideoUploader(videoQueue);
-        vObserver = new VideoFileListener(chunkPath, vMeta.getHash(), videoQueue);
-    }
 
     public void segment(){
         try {
@@ -207,9 +197,6 @@ public class VideoHelper {
      */
     private void setVideoPb(){
         Textile.instance().ipfs.ipfsAddData(vMeta.getPosterByte(),true,false,posterHandler);
-
-        //Textile.instance().ipfs.ipfsAddData();
-        //Textile.instance().ipfs.addObject;
     }
 
     /**
@@ -220,7 +207,7 @@ public class VideoHelper {
      *      That is because the bitmap returned is a static private value from VideoHelper.
      *      In that case, this bitmap may be returned before it was assigned.
      */
-    public static Bitmap getPosterFromPb(Video vpb){
+    public static Bitmap getPosterFromPb(Model.Video vpb){
         String ipfsHash = vpb.getPoster();
         Textile.instance().ipfs.dataAtPath(ipfsHash, posterReceiveHandler);
         return bitmapFromIpfs;
@@ -249,7 +236,7 @@ public class VideoHelper {
         }
     }
 
-    public Video getVideoPb(){
+    public Model.Video getVideoPb(){
         return videoPb;
     }
 
