@@ -32,7 +32,7 @@ public class VideoFileListener extends FileObserver {
             case FileObserver.CLOSE_WRITE:
                 Log.d(TAG, String.format("%s closed at %d", path, System.currentTimeMillis()));
                 String tsAbsolutePath = String.format("%s/%s", observeredDir, path);
-                VideoTask currentTask = new VideoTask(videoId, tsAbsolutePath, false);
+                VideoTask currentTask = new VideoTask(videoId, path, tsAbsolutePath, false);
                 try {
                     videoQueue.add(currentTask);
                 }catch(Exception e){
