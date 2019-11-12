@@ -65,11 +65,11 @@ public class MyDevicesActivity extends AppCompatActivity {
             }
             noRepeat(getDevice_list);
             Context context=this.getApplicationContext();
-            String ip= GetIpAddress.getIPAddress(context);
+            String self= GetIpAddress.getIPAddress(context)+"/tcp/40601/ipfs/"+ Textile.instance().ipfs.peerId();
             for(String str:getDevice_list)
             {
                 String addr=str.substring(str.indexOf("%")+1);
-                if (str.indexOf(ip)!=-1||Textile.instance().ipfs.swarmConnect(addr)) {
+                if (str.indexOf(self)!=-1||Textile.instance().ipfs.swarmConnect(addr)) {//swarmConnect方法需测试
                     str = str.substring(0, str.indexOf("#")) + " 在线";
                     device_list.add(str);
                 } else {
