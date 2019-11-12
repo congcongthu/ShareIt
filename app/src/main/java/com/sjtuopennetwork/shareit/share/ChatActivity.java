@@ -267,20 +267,23 @@ public class ChatActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Bitmap tmpBmap = VideoHelper.getPosterFromPb(video);
+            Bitmap tmpBmap = videoHelper.getPoster(); //拿到缩略图
             String tmpdir = FileUtil.getAppExternalPath(this, "temp");
             String videoHeadPath=tmpdir+System.currentTimeMillis(); //随机给一个名字
-            VideoHelper.saveBitmap(tmpBmap,videoHeadPath);
-
+            //将缩略图临时保存到本地
+            FileUtil.saveBitmap(videoHeadPath,tmpBmap);
+            String posterAndId=videoHeadPath+"##"+video.getId();
             TMsg tMsg= null;
             try {
                 tMsg = new TMsg(1,threadid,2,"",
-                        Textile.instance().profile.name(),Textile.instance().profile.avatar(),videoHeadPath,System.currentTimeMillis()/1000,true);
+                        Textile.instance().profile.name(),Textile.instance().profile.avatar(),posterAndId,System.currentTimeMillis()/1000,true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             msgList.add(tMsg);
             chat_lv.setSelection(msgList.size());
+
+            videoHelper.segment(); //切割并上传
         }
     }
 

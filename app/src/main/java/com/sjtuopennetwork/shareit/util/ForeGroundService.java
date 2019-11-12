@@ -341,7 +341,6 @@ public class ForeGroundService extends Service {
             //发送消息的目的就是更新界面，所以不用sticky
             System.out.println("============收到么么么么么"+feedItemData.type.name());
 
-
             Model.Thread thread=null;
             try {
                 thread=Textile.instance().threads.get(threadId);
@@ -503,11 +502,12 @@ public class ForeGroundService extends Service {
                 if(feedItemData.feedVideo.getUser().getAddress().equals(Textile.instance().account.address())){
                     ismine=1;
                 }
+                String posterAndId=video.getPoster()+"##"+video.getId();
                 //插入msgs表
                 TMsg tMsg=DBoperator.insertMsg(appdb,threadId,2, feedItemData.feedVideo.getBlock(),
                         feedItemData.feedVideo.getUser().getName(),
                         feedItemData.feedVideo.getUser().getAvatar(),
-                        video.getPoster(), //视频消息的body应该是缩略图的hash
+                        posterAndId, //poster和id的hash值
                         feedItemData.feedVideo.getDate().getSeconds(), ismine);
 
                 EventBus.getDefault().post(updateDialog);
