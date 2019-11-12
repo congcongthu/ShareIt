@@ -69,6 +69,7 @@ public class VideoUploadHelper {
         videoQueue = new LinkedBlockingQueue<>();
         videoUploader = new VideoUploader(videoQueue);
         vObserver = new VideoFileListener(chunkPath, vMeta.getHash(), videoQueue);
+        Log.d(TAG, String.format("Uploader initialize complete for video ID %s.", vMeta.getHash()));
     }
 
 

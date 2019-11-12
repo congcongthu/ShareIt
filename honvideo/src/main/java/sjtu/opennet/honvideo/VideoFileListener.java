@@ -22,6 +22,7 @@ public class VideoFileListener extends FileObserver {
         switch(event){
             case FileObserver.CLOSE_WRITE:
                 Log.d(TAG, String.format("%s closed at %d", path, System.currentTimeMillis()));
+                //Log.d(TAG, String.format("Chunk Index :%d", getIndFromPath(path)));
                 String tsAbsolutePath = String.format("%s/%s", observeredDir, path);
                 VideoUploadTask currentTask = new VideoUploadTask(videoId, path, tsAbsolutePath, false);
                 try {
