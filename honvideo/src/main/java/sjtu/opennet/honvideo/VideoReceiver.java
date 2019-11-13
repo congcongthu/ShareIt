@@ -25,7 +25,7 @@ public class VideoReceiver extends Thread{
 
     private String m3u8Path;
     private String videoId;
-
+    //private HashSet<int> chunk
     public VideoReceiver(BlockingQueue<VideoReceiveTask> vQueue, String videoId, String videoPath, String chunkPath){
         this.vQueue = vQueue;
         this.videoId = videoId;
@@ -56,7 +56,15 @@ public class VideoReceiver extends Thread{
                     Model.VideoChunk localChunk = Textile.instance().videos.getVideoChunk(videoId,fileName);
                     if(localChunk == null){
                         Log.d(TAG, String.format("Task with file %s start.", fileName));
+
+
+                        //
                         boolean success = vTask.process();
+                        //
+
+
+
+
                         if(!success){
                             Log.e(TAG, String.format("Task with file %s fail!!!", fileName));
                             Thread.sleep(1000);

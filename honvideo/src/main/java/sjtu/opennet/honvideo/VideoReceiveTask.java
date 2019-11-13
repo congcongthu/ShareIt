@@ -25,6 +25,7 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
     private Handlers.DataHandler handler = new Handlers.DataHandler() {
         @Override
         public void onComplete(byte[] data, String media) {
+            Log.d(TAG, "IPFS dataAtPath complete");
             String savePath = String.format("%s/%s", chunkDir, fileName);
             FileUtil.writeByteArrayToFile(savePath, data);
             try {
@@ -98,6 +99,7 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
      */
     public boolean process(){
         if(endTag||destroyTag){
+            Log.d(TAG, "Return true for end or destroy task.");
             return true;
         }
         try {
