@@ -1,25 +1,15 @@
 package com.sjtuopennetwork.shareit.setting;
 
-
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
-import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,19 +21,11 @@ import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.login.MainActivity;
 import com.sjtuopennetwork.shareit.setting.util.GetIpAddress;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
-import com.sjtuopennetwork.shareit.util.FileUtil;
-
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.UUID;
 
 import sjtu.opennet.textilepb.Model;
-import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
+import sjtu.opennet.textilepb.QueryOuterClass;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -79,7 +61,12 @@ public class SettingFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
+        QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
+        try {
+            Textile.instance().account.sync(options);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         initUI();
         initData();
         drawUI();
