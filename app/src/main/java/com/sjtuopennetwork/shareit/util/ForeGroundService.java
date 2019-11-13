@@ -209,16 +209,16 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-            //测试通知
+            //测试videochunk
+            Model.VideoChunk v=Model.VideoChunk.newBuilder().setChunk("aaaa").setId("123456").build();
             try {
-                List<Model.Notification> noti_list= Textile.instance().notifications.list("",500).getItemsList();
-                System.out.println("============通知条数："+noti_list.size());
-                for(Model.Notification n:noti_list){
-                    System.out.println("=======通知的内容："+n.getType().toString()+" "+n.getUser().getName()+" "+n.getBody());
-                }
+                Textile.instance().videos.addVideoChunk(v);
+                List<Model.VideoChunk> videoChunks= Textile.instance().videos.chunksByVideoId("1234567").getItemsList();
+                System.out.println("===========videochunk:"+videoChunks.size());
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
 
             createDeviceThread();
 

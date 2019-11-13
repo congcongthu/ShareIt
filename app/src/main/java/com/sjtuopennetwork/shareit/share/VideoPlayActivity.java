@@ -35,6 +35,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.text.DecimalFormat;
+import java.util.LinkedList;
 import java.util.List;
 
 import sjtu.opennet.hon.Handlers;
@@ -83,6 +84,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 //        }
 
         videoid = getIntent().getStringExtra("videoid");
+        System.out.println("=================videoID："+videoid);
         try {
             video = Textile.instance().videos.getVideo(videoid);
             videoLenth = video.getVideoLength();
@@ -96,6 +98,7 @@ public class VideoPlayActivity extends AppCompatActivity {
             chunkList = Textile.instance().videos.chunksByVideoId(videoid).getItemsList();
         } catch (Exception e) {
             e.printStackTrace();
+            chunkList = new LinkedList<>();
         }
 //
         if(chunkList.size()>0){ //已经有一部分
@@ -111,10 +114,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         dir = VideoHelper.getVideoPathFromID(this, videoid);
         initM3u8();
 
-
-
         int i = 0;
-
         }
     }
 //
