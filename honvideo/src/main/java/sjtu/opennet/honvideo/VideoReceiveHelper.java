@@ -46,7 +46,7 @@ public class VideoReceiveHelper {
         totalDuration = videoPb.getVideoLength();
         vQueue = new PriorityBlockingQueue<>();
         buildWorkspace();
-        receiver = new VideoReceiver(vQueue, videoPath, chunkPath);
+        receiver = new VideoReceiver(vQueue, videoId, videoPath, chunkPath);
         receiver.start();
     }
 

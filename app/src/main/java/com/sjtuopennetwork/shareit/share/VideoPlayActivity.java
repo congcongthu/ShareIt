@@ -81,7 +81,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         }
 
         videoid = getIntent().getStringExtra("videoid");
-        System.out.println("=================videoID："+videoid);
+        System.out.println("=================videoID：" + videoid);
         try {
             video = Textile.instance().videos.getVideo(videoid);
             videoLenth = video.getVideoLength();
