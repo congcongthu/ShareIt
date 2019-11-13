@@ -12,7 +12,7 @@ import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedExceptio
 import java.io.File;
 
 public class Segmenter {
-    public static final String TAG = "Segmenter";
+    public static final String TAG = "HONVIDEO.Segmenter";
     public static boolean isInit = false;
     private static int progressCounter = 0;
     public static ExecuteBinaryResponseHandler defaultHandler = new ExecuteBinaryResponseHandler(){

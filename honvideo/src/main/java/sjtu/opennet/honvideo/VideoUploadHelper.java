@@ -33,7 +33,7 @@ import sjtu.opennet.textilepb.Model;
  * Replace String.format with Path.resolve for path format.
  */
 public class VideoUploadHelper {
-    private static final String TAG = "HONVIDEO.VideoHelper";
+    private static final String TAG = "HONVIDEO.VideoUploadHelper";
     private VideoMeta vMeta;
     private String rootPath;
     private String videoPath;
