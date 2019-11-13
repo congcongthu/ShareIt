@@ -121,6 +121,8 @@ public class VideoPlayActivity extends AppCompatActivity {
         } catch (Exception e) {
             tmp = new ArrayList<>();
         }
+        if(tmp.size() == 0)
+            return false;
         int maxEndtime = 0;
         String lastChunk = "";
         for (Model.VideoChunk c : tmp){
@@ -130,8 +132,11 @@ public class VideoPlayActivity extends AppCompatActivity {
             }
         }
 
+
         try {
             Model.Video tmpVideo = Textile.instance().videos.getVideo(vid);
+            if (tmpVideo == null)
+                return false;
             int id = Segmenter.getIndFromPath(lastChunk);
             if (maxEndtime >= tmpVideo.getVideoLength()-50 && id == tmp.size()-1){
                 return true;
@@ -173,10 +178,10 @@ public class VideoPlayActivity extends AppCompatActivity {
                             }
                         }
                     }
+                    i++; //处理下一个视频
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                i++; //处理下一个视频
             }
         }
     }
@@ -245,7 +250,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 
     public void searchTheChunk(String chunkName){
         QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder()
-                .setWait(2)
+                .setWait(1)
                 .setLimit(1)
                 .build();
         QueryOuterClass.VideoChunkQuery query=QueryOuterClass.VideoChunkQuery.newBuilder()
@@ -262,7 +267,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 
     public  void searchVideoChunks(){
         QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder()
-                .setWait(100)
+                .setWait(2)
                 .setLimit(1000)
                 .build();
         QueryOuterClass.VideoChunkQuery query=QueryOuterClass.VideoChunkQuery.newBuilder()
