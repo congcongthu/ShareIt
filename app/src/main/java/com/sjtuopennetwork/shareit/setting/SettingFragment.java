@@ -1,9 +1,11 @@
 package com.sjtuopennetwork.shareit.setting;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,7 +17,9 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -165,7 +169,11 @@ public class SettingFragment extends Fragment {
                     String IP= GetIpAddress.getIPAddress(context);
                     String addr="/ip4/"+IP+"/tcp/40601/ipfs/"+ Textile.instance().ipfs.peerId();
                     System.out.println("=========="+addr);
-                    String device = "厂商：" + android.os.Build.BRAND + "  型号：" + Build.MODEL + "#" + Build.SERIAL + "%" + addr;//获取设备厂商、型号、序列号
+
+                    String androidId = Settings.System.getString(context.getContentResolver(),
+                            Settings.Secure.ANDROID_ID);
+
+                    String device = "厂商：" + android.os.Build.BRAND + "  型号：" + Build.MODEL + "#" + androidId + "%" + addr;//获取设备厂商、型号、系统id
                     Boolean flag = true;
                     sjtu.opennet.textilepb.View.TextList textList = Textile.instance().messages.list("", 100, t.getId());
                     for (int i = 0; i < textList.getItemsCount(); i++) {
@@ -183,6 +191,8 @@ public class SettingFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
+
 
     private void drawUI() {
         tv_name.setText(myname);
