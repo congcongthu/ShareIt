@@ -25,7 +25,7 @@ public class VideoReceiver extends Thread{
 
     private String m3u8Path;
     private String videoId;
-
+    //private HashSet<int> chunk
     public VideoReceiver(BlockingQueue<VideoReceiveTask> vQueue, String videoId, String videoPath, String chunkPath){
         this.vQueue = vQueue;
         this.videoId = videoId;
@@ -48,7 +48,7 @@ public class VideoReceiver extends Thread{
         while(!complete) {
             try {
                 vTask = vQueue.take();
-                if(vTask.isEnd()){
+                if(vTask.isEnd()||vTask.isDestroy()){
                     Log.d(TAG, "End Task received. End the thread.");
                     complete = true;
                 }else{
@@ -56,12 +56,20 @@ public class VideoReceiver extends Thread{
                     Model.VideoChunk localChunk = Textile.instance().videos.getVideoChunk(videoId,fileName);
                     if(localChunk == null){
                         Log.d(TAG, String.format("Task with file %s start.", fileName));
+
+
+                        //
                         boolean success = vTask.process();
+                        //
+
+
+
+
                         if(!success){
-                            Log.e(TAG, String.format("Task with file %s fail!!!", fileName));
-                            Thread.sleep(1000);
-                            vQueue.add(vTask);
-                            Log.e(TAG, String.format("Add the failed task %s back to queue", fileName));
+                            Log.e(TAG, String.format("Task with file %s fail!!! Please retry", fileName));
+//                            Thread.sleep(1000);
+//                            vQueue.add(vTask);
+//                            Log.e(TAG, String.format("Add the failed task %s back to queue", fileName));
                         }else {
                             Log.d(TAG, "Task success.");
                         }

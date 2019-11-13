@@ -1,6 +1,7 @@
 package sjtu.opennet.honvideo;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -51,7 +52,11 @@ public class VideoReceiveHelper {
     }
 
     public void receiveChunk(Model.VideoChunk videoChunk){
-        vQueue.add(new VideoReceiveTask(videoChunk, chunkPath, false));
+        if(vQueue.contains(videoChunk)){
+            Log.d(TAG, String.format("Chunk with %s already in task queue.", videoChunk.getChunk()));
+            return;
+        }
+        vQueue.add(new VideoReceiveTask(videoChunk, chunkPath, false, false));
     }
 
     /**
