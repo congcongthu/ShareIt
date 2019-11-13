@@ -32,7 +32,7 @@ import com.sjtuopennetwork.shareit.share.util.TMsg;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
 import com.sjtuopennetwork.shareit.util.FileUtil;
-import com.sjtuopennetwork.shareit.util.VideoHelper;
+//import com.sjtuopennetwork.shareit.util.VideoHelper;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,6 +42,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import sjtu.opennet.honvideo.VideoMeta;
+import sjtu.opennet.honvideo.VideoUploadHelper;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
@@ -165,6 +166,7 @@ public class ChatActivity extends AppCompatActivity {
 
             if(!msg.equals("")){
                 chat_text_edt.setText("");
+
                 try {
                     Textile.instance().messages.add(threadid,msg);
                 } catch (Exception e) {
@@ -259,8 +261,8 @@ public class ChatActivity extends AppCompatActivity {
             String filePath=chooseVideo.get(0).getPath();
             System.out.println("=================选择了视频："+filePath);
 //
-            VideoHelper videoHelper=new VideoHelper(this,filePath);
-            videoHelper.publishMeta(); //添加到本地、上传到cafe
+            VideoUploadHelper videoHelper=new VideoUploadHelper(this,filePath);
+//            videoHelper.publishMeta(); //添加到本地、上传到cafe
             Model.Video video=videoHelper.getVideoPb();
             try {
                 Textile.instance().videos.threadAddVideo(threadid,video.getId()); //向thread中添加

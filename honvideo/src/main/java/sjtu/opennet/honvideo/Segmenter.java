@@ -61,6 +61,16 @@ public class Segmenter {
         isInit = true;
     }
 
+    /**
+     * Get the chunk index from chunk file name.
+     * This will be remove when we update our video chunk proto object definition.
+     * @param path chunk file name
+     * @return chunk index
+     */
+    public static int getIndFromPath(String path){
+        return Integer.parseInt(path.substring(3,7));
+    }
+
     public static void segment(Context context, int segTime, String filePath, String m3u8Path, String outDir, ExecuteBinaryResponseHandler handler) throws Exception{
         Log.i(TAG, String.format("Segment file %s into %s.", filePath, outDir));
         if(!isInit){

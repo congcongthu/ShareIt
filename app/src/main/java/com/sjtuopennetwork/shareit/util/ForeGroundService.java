@@ -103,7 +103,7 @@ public class ForeGroundService extends Service {
                     loginAccount=m.getAddress();
                     final File repo1 = new File(filesDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
-                    Textile.initialize(repoPath,m.getSeed() , true, false);
+                    Textile.initialize(repoPath,m.getSeed() , true, false, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -131,7 +131,7 @@ public class ForeGroundService extends Service {
                     final File repo1 = new File(filesDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
                     if(!Textile.isInitialized(repoPath)){
-                        Textile.initialize(repoPath,m.getSeed() , true, false);
+                        Textile.initialize(repoPath,m.getSeed() , true, false,true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -160,7 +160,6 @@ public class ForeGroundService extends Service {
             editor.putString("loginAccount",loginAccount);
         }
         editor.commit();
-
 
         try{
             appdb=AppdbHelper.getInstance(this,loginAccount).getWritableDatabase();
@@ -333,6 +332,12 @@ public class ForeGroundService extends Service {
         @Override
         public void threadAdded(String threadId) {
             EventBus.getDefault().post(threadId); //只在添加联系人的时候起作用，创建群组的时候要过滤掉
+        }
+
+        @Override
+        public void videoChunkQueryResult(String queryId, Model.VideoChunk vchunk) {
+            System.out.println("==========监听器找到VideoChunk："+vchunk.getId());
+            EventBus.getDefault().post(vchunk);
         }
 
         @Override
@@ -551,10 +556,15 @@ public class ForeGroundService extends Service {
             try {
                 List<Model.Thread> devicethreads=Textile.instance().threads.list().getItemsList();
                 boolean hasDevice=false;
+                boolean hasStorage=false;
                 for(Model.Thread t:devicethreads){
                     if(t.getName().equals("mydevice1219")){
                         hasDevice=true;
                         System.out.println("=============已经有mydevice1219");
+                        break;
+                    }
+                    if(t.getName().equals("!@#$1234FileStorage")){
+                        hasStorage=true;
                         break;
                     }
                 }
@@ -567,6 +577,19 @@ public class ForeGroundService extends Service {
                             .setSharing(Model.Thread.Sharing.NOT_SHARED)
                             .setType(Model.Thread.Type.PRIVATE)
                             .setKey(key).setName("mydevice1219")
+                            .setSchema(schema)
+                            .build();
+                    Textile.instance().threads.add(config);
+                }
+                if(!hasStorage){
+                    String key= UUID.randomUUID().toString();
+                    sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
+                            .setPreset(View.AddThreadConfig.Schema.Preset.BLOB)
+                            .build();
+                    sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
+                            .setSharing(Model.Thread.Sharing.NOT_SHARED)
+                            .setType(Model.Thread.Type.PRIVATE)
+                            .setKey(key).setName("!@#$1234FileStorage")
                             .setSchema(schema)
                             .build();
                     Textile.instance().threads.add(config);

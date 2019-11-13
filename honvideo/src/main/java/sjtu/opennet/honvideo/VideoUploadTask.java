@@ -110,7 +110,7 @@ public class VideoUploadTask {
                 duration_int = Integer.parseInt(duration);
                 Textile.instance().ipfs.ipfsAddData(fileContent, true, false, tsHandler);
             }
-            Log.d(TAG, String.format("Video Upload Task Done, Chunck End Duration: %d", duration_int));
+            Log.d(TAG, String.format("Video Upload Task Done, Chunck End Duration: %d", currentDuration + duration_int));
 
         }catch(Exception e){
             e.printStackTrace();
