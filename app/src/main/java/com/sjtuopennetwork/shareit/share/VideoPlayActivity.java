@@ -22,7 +22,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.util.FileUtil;
-import com.sjtuopennetwork.shareit.util.VideoHelper;
+//import com.sjtuopennetwork.shareit.util.VideoHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -44,6 +44,7 @@ import sjtu.opennet.hon.Textile;
 import sjtu.opennet.honvideo.Segmenter;
 import sjtu.opennet.honvideo.VideoReceiveHelper;
 import sjtu.opennet.honvideo.VideoReceiver;
+import sjtu.opennet.honvideo.VideoUploadHelper;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.QueryOuterClass;
 
@@ -99,7 +100,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 //            e.printStackTrace();
 //        }
 
-        dir = VideoHelper.getVideoPathFromID(this, videoid);
+        dir = VideoUploadHelper.getVideoPathFromID(this, videoid);
         initM3u8();
         System.out.println("=======================初始化dir:"+dir);
 

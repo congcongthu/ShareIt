@@ -25,7 +25,7 @@ import sjtu.opennet.honvideo.VideoUploadHelper;
 import sjtu.opennet.textilepb.Model;
 
 import com.sjtuopennetwork.shareit.util.FileUtil;
-import com.sjtuopennetwork.shareit.util.VideoHelper;
+//import com.sjtuopennetwork.shareit.util.VideoHelper;
 
 public class VideoActivity extends AppCompatActivity {
     // UI Gadget
@@ -81,7 +81,7 @@ public class VideoActivity extends AppCompatActivity {
 
         //Listener for video delete
         video_delete.setOnClickListener(view->{
-            VideoHelper.cleanAll(this);
+            //VideoHelper.cleanAll(this);
         });
     }
 

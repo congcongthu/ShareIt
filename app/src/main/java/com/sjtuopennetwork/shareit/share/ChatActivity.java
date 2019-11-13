@@ -33,7 +33,7 @@ import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 //import com.sjtuopennetwork.shareit.util.VideoHelper;
-import com.sjtuopennetwork.shareit.util.VideoHelper;
+//import com.sjtuopennetwork.shareit.util.VideoHelper;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
