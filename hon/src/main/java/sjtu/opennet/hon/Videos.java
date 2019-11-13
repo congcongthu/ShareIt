@@ -24,7 +24,11 @@ public class Videos extends NodeDependent {
     
     public VideoChunk getVideoChunk(final String videoId, final String chunk) throws Exception {
         final byte[] bytes = node.getVideoChunk(videoId, chunk);
-        return VideoChunk.parseFrom(bytes);
+        try {
+            return VideoChunk.parseFrom(bytes);
+        }catch (NullPointerException e){
+            return null;
+        }
     }
 
     public void addVideo(final Video video) throws Exception {

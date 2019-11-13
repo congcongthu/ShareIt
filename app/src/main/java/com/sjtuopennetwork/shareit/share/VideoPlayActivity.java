@@ -58,7 +58,6 @@ public class VideoPlayActivity extends AppCompatActivity {
     SimpleExoPlayer player;
     VideoReceiveHelper videorHelper;
     ConcatenatingMediaSource mediaSource;
-//    List<Model.VideoChunk> chunkList;
     int videoLenth;
     boolean finded;
     String chunkToFind = "";
@@ -93,13 +92,6 @@ public class VideoPlayActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //查找本地chunk
-//        try {
-//            chunkList = Textile.instance().videos.chunksByVideoId(videoid).getItemsList();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
         dir = VideoUploadHelper.getVideoPathFromID(this, videoid);
         initM3u8();
         System.out.println("=======================初始化dir:"+dir);
@@ -113,6 +105,19 @@ public class VideoPlayActivity extends AppCompatActivity {
         //一个线程在按顺序遍历，没有就循环去取，先取本地再取网络，取到为止,取到就写m3u8文件。
         getChunkThread.start();
 
+        while (true){
+            if((m3u8WriteCount > 1 ))
+                break;
+        }
+
+        System.out.println();
+        PlayerView playerView = findViewById(R.id.player_view);
+        player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
+        playerView.setPlayer(player);
+        dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
+        hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
+        player.prepare(hlsMediaSource);
+
     }
 
     public static boolean DownloadComplete(String vid){
@@ -122,6 +127,10 @@ public class VideoPlayActivity extends AppCompatActivity {
         } catch (Exception e) {
             tmp = new ArrayList<>();
         }
+        if(tmp.size() == 0) {
+            System.out.println("no local chunks");
+            return false;
+        }
         int maxEndtime = 0;
         String lastChunk = "";
         for (Model.VideoChunk c : tmp){
@@ -130,11 +139,19 @@ public class VideoPlayActivity extends AppCompatActivity {
                 lastChunk = c.getChunk();
             }
         }
+        System.out.println("max end time: "+ maxEndtime);
 
         try {
             Model.Video tmpVideo = Textile.instance().videos.getVideo(vid);
+            if (tmpVideo == null) {
+                System.out.println("no local video");
+                return false;
+            }
             int id = Segmenter.getIndFromPath(lastChunk);
+            System.out.println("video length:"+tmpVideo.getVideoLength());
+            System.out.println(tmp.size());
             if (maxEndtime >= tmpVideo.getVideoLength()-50 && id == tmp.size()-1){
+                System.out.println("download complete!=================");
                 return true;
             }
         } catch (Exception e) {
@@ -157,7 +174,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                     Model.VideoChunk v=Textile.instance().videos.getVideoChunk(videoid,chunkName);
                     if ( v!=null ){ //本地有了，写文件
                         writeM3u8(v);
-                        if(v.getEndTime()>=videoLenth){ //如果是最后一个就终止
+                        if(v.getEndTime()>=videoLenth - 50){ //如果是最后一个就终止
                             threadRun=false;
                         }
                     }
@@ -165,24 +182,33 @@ public class VideoPlayActivity extends AppCompatActivity {
                         finded=false;
                         videoToFind = videoid;
                         chunkToFind = chunkName;
-                        while(!finded){ //本地没有就一直去找，直到找到为止
+                        while(Textile.instance().videos.getVideoChunk(videoid,chunkName) == null){ //本地没有就一直去找，直到找到为止
+                            System.out.println("Getting "+chunkName);
                             searchTheChunk(chunkName);
                             try {
-                                sleep(1000);
+                                sleep(2000);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
                     }
+                    i++; //处理下一个视频
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                i++; //处理下一个视频
             }
         }
     }
 
     public void initM3u8(){
+        File chunkPath = new File(dir+ "/chunks");
+        if (!chunkPath.exists()){
+            try {
+                chunkPath.mkdir();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         m3u8file=new File(dir+"/chunks/playlist.m3u8");
         if(!m3u8file.exists()){
             try {
@@ -198,7 +224,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                     "#EXT-X-TARGETDURATION:15\n" +
                     "#EXT-X-PLAYLIST-TYPE:EVENT\n";
         try {
-            FileWriter fileWriter = new FileWriter(m3u8file,true);
+            FileWriter fileWriter = new FileWriter(m3u8file);
             fileWriter.write(head);
             fileWriter.flush();
             fileWriter.close();
@@ -226,15 +252,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 
         m3u8WriteCount++;
         System.out.println("=================m3u8写的次数："+m3u8WriteCount);
-        if((m3u8WriteCount==1 && v.getEndTime()>=video.getVideoLength()-50) || (m3u8WriteCount==2)){
-            System.out.println();
-            PlayerView playerView = findViewById(R.id.player_view);
-            player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
-            playerView.setPlayer(player);
-            dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
-            hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
-            player.prepare(hlsMediaSource);
-        }
+
     }
 
     public class PlayVideoThread extends Thread{
@@ -246,7 +264,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 
     public void searchTheChunk(String chunkName){
         QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder()
-                .setWait(2)
+                .setWait(1)
                 .setLimit(1)
                 .build();
         QueryOuterClass.VideoChunkQuery query=QueryOuterClass.VideoChunkQuery.newBuilder()
@@ -263,7 +281,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 
     public  void searchVideoChunks(){
         QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder()
-                .setWait(100)
+                .setWait(1)
                 .setLimit(1000)
                 .build();
         QueryOuterClass.VideoChunkQuery query=QueryOuterClass.VideoChunkQuery.newBuilder()
