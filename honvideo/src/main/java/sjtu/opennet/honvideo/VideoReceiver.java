@@ -48,7 +48,7 @@ public class VideoReceiver extends Thread{
         while(!complete) {
             try {
                 vTask = vQueue.take();
-                if(vTask.isEnd()){
+                if(vTask.isEnd()||vTask.isDestroy()){
                     Log.d(TAG, "End Task received. End the thread.");
                     complete = true;
                 }else{

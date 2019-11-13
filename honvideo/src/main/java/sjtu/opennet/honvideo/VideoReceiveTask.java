@@ -11,11 +11,12 @@ import sjtu.opennet.textilepb.Model;
 public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
     private final String TAG = "HONVIDEO.VideoReceiveTask";
     //private String videoId;
-    private boolean endTag;
+    private boolean endTag;             //endTag has lowest priority. It is used to end thread when queue is empty.
     private Model.VideoChunk vChunk;
     private String chunkDir;
     private String fileName;
-    private int chunkIndex;
+    //private int chunkIndex;
+    private boolean destroyTag;         //destroyTag has highest priority. It is used to end thread when activity is destroy.
 
 
 
@@ -42,7 +43,7 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
         }
     };
 
-    VideoReceiveTask(Model.VideoChunk vChunk, String chunkDir, boolean endTag){
+    VideoReceiveTask(Model.VideoChunk vChunk, String chunkDir, boolean endTag, boolean destroyTag){
         //this.videoId = videoId;
         this.vChunk = vChunk;
         this.chunkDir = chunkDir;
@@ -50,7 +51,7 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
         if(!endTag) {
             chunkStartTime = vChunk.getStartTime();
             fileName = vChunk.getChunk();
-            chunkIndex = Segmenter.getIndFromPath(fileName);
+            //chunkIndex = Segmenter.getIndFromPath(fileName);
         }
     }
 
@@ -59,22 +60,33 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
     }
 
     public static VideoReceiveTask endTask(){
-        return new VideoReceiveTask(null, "", true);
+        return new VideoReceiveTask(null, "", true, false);
     }
-
+    public static VideoReceiveTask destroyTask(){
+        return new VideoReceiveTask(null, "", false, true);
+    }
     public boolean isEnd(){
         return endTag;
     }
-
+    public boolean isDestroy(){
+        return destroyTag;
+    }
     @Override
     public int compareTo(VideoReceiveTask another){
         // end task has the lowest priority.
+        if(this.destroyTag){
+            return -1;
+        }
+        if(another.destroyTag){
+            return 1;
+        }
         if(this.endTag){
             return 1;
         }
         if(another.endTag){
             return -1;
         }
+
         return this.chunkStartTime - another.chunkStartTime;
     }
 
@@ -85,7 +97,7 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
      *  - @TODO Write the m3u8 list file.
      */
     public boolean process(){
-        if(endTag){
+        if(endTag||destroyTag){
             return true;
         }
         try {

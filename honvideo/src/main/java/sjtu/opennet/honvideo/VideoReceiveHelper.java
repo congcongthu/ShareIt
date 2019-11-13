@@ -51,7 +51,7 @@ public class VideoReceiveHelper {
     }
 
     public void receiveChunk(Model.VideoChunk videoChunk){
-        vQueue.add(new VideoReceiveTask(videoChunk, chunkPath, false));
+        vQueue.add(new VideoReceiveTask(videoChunk, chunkPath, false, false));
     }
 
     /**
