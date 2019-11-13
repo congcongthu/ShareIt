@@ -98,4 +98,19 @@ public class FileUtil {
         File file = new File(filePath);
         return file.exists();
     }
+
+    public static File[] listDir(String dir){
+        File fDir = new File(dir);
+        return fDir.listFiles();
+    }
+
+    public static boolean searchLocalVideo(String videoDir, String videoId){
+        File[] fileList = listDir(videoDir);
+        for(File file: fileList){
+            if(file.isDirectory() && (videoId == file.getName())){
+                return true;
+            }
+        }
+        return false;
+    }
 }
