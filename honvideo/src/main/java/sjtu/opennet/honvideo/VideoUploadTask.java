@@ -17,7 +17,7 @@ import sjtu.opennet.textilepb.Model.VideoChunk;
  */
 
 public class VideoUploadTask {
-    private final String TAG = "HONVIDEO.VideoTask";
+    private final String TAG = "HONVIDEO.VideoUploadTask";
     //private boolean ipfsComplete = false;
 
     //Variables get from constructor
@@ -61,7 +61,11 @@ public class VideoUploadTask {
                     .setStartTime(currentDuration)
                     .setEndTime(currentDuration + duration_int)
                     .build();
+            Log.d(TAG, "Add task to chunk queue.");
             chunkQueue.add(new ChunkPublishTask(videoChunk, false));
+            Log.d(TAG, "Task Added.");
+            int tmpSize = chunkQueue.size();
+            Log.d(TAG, String.format("Size of chunk queue: %s", tmpSize));
 //            try {
 //                Textile.instance().videos.addVideoChunk(videoChunk);
 //                Textile.instance().videos.publishVideoChunk(videoChunk);

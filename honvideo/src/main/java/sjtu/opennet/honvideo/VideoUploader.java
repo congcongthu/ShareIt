@@ -14,8 +14,9 @@ public class VideoUploader extends Thread{
     private final String TAG = "HONVIDEO.VideoUploader";
     private int currentDuration = 0;
     private boolean complete = false;
-    public VideoUploader(BlockingQueue<VideoUploadTask> bQueue){
+    public VideoUploader(BlockingQueue<VideoUploadTask> bQueue, BlockingQueue<ChunkPublishTask> cQueue){
         videoQueue = bQueue;
+        chunkQueue = cQueue;
     }
 
     public void shutDown(){
@@ -24,7 +25,7 @@ public class VideoUploader extends Thread{
     }
 
     private void safelyExitPublisher(int delay){
-        Log.d(TAG, String.format("Chunk publisher end tag will be added in %s secends."));
+        Log.d(TAG, String.format("Chunk publisher end tag will be added in %s secends.",delay));
         try {
             Thread.sleep(delay);
         }catch(InterruptedException ie){

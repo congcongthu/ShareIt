@@ -71,9 +71,8 @@ public class VideoUploadHelper {
 
         m3u8 = new File(m3u8Path);
         videoQueue = new LinkedBlockingQueue<>();
-        videoUploader = new VideoUploader(videoQueue);
-
         chunkQueue = new PriorityBlockingQueue<>();
+        videoUploader = new VideoUploader(videoQueue, chunkQueue);
         chunkpublisher = new ChunkPublisher(chunkQueue);
 
         vObserver = new VideoFileListener(chunkPath, vMeta.getHash(), videoQueue, chunkQueue);

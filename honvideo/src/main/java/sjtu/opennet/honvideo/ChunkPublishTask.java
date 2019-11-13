@@ -20,7 +20,9 @@ public class ChunkPublishTask implements Comparable<ChunkPublishTask> {
     ChunkPublishTask(Model.VideoChunk videoChunk, boolean endTag){
         this.videoChunk = videoChunk;
         this.endTag = endTag;
-        chunkStartTime = videoChunk.getStartTime();
+        if(videoChunk!=null){
+            chunkStartTime = videoChunk.getStartTime();
+        }
     }
 
     public static ChunkPublishTask getEndTask(){
