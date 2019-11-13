@@ -169,8 +169,8 @@ public class VideoUploadHelper {
 
     public void publishMeta(){
         try {
-            System.out.println("================了");
             Textile.instance().videos.addVideo(videoPb);
+            System.out.println("================了publish");
             Textile.instance().videos.publishVideo(videoPb);
             System.out.println("================卡住了");
         }catch(Exception e){
