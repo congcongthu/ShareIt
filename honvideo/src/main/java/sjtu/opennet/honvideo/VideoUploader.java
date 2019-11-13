@@ -59,7 +59,6 @@ public class VideoUploader extends Thread{
                 e.printStackTrace();
                 interrupt();
             }
-            //videoQueue.notify();
         }
         safelyExitPublisher(30000);
         Log.d(TAG, "Uploader end safely.");
