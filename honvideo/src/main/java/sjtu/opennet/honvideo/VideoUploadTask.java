@@ -5,6 +5,7 @@ import android.media.MediaMetadataRetriever;
 import android.util.Log;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.concurrent.BlockingQueue;
 
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
@@ -16,21 +17,25 @@ import sjtu.opennet.textilepb.Model.VideoChunk;
  */
 
 public class VideoUploadTask {
+    private final String TAG = "HONVIDEO.VideoUploadTask";
+    //private boolean ipfsComplete = false;
+
     //Variables get from constructor
     private String videoId;
     private String tsPath;
     private String tsAbsolutePath;
+    private BlockingQueue<ChunkPublishTask> chunkQueue;
     private boolean endTag;
-    private final String TAG = "HONVIDEO.VideoTask";
 
     //Variables assigned during running
     private int currentDuration = 0;
     private int duration_int = 0;
 
-    public VideoUploadTask(String videoId, String tsPath, String tsAbsolutePathPath, boolean endTag){
+    public VideoUploadTask(String videoId, String tsPath, String tsAbsolutePathPath, BlockingQueue<ChunkPublishTask> chunkQueue, boolean endTag){
         this.videoId = videoId;
         this.tsPath = tsPath;
         this.tsAbsolutePath = tsAbsolutePathPath;
+        this.chunkQueue = chunkQueue;
         this.endTag = endTag;
     }
 
@@ -48,6 +53,7 @@ public class VideoUploadTask {
         @Override
         public void onComplete(String path) {
             Log.d(TAG, String.format("ts chunk ipfs path: %s", path));
+            //ipfsComplete = true;
             VideoChunk videoChunk = VideoChunk.newBuilder()
                     .setId(videoId)
                     .setChunk(tsPath)
@@ -55,13 +61,18 @@ public class VideoUploadTask {
                     .setStartTime(currentDuration)
                     .setEndTime(currentDuration + duration_int)
                     .build();
-            try {
-                Textile.instance().videos.addVideoChunk(videoChunk);
-                Textile.instance().videos.publishVideoChunk(videoChunk);
-            }catch(Exception e){
-                Log.e(TAG, "Unexpected error when publish video chunk");
-                e.printStackTrace();
-            }
+            Log.d(TAG, "Add task to chunk queue.");
+            chunkQueue.add(new ChunkPublishTask(videoChunk, false));
+            Log.d(TAG, "Task Added.");
+            int tmpSize = chunkQueue.size();
+            Log.d(TAG, String.format("Size of chunk queue: %s", tmpSize));
+//            try {
+//                Textile.instance().videos.addVideoChunk(videoChunk);
+//                Textile.instance().videos.publishVideoChunk(videoChunk);
+//            }catch(Exception e){
+//                Log.e(TAG, "Unexpected error when publish video chunk");
+//                e.printStackTrace();
+//            }
         }
 
         @Override
@@ -72,7 +83,7 @@ public class VideoUploadTask {
     };
 
     public static VideoUploadTask endTask(){
-        return new VideoUploadTask("","", "", true);
+        return new VideoUploadTask("","", "", null,true);
     }
 
 
@@ -91,6 +102,7 @@ public class VideoUploadTask {
         this.currentDuration = currentDuration;
         if(endTag){
             Log.d(TAG, "End task received. Return -1 to end the task thread.");
+
             return -1;
         }
         Log.d(TAG, String.format("Video Upload Task Begin, Chunk Start Duration %d", currentDuration));
@@ -110,7 +122,7 @@ public class VideoUploadTask {
                 duration_int = Integer.parseInt(duration);
                 Textile.instance().ipfs.ipfsAddData(fileContent, true, false, tsHandler);
             }
-            Log.d(TAG, String.format("Video Upload Task Done, Chunck End Duration: %d", duration_int));
+            Log.d(TAG, String.format("Video Upload Task Done, Chunck End Duration: %d", currentDuration + duration_int));
 
         }catch(Exception e){
             e.printStackTrace();

@@ -23,7 +23,7 @@ import sjtu.opennet.textilepb.Model.Video;
  * It can also generate HASH ID for a video.
  */
 public class VideoMeta {
-    private static final String TAG = "VideoMeta";
+    private static final String TAG = "HONVIDEO.VideoMeta";
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private MediaMetadataRetriever mdataReceiver;
     private FFmpegMediaMetadataRetriever fmdataReceiver;

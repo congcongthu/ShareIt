@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
@@ -32,7 +33,7 @@ import sjtu.opennet.textilepb.Model;
  * Replace String.format with Path.resolve for path format.
  */
 public class VideoUploadHelper {
-    private static final String TAG = "HONVIDEO.VideoHelper";
+    private static final String TAG = "HONVIDEO.VideoUploadHelper";
     private VideoMeta vMeta;
     private String rootPath;
     private String videoPath;
@@ -43,6 +44,9 @@ public class VideoUploadHelper {
     private VideoFileListener vObserver;
     private BlockingQueue<VideoUploadTask> videoQueue;
     private VideoUploader videoUploader;
+
+    private BlockingQueue<ChunkPublishTask> chunkQueue;
+    private ChunkPublisher chunkpublisher;
 
     private Context context;
     private String filePath;
@@ -67,8 +71,12 @@ public class VideoUploadHelper {
 
         m3u8 = new File(m3u8Path);
         videoQueue = new LinkedBlockingQueue<>();
-        videoUploader = new VideoUploader(videoQueue);
-        vObserver = new VideoFileListener(chunkPath, vMeta.getHash(), videoQueue);
+        chunkQueue = new PriorityBlockingQueue<>();
+        videoUploader = new VideoUploader(videoQueue, chunkQueue);
+        chunkpublisher = new ChunkPublisher(chunkQueue);
+
+        vObserver = new VideoFileListener(chunkPath, vMeta.getHash(), videoQueue, chunkQueue);
+        Log.d(TAG, String.format("Uploader initialize complete for video ID %s.", vMeta.getHash()));
     }
 
 
@@ -121,6 +129,8 @@ public class VideoUploadHelper {
         public void onStart() {
             Log.d(TAG, "FFmpeg segment start.");
             videoUploader.start();      //Do not use run!!!!
+            //chunkpublisher.start();   //chunk publish has nothing to do with listener.
+                                        //so we didn't make chunk publisher ffmpeg-driven.
             vObserver.startWatching();
         }
 
@@ -160,6 +170,7 @@ public class VideoUploadHelper {
 
     public void segment(){
         try {
+            chunkpublisher.start(); //It was ended by upload task.
             Segmenter.segment(context, 10, filePath, m3u8Path, chunkPath, segHandler);
         }catch(Exception e){
             e.printStackTrace();
@@ -169,7 +180,9 @@ public class VideoUploadHelper {
     public void publishMeta(){
         try {
             Textile.instance().videos.addVideo(videoPb);
+            System.out.println("================了publish");
             Textile.instance().videos.publishVideo(videoPb);
+            System.out.println("================卡住了");
         }catch(Exception e){
             e.printStackTrace();
         }

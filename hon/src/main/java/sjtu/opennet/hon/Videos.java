@@ -4,6 +4,7 @@ import mobile.Mobile_;
 import mobile.SearchHandle;
 import sjtu.opennet.textilepb.Model.Video;
 import sjtu.opennet.textilepb.Model.VideoChunk;
+import sjtu.opennet.textilepb.Model.VideoChunkList;
 import sjtu.opennet.textilepb.QueryOuterClass.QueryOptions;
 import sjtu.opennet.textilepb.QueryOuterClass.VideoChunkQuery;
 
@@ -23,7 +24,11 @@ public class Videos extends NodeDependent {
     
     public VideoChunk getVideoChunk(final String videoId, final String chunk) throws Exception {
         final byte[] bytes = node.getVideoChunk(videoId, chunk);
-        return VideoChunk.parseFrom(bytes);
+        try {
+            return VideoChunk.parseFrom(bytes);
+        }catch (NullPointerException e){
+            return null;
+        }
     }
 
     public void addVideo(final Video video) throws Exception {
@@ -45,7 +50,11 @@ public class Videos extends NodeDependent {
     public void publishVideoChunk(final VideoChunk vchunk) throws Exception {
         node.publishVideoChunk(vchunk.toByteArray());
     }
-    
+ 
+    public VideoChunkList chunksByVideoId(final String videoId) throws Exception {
+        final byte[] bytes = node.chunksByVideoId(videoId);
+        return VideoChunkList.parseFrom(bytes);
+    }
     /**
      * Searches the network for video chunks
      * @param query The object describing the query to execute
