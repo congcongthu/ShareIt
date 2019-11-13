@@ -26,6 +26,12 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
         public void onComplete(byte[] data, String media) {
             String savePath = String.format("%s/%s", chunkDir, fileName);
             FileUtil.writeByteArrayToFile(savePath, data);
+            try {
+                Textile.instance().videos.addVideoChunk(vChunk);
+            }catch(Exception e){
+                Log.e(TAG, "Write Database Fail!!!!");
+                e.printStackTrace();
+            }
             Log.d(TAG, String.format("Save chunk to %s", savePath));
         }
 
