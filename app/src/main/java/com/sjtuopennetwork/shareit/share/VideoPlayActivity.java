@@ -34,6 +34,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.text.DecimalFormat;
+import java.util.List;
 
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
@@ -53,6 +55,19 @@ public class VideoPlayActivity extends AppCompatActivity {
     SimpleExoPlayer player;
     VideoReceiveHelper videorHelper;
     ConcatenatingMediaSource mediaSource;
+    List<Model.VideoChunk> chunkList;
+    int videoLenth;
+    boolean finded;
+    String chunkToFind = "";
+    String videoToFind = "";
+    File m3u8file;
+    String dir;
+    int m3u8WriteCount;
+    Model.Video video;
+
+    //两个线程
+    GetChunkThread getChunkThread=new GetChunkThread();
+    PlayVideoThread playVideoThread=new PlayVideoThread();
 
 
     @Override
@@ -60,180 +75,166 @@ public class VideoPlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_play);
 
+        m3u8WriteCount=0;
+
+//
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
+//        }
+
+        videoid = getIntent().getStringExtra("videoid");
+        try {
+            video = Textile.instance().videos.getVideo(videoid);
+            videoLenth = video.getVideoLength();
+            videorHelper = new VideoReceiveHelper(this, video);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         //查找本地chunk
-//        Model.VideoChunk v=Textile.instance().videos.chunksById();
-
-        //网络中查找
-        searchVideoChunk();
-
-        //比较
-
-        int i=0;
-//        if(getIntent().getBooleanExtra("ismine",true)){ //如果是我自己的视频，就直接播放文件
-//            //播放本地m3u8
-//            videoid=getIntent().getStringExtra("videoid");
-//            String dir=VideoHelper.getVideoPathFromID(this,videoid);
-//            PlayerView playerView=findViewById(R.id.player_view);
-////            File m3u8file1= FileUtil.getM3u8FIle(dir);
+        try {
+            chunkList = Textile.instance().videos.chunksByVideoId(videoid).getItemsList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 //
-////
-////            try {
-////                FileReader reader=new FileReader(m3u8file1);
-////                LineNumberReader rl=new LineNumberReader(reader);
-////                String tmp="";
-////                while(tmp!=null){
-////                    tmp=rl.readLine();
-////                    System.out.println("==============读出一行："+tmp);
-////                }
-////                reader.close();
-////                rl.close();
-////            } catch (Exception e) {
-////                e.printStackTrace();
-////            }
-//
-//
-//            File m3u8file=new File(dir+"/chunks/playlist.m3u8"); //新建一个
-//            if(!m3u8file.exists()){ //如果不存在就创建一个（必然不存在）
-//                try {
-//                    m3u8file.createNewFile();
-//                    //写入头部信息
-//                    FileWriter fileWriter=new FileWriter(m3u8file); //写入器
-//                    String head="#EXTM3U\n" +
-//                            "#EXT-X-VERSION:3\n" +
-//                            "#EXT-X-MEDIA-SEQUENCE:0\n" +
-//                            "#EXT-X-ALLOW-CACHE:YES\n" +
-//                            "#EXT-X-TARGETDURATION:15\n" +
-//                            "#EXT-X-PLAYLIST-TYPE:EVENT\n"+
-//                            "#EXTINF:10.914611,\n"+
-//                            "out0000.ts\n"+
-//                            "#EXT-X-ENDLIST\n";
-//                    fileWriter.write(head);
-//                    fileWriter.flush();
-//                    fileWriter.close();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            new Thread(){
-//                @Override
-//                public void run() {
-//                    try {
-//                        Thread.sleep(5000);
-//                        File m3u8file2=new File(dir+"/chunks/playlist2.m3u8"); //新建一个
-//                        FileWriter fileWriter = new FileWriter(m3u8file2); //写新文件
-//                        fileWriter.write("");
-//                        fileWriter.flush();
-//                        String head="#EXTM3U\n" +
-//                                "#EXT-X-VERSION:3\n" +
-//                                "#EXT-X-MEDIA-SEQUENCE:1\n" +
-//                                "#EXT-X-ALLOW-CACHE:YES\n" +
-//                                "#EXT-X-TARGETDURATION:15\n" +
-//                                "#EXT-X-PLAYLIST-TYPE:EVENT\n"+
-//                                "#EXTINF:10.914611,\n"+
-//                                "out0000.ts\n"+
-//                                "#EXTINF:9.907944,\n"+
-//                                "out0001.ts\n"+
-//                                "#EXT-X-ENDLIST\n";
-//                        fileWriter.write(head);
-//                        fileWriter.flush();
-//                        fileWriter.close();
-//                        HlsMediaSource hlsMediaSource1 =
-//                                new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file2));
-//                        mediaSource= new ConcatenatingMediaSource(hlsMediaSource,hlsMediaSource1);
-////                        hlsMediaSource.
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//
-////                    try {
-////                        FileWriter fileWriter = new FileWriter(m3u8file); //写新文件
-////                        fileWriter.write("");
-////                        fileWriter.flush();
-////                        String head="#EXTM3U\n" +
-////                                "#EXT-X-VERSION:3\n" +
-////                                "#EXT-X-MEDIA-SEQUENCE:0\n" +
-////                                "#EXT-X-ALLOW-CACHE:YES\n" +
-////                                "#EXT-X-TARGETDURATION:15\n" +
-////                                "#EXT-X-PLAYLIST-TYPE:EVENT\n"+
-////                                "#EXTINF:10.914611,\n"+
-////                                "out0000.ts\n"+
-////                                "#EXTINF:9.907944,\n"+
-////                                "out0001.ts\n"+
-////                                "#EXT-X-ENDLIST\n";
-////                        fileWriter.write(head);
-////                        fileWriter.close();
-////                        Thread.sleep(5000);
-////                    } catch (Exception e) {
-////                        e.printStackTrace();
-////                    }
-////                    LineNumberReader reader = new LineNumberReader(fileReader);
-////
-////                    for(int i=0;i<3;i++){
-////                        try {
-////                            Thread.sleep(5000);
-////                            //从原来的文件读出#EXTINF:10.977722, out0000.ts
-////                            //就是第7+2*i行，8+2*i行。
-////                            int extinf=7+2*i;
-////                            String extinf_str="";
-////                            int line=0;
-////                            while(extinf_str!=null){
-////                                line++;
-////                                extinf_str=reader.readLine();
-////                                if(line==extinf){ //如果到了这一行，就读出来，并append到m3u8中
-////                                    System.out.println("===========读出一行:"+extinf_str);
-////                                    fileWriter.append("\n"+extinf_str);
-////                                    String tsname=reader.readLine();
-////                                    fileWriter.append("\n"+tsname);
-////                                }
-////                            }
-////                        } catch (Exception e) {
-////                            e.printStackTrace();
-////                        }
-////                    }
-//                }
-//            }.start();
-//
-//
-////            HlsMediaPlaylist hlsMediaPlaylist=new HlsMediaPlaylist();
-//
-//            player = ExoPlayerFactory.newSimpleInstance(this);
-//            playerView.setPlayer(player);
-//            dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(this, "ShareIt"));
-//            hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
-//            player.prepare(hlsMediaSource);
-//
-////            player.addListener(new MyEventListener());
-//        }else{
-//            videoid=getIntent().getStringExtra("videoid");
-//            System.out.println("=============videoid别人发的："+videoid+ VideoHelper.getVideoPathFromID(this,videoid));
-//
-//            Model.Video video=null;
-//            try {
-//                video=Textile.instance().videos.getVideo(videoid);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            videorHelper=new VideoReceiveHelper(this,video);
-//
-//            //发出查询
-//            searchVideoChunk();
-//
-//            //播放
+        if(chunkList.size()>0){ //已经有一部分
 //            play();
+        }else{ //一个都没有，那就是还没有接收过，要去网络找
+            //网络中查找
+            searchVideoChunks();
+        }
+
+        //一个线程在按顺序遍历，没有就循环去取，先取本地再取网络，取到为止,取到就写m3u8文件。
+        getChunkThread.start();
+
+        dir = VideoHelper.getVideoPathFromID(this, videoid);
+        initM3u8();
+
+
+
+        int i = 0;
+
+        }
+    }
 //
-//        }
+    public class GetChunkThread extends Thread{
+        @Override
+        public void run() {
+            int i=0;
+            boolean alreadyHave=false;
+            boolean threadRun=true;
+            while(threadRun){
+                alreadyHave=false;
+                String chunkName="out"+String.format("%04d", i)+".ts";
+                for(Model.VideoChunk v:chunkList){ //按顺序遍历看本地有没有
+                    if(v.getChunk().equals(chunkName)){ //本地已经有了这个chunk
+                        alreadyHave=true;
+                        writeM3u8(v);
+                        if(v.getEndTime()>=videoLenth){ //如果是最后一个就终止
+                            threadRun=false;
+                        }
+                    }
+                    if(!alreadyHave){
+                        finded=false;
+                        videoToFind = videoid;
+                        chunkToFind = chunkName;
+                        while(!finded){ //本地没有就一直去找，直到找到为止
+                            searchTheChunk(chunkName);
+                            try {
+                                sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+                i++; //处理下一个视频
+            }
+        }
+    }
+//
+//
 
+    public void initM3u8(){
+        m3u8file=new File(dir+"/chunks/playlist.m3u8");
+        String head="#EXTM3U\n" +
+                    "#EXT-X-VERSION:3\n" +
+                    "#EXT-X-MEDIA-SEQUENCE:0\n" +
+                    "#EXT-X-ALLOW-CACHE:YES\n" +
+                    "#EXT-X-TARGETDURATION:15\n" +
+                    "#EXT-X-PLAYLIST-TYPE:EVENT\n";
+        try {
+            FileWriter fileWriter = new FileWriter(m3u8file,true);
+            fileWriter.write(head);
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void play() {
+    public void writeM3u8(Model.VideoChunk v){
+        m3u8file=new File(dir+"/chunks/playlist.m3u8");
+        if(!m3u8file.exists()){
+            try {
+                m3u8file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
+        int duration0=v.getEndTime()-v.getStartTime(); //毫秒
+        float size = (float)duration0/1000;
+        DecimalFormat df = new DecimalFormat("0.000000");//格式化小数，不足的补0
+        String duration = df.format(size);//返回的是String类型的
+        try {
+            FileWriter fileWriter = new FileWriter(m3u8file,true);
+            String append = "#EXTINF:"+duration+",\n"+
+                            "out"+v.getChunk()+".ts\n";
+            fileWriter.write(append);
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        m3u8WriteCount++;
+        if((m3u8WriteCount==1 && v.getEndTime()>=video.getVideoLength()) || (m3u8WriteCount==2)){
+            PlayerView playerView = findViewById(R.id.player_view);
+            player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
+            playerView.setPlayer(player);
+            dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
+            hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
+            player.prepare(hlsMediaSource);
+        }
     }
+//
+    public class PlayVideoThread extends Thread{
+        @Override
+        public void run() {
 
-    public  void searchVideoChunk(){
+        }
+    }
+//
+    public void searchTheChunk(String chunkName){
+        QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder()
+                .setWait(2)
+                .setLimit(1)
+                .build();
+        QueryOuterClass.VideoChunkQuery query=QueryOuterClass.VideoChunkQuery.newBuilder()
+                .setStartTime(-1)
+                .setEndTime(-1)
+                .setChunk(chunkName)
+                .setId(videoid).build();
+        try {
+            Textile.instance().videos.searchVideoChunks(query,options);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+//
+    public  void searchVideoChunks(){
         QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder()
                 .setWait(100)
                 .setLimit(1000)
@@ -248,20 +249,25 @@ public class VideoPlayActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
+//
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getAnResult(Model.VideoChunk videoChunk){
         System.out.println("==============得到videoChunk:"+videoChunk.getId()
             +" "+videoChunk.getAddress()+" "+videoChunk.getEndTime());
 
-        videorHelper.receiveChunk(videoChunk);
+        if (videoChunk.getId().equals(videoToFind) && videoChunk.getChunk().equals(chunkToFind)){
+            finded=true;
+        }
 
+        if(!chunkList.contains(videoChunk)){
+            chunkList.add(videoChunk); //不包括就添加进来
+        }
+        videorHelper.receiveChunk(videoChunk); //保存到本地
     }
-
+//
     @Override
     public void onStop() {
         super.onStop();
-
         if(EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().unregister(this);
         }
