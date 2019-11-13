@@ -66,10 +66,10 @@ public class VideoReceiver extends Thread{
 
 
                         if(!success){
-                            Log.e(TAG, String.format("Task with file %s fail!!!", fileName));
-                            Thread.sleep(1000);
-                            vQueue.add(vTask);
-                            Log.e(TAG, String.format("Add the failed task %s back to queue", fileName));
+                            Log.e(TAG, String.format("Task with file %s fail!!! Please retry", fileName));
+//                            Thread.sleep(1000);
+//                            vQueue.add(vTask);
+//                            Log.e(TAG, String.format("Add the failed task %s back to queue", fileName));
                         }else {
                             Log.d(TAG, "Task success.");
                         }
