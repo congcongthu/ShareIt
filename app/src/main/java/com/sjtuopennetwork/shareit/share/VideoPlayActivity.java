@@ -66,7 +66,7 @@ public class VideoPlayActivity extends AppCompatActivity {
     int m3u8WriteCount;
     Model.Video video;
     boolean finished;
-    static int gap = 100;
+    static int gap = 1000;
 
     //两个线程
     GetChunkThread getChunkThread=new GetChunkThread();
