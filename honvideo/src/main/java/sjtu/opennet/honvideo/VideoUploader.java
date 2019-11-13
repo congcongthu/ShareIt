@@ -10,6 +10,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public class VideoUploader extends Thread{
     private BlockingQueue<VideoUploadTask> videoQueue;
+    private BlockingQueue<ChunkPublishTask> chunkQueue;     //Used to send endTag to chunkpublisher.
     private final String TAG = "HONVIDEO.VideoUploader";
     private int currentDuration = 0;
     private boolean complete = false;
@@ -22,6 +23,18 @@ public class VideoUploader extends Thread{
         interrupt();
     }
 
+    private void safelyExitPublisher(int delay){
+        Log.d(TAG, String.format("Chunk publisher end tag will be added in %s secends."));
+        try {
+            Thread.sleep(delay);
+        }catch(InterruptedException ie){
+            Log.e(TAG, "Unexpected thread interruption happened when uploader sleeping to end publisher.");
+            ie.printStackTrace();
+        }finally {
+            Log.d(TAG, "Add end task to Chunk Publish Task Queue");
+            chunkQueue.add(ChunkPublishTask.getEndTask());
+        }
+    }
     @Override
     public void run(){
         Log.d(TAG, "Uploader start to run.");
@@ -33,7 +46,7 @@ public class VideoUploader extends Thread{
                 endDuration = vTask.upload(currentDuration);
                 currentDuration = endDuration;
                 if(endDuration < 0){
-                    Log.d(TAG, "End Task received. End the thread.");
+                    Log.d(TAG, "End Upload Task Received. End the thread.");
                     complete = true;
                 }
             } catch (InterruptedException ie) {
@@ -41,10 +54,13 @@ public class VideoUploader extends Thread{
                 ie.printStackTrace();
                 interrupt();
             } catch(Exception e){
+                Log.e(TAG, "Unknown exception when run uploader. Interrupt thread.");
                 e.printStackTrace();
+                interrupt();
             }
             //videoQueue.notify();
         }
+        safelyExitPublisher(30000);
         Log.d(TAG, "Uploader end safely.");
     }
 

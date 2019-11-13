@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
@@ -44,6 +45,9 @@ public class VideoUploadHelper {
     private BlockingQueue<VideoUploadTask> videoQueue;
     private VideoUploader videoUploader;
 
+    private BlockingQueue<ChunkPublishTask> chunkQueue;
+    private ChunkPublisher chunkpublisher;
+
     private Context context;
     private String filePath;
     private Model.Video videoPb;
@@ -68,6 +72,10 @@ public class VideoUploadHelper {
         m3u8 = new File(m3u8Path);
         videoQueue = new LinkedBlockingQueue<>();
         videoUploader = new VideoUploader(videoQueue);
+
+        chunkQueue = new PriorityBlockingQueue<>();
+        chunkpublisher = new ChunkPublisher(chunkQueue);
+
         vObserver = new VideoFileListener(chunkPath, vMeta.getHash(), videoQueue);
         Log.d(TAG, String.format("Uploader initialize complete for video ID %s.", vMeta.getHash()));
     }
@@ -122,6 +130,8 @@ public class VideoUploadHelper {
         public void onStart() {
             Log.d(TAG, "FFmpeg segment start.");
             videoUploader.start();      //Do not use run!!!!
+            //chunkpublisher.start();   //chunk publish has nothing to do with listener.
+                                        //so we didn't make chunk publisher ffmpeg-driven.
             vObserver.startWatching();
         }
 
@@ -161,6 +171,7 @@ public class VideoUploadHelper {
 
     public void segment(){
         try {
+            chunkpublisher.start(); //It was ended by upload task.
             Segmenter.segment(context, 10, filePath, m3u8Path, chunkPath, segHandler);
         }catch(Exception e){
             e.printStackTrace();
