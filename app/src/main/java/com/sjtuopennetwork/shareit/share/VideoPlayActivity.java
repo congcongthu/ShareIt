@@ -1,6 +1,8 @@
 package com.sjtuopennetwork.shareit.share;
 
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -99,22 +101,24 @@ public class VideoPlayActivity extends AppCompatActivity {
             System.out.println("===================完全下载了");
             finished = true;
             writeCompleteM3u8();
+
+            System.out.println("开始播放");
+            PlayerView playerView = findViewById(R.id.player_view);
+            player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
+            playerView.setPlayer(player);
+            dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
+            hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
+            player.prepare(hlsMediaSource);
         }else{ //没有完全下载下来，去网络中查找
             searchVideoChunks();
             getChunkThread.start();
-            while (true){
-                if((finished && m3u8WriteCount>0) || (m3u8WriteCount > 1 ) ) //如果还没有写m3u8，主线程就等待，直到写了2次之后就开始播放
-                    break;
-            }
+//            while (true){
+//                if((finished && m3u8WriteCount>0) || (m3u8WriteCount > 1 ) ) //如果还没有写m3u8，主线程就等待，直到写了2次之后就开始播放
+//                    break;
+//            }
         }
         //一个线程在按顺序遍历，没有就循环去取，先取本地再取网络，取到为止,取到就写m3u8文件。
-        System.out.println("开始播放");
-        PlayerView playerView = findViewById(R.id.player_view);
-        player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
-        playerView.setPlayer(player);
-        dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
-        hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
-        player.prepare(hlsMediaSource);
+
     }
 
     public static boolean DownloadComplete(String vid){
@@ -157,6 +161,23 @@ public class VideoPlayActivity extends AppCompatActivity {
         return false;
     }
 
+
+    Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch(msg.what){
+                case 1:
+                    System.out.println("开始播放");
+                    PlayerView playerView = findViewById(R.id.player_view);
+                    player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
+                    playerView.setPlayer(player);
+                    dataSourceFactory = new DefaultDataSourceFactory(VideoPlayActivity.this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
+                    hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
+                    player.prepare(hlsMediaSource);
+            }
+        }
+    };
+
     public class GetChunkThread extends Thread{
         @Override
         public void run() {
@@ -168,22 +189,34 @@ public class VideoPlayActivity extends AppCompatActivity {
                 System.out.println("===================chunkName+"+chunkName);
                 try {
                     Model.VideoChunk v=Textile.instance().videos.getVideoChunk(videoid, chunkName);
-                    if ( v!=null ){ //本地有了，就写m3u8文件
-                        writeM3u8(v);
-                        if(v.getEndTime()>=videoLenth - gap){ //如果是最后一个就终止
-                            finished=true;
-                        }
-                    }
-                    else {
-                        while(Textile.instance().videos.getVideoChunk(videoid, chunkName) == null){ //本地没有就一直去找，直到找到为止
+                    if (v == null) {
+                        int k = 0;
+                        while(true){ //本地没有就一直去找，直到找到为止
+                            v = Textile.instance().videos.getVideoChunk(videoid, chunkName);
+                            if (v != null)
+                                break;
                             System.out.println("Getting "+chunkName);
-                            searchTheChunk(chunkName);
+                            if(k == 10) {
+                                searchTheChunk(chunkName);
+                                k = 0;
+                            }
+                            k++;
                             try {
-                                sleep(2000);
+                                sleep(100);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
+                    }
+                    System.out.println("================"+chunkName + "exist!");
+                    writeM3u8(v);
+                    if(v.getEndTime()>=videoLenth - gap){ //如果是最后一个就终止
+                        finished=true;
+                    }
+                    if(ableToPlay()){
+                        Message msg=new Message();
+                        msg.what=1;
+                        handler.sendMessage(msg);
                     }
                     i++; //处理下一个视频
                 } catch (Exception e) {
@@ -313,6 +346,13 @@ public class VideoPlayActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean ableToPlay(){
+        System.out.println(m3u8WriteCount);
+        if(m3u8WriteCount > 1 || finished)
+            return true;
+        return false;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

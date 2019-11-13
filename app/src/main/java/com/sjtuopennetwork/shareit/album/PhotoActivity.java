@@ -156,7 +156,6 @@ public class PhotoActivity extends AppCompatActivity {
                             System.out.println("=========================文件不存在取得 " + picDataset);
                             myDataset.add(picDataset);
                         }
-
                         @Override
                         public void onError(Exception e) {
                         }
@@ -164,7 +163,6 @@ public class PhotoActivity extends AppCompatActivity {
                 } else {
                     myDataset.add(filepath);
                 }
-
             }
             //
             for (int i = 0; i < myDataset.size(); i++) {
