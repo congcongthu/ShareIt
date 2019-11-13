@@ -210,14 +210,14 @@ public class ForeGroundService extends Service {
             }
 
             //测试videochunk
-            Model.VideoChunk v=Model.VideoChunk.newBuilder().setChunk("aaaa").setId("123456").build();
-            try {
-                Textile.instance().videos.addVideoChunk(v);
-                List<Model.VideoChunk> videoChunks= Textile.instance().videos.chunksByVideoId("1234567").getItemsList();
-                System.out.println("===========videochunk:"+videoChunks.size());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            Model.VideoChunk v=Model.VideoChunk.newBuilder().setChunk("aaaa").setId("123456").build();
+//            try {
+//                Textile.instance().videos.addVideoChunk(v);
+//                List<Model.VideoChunk> videoChunks= Textile.instance().videos.chunksByVideoId("1234567").getItemsList();
+//                System.out.println("===========videochunk:"+videoChunks.size());
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
 
             createDeviceThread();
