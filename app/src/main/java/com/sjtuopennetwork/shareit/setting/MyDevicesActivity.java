@@ -59,23 +59,28 @@ public class MyDevicesActivity extends AppCompatActivity {
                     textList = Textile.instance().messages.list("", 100, t.getId());
                     for (int i = 0; i < textList.getItemsCount(); i++) {
                         String s = textList.getItems(i).getBody();
+                        System.out.println("=============="+s);
+                        if(s.contains("%"))
+                        s= s.substring(0, s.indexOf("%"));
+                        System.out.println("====处理后===="+s);
                         getDevice_list.add(s);
                     }
                 }
             }
             noRepeat(getDevice_list);
-            Context context=this.getApplicationContext();
-            String self= GetIpAddress.getIPAddress(context)+"/tcp/40601/ipfs/"+ Textile.instance().ipfs.peerId();
+//            Context context=this.getApplicationContext();
+//            String self= GetIpAddress.getIPAddress(context)+"/tcp/40601/ipfs/"+ Textile.instance().ipfs.peerId();
             for(String str:getDevice_list)
             {
-                String addr=str.substring(str.indexOf("%")+1);
-                if (str.indexOf(self)!=-1||Textile.instance().ipfs.swarmConnect(addr)) {//swarmConnect方法需测试
-                    str = str.substring(0, str.indexOf("#")) + " 在线";
-                    device_list.add(str);
-                } else {
+//                String addr=str.substring(str.indexOf("%")+1);
+//                if (str.indexOf(self)!=-1||Textile.instance().ipfs.swarmConnect(addr)) {//swarmConnect方法需测试
+//                    str = str.substring(0, str.indexOf("#")) + " 在线";
+//                    device_list.add(str);
+//                } else {
                     str = str.substring(0, str.indexOf("#"));
+//                    System.out.println("=============="+str);
                     device_list.add(str);
-                }
+//                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,18 +88,19 @@ public class MyDevicesActivity extends AppCompatActivity {
     }
 
     private void noRepeat(List<String> al) {
-        if(al.size()>0){
-        for (int i = 0; i < al.size(); i++) {
-            for (int j = i + 1; j < al.size(); j++) {
-                String aaa=al.get(i);
-                String bbb=al.get(j);
-                if (aaa.equals(bbb)) {
-                    al.remove(j);
-                    continue;
-                } else {
+        if (al.size() > 0) {
+            for (int i = 0; i < al.size(); i++) {
+                for (int j = i + 1; j < al.size(); j++) {
+                    if (al.get(i).equals(al.get(j))) {
+                        System.out.println("=====删除重复记录=="+al.get(j));
+                        al.remove(j);
+                        j--;
+                        continue;
+                    } else {
+                    }
                 }
             }
-        }}
+        }
     }
 
 
