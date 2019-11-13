@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * @TODO stop the thread using stop flag so that we can safely stop this thread when activity is destroy.
- * Another way to do this is add a special end task with highest priority.
+ * @TODO stop the thread using stop flag so that we can safely stop this thread when activity is destroy. Another way to do this is add a special end task with highest priority.
+ * @TODO use local DB to replace chunklist.
  */
 public class VideoReceiver extends Thread{
     private final String TAG = "HONVIDEO.VideoReceiver";
@@ -46,9 +46,25 @@ public class VideoReceiver extends Thread{
         /**
          * If they don't exist, create new ones.
          */
+        if(!FileUtil.fileExists(m3u8Path)) {
+            Log.d(TAG, String.format("m3u8 not exist. create %s.", m3u8Path));
+            FileUtil.createNewFile(m3u8Path);
+            initM3u8();
+        }
+        if(!FileUtil.fileExists(chunkListPath)) {
+            Log.d(TAG, String.format("list not exist. create %s.", chunkListPath));
+            FileUtil.createNewFile(chunkListPath);
+        }
+    }
 
-        FileUtil.createNewFile(m3u8Path);
-        FileUtil.createNewFile(chunkListPath);
+    private void initM3u8(){
+        String head="#EXTM3U\n" +
+                "#EXT-X-VERSION:3\n" +
+                "#EXT-X-MEDIA-SEQUENCE:0\n" +
+                "#EXT-X-ALLOW-CACHE:YES\n" +
+                "#EXT-X-TARGETDURATION:15\n" +
+                "#EXT-X-PLAYLIST-TYPE:EVENT\n";
+        FileUtil.appendToFileWithNewLine(m3u8Path, head);
     }
 
     /**
@@ -81,6 +97,11 @@ public class VideoReceiver extends Thread{
      * @param tmpIndex
      */
     private void updateM3u8(int tmpIndex){
+        /*
+        #EXTINF:4.700489,
+                out0000.ts
+
+         */
         return;
     }
 

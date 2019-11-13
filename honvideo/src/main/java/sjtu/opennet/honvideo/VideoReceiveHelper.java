@@ -73,9 +73,9 @@ public class VideoReceiveHelper {
         }
     }
     private void buildWorkspace(){
-        String rootPath = FileUtil.getAppExternalPath(context, "videoreceive");
-        videoPath = FileUtil.getAppExternalPath(context, String.format("videoreceive/%s", videoId));
-        chunkPath = FileUtil.getAppExternalPath(context, String.format("videoreceive/%s/chunks", videoId));
+        String rootPath = FileUtil.getAppExternalPath(context, "video");
+        videoPath = FileUtil.getAppExternalPath(context, String.format("video/%s", videoId));
+        chunkPath = FileUtil.getAppExternalPath(context, String.format("video/%s/chunks", videoId));
     }
 
 }

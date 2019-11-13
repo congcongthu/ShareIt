@@ -202,19 +202,6 @@ public class VideoUploadHelper {
         Textile.instance().ipfs.ipfsAddData(vMeta.getPosterByte(),true,false,posterHandler);
     }
 
-    /**
-     * @TODO
-     * Delete this func and propose another function for sending video.
-     * Error Report:
-     *      VideoHelper.getPosterFromPb may return null bitmap.
-     *      That is because the bitmap returned is a static private value from VideoHelper.
-     *      In that case, this bitmap may be returned before it was assigned.
-     */
-    public static Bitmap getPosterFromPb(Model.Video vpb){
-        String ipfsHash = vpb.getPoster();
-        Textile.instance().ipfs.dataAtPath(ipfsHash, posterReceiveHandler);
-        return bitmapFromIpfs;
-    }
 
     public Bitmap getPoster(){
         return vMeta.getPoster();
