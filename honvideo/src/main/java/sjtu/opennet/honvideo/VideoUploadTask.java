@@ -52,7 +52,7 @@ public class VideoUploadTask {
     private Handlers.IpfsAddDataHandler tsHandler = new Handlers.IpfsAddDataHandler() {
         @Override
         public void onComplete(String path) {
-            Log.d(TAG, String.format("ts chunk ipfs path: %s", path));
+            Log.d(TAG, String.format("IPFS add complete for file %s with ipfs path: %s", tsPath, path));
             //ipfsComplete = true;
             VideoChunk videoChunk = VideoChunk.newBuilder()
                     .setId(videoId)
