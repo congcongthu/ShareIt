@@ -50,7 +50,7 @@ dependencies {
     //Textile SDKs
     implementation project(':hon')
     implementation project(':textilepb')
-    implementation "sjtu.opennet:hon-textile-mobile:0.1.51"
+    implementation "sjtu.opennet:hon-textile-mobile:0.1.53"
     implementation "com.google.protobuf:protobuf-java:3.9.2"
 
     //EventBus，用于异步消息通信
