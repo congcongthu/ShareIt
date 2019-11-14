@@ -49,8 +49,10 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
@@ -78,6 +80,7 @@ public class VideoPlayActivity extends AppCompatActivity {
     Model.Video video;
     boolean finished;
     static int gap = 1000;
+    Map<String, String> addressMap;
 
     private ProgressBar mProgressBar;
 
@@ -91,6 +94,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_video_play);
 
         m3u8WriteCount=0;
+        addressMap = new HashMap<>();
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
@@ -237,19 +241,16 @@ public class VideoPlayActivity extends AppCompatActivity {
                 try {
                     Model.VideoChunk v=Textile.instance().videos.getVideoChunk(videoid, chunkName);
                     if (v == null) {
-                        int k = 0;
                         while(true){ //本地没有就一直去找，直到找到为止
                             v = Textile.instance().videos.getVideoChunk(videoid, chunkName);
                             if (v != null)
                                 break;
                             System.out.println("Getting "+chunkName);
-                            if(k == 10) {
+                            if(!addressMap.containsKey(chunkName)) {
                                 searchTheChunk(chunkName);
-                                k = 0;
                             }
-                            k++;
                             try {
-                                sleep(100);
+                                sleep(500);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -407,9 +408,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         System.out.println("==============得到videoChunk:"+videoChunk.getId()
             +" "+videoChunk.getAddress()+" "+videoChunk.getEndTime());
 
-        //videoChunk可能为空，需要判断..VideoHelper可能为空
-        //todo
-
+        addressMap.put(videoChunk.getChunk(),videoChunk.getAddress());
         videorHelper.receiveChunk(videoChunk); //保存到本地
     }
 

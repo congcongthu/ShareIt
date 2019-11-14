@@ -13141,6 +13141,685 @@ public final class CafeService {
 
   }
 
+  public interface CafeSendFileOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:CafeSendFile)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string name = 1;</code>
+     */
+    java.lang.String getName();
+    /**
+     * <code>string name = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
+
+    /**
+     * <code>int32 size = 2;</code>
+     */
+    int getSize();
+
+    /**
+     * <code>bytes data = 3;</code>
+     */
+    com.google.protobuf.ByteString getData();
+  }
+  /**
+   * Protobuf type {@code CafeSendFile}
+   */
+  public  static final class CafeSendFile extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:CafeSendFile)
+      CafeSendFileOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use CafeSendFile.newBuilder() to construct.
+    private CafeSendFile(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private CafeSendFile() {
+      name_ = "";
+      size_ = 0;
+      data_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private CafeSendFile(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              name_ = s;
+              break;
+            }
+            case 16: {
+
+              size_ = input.readInt32();
+              break;
+            }
+            case 26: {
+
+              data_ = input.readBytes();
+              break;
+            }
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return sjtu.opennet.textilepb.CafeService.internal_static_CafeSendFile_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return sjtu.opennet.textilepb.CafeService.internal_static_CafeSendFile_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              sjtu.opennet.textilepb.CafeService.CafeSendFile.class, sjtu.opennet.textilepb.CafeService.CafeSendFile.Builder.class);
+    }
+
+    public static final int NAME_FIELD_NUMBER = 1;
+    private volatile java.lang.Object name_;
+    /**
+     * <code>string name = 1;</code>
+     */
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string name = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SIZE_FIELD_NUMBER = 2;
+    private int size_;
+    /**
+     * <code>int32 size = 2;</code>
+     */
+    public int getSize() {
+      return size_;
+    }
+
+    public static final int DATA_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString data_;
+    /**
+     * <code>bytes data = 3;</code>
+     */
+    public com.google.protobuf.ByteString getData() {
+      return data_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
+      }
+      if (size_ != 0) {
+        output.writeInt32(2, size_);
+      }
+      if (!data_.isEmpty()) {
+        output.writeBytes(3, data_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+      }
+      if (size_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, size_);
+      }
+      if (!data_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, data_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof sjtu.opennet.textilepb.CafeService.CafeSendFile)) {
+        return super.equals(obj);
+      }
+      sjtu.opennet.textilepb.CafeService.CafeSendFile other = (sjtu.opennet.textilepb.CafeService.CafeSendFile) obj;
+
+      boolean result = true;
+      result = result && getName()
+          .equals(other.getName());
+      result = result && (getSize()
+          == other.getSize());
+      result = result && getData()
+          .equals(other.getData());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + SIZE_FIELD_NUMBER;
+      hash = (53 * hash) + getSize();
+      hash = (37 * hash) + DATA_FIELD_NUMBER;
+      hash = (53 * hash) + getData().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static sjtu.opennet.textilepb.CafeService.CafeSendFile parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeSendFile parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeSendFile parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeSendFile parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeSendFile parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeSendFile parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeSendFile parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeSendFile parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeSendFile parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeSendFile parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeSendFile parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeSendFile parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(sjtu.opennet.textilepb.CafeService.CafeSendFile prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code CafeSendFile}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:CafeSendFile)
+        sjtu.opennet.textilepb.CafeService.CafeSendFileOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return sjtu.opennet.textilepb.CafeService.internal_static_CafeSendFile_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return sjtu.opennet.textilepb.CafeService.internal_static_CafeSendFile_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                sjtu.opennet.textilepb.CafeService.CafeSendFile.class, sjtu.opennet.textilepb.CafeService.CafeSendFile.Builder.class);
+      }
+
+      // Construct using sjtu.opennet.textilepb.CafeService.CafeSendFile.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        name_ = "";
+
+        size_ = 0;
+
+        data_ = com.google.protobuf.ByteString.EMPTY;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return sjtu.opennet.textilepb.CafeService.internal_static_CafeSendFile_descriptor;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.CafeService.CafeSendFile getDefaultInstanceForType() {
+        return sjtu.opennet.textilepb.CafeService.CafeSendFile.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.CafeService.CafeSendFile build() {
+        sjtu.opennet.textilepb.CafeService.CafeSendFile result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.CafeService.CafeSendFile buildPartial() {
+        sjtu.opennet.textilepb.CafeService.CafeSendFile result = new sjtu.opennet.textilepb.CafeService.CafeSendFile(this);
+        result.name_ = name_;
+        result.size_ = size_;
+        result.data_ = data_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof sjtu.opennet.textilepb.CafeService.CafeSendFile) {
+          return mergeFrom((sjtu.opennet.textilepb.CafeService.CafeSendFile)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(sjtu.opennet.textilepb.CafeService.CafeSendFile other) {
+        if (other == sjtu.opennet.textilepb.CafeService.CafeSendFile.getDefaultInstance()) return this;
+        if (!other.getName().isEmpty()) {
+          name_ = other.name_;
+          onChanged();
+        }
+        if (other.getSize() != 0) {
+          setSize(other.getSize());
+        }
+        if (other.getData() != com.google.protobuf.ByteString.EMPTY) {
+          setData(other.getData());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        sjtu.opennet.textilepb.CafeService.CafeSendFile parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (sjtu.opennet.textilepb.CafeService.CafeSendFile) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object name_ = "";
+      /**
+       * <code>string name = 1;</code>
+       */
+      public java.lang.String getName() {
+        java.lang.Object ref = name_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          name_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string name = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        java.lang.Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string name = 1;</code>
+       */
+      public Builder setName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string name = 1;</code>
+       */
+      public Builder clearName() {
+        
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string name = 1;</code>
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int size_ ;
+      /**
+       * <code>int32 size = 2;</code>
+       */
+      public int getSize() {
+        return size_;
+      }
+      /**
+       * <code>int32 size = 2;</code>
+       */
+      public Builder setSize(int value) {
+        
+        size_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 size = 2;</code>
+       */
+      public Builder clearSize() {
+        
+        size_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes data = 3;</code>
+       */
+      public com.google.protobuf.ByteString getData() {
+        return data_;
+      }
+      /**
+       * <code>bytes data = 3;</code>
+       */
+      public Builder setData(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        data_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes data = 3;</code>
+       */
+      public Builder clearData() {
+        
+        data_ = getDefaultInstance().getData();
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:CafeSendFile)
+    }
+
+    // @@protoc_insertion_point(class_scope:CafeSendFile)
+    private static final sjtu.opennet.textilepb.CafeService.CafeSendFile DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new sjtu.opennet.textilepb.CafeService.CafeSendFile();
+    }
+
+    public static sjtu.opennet.textilepb.CafeService.CafeSendFile getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<CafeSendFile>
+        PARSER = new com.google.protobuf.AbstractParser<CafeSendFile>() {
+      @java.lang.Override
+      public CafeSendFile parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new CafeSendFile(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<CafeSendFile> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<CafeSendFile> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public sjtu.opennet.textilepb.CafeService.CafeSendFile getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface CafePublishVideoChunkOrBuilder extends
       // @@protoc_insertion_point(interface_extends:CafePublishVideoChunk)
       com.google.protobuf.MessageOrBuilder {
@@ -13167,6 +13846,19 @@ public final class CafeService {
      * <code>.VideoChunk chunk = 2;</code>
      */
     sjtu.opennet.textilepb.Model.VideoChunkOrBuilder getChunkOrBuilder();
+
+    /**
+     * <code>.CafeSendFile file = 3;</code>
+     */
+    boolean hasFile();
+    /**
+     * <code>.CafeSendFile file = 3;</code>
+     */
+    sjtu.opennet.textilepb.CafeService.CafeSendFile getFile();
+    /**
+     * <code>.CafeSendFile file = 3;</code>
+     */
+    sjtu.opennet.textilepb.CafeService.CafeSendFileOrBuilder getFileOrBuilder();
   }
   /**
    * Protobuf type {@code CafePublishVideoChunk}
@@ -13223,6 +13915,19 @@ public final class CafeService {
               if (subBuilder != null) {
                 subBuilder.mergeFrom(chunk_);
                 chunk_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 26: {
+              sjtu.opennet.textilepb.CafeService.CafeSendFile.Builder subBuilder = null;
+              if (file_ != null) {
+                subBuilder = file_.toBuilder();
+              }
+              file_ = input.readMessage(sjtu.opennet.textilepb.CafeService.CafeSendFile.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(file_);
+                file_ = subBuilder.buildPartial();
               }
 
               break;
@@ -13314,6 +14019,27 @@ public final class CafeService {
       return getChunk();
     }
 
+    public static final int FILE_FIELD_NUMBER = 3;
+    private sjtu.opennet.textilepb.CafeService.CafeSendFile file_;
+    /**
+     * <code>.CafeSendFile file = 3;</code>
+     */
+    public boolean hasFile() {
+      return file_ != null;
+    }
+    /**
+     * <code>.CafeSendFile file = 3;</code>
+     */
+    public sjtu.opennet.textilepb.CafeService.CafeSendFile getFile() {
+      return file_ == null ? sjtu.opennet.textilepb.CafeService.CafeSendFile.getDefaultInstance() : file_;
+    }
+    /**
+     * <code>.CafeSendFile file = 3;</code>
+     */
+    public sjtu.opennet.textilepb.CafeService.CafeSendFileOrBuilder getFileOrBuilder() {
+      return getFile();
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -13334,6 +14060,9 @@ public final class CafeService {
       if (chunk_ != null) {
         output.writeMessage(2, getChunk());
       }
+      if (file_ != null) {
+        output.writeMessage(3, getFile());
+      }
       unknownFields.writeTo(output);
     }
 
@@ -13349,6 +14078,10 @@ public final class CafeService {
       if (chunk_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, getChunk());
+      }
+      if (file_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getFile());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -13373,6 +14106,11 @@ public final class CafeService {
         result = result && getChunk()
             .equals(other.getChunk());
       }
+      result = result && (hasFile() == other.hasFile());
+      if (hasFile()) {
+        result = result && getFile()
+            .equals(other.getFile());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -13389,6 +14127,10 @@ public final class CafeService {
       if (hasChunk()) {
         hash = (37 * hash) + CHUNK_FIELD_NUMBER;
         hash = (53 * hash) + getChunk().hashCode();
+      }
+      if (hasFile()) {
+        hash = (37 * hash) + FILE_FIELD_NUMBER;
+        hash = (53 * hash) + getFile().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -13531,6 +14273,12 @@ public final class CafeService {
           chunk_ = null;
           chunkBuilder_ = null;
         }
+        if (fileBuilder_ == null) {
+          file_ = null;
+        } else {
+          file_ = null;
+          fileBuilder_ = null;
+        }
         return this;
       }
 
@@ -13562,6 +14310,11 @@ public final class CafeService {
           result.chunk_ = chunk_;
         } else {
           result.chunk_ = chunkBuilder_.build();
+        }
+        if (fileBuilder_ == null) {
+          result.file_ = file_;
+        } else {
+          result.file_ = fileBuilder_.build();
         }
         onBuilt();
         return result;
@@ -13617,6 +14370,9 @@ public final class CafeService {
         }
         if (other.hasChunk()) {
           mergeChunk(other.getChunk());
+        }
+        if (other.hasFile()) {
+          mergeFile(other.getFile());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -13831,6 +14587,123 @@ public final class CafeService {
           chunk_ = null;
         }
         return chunkBuilder_;
+      }
+
+      private sjtu.opennet.textilepb.CafeService.CafeSendFile file_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          sjtu.opennet.textilepb.CafeService.CafeSendFile, sjtu.opennet.textilepb.CafeService.CafeSendFile.Builder, sjtu.opennet.textilepb.CafeService.CafeSendFileOrBuilder> fileBuilder_;
+      /**
+       * <code>.CafeSendFile file = 3;</code>
+       */
+      public boolean hasFile() {
+        return fileBuilder_ != null || file_ != null;
+      }
+      /**
+       * <code>.CafeSendFile file = 3;</code>
+       */
+      public sjtu.opennet.textilepb.CafeService.CafeSendFile getFile() {
+        if (fileBuilder_ == null) {
+          return file_ == null ? sjtu.opennet.textilepb.CafeService.CafeSendFile.getDefaultInstance() : file_;
+        } else {
+          return fileBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.CafeSendFile file = 3;</code>
+       */
+      public Builder setFile(sjtu.opennet.textilepb.CafeService.CafeSendFile value) {
+        if (fileBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          file_ = value;
+          onChanged();
+        } else {
+          fileBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.CafeSendFile file = 3;</code>
+       */
+      public Builder setFile(
+          sjtu.opennet.textilepb.CafeService.CafeSendFile.Builder builderForValue) {
+        if (fileBuilder_ == null) {
+          file_ = builderForValue.build();
+          onChanged();
+        } else {
+          fileBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.CafeSendFile file = 3;</code>
+       */
+      public Builder mergeFile(sjtu.opennet.textilepb.CafeService.CafeSendFile value) {
+        if (fileBuilder_ == null) {
+          if (file_ != null) {
+            file_ =
+              sjtu.opennet.textilepb.CafeService.CafeSendFile.newBuilder(file_).mergeFrom(value).buildPartial();
+          } else {
+            file_ = value;
+          }
+          onChanged();
+        } else {
+          fileBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.CafeSendFile file = 3;</code>
+       */
+      public Builder clearFile() {
+        if (fileBuilder_ == null) {
+          file_ = null;
+          onChanged();
+        } else {
+          file_ = null;
+          fileBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.CafeSendFile file = 3;</code>
+       */
+      public sjtu.opennet.textilepb.CafeService.CafeSendFile.Builder getFileBuilder() {
+        
+        onChanged();
+        return getFileFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.CafeSendFile file = 3;</code>
+       */
+      public sjtu.opennet.textilepb.CafeService.CafeSendFileOrBuilder getFileOrBuilder() {
+        if (fileBuilder_ != null) {
+          return fileBuilder_.getMessageOrBuilder();
+        } else {
+          return file_ == null ?
+              sjtu.opennet.textilepb.CafeService.CafeSendFile.getDefaultInstance() : file_;
+        }
+      }
+      /**
+       * <code>.CafeSendFile file = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          sjtu.opennet.textilepb.CafeService.CafeSendFile, sjtu.opennet.textilepb.CafeService.CafeSendFile.Builder, sjtu.opennet.textilepb.CafeService.CafeSendFileOrBuilder> 
+          getFileFieldBuilder() {
+        if (fileBuilder_ == null) {
+          fileBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              sjtu.opennet.textilepb.CafeService.CafeSendFile, sjtu.opennet.textilepb.CafeService.CafeSendFile.Builder, sjtu.opennet.textilepb.CafeService.CafeSendFileOrBuilder>(
+                  getFile(),
+                  getParentForChildren(),
+                  isClean());
+          file_ = null;
+        }
+        return fileBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -17785,6 +18658,11 @@ public final class CafeService {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_CafePublishVideoAck_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_CafeSendFile_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_CafeSendFile_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_CafePublishVideoChunk_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -17851,16 +18729,19 @@ public final class CafeService {
       " \001(\t\"\"\n\024CafeUnstoreThreadAck\022\n\n\002id\030\001 \001(\t" +
       "\"8\n\020CafePublishVideo\022\r\n\005token\030\001 \001(\t\022\025\n\005v" +
       "ideo\030\002 \001(\0132\006.Video\"!\n\023CafePublishVideoAc" +
-      "k\022\n\n\002id\030\001 \001(\t\"B\n\025CafePublishVideoChunk\022\r" +
-      "\n\005token\030\001 \001(\t\022\032\n\005chunk\030\002 \001(\0132\013.VideoChun" +
-      "k\"5\n\030CafePublishVideoChunkAck\022\n\n\002id\030\001 \001(" +
-      "\t\022\r\n\005chunk\030\002 \001(\t\"=\n\022CafeDeliverMessage\022\n" +
-      "\n\002id\030\001 \001(\t\022\016\n\006client\030\002 \001(\t\022\013\n\003env\030\003 \001(\014\"" +
-      "\"\n\021CafeCheckMessages\022\r\n\005token\030\001 \001(\t\".\n\014C" +
-      "afeMessages\022\036\n\010messages\030\001 \003(\0132\014.CafeMess" +
-      "age\"#\n\022CafeDeleteMessages\022\r\n\005token\030\001 \001(\t" +
-      "\"%\n\025CafeDeleteMessagesAck\022\014\n\004more\030\001 \001(\010B" +
-      "\034\n\026sjtu.opennet.textilepbZ\002pbb\006proto3"
+      "k\022\n\n\002id\030\001 \001(\t\"8\n\014CafeSendFile\022\014\n\004name\030\001 " +
+      "\001(\t\022\014\n\004size\030\002 \001(\005\022\014\n\004data\030\003 \001(\014\"_\n\025CafeP" +
+      "ublishVideoChunk\022\r\n\005token\030\001 \001(\t\022\032\n\005chunk" +
+      "\030\002 \001(\0132\013.VideoChunk\022\033\n\004file\030\003 \001(\0132\r.Cafe" +
+      "SendFile\"5\n\030CafePublishVideoChunkAck\022\n\n\002" +
+      "id\030\001 \001(\t\022\r\n\005chunk\030\002 \001(\t\"=\n\022CafeDeliverMe" +
+      "ssage\022\n\n\002id\030\001 \001(\t\022\016\n\006client\030\002 \001(\t\022\013\n\003env" +
+      "\030\003 \001(\014\"\"\n\021CafeCheckMessages\022\r\n\005token\030\001 \001" +
+      "(\t\".\n\014CafeMessages\022\036\n\010messages\030\001 \003(\0132\014.C" +
+      "afeMessage\"#\n\022CafeDeleteMessages\022\r\n\005toke" +
+      "n\030\001 \001(\t\"%\n\025CafeDeleteMessagesAck\022\014\n\004more" +
+      "\030\001 \001(\010B\034\n\026sjtu.opennet.textilepbZ\002pbb\006pr" +
+      "oto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -17995,44 +18876,50 @@ public final class CafeService {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafePublishVideoAck_descriptor,
         new java.lang.String[] { "Id", });
-    internal_static_CafePublishVideoChunk_descriptor =
+    internal_static_CafeSendFile_descriptor =
       getDescriptor().getMessageTypes().get(20);
+    internal_static_CafeSendFile_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_CafeSendFile_descriptor,
+        new java.lang.String[] { "Name", "Size", "Data", });
+    internal_static_CafePublishVideoChunk_descriptor =
+      getDescriptor().getMessageTypes().get(21);
     internal_static_CafePublishVideoChunk_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafePublishVideoChunk_descriptor,
-        new java.lang.String[] { "Token", "Chunk", });
+        new java.lang.String[] { "Token", "Chunk", "File", });
     internal_static_CafePublishVideoChunkAck_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_CafePublishVideoChunkAck_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafePublishVideoChunkAck_descriptor,
         new java.lang.String[] { "Id", "Chunk", });
     internal_static_CafeDeliverMessage_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_CafeDeliverMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeDeliverMessage_descriptor,
         new java.lang.String[] { "Id", "Client", "Env", });
     internal_static_CafeCheckMessages_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_CafeCheckMessages_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeCheckMessages_descriptor,
         new java.lang.String[] { "Token", });
     internal_static_CafeMessages_descriptor =
-      getDescriptor().getMessageTypes().get(24);
+      getDescriptor().getMessageTypes().get(25);
     internal_static_CafeMessages_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeMessages_descriptor,
         new java.lang.String[] { "Messages", });
     internal_static_CafeDeleteMessages_descriptor =
-      getDescriptor().getMessageTypes().get(25);
+      getDescriptor().getMessageTypes().get(26);
     internal_static_CafeDeleteMessages_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeDeleteMessages_descriptor,
         new java.lang.String[] { "Token", });
     internal_static_CafeDeleteMessagesAck_descriptor =
-      getDescriptor().getMessageTypes().get(26);
+      getDescriptor().getMessageTypes().get(27);
     internal_static_CafeDeleteMessagesAck_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeDeleteMessagesAck_descriptor,
