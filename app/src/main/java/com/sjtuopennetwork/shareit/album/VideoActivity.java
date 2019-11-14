@@ -81,7 +81,7 @@ public class VideoActivity extends AppCompatActivity {
 
         //Listener for video delete
         video_delete.setOnClickListener(view->{
-            //VideoHelper.cleanAll(this);
+            VideoUploadHelper.cleanAll(this);
         });
     }
 
@@ -114,7 +114,8 @@ public class VideoActivity extends AppCompatActivity {
 //            endTime = System.currentTimeMillis();
 //            Log.d(TAG, String.format("Meta publish time %d ms", endTime - startTime));
 //            Log.d(TAG, "Try to stream video");
-              vHelper.segment();
+            Log.d(TAG, "seg only");
+            vHelper.segmentOnly();
             /*
             Log.d(TAG, "Try to receive thumbnail from ipfs");
             Model.Video tmpVpb = vHelper.getVideoPb();

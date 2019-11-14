@@ -49,7 +49,7 @@ public class VideoReceiver extends Thread{
             try {
                 vTask = vQueue.take();
                 if(vTask.isEnd()||vTask.isDestroy()){
-                    Log.d(TAG, "End Task received. End the thread.");
+                    Log.d(TAG, "End or destroy Task received. End the thread.");
                     complete = true;
                 }else{
                     String fileName = vTask.getFileName();
@@ -67,9 +67,9 @@ public class VideoReceiver extends Thread{
 
                         if(!success){
                             Log.e(TAG, String.format("Task with file %s fail!!! Please retry", fileName));
-//                            Thread.sleep(1000);
-//                            vQueue.add(vTask);
-//                            Log.e(TAG, String.format("Add the failed task %s back to queue", fileName));
+                            //Thread.sleep(1000);
+                            vQueue.add(vTask);
+                            Log.e(TAG, String.format("Add the failed task %s back to queue", fileName));
                         }else {
                             Log.d(TAG, "Task success.");
                         }
