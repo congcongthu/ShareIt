@@ -87,6 +87,8 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        System.out.println("=====================HomeActivity");
+
         circleProgressDialog=new CircleProgressDialog(this);
         circleProgressDialog.setText("节点启动中");
         circleProgressDialog.showDialog();
@@ -132,7 +134,6 @@ public class HomeActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void knowOnline(Integer integer){
         if(integer.intValue()==0){
-            System.out.println("=========nodeOnline:"+nodeOnline);
             if(!nodeOnline){
                 circleProgressDialog.dismiss();
                 nodeOnline=true;
@@ -143,9 +144,19 @@ public class HomeActivity extends AppCompatActivity {
 
     //切换Fragment
     private void replaceFragment(Fragment fragment) {
+        System.out.println("=============切换fragment：");
         fragmentManager = getSupportFragmentManager();
         transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.rep_layout, fragment);
         transaction.commitAllowingStateLoss();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
     }
 }

@@ -171,9 +171,9 @@ public class ForeGroundService extends Service {
         System.out.println("==================登录账户："+loginAccount+" "+phrase);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void tryConnectCafe(Integer integer){
-        if(integer==9){
+        if(integer==973){
             Textile.instance().cafes.register(
                     "http://202.120.38.131:40601",
                     "2GmWwR2S2cW9UPe1tD3an4QzbUxo7hodsGef8reSLrL6sf4uCo77qrGqcw98m",
@@ -192,7 +192,7 @@ public class ForeGroundService extends Service {
                         public void onError(Exception e) {
                             System.out.println("==========131cafe连接失败");
                             //发消息再连接
-                            EventBus.getDefault().post(new Integer(9));
+                            EventBus.getDefault().post(new Integer(973));
                         }
                     });
         }
@@ -202,6 +202,7 @@ public class ForeGroundService extends Service {
         @Override
         public void nodeOnline() {
 
+            System.out.println("================节点online");
             QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
             try {
                 Textile.instance().account.sync(options);
@@ -222,15 +223,13 @@ public class ForeGroundService extends Service {
 
             createDeviceThread();
 
-            tryConnectCafe(9);
+            tryConnectCafe(973);
 
 //            try {
 //                Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.131/tcp/23524/ipfs/12D3KooWERhx7JQhFfXA3a7WGSPCH5Zd1EuQnY6eeQM3VrVUBg67");
 //            } catch (Exception e) {
 //                e.printStackTrace();
 //            }
-
-            System.out.println("=====online-middle");
 
 //            根据登录方式，设置name和头像
             System.out.println("=========login:"+login);
@@ -439,7 +438,7 @@ public class ForeGroundService extends Service {
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
                         feedItemData.text.getBody(), feedItemData.text.getDate().getSeconds(),
                         tDialog.imgpath);
-
+                tDialog.isRead=false;
                 EventBus.getDefault().post(updateDialog);
 
                 if(ismine==0){ //不是我的消息才广播出去
@@ -470,6 +469,7 @@ public class ForeGroundService extends Service {
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
                         feedItemData.files.getUser().getName()+"分享了图片", feedItemData.files.getDate().getSeconds(),
                         dialogimg);
+                updateDialog.isRead=false;
 
                 //Msg
                 int ismine=0;

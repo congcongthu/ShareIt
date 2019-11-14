@@ -61,6 +61,8 @@ public class DialogAdapter extends ArrayAdapter {
 
         if(tDialog.isRead){
             vh.isRead.setVisibility(View.GONE);
+        }else{
+            vh.isRead.setVisibility(View.VISIBLE);
         }
         DateFormat df=new SimpleDateFormat("MM-dd HH:mm");
 

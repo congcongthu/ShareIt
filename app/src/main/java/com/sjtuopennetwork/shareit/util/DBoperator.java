@@ -93,6 +93,7 @@ public class DBoperator {
         v.put("lastmsg",lastmsg); tDialog.lastmsg=lastmsg;
         v.put("lastmsgdate",lastmsgdate); tDialog.lastmsgdate=lastmsgdate;
         v.put("imgpath",imgpath); tDialog.imgpath=imgpath;
+        v.put("isread",0);
         appdb.update("dialogs",v,"threadid=?",new String[]{threadId});
         System.out.println("=================对话表更新成功");
         return tDialog;

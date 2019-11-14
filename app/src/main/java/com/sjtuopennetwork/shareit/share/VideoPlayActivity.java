@@ -6,10 +6,15 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.VideoView;
 
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
@@ -17,8 +22,14 @@ import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist;
 import com.google.android.exoplayer2.source.hls.playlist.HlsPlaylist;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
@@ -38,8 +49,10 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
@@ -67,6 +80,9 @@ public class VideoPlayActivity extends AppCompatActivity {
     Model.Video video;
     boolean finished;
     static int gap = 1000;
+    Map<String, String> addressMap;
+
+    private ProgressBar mProgressBar;
 
     //两个线程
     GetChunkThread getChunkThread=new GetChunkThread();
@@ -78,6 +94,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_video_play);
 
         m3u8WriteCount=0;
+        addressMap = new HashMap<>();
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
@@ -167,16 +184,50 @@ public class VideoPlayActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch(msg.what){
                 case 1:
-                    System.out.println("开始播放");
-                    PlayerView playerView = findViewById(R.id.player_view);
-                    player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
-                    playerView.setPlayer(player);
-                    dataSourceFactory = new DefaultDataSourceFactory(VideoPlayActivity.this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
-                    hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
-                    player.prepare(hlsMediaSource);
+                    playVideo();
             }
         }
     };
+
+    public void playVideo(){
+        //初始化播放器
+        BandwidthMeter bandwidthMeter=new DefaultBandwidthMeter();
+        TrackSelection.Factory trackSelectionFactory=new AdaptiveTrackSelection.Factory(bandwidthMeter);
+        TrackSelector trackSelector = new DefaultTrackSelector(trackSelectionFactory);
+        LoadControl loadControl = new DefaultLoadControl();
+        player=ExoPlayerFactory.newSimpleInstance(this,trackSelector,loadControl);
+        PlayerView playerView = findViewById(R.id.player_view);
+        playerView.setPlayer(player);
+
+        //设置数据源
+        dataSourceFactory = new DefaultDataSourceFactory(VideoPlayActivity.this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
+        hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
+        player.prepare(hlsMediaSource);
+        player.addListener(new MyEventListener());
+
+    }
+
+    public class MyEventListener implements Player.EventListener {
+        @Override
+        public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+            switch (playbackState){
+                case ExoPlayer.STATE_ENDED:
+                    //Stop playback and return to start position
+                    player.setPlayWhenReady(false);
+                    player.seekTo(0);
+                    break;
+                case ExoPlayer.STATE_READY:
+                    mProgressBar.setVisibility(View.GONE);
+                    setProgress(0);
+                    break;
+                case ExoPlayer.STATE_BUFFERING:
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    break;
+                case ExoPlayer.STATE_IDLE:
+                    break;
+            }
+        }
+    }
 
     public class GetChunkThread extends Thread{
         @Override
@@ -190,19 +241,16 @@ public class VideoPlayActivity extends AppCompatActivity {
                 try {
                     Model.VideoChunk v=Textile.instance().videos.getVideoChunk(videoid, chunkName);
                     if (v == null) {
-                        int k = 0;
                         while(true){ //本地没有就一直去找，直到找到为止
                             v = Textile.instance().videos.getVideoChunk(videoid, chunkName);
                             if (v != null)
                                 break;
                             System.out.println("Getting "+chunkName);
-                            if(k == 10) {
+                            if(!addressMap.containsKey(chunkName)) {
                                 searchTheChunk(chunkName);
-                                k = 0;
                             }
-                            k++;
                             try {
-                                sleep(100);
+                                sleep(500);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -359,6 +407,8 @@ public class VideoPlayActivity extends AppCompatActivity {
     public void getAnResult(Model.VideoChunk videoChunk){
         System.out.println("==============得到videoChunk:"+videoChunk.getId()
             +" "+videoChunk.getAddress()+" "+videoChunk.getEndTime());
+
+        addressMap.put(videoChunk.getChunk(),videoChunk.getAddress());
         videorHelper.receiveChunk(videoChunk); //保存到本地
     }
 
@@ -368,5 +418,10 @@ public class VideoPlayActivity extends AppCompatActivity {
         if(EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().unregister(this);
         }
+
+        //结束下载
+
+
+        player.release(); //释放cafe节点
     }
 }
