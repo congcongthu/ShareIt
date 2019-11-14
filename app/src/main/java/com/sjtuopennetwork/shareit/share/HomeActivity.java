@@ -87,6 +87,8 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        System.out.println("=====================HomeActivity");
+
         circleProgressDialog=new CircleProgressDialog(this);
         circleProgressDialog.setText("节点启动中");
         circleProgressDialog.showDialog();
@@ -147,5 +149,14 @@ public class HomeActivity extends AppCompatActivity {
         transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.rep_layout, fragment);
         transaction.commitAllowingStateLoss();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
     }
 }
