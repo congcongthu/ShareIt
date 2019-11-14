@@ -1,5 +1,8 @@
 package sjtu.opennet.hon;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import mobile.Mobile_;
 import mobile.SearchHandle;
 import sjtu.opennet.textilepb.Model.Video;
@@ -13,6 +16,7 @@ import sjtu.opennet.textilepb.QueryOuterClass.VideoChunkQuery;
  */
 public class Videos extends NodeDependent {
 
+    private Lock lock = new ReentrantLock();
     Videos(final Mobile_ node) {
         super(node);
     }
@@ -48,7 +52,9 @@ public class Videos extends NodeDependent {
     }
 
     public void publishVideoChunk(final VideoChunk vchunk) throws Exception {
+//        lock.lock();
         node.publishVideoChunk(vchunk.toByteArray());
+//        lock.unlock();
     }
  
     public VideoChunkList chunksByVideoId(final String videoId) throws Exception {
