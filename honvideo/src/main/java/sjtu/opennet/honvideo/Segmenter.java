@@ -82,10 +82,14 @@ public class Segmenter {
             outDirf.mkdir();
         }
         //String command = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -f segment -segment_time 10 -segment_list %s/out.m3u8 %s/out%%04d.ts", filePath, outDir, outDir);
-        String command = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -f segment " +
-                "-segment_time %d " +
-                "-segment_list %s " +
-                "%s/out%%04d.ts", filePath, segTime, m3u8Path, outDir);
+//        String command = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -f segment " +
+//                "-segment_time %d " +
+//                "-segment_list %s " +
+//                "%s/out%%04d.ts", filePath, segTime, m3u8Path, outDir);
+        String command = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -maxrate 350k -bufsize 700k -f segment " +
+                  "-segment_time %d " +
+                  "-segment_list %s " +
+                  "%s/out%%04d.ts", filePath, segTime, m3u8Path, outDir);
         FFmpeg ffmpeg = FFmpeg.getInstance(context);
         if(handler!=null){
             ffmpeg.execute(command.split(" "), handler);
