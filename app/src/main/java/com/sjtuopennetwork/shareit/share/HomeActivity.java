@@ -132,7 +132,6 @@ public class HomeActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void knowOnline(Integer integer){
         if(integer.intValue()==0){
-            System.out.println("=========nodeOnline:"+nodeOnline);
             if(!nodeOnline){
                 circleProgressDialog.dismiss();
                 nodeOnline=true;
@@ -143,6 +142,7 @@ public class HomeActivity extends AppCompatActivity {
 
     //切换Fragment
     private void replaceFragment(Fragment fragment) {
+        System.out.println("=============切换fragment：");
         fragmentManager = getSupportFragmentManager();
         transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.rep_layout, fragment);

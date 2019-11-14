@@ -1,6 +1,7 @@
 package com.sjtuopennetwork.shareit.share;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -230,6 +231,12 @@ public class ChatActivity extends AppCompatActivity {
             chat_lv.setSelection(msgList.size()); //图片有时候不立即显示，因为Item大小完全相同。
             System.out.println("==================收到了消息："+tMsg.body);
         }
+
+        //还要把相应的Dialog表改为已读
+        ContentValues v=new ContentValues();
+        v.put("isread",1);
+        appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
+
     }
 
     @Override

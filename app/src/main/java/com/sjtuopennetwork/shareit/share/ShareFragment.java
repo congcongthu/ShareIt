@@ -154,12 +154,16 @@ public class ShareFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getNewMsg(TDialog tDialog){ //获取到新的消息后要更新显示
-        for(TDialog t:dialogs){
-            if(t.threadid.equals(tDialog.threadid)){
-                dialogs.remove(t);
-                dialogs.add(0,tDialog);
+        //找到对应的那一个，将其删除，并在头部插入
+        for(int i=0;i<dialogs.size();i++){
+            if(dialogs.get(i).threadid.equals(tDialog.threadid)){
+                dialogs.remove(i);
             }
         }
+        System.out.println("=============是否已读："+tDialog.isRead);
+        dialogs.add(0,tDialog);
+        dialoglistView.invalidateViews();
+        dialoglistView.setSelection(0);
     }
 
     @Override

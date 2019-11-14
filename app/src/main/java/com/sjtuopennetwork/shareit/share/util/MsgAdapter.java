@@ -227,7 +227,6 @@ public class MsgAdapter extends BaseAdapter {
                     });
                 }
             }
-
         }
         return view;
     }
@@ -249,7 +248,6 @@ public class MsgAdapter extends BaseAdapter {
             Glide.with(context).load(avatarPath).thumbnail(0.3f).into(imageView);
         }
     }
-
 
     private void setVideo(ImageView imageView,String filePath,String fileHash){
         if(filePath.equals("null")){ //如果没有存储过图片
@@ -280,13 +278,13 @@ public class MsgAdapter extends BaseAdapter {
                 String afileName="";
                 @Override
                 public void onComplete(byte[] data, String media) {
-                    System.out.println("====拿图片成功");
+                    System.out.println("====拿图片成功:"+fileHash);
                     afileName=FileUtil.storeFile(data,fileHash);
                     Glide.with(context).load(afileName).thumbnail(0.3f).into(imageView);
                 }
                 @Override
                 public void onError(Exception e) {
-                    System.out.println("====拿图片失败");
+                    System.out.println("====拿图片失败"+fileHash);
                 }
             });
         }else{

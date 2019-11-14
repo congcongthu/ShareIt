@@ -64,6 +64,8 @@ public class ContactFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+
+
         initUI();
 
         initData();
@@ -133,4 +135,7 @@ public class ContactFragment extends Fragment {
             application_badge.setVisibility(View.GONE);
         }
     }
+
+
+
 }

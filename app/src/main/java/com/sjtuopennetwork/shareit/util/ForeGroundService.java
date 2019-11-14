@@ -230,8 +230,6 @@ public class ForeGroundService extends Service {
 //                e.printStackTrace();
 //            }
 
-            System.out.println("=====online-middle");
-
 //            根据登录方式，设置name和头像
             System.out.println("=========login:"+login);
             switch(login){
@@ -439,7 +437,7 @@ public class ForeGroundService extends Service {
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
                         feedItemData.text.getBody(), feedItemData.text.getDate().getSeconds(),
                         tDialog.imgpath);
-
+                tDialog.isRead=false;
                 EventBus.getDefault().post(updateDialog);
 
                 if(ismine==0){ //不是我的消息才广播出去
@@ -470,6 +468,7 @@ public class ForeGroundService extends Service {
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
                         feedItemData.files.getUser().getName()+"分享了图片", feedItemData.files.getDate().getSeconds(),
                         dialogimg);
+                updateDialog.isRead=false;
 
                 //Msg
                 int ismine=0;
