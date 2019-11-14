@@ -6,9 +6,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
+import sjtu.opennet.hon.Textile;
+import sjtu.opennet.textilepb.Model;
+
+
 /**
- * @TODO stop the thread using stop flag so that we can safely stop this thread when activity is destroy.
- * Another way to do this is add a special end task with highest priority.
+ * @TODO stop the thread using stop flag so that we can safely stop this thread when activity is destroy. Another way to do this is add a special end task with highest priority.
+ * @TODO use local DB to replace chunklist.
  */
 public class VideoReceiver extends Thread{
     private final String TAG = "HONVIDEO.VideoReceiver";
@@ -20,69 +24,17 @@ public class VideoReceiver extends Thread{
     private boolean stop = false;
 
     private String m3u8Path;
-    private String chunkListPath;
-    private Set<Integer> chunkIndexSet;
-    private int currentIndex = -1;
-    public VideoReceiver(BlockingQueue<VideoReceiveTask> vQueue, String videoPath, String chunkPath){
+    private String videoId;
+    //private HashSet<int> chunk
+    public VideoReceiver(BlockingQueue<VideoReceiveTask> vQueue, String videoId, String videoPath, String chunkPath){
         this.vQueue = vQueue;
+        this.videoId = videoId;
         this.videoPath = videoPath;
         this.chunkPath = chunkPath;
 
         this.m3u8Path = String.format("%s/playList.m3u8", videoPath);
-        this.chunkListPath = String.format("%s/chunkList.txt", videoPath);
-
-        chunkIndexSet = new HashSet<>();
-        resumeState();
     }
 
-    /**
-     * resume state from chunklist and m3u8
-     */
-    private void resumeState(){
-        /**
-         * First read the list and m3u8 file.
-         */
-
-        /**
-         * If they don't exist, create new ones.
-         */
-
-        FileUtil.createNewFile(m3u8Path);
-        FileUtil.createNewFile(chunkListPath);
-    }
-
-    /**
-     * updateState does following things:<br />
-     *  - Add chunk index to chunk index list and list file.
-     *  - Update currentIndex if the index if successor of currentIndex
-     *  - Write to m3u8 file if currentIndex is updated.
-     *  - Further update currentIndex and m3u8 if there is more successors in chunk index list.
-     */
-    private void updateState(int tmpIndex){
-        if(!chunkIndexSet.contains(tmpIndex)){
-            chunkIndexSet.add(tmpIndex);
-            FileUtil.appendToFileWithNewLine(chunkListPath, Integer.toString(tmpIndex));
-        }
-        updateRecursive(tmpIndex);
-    }
-
-    private void updateRecursive(int tmpIndex){
-        if(tmpIndex == (currentIndex + 1)){
-            currentIndex = tmpIndex;
-            updateM3u8(tmpIndex);
-            if(chunkIndexSet.contains(currentIndex + 1)){
-                updateRecursive(currentIndex + 1);
-            }
-        }
-    }
-
-    /**
-     * @TODO Complete this function according to the requirement of media player.
-     * @param tmpIndex
-     */
-    private void updateM3u8(int tmpIndex){
-        return;
-    }
 
     public void shutDown(){
         Log.w(TAG, "Video Receiver Shut Down!!\nNote that this is not the normal exit method.");
@@ -96,42 +48,44 @@ public class VideoReceiver extends Thread{
         while(!complete) {
             try {
                 vTask = vQueue.take();
-                if(vTask.isEnd()){
+                if(vTask.isEnd()||vTask.isDestroy()){
                     Log.d(TAG, "End Task received. End the thread.");
                     complete = true;
                 }else{
-                    //
-                    //DO SOMETHING
-                    //Judeg whether to process task
                     String fileName = vTask.getFileName();
-                    //String fileName = vTask.process();
-                    int tmpIndex = Segmenter.getIndFromPath(fileName);
-                    if(chunkIndexSet.contains(tmpIndex)){
-                        Log.d(TAG, String.format("File %s already received.", fileName));
-                        updateState(tmpIndex);
-                    }else{
+                    Model.VideoChunk localChunk = Textile.instance().videos.getVideoChunk(videoId,fileName);
+                    if(localChunk == null){
                         Log.d(TAG, String.format("Task with file %s start.", fileName));
-                        boolean success = vTask.process();
-                        if(!success){
-                            Thread.sleep(1000);
-                            vQueue.add(vTask);
-                            Log.e(TAG, String.format("Add the failed task %s back to queue", fileName));
-                        }else{
-                            Log.d(TAG, "Task success. Update Receiver State.");
-                            updateState(tmpIndex);
-                        }
-                    }
 
-                    //
+
+                        //
+                        boolean success = vTask.process();
+                        //
+
+
+
+
+                        if(!success){
+                            Log.e(TAG, String.format("Task with file %s fail!!! Please retry", fileName));
+//                            Thread.sleep(1000);
+//                            vQueue.add(vTask);
+//                            Log.e(TAG, String.format("Add the failed task %s back to queue", fileName));
+                        }else {
+                            Log.d(TAG, "Task success.");
+                        }
+                    }else{
+                        Log.d(TAG, String.format("Task with file %s already received.", fileName));
+                    }
                 }
             } catch (InterruptedException ie) {
                 Log.e(TAG, "Unexpected Interrupt.");
                 ie.printStackTrace();
                 interrupt();
             } catch(Exception e){
+                Log.e(TAG, "Unknown Exception.");
                 e.printStackTrace();
             }
-            //videoQueue.notify();
+
         }
         Log.d(TAG, "Receiver end safely.");
     }

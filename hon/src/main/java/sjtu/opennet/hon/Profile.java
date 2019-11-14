@@ -78,4 +78,14 @@ public class Profile extends NodeDependent {
         final byte[] bytes = node.accountThread();
         return Thread.parseFrom(bytes);
     }
+
+    /**
+     * Get the Textile store thread
+     * @return The account thread
+     * @throws Exception The exception that occurred
+     */
+    public Thread storeThread() throws Exception {
+        final byte[] bytes = node.storeThread();
+        return Thread.parseFrom(bytes);
+    }
 }

@@ -33,6 +33,7 @@ import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 //import com.sjtuopennetwork.shareit.util.VideoHelper;
+//import com.sjtuopennetwork.shareit.util.VideoHelper;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -241,6 +242,7 @@ public class ChatActivity extends AppCompatActivity {
             Textile.instance().files.addFiles(filePath, threadid, "", new Handlers.BlockHandler() {
                 @Override
                 public void onComplete(Model.Block block) {
+
                 }
                 @Override
                 public void onError(Exception e) {
@@ -262,7 +264,7 @@ public class ChatActivity extends AppCompatActivity {
             System.out.println("=================选择了视频："+filePath);
 //
             VideoUploadHelper videoHelper=new VideoUploadHelper(this,filePath);
-//            videoHelper.publishMeta(); //添加到本地、上传到cafe
+            videoHelper.publishMeta(); //添加到本地、上传到cafe
             Model.Video video=videoHelper.getVideoPb();
             try {
                 Textile.instance().videos.threadAddVideo(threadid,video.getId()); //向thread中添加

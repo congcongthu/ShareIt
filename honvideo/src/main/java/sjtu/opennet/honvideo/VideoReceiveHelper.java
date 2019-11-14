@@ -1,6 +1,7 @@
 package sjtu.opennet.honvideo;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -46,12 +47,16 @@ public class VideoReceiveHelper {
         totalDuration = videoPb.getVideoLength();
         vQueue = new PriorityBlockingQueue<>();
         buildWorkspace();
-        receiver = new VideoReceiver(vQueue, videoPath, chunkPath);
+        receiver = new VideoReceiver(vQueue, videoId, videoPath, chunkPath);
         receiver.start();
     }
 
     public void receiveChunk(Model.VideoChunk videoChunk){
-        vQueue.add(new VideoReceiveTask(videoChunk, chunkPath, false));
+        if(vQueue.contains(videoChunk)){
+            Log.d(TAG, String.format("Chunk with %s already in task queue.", videoChunk.getChunk()));
+            return;
+        }
+        vQueue.add(new VideoReceiveTask(videoChunk, chunkPath, false, false));
     }
 
     /**
@@ -73,8 +78,9 @@ public class VideoReceiveHelper {
         }
     }
     private void buildWorkspace(){
-        videoPath = FileUtil.getAppExternalPath(context, "videoreceive");
-        chunkPath = FileUtil.getAppExternalPath(context, "videoreceive/chunks");
+        String rootPath = FileUtil.getAppExternalPath(context, "video");
+        videoPath = FileUtil.getAppExternalPath(context, String.format("video/%s", videoId));
+        chunkPath = FileUtil.getAppExternalPath(context, String.format("video/%s/chunks", videoId));
     }
 
 }
