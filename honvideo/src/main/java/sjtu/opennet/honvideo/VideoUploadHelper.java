@@ -89,7 +89,9 @@ public class VideoUploadHelper {
 
     }
 
-
+    public String getVideoId(){
+        return vMeta.getHash();
+    }
     /**
      * shutDownUploader is used to stop the uploader binding with this helper.
      * It will do following things:<br />
