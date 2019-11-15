@@ -55,6 +55,7 @@ public class VideoUploadHelper {
     static private Bitmap bitmapFromIpfs;
 
     String threadId;
+    M3u8Listener listObserver;
 
     public VideoUploadHelper(Context context, String filePath){
         this.context = context;
@@ -195,6 +196,41 @@ public class VideoUploadHelper {
         }
     };
 
+    private ExecuteBinaryResponseHandler segHandler3 = new ExecuteBinaryResponseHandler(){
+        @Override
+        public void onSuccess(String message) {
+            Log.d(TAG, String.format("FFmpeg segment success\n%s", message));
+
+            listObserver.stopWatching();
+            //new shutDownUploader().start();
+        }
+
+        @Override
+        public void onProgress(String message){
+        }
+
+        @Override
+        public void onFailure(String message) {
+            Log.e(TAG, "Command failure.");
+
+            listObserver.stopWatching();
+            //videoUploader.shutDown();   //shut it down instead of safely exit it using shutDownUploader
+        }
+
+        @Override
+        public void onStart() {
+            Log.d(TAG, "FFmpeg segment start with handler v2.");
+            //videoUploader.start();      //Do not use run!!!!
+            listObserver.startWatching();
+        }
+
+        @Override
+        public void onFinish() {
+            listObserver.stopWatching();
+            //setVideoPb2();
+        }
+    };
+
     private Handlers.IpfsAddDataHandler posterHandler = new Handlers.IpfsAddDataHandler() {
         @Override
         public void onComplete(String path) {
@@ -278,6 +314,17 @@ public class VideoUploadHelper {
             Log.e(TAG, "Unknown error when doing segment only.");
             e.printStackTrace();
         }
+    }
+
+    public void testDecodeM3u8(){
+        listObserver = new M3u8Listener(m3u8Path);
+        try {
+            Segmenter.segment(context, 3, filePath, m3u8Path, chunkPath, segHandler3);
+        }catch(Exception e){
+            Log.e(TAG, "Unknown error when test m3u8 decoder.");
+            e.printStackTrace();
+        }
+
     }
 
     public void publishMeta(){

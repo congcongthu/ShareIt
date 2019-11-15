@@ -115,7 +115,8 @@ public class VideoActivity extends AppCompatActivity {
 //            Log.d(TAG, String.format("Meta publish time %d ms", endTime - startTime));
 //            Log.d(TAG, "Try to stream video");
             Log.d(TAG, "seg only");
-            vHelper.segmentOnly();
+            //vHelper.segmentOnly();
+            vHelper.testDecodeM3u8();
             /*
             Log.d(TAG, "Try to receive thumbnail from ipfs");
             Model.Video tmpVpb = vHelper.getVideoPb();

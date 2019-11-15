@@ -132,5 +132,9 @@ public class FileUtil {
         }
     }
 
+    public static String readAllString(String filePath){
+        return new String(readAllBytes(filePath));
+    }
+
     //public static
 }

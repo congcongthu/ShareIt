@@ -28,7 +28,8 @@ public class M3u8Listener extends FileObserver {
 //                }catch(Exception e){
 //                    e.printStackTrace();
 //                }
-
+                String m3u8Content = FileUtil.readAllString(path);
+                Log.d(TAG, m3u8Content);
         }
     }
 
