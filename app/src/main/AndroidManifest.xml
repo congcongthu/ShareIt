@@ -24,6 +24,7 @@
             android:name=".util.ForeGroundService"
             android:enabled="true"
             android:exported="true" />
+        <activity android:name=".album.PhotoShow"/>
         <activity android:name=".album.FileShow"/>
         <activity android:name=".share.ImageInfoActivity" />
         <activity android:name=".share.GroupQRCodeActivity" />
