@@ -112,6 +112,7 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
         }
         try {
             String chunkHash = vChunk.getAddress();
+            Log.d(TAG, String.format("IPFS get %s from %s", fileName, chunkHash));
             Textile.instance().ipfs.dataAtPath(chunkHash, handler);
             //Log.d(TAG, String.format("Task with file %s completes.", fileName));
             return true;
