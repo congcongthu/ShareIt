@@ -405,7 +405,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getAnResult(Model.VideoChunk videoChunk){
-        System.out.println("==============得到videoChunk的hash:" + videoChunk.getChunk()+" "+ videoChunk.getEndTime());
+        System.out.println("==============得到videoChunk的hash:" + videoChunk.getChunk()+" "+ videoChunk.getEndTime()+" "+videoChunk.getAddress());
         addressMap.put(videoChunk.getChunk(),videoChunk.getAddress()); //拿到一个结果就放进来一个，可能会相同
         videorHelper.receiveChunk(videoChunk); //将对应的视频保存到本地
     }
