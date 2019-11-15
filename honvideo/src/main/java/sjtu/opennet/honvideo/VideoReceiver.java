@@ -5,6 +5,8 @@ import android.util.Log;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Model;
@@ -25,7 +27,10 @@ public class VideoReceiver extends Thread{
 
     private String m3u8Path;
     private String videoId;
+
+    //private String controlLock;
     //private HashSet<int> chunk
+
     public VideoReceiver(BlockingQueue<VideoReceiveTask> vQueue, String videoId, String videoPath, String chunkPath){
         this.vQueue = vQueue;
         this.videoId = videoId;
@@ -33,6 +38,8 @@ public class VideoReceiver extends Thread{
         this.chunkPath = chunkPath;
 
         this.m3u8Path = String.format("%s/playList.m3u8", videoPath);
+
+        //lockQueue = new LinkedBlockingQueue<>();
     }
 
 
@@ -43,35 +50,57 @@ public class VideoReceiver extends Thread{
 
     @Override
     public void run(){
+
         Log.d(TAG, "Receiver start to run.");
+        /**
+         * lockQueue is used to blocking this thread before task complete.
+         * The integer take from it means:
+         *  - 1, task success
+         *  - 0, task end
+         *  - -1, task fail.
+         */
+        BlockingQueue<Integer> lockQueue = new LinkedBlockingQueue<>();
+        int returnStat;
+        long currentTime;
+        long endTime;
         VideoReceiveTask vTask;
         while(!complete) {
             try {
                 vTask = vQueue.take();
+
                 if(vTask.isEnd()||vTask.isDestroy()){
-                    Log.d(TAG, "End Task received. End the thread.");
+                    Log.d(TAG, "End or destroy Task received. End the thread.");
                     complete = true;
                 }else{
+
+
                     String fileName = vTask.getFileName();
                     Model.VideoChunk localChunk = Textile.instance().videos.getVideoChunk(videoId,fileName);
                     if(localChunk == null){
-                        Log.d(TAG, String.format("Task with file %s start.", fileName));
+                        Log.d(TAG, String.format("Receive task with file %s start.", fileName));
 
 
                         //
-                        boolean success = vTask.process();
+                        currentTime = System.currentTimeMillis();
+                        boolean success = vTask.process(lockQueue);
+                        Log.d(TAG, String.format("Reveive task %s return", fileName));
+                        returnStat = lockQueue.take();
+                        endTime = System.currentTimeMillis();
+                        Log.d(TAG, String.format("Receive task %s complete. Used time %d", fileName, endTime - currentTime));
                         //
 
 
 
 
-                        if(!success){
-                            Log.e(TAG, String.format("Task with file %s fail!!! Please retry", fileName));
-//                            Thread.sleep(1000);
-//                            vQueue.add(vTask);
-//                            Log.e(TAG, String.format("Add the failed task %s back to queue", fileName));
-                        }else {
+                        if(returnStat == -1){
+                            Log.e(TAG, String.format("Task %s fail! Add it back to task queue", fileName));
+                            //Thread.sleep(1000);
+                            vQueue.add(vTask);
+                            Log.e(TAG, String.format("Add the failed task %s back to queue", fileName));
+                        }else if(returnStat == 1){
                             Log.d(TAG, "Task success.");
+                        } else if(returnStat == 0){
+                            Log.e(TAG, "That should not happen.");
                         }
                     }else{
                         Log.d(TAG, String.format("Task with file %s already received.", fileName));

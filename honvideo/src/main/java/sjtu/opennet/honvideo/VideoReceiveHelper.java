@@ -77,6 +77,12 @@ public class VideoReceiveHelper {
             }
         }
     }
+
+    public void stopReceiver(){
+        Log.d(TAG, "Stop receiver. Add stop task to task queue.");
+        vQueue.add(VideoReceiveTask.destroyTask());
+    }
+
     private void buildWorkspace(){
         String rootPath = FileUtil.getAppExternalPath(context, "video");
         videoPath = FileUtil.getAppExternalPath(context, String.format("video/%s", videoId));

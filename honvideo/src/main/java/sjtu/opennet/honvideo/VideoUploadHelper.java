@@ -167,13 +167,27 @@ public class VideoUploadHelper {
     };
 
 
-
+    /**
+     * Segment, upload and publish video.
+     */
     public void segment(){
         try {
             chunkpublisher.start(); //It was ended by upload task.
             Segmenter.segment(context, 10, filePath, m3u8Path, chunkPath, segHandler);
             //Segmenter.segment(context, 1, filePath, m3u8Path, chunkPath, segHandler);
         }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *
+     */
+    public void segmentOnly(){
+        try {
+            Segmenter.segment(context, 10, filePath, m3u8Path, chunkPath, Segmenter.defaultHandler);
+        }catch(Exception e){
+            Log.e(TAG, "Unknown error when doing segment only.");
             e.printStackTrace();
         }
     }
