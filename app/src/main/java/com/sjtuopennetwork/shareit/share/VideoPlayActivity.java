@@ -288,7 +288,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         while(true){
             String chunkName="out"+String.format("%04d", i)+".ts";
             try {
-//                Thread.sleep(5000);
+//                Thread.sleep(10000);
                 Model.VideoChunk v=Textile.instance().videos.getVideoChunk(videoid, chunkName);
                 if ( v!=null ){ //本地有了，就写m3u8文件
                     writeM3u8(v);
