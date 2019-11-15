@@ -289,19 +289,20 @@ public class ChatActivity extends AppCompatActivity {
 //
             VideoUploadHelper videoHelper=new VideoUploadHelper(this,filePath);
             videoHelper.segment(); //切割并上传
-            videoHelper.publishMeta(); //添加到本地、上传到cafe
+//            videoHelper.publishMeta(); //添加到本地、上传到cafe
 //            Model.Video video=videoHelper.getVideoPb();
-            try {
+//            try {
 //                Textile.instance().videos.threadAddVideo(threadid,video.getId()); //向thread中添加
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
             Bitmap tmpBmap = videoHelper.getPoster(); //拿到缩略图
             String tmpdir = FileUtil.getAppExternalPath(this, "temp");
             String videoHeadPath=tmpdir+System.currentTimeMillis(); //随机给一个名字
             //将缩略图临时保存到本地
             FileUtil.saveBitmap(videoHeadPath,tmpBmap);
 //            String posterAndId=videoHeadPath+"##"+video.getId();
+//            String posterAndId=videoHeadPath+"##"+ ;
             TMsg tMsg= null;
             try {
 //                tMsg = new TMsg(1,threadid,2,"",
