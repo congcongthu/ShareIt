@@ -18,6 +18,8 @@ import com.sjtuopennetwork.shareit.share.ImageInfoActivity;
 import com.sjtuopennetwork.shareit.share.VideoPlayActivity;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -281,6 +283,7 @@ public class MsgAdapter extends BaseAdapter {
                     System.out.println("====拿图片成功:"+fileHash);
                     afileName=FileUtil.storeFile(data,fileHash);
                     Glide.with(context).load(afileName).thumbnail(0.3f).into(imageView);
+                    EventBus.getDefault().post(new Integer(4538));
                 }
                 @Override
                 public void onError(Exception e) {

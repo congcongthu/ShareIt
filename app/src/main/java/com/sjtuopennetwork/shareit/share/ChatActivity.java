@@ -184,6 +184,10 @@ public class ChatActivity extends AppCompatActivity {
                 }
                 msgList.add(tMsg);
                 chat_lv.setSelection(msgList.size());
+
+                ContentValues v=new ContentValues();
+                v.put("isread",1);
+                appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
             }else{
                 Toast.makeText(this,"消息不能为空", Toast.LENGTH_SHORT).show();
             }
@@ -239,6 +243,15 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateListView(Integer integer){
+        if(integer==4583){
+            chat_lv.invalidateViews(); //强制刷新
+            chat_lv.setSelection(msgList.size());
+        }
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -265,6 +278,10 @@ public class ChatActivity extends AppCompatActivity {
             }
             msgList.add(tMsg);
             chat_lv.setSelection(msgList.size());
+
+            ContentValues v=new ContentValues();
+            v.put("isread",1);
+            appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
         }else if(requestCode==PictureConfig.TYPE_VIDEO && resultCode==RESULT_OK){ //如果是选择了视频
             chooseVideo=PictureSelector.obtainMultipleResult(data);
             String filePath=chooseVideo.get(0).getPath();
@@ -295,6 +312,10 @@ public class ChatActivity extends AppCompatActivity {
             chat_lv.setSelection(msgList.size());
 
             videoHelper.segment(); //切割并上传
+
+            ContentValues v=new ContentValues();
+            v.put("isread",1);
+            appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
         }
     }
 
