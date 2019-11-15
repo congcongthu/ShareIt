@@ -85,8 +85,6 @@ public class VideoPlayActivity extends AppCompatActivity {
     private ProgressBar mProgressBar;
     FileWriter fileWriter;
 
-
-
     //两个线程
     GetChunkThread getChunkThread=new GetChunkThread();
 //    PlayVideoThread playVideoThread=new PlayVideoThread();
@@ -116,6 +114,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         }
 
         String m3u8Content=video.getCaption(); //拿到m3u8的内容，直接在chunks文件夹生成m3u8文件
+        System.out.println("=============得到m3u8内容：\n"+m3u8Content);
         createM3u8Index(m3u8Content);
 //        initM3u8();
         System.out.println("=======================初始化dir:"+dir);
@@ -142,7 +141,6 @@ public class VideoPlayActivity extends AppCompatActivity {
             searchVideoChunks();
             getChunkThread.start(); //如果没有下载完，就去并发下载播放就行了。
         }
-
     }
 
     public static boolean DownloadComplete(String vid){
@@ -288,10 +286,12 @@ public class VideoPlayActivity extends AppCompatActivity {
                     }
 //                    writeM3u8(v);
                     if(v.getEndTime()>=videoLenth - gap){ //如果是最后一个就终止
+                        System.out.println("==========末端差距："+v.getEndTime()+" "+(videoLenth - gap));
                         finished=true;
 //                        writeM3u8End();
                     }
-                    if(ableToPlay()){
+//                    if(ableToPlay()){
+                    if(i>2){
                         Message msg=new Message();
                         msg.what=1;
                         handler.sendMessage(msg);

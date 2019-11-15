@@ -250,7 +250,7 @@ public class VideoUploadHelper {
     public void segment(){
         try {
             chunkpublisher.start(); //It was ended by upload task.
-            Segmenter.segment(context, 3, filePath, m3u8Path, chunkPath, segHandler);
+            Segmenter.segment(context, 1, filePath, m3u8Path, chunkPath, segHandler);
             //Segmenter.segment(context, 1, filePath, m3u8Path, chunkPath, segHandler);
         }catch(Exception e){
             e.printStackTrace();

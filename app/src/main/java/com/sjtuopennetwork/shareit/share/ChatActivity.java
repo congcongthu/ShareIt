@@ -288,7 +288,7 @@ public class ChatActivity extends AppCompatActivity {
             System.out.println("=================选择了视频："+filePath);
 //
             VideoUploadHelper videoHelper=new VideoUploadHelper(this,filePath);
-            videoHelper.segment(); //切割并上传
+            videoHelper.segment(threadid); //切割并上传
 //            videoHelper.publishMeta(); //添加到本地、上传到cafe
 //            Model.Video video=videoHelper.getVideoPb();
 //            try {
@@ -302,11 +302,11 @@ public class ChatActivity extends AppCompatActivity {
             //将缩略图临时保存到本地
             FileUtil.saveBitmap(videoHeadPath,tmpBmap);
 //            String posterAndId=videoHeadPath+"##"+video.getId();
-//            String posterAndId=videoHeadPath+"##"+ ;
+            String posterAndId=videoHeadPath+"##"+ videoHelper.getVideoId() ;
             TMsg tMsg= null;
             try {
-//                tMsg = new TMsg(1,threadid,2,"",
-//                        Textile.instance().profile.name(),Textile.instance().profile.avatar(),posterAndId,System.currentTimeMillis()/1000,true);
+                tMsg = new TMsg(1,threadid,2,"",
+                        Textile.instance().profile.name(),Textile.instance().profile.avatar(),posterAndId,System.currentTimeMillis()/1000,true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
