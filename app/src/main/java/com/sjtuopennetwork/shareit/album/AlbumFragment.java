@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Textile;
+import sjtu.opennet.textilepb.QueryOuterClass;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -31,9 +32,9 @@ public class AlbumFragment extends Fragment {
     LinearLayout album_file_layout;
 
     //
-    private String thread_photo_name="2019-10-3119:09:17.16929628-29692";
-    private String thread_file_name= "2019-10-3119:09:17.16929628-29693";
-    private String thread_video_name="2019-10-3119:09:17.16929628-29694";
+    private String thread_photo_name="2019-11-3119:09:17.16929628-29692";
+    private String thread_file_name= "2019-11-3119:09:17.16929628-29693";
+    private String thread_video_name="2019-11-3119:09:17.16929628-29694";
     private  String thread_photo_id="";
     private  String thread_file_id="";
     private  String thread_video_id="";
@@ -63,8 +64,10 @@ public class AlbumFragment extends Fragment {
         List<Model.Thread> threads;
         try {
             threads = Textile.instance().threads.list().getItemsList();
+            System.out.println("==========================本peer 的 thread 个数："+Textile.instance().threads.list().getItemsCount());
             System.out.println("=========================本peer 的 thread 个数： "+threads.size());
             for(Model.Thread t:threads){//遍历所有一个peer下的所有thread
+                System.out.println("=================thread name:"+t.getName());
                 if(t.getSharing().equals(Model.Thread.Sharing.NOT_SHARED)){
                     if(t.getName().equals(thread_photo_name)){
                         thread_photo_flag=true;
@@ -88,7 +91,6 @@ public class AlbumFragment extends Fragment {
                 thread_photo_id=addNewThreads(thread_photo_name);
                 System.out.println("==============创建photo_thread:   "+thread_photo_id);
                 thread_photo_flag=true;
-
             }
             if(!thread_file_flag){
                 thread_file_id=addNewThreads(thread_file_name);
@@ -106,12 +108,10 @@ public class AlbumFragment extends Fragment {
             editor.putString("thread_video_id",thread_video_id);
             editor.apply();
 
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
 
@@ -137,6 +137,7 @@ public class AlbumFragment extends Fragment {
 
     //创建新的thread
     private String addNewThreads(String threadName){
+        Model.Thread thread = null;
         String key= UUID.randomUUID().toString();//随机生成key
         sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
                 .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.MEDIA)
@@ -149,11 +150,13 @@ public class AlbumFragment extends Fragment {
                 .setSchema(schema)
                 .build();
         try {
-            Textile.instance().threads.add(config);
+            thread = Textile.instance().threads.add(config);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return key;
+        //    Textile.instance().account.sync();
+
+        return thread.getId();
     }
 
 }
