@@ -135,7 +135,7 @@ public class VideoPlayActivity extends AppCompatActivity {
             hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
             player.prepare(hlsMediaSource);
         }else{ //没有完全下载下来，去网络中查找，并启动获取线程
-            searchVideoChunks();
+//            searchVideoChunks();
             getChunkThread.start();
         }
 
