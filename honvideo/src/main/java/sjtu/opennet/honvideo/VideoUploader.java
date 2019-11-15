@@ -2,6 +2,7 @@ package sjtu.opennet.honvideo;
 
 import android.util.Log;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Upload video in a async way.
@@ -36,20 +37,38 @@ public class VideoUploader extends Thread{
             chunkQueue.add(ChunkPublishTask.getEndTask());
         }
     }
+
+
     @Override
     public void run(){
         Log.d(TAG, "Uploader start to run.");
+        BlockingQueue<Integer> blockQueue = new LinkedBlockingQueue<>();
         VideoUploadTask vTask;
         int endDuration;
+        int returnStat;
+        long currentTime;
+        long endTime;
         while(!complete) {
             try {
                 vTask = videoQueue.take();
-                endDuration = vTask.upload(currentDuration);
+
+
+
+                Log.d(TAG, String.format("Task %s start to execute.", vTask.getChunkName()));
+                currentTime = System.currentTimeMillis();
+                endDuration = vTask.upload(currentDuration, blockQueue);
+                Log.d(TAG, String.format("Task %s upload return.", vTask.getChunkName()));
+                returnStat = blockQueue.take();
+
+
+
+                endTime = System.currentTimeMillis();
                 currentDuration = endDuration;
                 if(endDuration < 0){
                     Log.d(TAG, "End Upload Task Received. End the thread.");
                     complete = true;
                 }
+                Log.d(TAG, String.format("Task %s upload and ipfs add complete. Task use time %d.", vTask.getChunkName(), endTime - currentTime));
             } catch (InterruptedException ie) {
                 Log.e(TAG, "Unexpected Interrupt.");
                 ie.printStackTrace();
@@ -60,7 +79,7 @@ public class VideoUploader extends Thread{
                 interrupt();
             }
         }
-        safelyExitPublisher(30000);
+        safelyExitPublisher(1000);
         Log.d(TAG, "Uploader end safely.");
     }
 
