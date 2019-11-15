@@ -85,7 +85,6 @@ public class VideoPlayActivity extends AppCompatActivity {
     private ProgressBar mProgressBar;
     FileWriter fileWriter;
 
-
     //两个线程
     GetChunkThread getChunkThread=new GetChunkThread();
 //    PlayVideoThread playVideoThread=new PlayVideoThread();
@@ -103,29 +102,32 @@ public class VideoPlayActivity extends AppCompatActivity {
 
         videoid = getIntent().getStringExtra("videoid");
         System.out.println("=================videoID：" + videoid);
+
         try {
             video = Textile.instance().videos.getVideo(videoid);
+            videorHelper = new VideoReceiveHelper(this, video);
+            dir = VideoUploadHelper.getVideoPathFromID(this, videoid);
             videoLenth = video.getVideoLength();
             System.out.println("=============视频长度："+videoLenth);
-            videorHelper = new VideoReceiveHelper(this, video);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        dir = VideoUploadHelper.getVideoPathFromID(this, videoid);
-        initM3u8();
+        String m3u8Content=video.getCaption(); //拿到m3u8的内容，直接在chunks文件夹生成m3u8文件
+        System.out.println("=============得到m3u8内容：\n"+m3u8Content);
+        createM3u8Index(m3u8Content);
+//        initM3u8();
         System.out.println("=======================初始化dir:"+dir);
 
         if(DownloadComplete(videoid)){
-            System.out.println("===================完全下载了");
+            System.out.println("===================完全下载了，就直接开始播放");
             finished = true;
-
-            new Thread(){
-                @Override
-                public void run() {
-                    writeCompleteM3u8();
-                }
-            }.start();
+//            new Thread(){
+//                @Override
+//                public void run() {
+//                    writeCompleteM3u8();
+//                }
+//            }.start();
 
             System.out.println("开始播放");
             PlayerView playerView = findViewById(R.id.player_view);
@@ -133,12 +135,12 @@ public class VideoPlayActivity extends AppCompatActivity {
             playerView.setPlayer(player);
             dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
             hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
+            player.setPlayWhenReady(false);
             player.prepare(hlsMediaSource);
         }else{ //没有完全下载下来，去网络中查找，并启动获取线程
-//            searchVideoChunks();
-            getChunkThread.start();
+            searchVideoChunks();
+            getChunkThread.start(); //如果没有下载完，就去并发下载播放就行了。
         }
-
     }
 
     public static boolean DownloadComplete(String vid){
@@ -181,6 +183,24 @@ public class VideoPlayActivity extends AppCompatActivity {
         return false;
     }
 
+    public void createM3u8Index(String m3u8Content){
+        m3u8file=new File(dir+"/chunks/playlist.m3u8");
+        try{
+            if(!m3u8file.exists()){ //从dir中找到文件复制到chunks里面
+                m3u8file.createNewFile();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        try {
+            fileWriter = new FileWriter(m3u8file);
+            fileWriter.write(m3u8Content);
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     Handler handler=new Handler(){
         @Override
@@ -206,6 +226,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         //设置数据源
         dataSourceFactory = new DefaultDataSourceFactory(VideoPlayActivity.this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
         hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
+        player.setPlayWhenReady(false);
         player.prepare(hlsMediaSource);
         player.addListener(new MyEventListener());
 
@@ -214,11 +235,9 @@ public class VideoPlayActivity extends AppCompatActivity {
     public class MyEventListener implements Player.EventListener {
         @Override
         public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-
             switch (playbackState){
                 case ExoPlayer.STATE_ENDED:
                     //Stop playback and return to start position
-                    player.setPlayWhenReady(false);
                     player.seekTo(0);
                     break;
                 case ExoPlayer.STATE_READY:
@@ -265,12 +284,14 @@ public class VideoPlayActivity extends AppCompatActivity {
                     }else{
                         System.out.println("================获取到了chunk："+v.getChunk());
                     }
-                    writeM3u8(v);
+//                    writeM3u8(v);
                     if(v.getEndTime()>=videoLenth - gap){ //如果是最后一个就终止
+                        System.out.println("==========末端差距："+v.getEndTime()+" "+(videoLenth - gap));
                         finished=true;
-                        writeM3u8End();
+//                        writeM3u8End();
                     }
-                    if(ableToPlay()){
+//                    if(ableToPlay()){
+                    if(i>2){
                         Message msg=new Message();
                         msg.what=1;
                         handler.sendMessage(msg);
@@ -291,7 +312,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 //                Thread.sleep(10000);
                 Model.VideoChunk v=Textile.instance().videos.getVideoChunk(videoid, chunkName);
                 if ( v!=null ){ //本地有了，就写m3u8文件
-                    writeM3u8(v);
+//                    writeM3u8(v);
                 }
                 else {
                     break;
@@ -301,7 +322,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        writeM3u8End();
+//        writeM3u8End();
     }
 
     public void initM3u8(){
@@ -323,7 +344,7 @@ public class VideoPlayActivity extends AppCompatActivity {
             fileWriter = new FileWriter(m3u8file);
             fileWriter.write(head);
             fileWriter.flush();
-//            fileWriter.close();
+            fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -422,17 +443,5 @@ public class VideoPlayActivity extends AppCompatActivity {
             player.release(); //释放播放器
         }
     }
-
-    public class HttpServer extends NanoHTTPD{
-
-        public HttpServer(int port) {
-            super(port);
-        }
-
-        public HttpServer(String hostname, int port) {
-            super(hostname, port);
-        }
-    }
-
 
 }
