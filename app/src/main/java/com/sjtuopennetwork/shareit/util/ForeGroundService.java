@@ -172,11 +172,16 @@ public class ForeGroundService extends Service {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void tryConnectCafe(Integer integer){
-        if(integer==973){
+    public void tryConnectCafe(Double register){
+        System.out.println("===============尝试连接cafe："+register);
+        if(register.equals(2.34)){
+            System.out.println("===============开始连接cafe："+register);
             Textile.instance().cafes.register(
                     "http://202.120.38.131:40601",
+//                    "http://192.168.1.109:40601",
+//                    "http://202.120.40.60:40601",
                     "2GmWwR2S2cW9UPe1tD3an4QzbUxo7hodsGef8reSLrL6sf4uCo77qrGqcw98m",
+//                    "29TkBsmjFfEnR1Sack63qWK5WkPGjJtA2kXFHvTijmSE1KYMvVopBRWagHLbE",
                     new Handlers.ErrorHandler() {
                         @Override
                         public void onComplete() {
@@ -192,7 +197,7 @@ public class ForeGroundService extends Service {
                         public void onError(Exception e) {
                             System.out.println("==========131cafe连接失败");
                             //发消息再连接
-                            EventBus.getDefault().post(new Integer(973));
+                            EventBus.getDefault().post(new Double(2.34));
                         }
                     });
         }
@@ -210,20 +215,9 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-            //测试videochunk
-//            Model.VideoChunk v=Model.VideoChunk.newBuilder().setChunk("aaaa").setId("123456").build();
-//            try {
-//                Textile.instance().videos.addVideoChunk(v);
-//                List<Model.VideoChunk> videoChunks= Textile.instance().videos.chunksByVideoId("1234567").getItemsList();
-//                System.out.println("===========videochunk:"+videoChunks.size());
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-
+//            tryConnectCafe(new Double(2.34));
 
             createDeviceThread();
-
-            tryConnectCafe(973);
 
 //            try {
 //                Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.131/tcp/23524/ipfs/12D3KooWERhx7JQhFfXA3a7WGSPCH5Zd1EuQnY6eeQM3VrVUBg67");
@@ -335,7 +329,7 @@ public class ForeGroundService extends Service {
 
         @Override
         public void videoChunkQueryResult(String queryId, Model.VideoChunk vchunk) {
-            System.out.println("==========监听器找到VideoChunk："+vchunk.getId());
+            System.out.println("==========监听器找到VideoChunk："+vchunk.getChunk());
             EventBus.getDefault().post(vchunk);
         }
 
