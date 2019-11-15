@@ -6,10 +6,12 @@ import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
@@ -112,6 +114,22 @@ public class FileUtil {
             }
         }
         return false;
+    }
+
+    public static byte[] readAllBytes(String filePath){
+        try (InputStream input = new FileInputStream(new File(filePath))){
+            byte[] byt = new byte[input.available()];
+            input.read(byt);
+            return byt;
+        }catch(FileNotFoundException fe){
+            Log.e(TAG, String.format("File %s not found.", filePath));
+            fe.printStackTrace();
+            return null;
+        }catch(IOException ie){
+            Log.e(TAG, "Unexpected ioexception");
+            ie.printStackTrace();
+            return null;
+        }
     }
 
     //public static
