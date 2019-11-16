@@ -215,7 +215,7 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-            tryConnectCafe(new Double(2.34));
+//            tryConnectCafe(new Double(2.34));
 
             createDeviceThread();
 
@@ -486,7 +486,7 @@ public class ForeGroundService extends Service {
 
             if(feedItemData.type.equals(FeedItemType.VIDEO)){
                 Model.Video video=feedItemData.feedVideo.getVideo();
-                System.out.println("==========收到视频："+video.getCaption()
+                System.out.println("==========收到视频："
                         +" "+video.getPoster()  //这个就是缩略图的ipfs哈希值，使用ipfs.dataAtPath就能够得到
                         +" "+video.getId());
 
