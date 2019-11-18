@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -17,6 +18,8 @@ import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Mobile;
 
 public class ShareItLoginActivity extends AppCompatActivity {
+
+    private static final String TAG = "==================";
 
     //UI控件
     EditText editText;
@@ -58,14 +61,14 @@ public class ShareItLoginActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 loginWrong=true;
-                System.out.println("===============助记词错误");
+                Log.d(TAG, "onCreate: 助记词错误");
             }
 
             if(loginWrong){ //如果登录出了问题
                 Toast.makeText(this,"助记词错误",Toast.LENGTH_SHORT).show();
                 editText.setText("");
             }else {
-                System.out.println("================德尔内里股："+loginAccount);
+                Log.d(TAG, "onCreate: 登录账户"+loginAccount);
                 editor.putString("loginAccount",loginAccount);
                 editor.commit();
 

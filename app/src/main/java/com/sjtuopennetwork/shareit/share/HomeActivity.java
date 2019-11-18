@@ -3,6 +3,7 @@ package com.sjtuopennetwork.shareit.share;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.bottomnavigation.LabelVisibilityMode;
 import android.support.design.widget.BottomNavigationView;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -45,6 +47,8 @@ import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.View;
 
 public class HomeActivity extends AppCompatActivity {
+
+    private static final String TAG = "====================";
 
     //UI控件
     private ShareFragment shareFragment;
@@ -83,34 +87,42 @@ public class HomeActivity extends AppCompatActivity {
     };
 
     @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+//        super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        System.out.println("=====================HomeActivity");
+        Log.d(TAG, "onCreate: 调用了HomeActivity的OnCreate");
 
-        circleProgressDialog=new CircleProgressDialog(this);
-        circleProgressDialog.setText("节点启动中");
-        circleProgressDialog.showDialog();
+        login=getIntent().getIntExtra("login",5);
+        Log.d(TAG, "onStart: 跳转到HomeActivity："+login);
+        if(login==0 || login==1 || login==2 || login==3){ //如果等于5，就不是登录页面跳转过来的
+            initUI();
 
-        initUI();
+            Log.d(TAG, "onCreate: 即将启动等待圆环，当前nodeOnline值为："+nodeOnline);
+            circleProgressDialog=new CircleProgressDialog(this);
+            circleProgressDialog.setText("节点启动中");
+            circleProgressDialog.showDialog();
 
-        if(!EventBus.getDefault().isRegistered(this)){
-            EventBus.getDefault().register(this);
-        }
-
-        try{
-            if(Textile.instance().online()){ //如果节点已经上线了，就不进行初始化了，直接显示
-                circleProgressDialog.dismiss();
-                nodeOnline=true;
-                replaceFragment(shareFragment);
+            if(!EventBus.getDefault().isRegistered(this)){
+                EventBus.getDefault().register(this);
             }
-        }catch (Exception e){
-            initData();
+
+            Log.d(TAG, "onCreate: 即将启动前台服务");
+            Intent intent=new Intent(this,ForeGroundService.class);
+            intent.putExtra("login",login);
+            startForegroundService(intent);
+
+
         }
     }
 
     private void initUI(){
+        Log.d(TAG, "initUI: 创建新的Fragment");
         shareFragment=new ShareFragment();
         contactFragment=new ContactFragment();
         albumFragment=new AlbumFragment();
@@ -120,21 +132,11 @@ public class HomeActivity extends AppCompatActivity {
         nav.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         nav.setOnNavigationItemSelectedListener(navSeLis);
     }
-
-    private void initData() {
-        //持久化存储
-//        pref=getSharedPreferences("txtl",MODE_PRIVATE);
-        login=getIntent().getIntExtra("login",0);
-
-        Intent intent=new Intent(this,ForeGroundService.class);
-        intent.putExtra("login",login);
-        startForegroundService(intent);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void knowOnline(Integer integer){
         if(integer.intValue()==0){
             if(!nodeOnline){
+                Log.d(TAG, "knowOnline: 主页得知节点启动了");
                 circleProgressDialog.dismiss();
                 nodeOnline=true;
                 replaceFragment(shareFragment);
@@ -144,7 +146,6 @@ public class HomeActivity extends AppCompatActivity {
 
     //切换Fragment
     private void replaceFragment(Fragment fragment) {
-        System.out.println("=============切换fragment：");
         fragmentManager = getSupportFragmentManager();
         transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.rep_layout, fragment);

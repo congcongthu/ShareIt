@@ -77,7 +77,7 @@ public class ContactInfoActivity extends AppCompatActivity {
     private void initData(){
 
         pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
-        appdb= AppdbHelper.getInstance(this,pref.getString("loginAccount","")).getWritableDatabase();
+        appdb=AppdbHelper.getInstance(getApplicationContext(),pref.getString("loginAccount","")).getWritableDatabase();
 
         //显示头像
         String avatarPath= FileUtil.getFilePath(contact.getAvatar());

@@ -139,7 +139,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void initData() {
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
-        appdb=AppdbHelper.getInstance(this,pref.getString("loginAccount","")).getWritableDatabase();
+        appdb=AppdbHelper.getInstance(getApplicationContext(),pref.getString("loginAccount","")).getWritableDatabase();
         avatarpath=pref.getString("avatarpath","null");
 
         //初始化对话
@@ -185,9 +185,7 @@ public class ChatActivity extends AppCompatActivity {
                 msgList.add(tMsg);
                 chat_lv.setSelection(msgList.size());
 
-                ContentValues v=new ContentValues();
-                v.put("isread",1);
-                appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
+                DBoperator.changeDialogRead(appdb,threadid,1);
             }else{
                 Toast.makeText(this,"消息不能为空", Toast.LENGTH_SHORT).show();
             }
@@ -237,9 +235,7 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         //还要把相应的Dialog表改为已读
-        ContentValues v=new ContentValues();
-        v.put("isread",1);
-        appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
+        DBoperator.changeDialogRead(appdb,threadid,1);
 
     }
 
@@ -279,9 +275,7 @@ public class ChatActivity extends AppCompatActivity {
             msgList.add(tMsg);
             chat_lv.setSelection(msgList.size());
 
-            ContentValues v=new ContentValues();
-            v.put("isread",1);
-            appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
+            DBoperator.changeDialogRead(appdb,threadid,1);
         }else if(requestCode==PictureConfig.TYPE_VIDEO && resultCode==RESULT_OK){ //如果是选择了视频
             chooseVideo=PictureSelector.obtainMultipleResult(data);
             String filePath=chooseVideo.get(0).getPath();
@@ -315,9 +309,7 @@ public class ChatActivity extends AppCompatActivity {
 
             videoHelper.segment();
 
-            ContentValues v=new ContentValues();
-            v.put("isread",1);
-            appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
+            DBoperator.changeDialogRead(appdb,threadid,1);
 
         }
     }

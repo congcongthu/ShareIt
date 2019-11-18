@@ -140,7 +140,8 @@ public class MsgAdapter extends BaseAdapter {
                 h.send_text_left.setVisibility(View.GONE); //左边的隐藏
                 h.msg_name_r.setText(msgList.get(i).authorname);
                 h.msg_time_r.setText(df.format(msgList.get(i).sendtime*1000));
-                h.msg_avatar_r.setImageBitmap(BitmapFactory.decodeFile(avatarpath));
+//                h.msg_avatar_r.setImageBitmap(BitmapFactory.decodeFile(avatarpath));
+                setAvatar(h.msg_avatar_r,avatarPath,msgList.get(i).authoravatar);
                 h.chat_words_r.setText(msgList.get(i).body);
             }else{ //不是自己的消息
                 h.send_text_left.setVisibility(View.VISIBLE); //左边的显示
@@ -169,7 +170,8 @@ public class MsgAdapter extends BaseAdapter {
                 h.send_photo_left.setVisibility(View.GONE); //左边的隐藏
                 h.photo_name_r.setText(msgList.get(i).authorname);
                 h.photo_time_r.setText(df.format(msgList.get(i).sendtime*1000));
-                h.photo_avatar_r.setImageBitmap(BitmapFactory.decodeFile(avatarpath));
+//                h.photo_avatar_r.setImageBitmap(BitmapFactory.decodeFile(avatarpath));
+                setAvatar(h.photo_avatar_r,avatarPath,msgList.get(i).authoravatar);
                 System.out.println("======照片消息的内容："+msgList.get(i).body);
 
                 if(!isVideo){ //不是视频就隐藏播放图标
@@ -234,6 +236,7 @@ public class MsgAdapter extends BaseAdapter {
     }
 
     private void setAvatar(NiceImageView imageView,String avatarPath,String avatarHash){
+        System.out.println("==============头像路径："+avatarPath);
         if(avatarPath.equals("null")){ //如果没有存储过这个头像文件
             Textile.instance().ipfs.dataAtPath("/ipfs/" + avatarHash + "/0/small/content", new Handlers.DataHandler() {
                 @Override

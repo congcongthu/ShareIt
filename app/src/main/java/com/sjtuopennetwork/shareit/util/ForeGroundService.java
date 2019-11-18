@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.HomeActivity;
@@ -35,17 +36,17 @@ import sjtu.opennet.textilepb.QueryOuterClass;
 import sjtu.opennet.textilepb.View;
 
 public class ForeGroundService extends Service {
-    public ForeGroundService() {
 
-    }
+    private static final String TAG = "===================";
+
+    public ForeGroundService() {}
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    String loginAccount;
+    String loginAccount; //当前登录的账户
     int login;
     String repoPath;
     SharedPreferences pref;
@@ -61,7 +62,7 @@ public class ForeGroundService extends Service {
             @Override
             public void run() {
                 super.run();
-                System.out.println("========启动前台服务");
+                Log.d(TAG, "run: 启动前台服务");
                 NotificationManager notificationManager=(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 NotificationChannel notificationChannel=new NotificationChannel("12","前台服务",NotificationManager.IMPORTANCE_HIGH);
                 notificationManager.createNotificationChannel(notificationChannel);
@@ -85,18 +86,17 @@ public class ForeGroundService extends Service {
 
     public void initTextile(int login){
         String phrase="";
-//        Context ctx = getApplicationContext();
         final File filesDir = this.getFilesDir();
 
         switch (login){
             case 0: //已经登录，找到repo，初始化textile
-                System.out.println("========已经登录");
                 loginAccount=pref.getString("loginAccount","null"); //当前登录的account，就是address
+                Log.d(TAG, "initTextile: 已经登录过："+loginAccount);
                 final File repo0 = new File(filesDir, loginAccount);
                 repoPath = repo0.getAbsolutePath();
                 break;
             case 1: //shareit注册，新建repo，初始化textile
-                System.out.println("===============shareit注册");
+                Log.d(TAG, "initTextile: 注册shareit账号");
                 try {
                     phrase= Textile.newWallet(12);
                     Mobile.MobileWalletAccount m=Textile.walletAccountAt(phrase,Textile.WALLET_ACCOUNT_INDEX,Textile.WALLET_PASSPHRASE);
@@ -109,7 +109,7 @@ public class ForeGroundService extends Service {
                 }
                 break;
             case 2: //华为账号登录，找到repo，初始化textile
-                System.out.println("========华为账号登录");
+                Log.d(TAG, "initTextile: 华为ID登录");
                 String openid=pref.getString("openid",""); //?测试一下是否需要截断，应该并不需要
                 String avatarUri=pref.getString("avatarUri",""); //先判断一下是否已经存储过
                 if(FileUtil.getFilePath(avatarUri).equals("null")){
@@ -138,10 +138,10 @@ public class ForeGroundService extends Service {
                 }
                 break;
             case 3: //shareit助记词登录，初始化textile
-                System.out.println("========助记词登录");
+                Log.d(TAG, "initTextile: 助记词登录");
                 phrase=pref.getString("phrase","");
                 loginAccount=pref.getString("loginAccount","");
-                System.out.println("===============助记词："+phrase);
+                Log.d(TAG, "initTextile: 助记词："+phrase);
                 break;
         }
 
@@ -162,20 +162,19 @@ public class ForeGroundService extends Service {
         editor.commit();
 
         try{
-            appdb=AppdbHelper.getInstance(this,loginAccount).getWritableDatabase();
+            Log.d(TAG, "initTextile: 即将初始化数据库："+loginAccount);
+            appdb= AppdbHelper.getInstance(getApplicationContext(),pref.getString("loginAccount","")).getWritableDatabase();
         }catch (Exception e){
 //            finish();
             e.printStackTrace();
         }
 
-        System.out.println("==================登录账户："+loginAccount+" "+phrase);
+        Log.d(TAG, "initTextile: 登录帐户："+loginAccount+" "+phrase);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void tryConnectCafe(Double register){
-        System.out.println("===============尝试连接cafe："+register);
         if(register.equals(2.34)){
-            System.out.println("===============开始连接cafe："+register);
             Textile.instance().cafes.register(
                     "http://202.120.38.131:40601",
 //                    "http://192.168.1.109:40601",
@@ -185,7 +184,7 @@ public class ForeGroundService extends Service {
                     new Handlers.ErrorHandler() {
                         @Override
                         public void onComplete() {
-                            System.out.println("==========131cafe连接成功");
+                            Log.d(TAG, "onComplete: 131cafe连接成功");
                             QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
                             try {
                                 Textile.instance().account.sync(options);
@@ -195,7 +194,7 @@ public class ForeGroundService extends Service {
                         }
                         @Override
                         public void onError(Exception e) {
-                            System.out.println("==========131cafe连接失败");
+                            Log.d(TAG, "onError: 131cafe连接失败");
                             //发消息再连接
                             EventBus.getDefault().post(new Double(2.34));
                         }
@@ -203,11 +202,28 @@ public class ForeGroundService extends Service {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void shutDown(Integer stop){
+        if(stop==943){
+            Log.d(TAG, "shutDown: 服务stop");
+            Textile.instance().destroy();
+            onDestroy();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopForeground(true);
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
+    }
+
     class MyTextileListener extends BaseTextileEventListener {
         @Override
         public void nodeOnline() {
 
-            System.out.println("================节点online");
             QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
             try {
                 Textile.instance().account.sync(options);
@@ -233,14 +249,14 @@ public class ForeGroundService extends Service {
                 case 1: //shareit注册，每次都要设置
                     String shareitName=pref.getString("myname","");
                     String shareitAvatarpath=pref.getString("avatarpath","");
-                    System.out.println("=====用户名和头像："+shareitName+" "+shareitAvatarpath);
+                    Log.d(TAG, "nodeOnline: shareIt注册的name和avatar："+shareitName+" "+shareitAvatarpath);
                     try {
                         Textile.instance().profile.setName(shareitName);
                         if(!shareitAvatarpath.equals("")){
                             Textile.instance().profile.setAvatar(shareitAvatarpath, new Handlers.BlockHandler() {
                                 @Override
                                 public void onComplete(Model.Block block) {
-                                    System.out.println("==========shareit注册设置头像成功");
+                                    Log.d(TAG, "onComplete: Shareit注册设置头像成功");
                                     QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
                                     try {
                                         Textile.instance().account.sync(options);
@@ -251,7 +267,7 @@ public class ForeGroundService extends Service {
 
                                 @Override
                                 public void onError(Exception e) {
-                                    System.out.println("==========shareit注册设置头像失败");
+                                    Log.d(TAG, "onError: ShareIt注册设置头像失败");
                                 }
                             });
                         }
@@ -264,21 +280,19 @@ public class ForeGroundService extends Service {
                         String huaweiName=pref.getString("myname","");
                         if(!Textile.instance().profile.name().equals(huaweiName)){ //首次用华为id登录还没有设置Textile账号
                             Textile.instance().profile.setName(huaweiName);
-                            System.out.println("==========华为ID的name："+huaweiName);
                         }
                         String huaweiAvatarpath=pref.getString("avatarpath","");
                         if(!Textile.instance().profile.avatar().equals(huaweiAvatarpath)){
-                            System.out.println("===========华为id的avatar："+huaweiAvatarpath);
                             if(!huaweiAvatarpath.equals("")){ //后台线程已经拿到头像
                                 Textile.instance().profile.setAvatar(huaweiAvatarpath, new Handlers.BlockHandler() {
                                     @Override
                                     public void onComplete(Model.Block block) {
-                                        System.out.println("==========华为ID登录设置头像成功");
+                                        Log.d(TAG, "onComplete: 华为Id登录设置头像成功");
                                     }
 
                                     @Override
                                     public void onError(Exception e) {
-                                        System.out.println("==========华为ID登录设置头像失败");
+                                        Log.d(TAG, "onComplete: 华为Id登录设置头像失败");
                                     }
                                 });
                             }
@@ -290,12 +304,12 @@ public class ForeGroundService extends Service {
                 case 3: //助记词登录，理论上要判断后重新进行设置，新的peer的name到底能不能同步过来？
                     try {
                         if(Textile.instance().profile.name().equals("")){ //如果没有同步过来，
-                            System.out.println("=============助记词登录，新的name没有同步过来");
+                            Log.d(TAG, "nodeOnline: 助记词登录，未同步name");
                         }else{
                             //put到myname中
                         }
                         if(Textile.instance().profile.avatar().equals("")) { //如果没有同步过来，
-                            System.out.println("=============助记词登录，新的avatar没有同步过来");
+                            Log.d(TAG, "nodeOnline: 助记词登录，未同步avatar");
                         }else{
                             //获得头像，并将路径put到avatarpath中
                         }
@@ -305,16 +319,15 @@ public class ForeGroundService extends Service {
                     break;
             }
 
-            //测试
+            //测试name
             try {
-                System.out.println("===================昵称："+Textile.instance().profile.name());
+                Log.d(TAG, "nodeOnline: 账户name："+Textile.instance().profile.name());
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             //连网之后反馈给主界面
-            EventBus.getDefault().postSticky(Integer.valueOf(0)); //会有先连网后启动ShareFragment的注册，所以用Sticky
-
+            EventBus.getDefault().post(Integer.valueOf(0));
         }
 
         @Override
@@ -367,7 +380,7 @@ public class ForeGroundService extends Service {
                     System.out.println("===========JOIN消息，白名单个数为2");
                     if(!authorIsMe){  //双人thread收到他人的JOIN，只可能是同意他人好友申请或者自己的好友申请被他人同意，都要插入一条记录
                         System.out.println("============白名单数为2的JOIN："+feedItemData.join.getUser().getName());
-                        TDialog tDialog=DBoperator.insertDialog(appdb, threadId, feedItemData.join.getUser().getName(),
+                        TDialog tDialog=DBoperator.insertDialog(appdb,threadId, feedItemData.join.getUser().getName(),
                                 "你好啊，现在我们已经成为好友了",
                                 feedItemData.join.getDate().getSeconds(),
                                 0, //后台收到默认是未读的
@@ -392,7 +405,7 @@ public class ForeGroundService extends Service {
                                 tDialog.imgpath);
                     }else{ //如果数据库没有就插入
                         System.out.println("================得到群组JOIN消息，创建群组"+feedItemData.join.getUser()+" 加入了群组");
-                        updateDialog=DBoperator.insertDialog(appdb, threadId, thread.getName(),
+                        updateDialog=DBoperator.insertDialog(appdb,threadId, thread.getName(),
                                 feedItemData.join.getUser().getName()+" 加入了群组",
                                 feedItemData.join.getDate().getSeconds(),
                                 0,
