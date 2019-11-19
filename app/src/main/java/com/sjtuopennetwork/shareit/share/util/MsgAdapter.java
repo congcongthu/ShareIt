@@ -3,12 +3,15 @@ package com.sjtuopennetwork.shareit.share.util;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.media.Image;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -30,11 +33,14 @@ import sjtu.opennet.textilepb.Model;
 
 public class MsgAdapter extends BaseAdapter {
 
+    private static final String TAG = "========================";
+
     private LayoutInflater layoutInflater;
     private List<TMsg> msgList;
     DateFormat df=new SimpleDateFormat("MM-dd HH:mm:ss");
     String avatarpath;
     Context context;
+    ListView listView;
 
     public MsgAdapter(Context context, List<TMsg> msgList,String avatarpath) {
         this.context=context;
@@ -114,6 +120,9 @@ public class MsgAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         System.out.println("===============getView调用");
+        if(listView==null){
+            listView=(ListView)viewGroup;
+        }
         switch (getItemViewType(i)){
             case 0: //是文本
                 return handleTextView(i,view,viewGroup);
@@ -131,12 +140,11 @@ public class MsgAdapter extends BaseAdapter {
             view=layoutInflater.inflate(R.layout.item_msg_text,viewGroup,false);
             view.setTag(new TextViewHolder(view));
         }
-        if(view != null && view.getTag() instanceof TextViewHolder){
+        if(view.getTag() instanceof TextViewHolder){
             TextViewHolder h=(TextViewHolder) view.getTag();
             String avatarPath= FileUtil.getFilePath(msgList.get(i).authoravatar);
             if(msgList.get(i).ismine){ //如果是自己的消息
                 h.send_text_right.setVisibility(View.VISIBLE); //右边的显示
-                System.out.println("==========是自己的消息："+msgList.get(i).body);
                 h.send_text_left.setVisibility(View.GONE); //左边的隐藏
                 h.msg_name_r.setText(msgList.get(i).authorname);
                 h.msg_time_r.setText(df.format(msgList.get(i).sendtime*1000));
@@ -145,7 +153,6 @@ public class MsgAdapter extends BaseAdapter {
                 h.chat_words_r.setText(msgList.get(i).body);
             }else{ //不是自己的消息
                 h.send_text_left.setVisibility(View.VISIBLE); //左边的显示
-                System.out.println("=====别人的消息："+msgList.get(i).body);
                 h.send_text_right.setVisibility(View.GONE); //右边的隐藏
                 h.msg_name.setText(msgList.get(i).authorname);
                 h.msg_time.setText(df.format(msgList.get(i).sendtime*1000));
@@ -161,7 +168,7 @@ public class MsgAdapter extends BaseAdapter {
             view=layoutInflater.inflate(R.layout.item_msg_img,viewGroup,false);
             view.setTag(new PhotoViewHolder(view));
         }
-        if(view != null && view.getTag() instanceof PhotoViewHolder){
+        if(view.getTag() instanceof PhotoViewHolder){
             PhotoViewHolder h=(PhotoViewHolder) view.getTag();
             String avatarPath= FileUtil.getFilePath(msgList.get(i).authoravatar);
             String msgBody=msgList.get(i).body;
@@ -172,7 +179,6 @@ public class MsgAdapter extends BaseAdapter {
                 h.photo_time_r.setText(df.format(msgList.get(i).sendtime*1000));
 //                h.photo_avatar_r.setImageBitmap(BitmapFactory.decodeFile(avatarpath));
                 setAvatar(h.photo_avatar_r,avatarPath,msgList.get(i).authoravatar);
-                System.out.println("======照片消息的内容："+msgList.get(i).body);
 
                 if(!isVideo){ //不是视频就隐藏播放图标
                     String filePath=FileUtil.getFilePath(msgBody);
@@ -182,7 +188,6 @@ public class MsgAdapter extends BaseAdapter {
                     }else{
                         Glide.with(context).load(msgBody).thumbnail(0.3f).into(h.chat_photo_r);
                     }
-
                     h.chat_photo_r.setOnClickListener(v -> {
                         Intent it1=new Intent(context, ImageInfoActivity.class);
                         it1.putExtra("imgpath", msgBody);
@@ -192,7 +197,8 @@ public class MsgAdapter extends BaseAdapter {
                     String[] posterAndId_r=msgBody.split("##"); //0是poster，1是Id
                     String filePath=FileUtil.getFilePath(posterAndId_r[0]);
                     if(posterAndId_r[0].charAt(0)=='Q'){ //如果是hash值
-                        setVideo(h.chat_photo_r,filePath,posterAndId_r[0]);
+                        h.chat_photo_r.setTag(posterAndId_r[0]);
+                        setVideo(filePath,posterAndId_r[0]);
                     }else{
                         Glide.with(context).load(posterAndId_r[0]).thumbnail(0.3f).into(h.chat_photo_r);
                     }
@@ -222,7 +228,8 @@ public class MsgAdapter extends BaseAdapter {
                 }else{ //是视频就setVideo
                     String[] posterAndId=msgBody.split("##"); //0是poster，1是Id
                     String filePath=FileUtil.getFilePath(posterAndId[0]);
-                    setVideo(h.chat_photo,filePath,posterAndId[0]);
+                    h.chat_photo.setTag(posterAndId[0]);
+                    setVideo(filePath,posterAndId[0]);
                     h.chat_photo.setOnClickListener(view1 -> {
                         Intent it=new Intent(context, VideoPlayActivity.class);
                         it.putExtra("ismine",false);
@@ -236,7 +243,6 @@ public class MsgAdapter extends BaseAdapter {
     }
 
     private void setAvatar(NiceImageView imageView,String avatarPath,String avatarHash){
-        System.out.println("==============头像路径："+avatarPath);
         if(avatarPath.equals("null")){ //如果没有存储过这个头像文件
             Textile.instance().ipfs.dataAtPath("/ipfs/" + avatarHash + "/0/small/content", new Handlers.DataHandler() {
                 @Override
@@ -254,14 +260,13 @@ public class MsgAdapter extends BaseAdapter {
         }
     }
 
-    private void setVideo(ImageView imageView,String filePath,String fileHash){
+    private void setVideo(String filePath,String fileHash){
+        ImageView imageView=listView.findViewWithTag(fileHash);
         if(filePath.equals("null")){ //如果没有存储过图片
-
             Textile.instance().ipfs.dataAtPath(fileHash, new Handlers.DataHandler() {
                 String afileName="";
                 @Override
                 public void onComplete(byte[] data, String media) {
-
                     afileName=FileUtil.storeFile(data,fileHash);
                     System.out.println("====拿缩略图成功"+afileName);
                     Glide.with(context).load(afileName).thumbnail(0.3f).into(imageView);
@@ -269,7 +274,9 @@ public class MsgAdapter extends BaseAdapter {
 
                 @Override
                 public void onError(Exception e) {
+                    e.printStackTrace();
                     System.out.println("====拿缩略图失败");
+                    Glide.with(context).load(afileName).thumbnail(0.3f).into(imageView);
                 }
             });
         }else{
@@ -290,7 +297,9 @@ public class MsgAdapter extends BaseAdapter {
                 }
                 @Override
                 public void onError(Exception e) {
+                    e.printStackTrace();
                     System.out.println("====拿图片失败"+fileHash);
+                    Glide.with(context).load(afileName).thumbnail(0.3f).into(imageView);
                 }
             });
         }else{
@@ -302,4 +311,5 @@ public class MsgAdapter extends BaseAdapter {
     public boolean isEnabled(int position) {
         return false;
     }
+
 }

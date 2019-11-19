@@ -243,7 +243,7 @@ public class ChatActivity extends AppCompatActivity {
     public void updateListView(Integer integer){
         if(integer==4583){
             chat_lv.invalidateViews(); //强制刷新
-            chat_lv.setSelection(msgList.size());
+//            chat_lv.setSelection(msgList.size());
         }
     }
 
