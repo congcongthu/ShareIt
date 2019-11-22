@@ -18,6 +18,7 @@ public class AppdbHelper extends SQLiteOpenHelper {
     }
 
     public static void setNull(){
+        singleInstance.close();
         singleInstance=null;
     }
 

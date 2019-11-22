@@ -139,7 +139,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void initData() {
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
-        appdb=AppdbHelper.getInstance(this,pref.getString("loginAccount","")).getWritableDatabase();
+        appdb=AppdbHelper.getInstance(getApplicationContext(),pref.getString("loginAccount","")).getWritableDatabase();
         avatarpath=pref.getString("avatarpath","null");
 
         //初始化对话
@@ -185,9 +185,7 @@ public class ChatActivity extends AppCompatActivity {
                 msgList.add(tMsg);
                 chat_lv.setSelection(msgList.size());
 
-                ContentValues v=new ContentValues();
-                v.put("isread",1);
-                appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
+                DBoperator.changeDialogRead(appdb,threadid,1);
             }else{
                 Toast.makeText(this,"消息不能为空", Toast.LENGTH_SHORT).show();
             }
@@ -237,9 +235,7 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         //还要把相应的Dialog表改为已读
-        ContentValues v=new ContentValues();
-        v.put("isread",1);
-        appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
+        DBoperator.changeDialogRead(appdb,threadid,1);
 
     }
 
@@ -247,7 +243,7 @@ public class ChatActivity extends AppCompatActivity {
     public void updateListView(Integer integer){
         if(integer==4583){
             chat_lv.invalidateViews(); //强制刷新
-            chat_lv.setSelection(msgList.size());
+//            chat_lv.setSelection(msgList.size());
         }
     }
 
@@ -279,30 +275,28 @@ public class ChatActivity extends AppCompatActivity {
             msgList.add(tMsg);
             chat_lv.setSelection(msgList.size());
 
-            ContentValues v=new ContentValues();
-            v.put("isread",1);
-            appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
+            DBoperator.changeDialogRead(appdb,threadid,1);
         }else if(requestCode==PictureConfig.TYPE_VIDEO && resultCode==RESULT_OK){ //如果是选择了视频
             chooseVideo=PictureSelector.obtainMultipleResult(data);
             String filePath=chooseVideo.get(0).getPath();
             System.out.println("=================选择了视频："+filePath);
 //
             VideoUploadHelper videoHelper=new VideoUploadHelper(this,filePath);
-            videoHelper.segment(threadid); //切割并上传
-//            videoHelper.publishMeta(); //添加到本地、上传到cafe
-//            Model.Video video=videoHelper.getVideoPb();
-//            try {
-//                Textile.instance().videos.threadAddVideo(threadid,video.getId()); //向thread中添加
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
+//            videoHelper.segment(threadid); //切割并上传
+            videoHelper.publishMeta(); //添加到本地、上传到cafe
+            Model.Video video=videoHelper.getVideoPb();
+            try {
+                Textile.instance().videos.threadAddVideo(threadid,video.getId()); //向thread中添加
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             Bitmap tmpBmap = videoHelper.getPoster(); //拿到缩略图
             String tmpdir = FileUtil.getAppExternalPath(this, "temp");
             String videoHeadPath=tmpdir+System.currentTimeMillis(); //随机给一个名字
             //将缩略图临时保存到本地
             FileUtil.saveBitmap(videoHeadPath,tmpBmap);
-//            String posterAndId=videoHeadPath+"##"+video.getId();
-            String posterAndId=videoHeadPath+"##"+ videoHelper.getVideoId() ;
+            String posterAndId=videoHeadPath+"##"+video.getId();
+//            String posterAndId=videoHeadPath+"##"+ videoHelper.getVideoId() ;
             TMsg tMsg= null;
             try {
                 tMsg = new TMsg(1,threadid,2,"",
@@ -313,9 +307,10 @@ public class ChatActivity extends AppCompatActivity {
             msgList.add(tMsg);
             chat_lv.setSelection(msgList.size());
 
-            ContentValues v=new ContentValues();
-            v.put("isread",1);
-            appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
+            videoHelper.segment();
+
+            DBoperator.changeDialogRead(appdb,threadid,1);
+
         }
     }
 

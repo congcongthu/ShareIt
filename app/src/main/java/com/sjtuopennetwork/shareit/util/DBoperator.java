@@ -1,8 +1,10 @@
 package com.sjtuopennetwork.shareit.util;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.sjtuopennetwork.shareit.share.util.TDialog;
 import com.sjtuopennetwork.shareit.share.util.TMsg;
@@ -12,7 +14,7 @@ import java.util.List;
 
 public class DBoperator {
 
-//    static SQLiteDatabase appdb;
+    private static final String TAG = "================";
 
     public static List<TMsg> queryMsg(SQLiteDatabase appdb,String threadId){
         List<TMsg> msgs=new LinkedList<>();
@@ -55,10 +57,8 @@ public class DBoperator {
 
             TDialog result=new TDialog(id, threadid, threadname, lastmsg,lastmsgdate, isRead, imgpath, isSingle, isVisible);
             cursor.close();
-            System.out.println("============能查到："+result.threadname);
             return result;
         }else{
-            System.out.println("============没查到这个threadid：");
             cursor.close();
             return null;
         }
@@ -95,7 +95,6 @@ public class DBoperator {
         v.put("imgpath",imgpath); tDialog.imgpath=imgpath;
         v.put("isread",0);
         appdb.update("dialogs",v,"threadid=?",new String[]{threadId});
-        System.out.println("=================对话表更新成功");
         return tDialog;
     }
 
@@ -135,8 +134,12 @@ public class DBoperator {
 
         TMsg tMsg=new TMsg(1,threadid,msgtype,blockid,authorname,authoravatar,body,sendtime,ismine==1);
 
-        System.out.println("============插入了消息："+tMsg.authorname+" "+tMsg.msgtype+" "+tMsg.body);
-
         return tMsg;
+    }
+
+    public static void changeDialogRead(SQLiteDatabase appdb,String threadid, int isread){
+        ContentValues v=new ContentValues();
+        v.put("isread",isread);
+        appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
     }
 }

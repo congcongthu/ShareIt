@@ -105,7 +105,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     }
     private void initData() {
         pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
-        appdb= AppdbHelper.getInstance(this,pref.getString("loginAccount","")).getWritableDatabase();
+        appdb= AppdbHelper.getInstance(getApplicationContext(),pref.getString("loginAccount","")).getWritableDatabase();
 
         //获得管理员、非管理员，管理员才显示设置管理员。
         threadid=getIntent().getStringExtra("threadid");

@@ -21,6 +21,11 @@ import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.login.MainActivity;
 import com.sjtuopennetwork.shareit.setting.util.GetIpAddress;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
+import com.sjtuopennetwork.shareit.util.DBoperator;
+import com.sjtuopennetwork.shareit.util.ForeGroundService;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import sjtu.opennet.textilepb.Model;
@@ -67,6 +72,7 @@ public class SettingFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         initUI();
         initData();
         drawUI();
@@ -118,8 +124,9 @@ public class SettingFragment extends Fragment {
                 editor.putBoolean("isLogin", false);
                 editor.commit();
 
-                //销毁Texile
-                Textile.instance().destroy();
+                //销毁Texile及数据库
+                EventBus.getDefault().post(new Integer(943));
+
                 AppdbHelper.setNull();
 
                 Intent it = new Intent(getActivity(), MainActivity.class);
@@ -179,8 +186,6 @@ public class SettingFragment extends Fragment {
         }
     }
 
-
-
     private void drawUI() {
         tv_name.setText(myname);
 
@@ -189,6 +194,5 @@ public class SettingFragment extends Fragment {
             avatar_layout.setCornerRadius(10);
         }
     }
-
 
 }

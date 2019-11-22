@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,8 @@ import sjtu.opennet.hon.Textile;
  */
 public class ShareFragment extends Fragment {
 
+    private static final String TAG = "====================";
+
     //UI控件
     DialogAdapter dialogAdapter;  //对话列表的数据适配器
     ListView dialoglistView; //对话列表
@@ -59,7 +62,7 @@ public class ShareFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        System.out.println("==============fagment生命周期：conCreateView");
+        Log.d(TAG, "onCreateView: ShareFragment调用了onCreateView");
         return inflater.inflate(R.layout.fragment_share, container, false);
     }
 
@@ -100,29 +103,32 @@ public class ShareFragment extends Fragment {
 
     private void initData(){
         pref=getActivity().getSharedPreferences("txtl",Context.MODE_PRIVATE);
-        appdb=AppdbHelper.getInstance(getContext(),pref.getString("loginAccount","")).getWritableDatabase();
+        appdb=AppdbHelper.getInstance(getActivity().getApplicationContext(),pref.getString("loginAccount","")).getWritableDatabase();
+        String loginAccount=pref.getString("loginAccount","");
+        Log.d(TAG, "initData: 登录账户: "+loginAccount);
         dialogs=new LinkedList<>();
 
         //从数据库中查出对话
         dialogs= DBoperator.queryAllDIalogs(appdb);
-        System.out.println("================数据库中dialog数："+dialogs.size());
+        Log.d(TAG, "initData: 对话数："+dialogs.size());
 
         //查出邀请中最近的一个，添加到头部。
         int gpinvite=0;
         sjtu.opennet.textilepb.View.InviteView lastInvite=null;
         try {
-//            List<Model.Peer> friends= ContactUtil.getFriendList();
-            List<sjtu.opennet.textilepb.View.InviteView> invites = Textile.instance().invites.list().getItemsList();
-            for(sjtu.opennet.textilepb.View.InviteView v:invites){ //遍历所有的邀请
-                if(!v.getName().equals("FriendThread1219")){ //只要群组名不等于这个那就是好友邀请
-                    gpinvite++;
-                    lastInvite=v;
+            if(Textile.instance().invites!=null){
+                List<sjtu.opennet.textilepb.View.InviteView> invites = Textile.instance().invites.list().getItemsList();
+                for(sjtu.opennet.textilepb.View.InviteView v:invites){ //遍历所有的邀请
+                    if(!v.getName().equals("FriendThread1219")){ //只要群组名不等于这个那就是好友邀请
+                        gpinvite++;
+                        lastInvite=v;
+                    }
                 }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("=============邀请："+gpinvite);
         if(gpinvite>0){ //如果有群组邀请就要显示出来
             TDialog noti=new TDialog(1,"","通知",lastInvite.getInviter().getName()+" 邀请你",
                     lastInvite.getDate().getSeconds(),false,"tongzhi",true,true);
@@ -134,16 +140,13 @@ public class ShareFragment extends Fragment {
         dialoglistView.setAdapter(dialogAdapter);
 
         dialoglistView.setOnItemClickListener((parent, view, position, id) -> {
-            if(dialogs.get(position).imgpath.equals("tongzhi")){ //如果是通知，就跳转过去
+            if(dialogs.get(position).imgpath.equals("tongzhi")){ //如果是通知，就跳转到通知
                 Intent intent=new Intent(getActivity(), NotificationActivity.class);
                 startActivity(intent);
             }else{ //如果是对话就进入聊天
                 String threadid=dialogs.get(position).threadid;
                 //数据库中修改为已读
-                //先将对应threadlook的状态设为已读
-                ContentValues v=new ContentValues();
-                v.put("isread",1);
-                appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
+                DBoperator.changeDialogRead(appdb,threadid,1);
 
                 Intent it=new Intent(getActivity(), ChatActivity.class);
                 it.putExtra("threadid",threadid);
@@ -160,7 +163,6 @@ public class ShareFragment extends Fragment {
                 dialogs.remove(i);
             }
         }
-        System.out.println("=============是否已读："+tDialog.isRead);
         dialogs.add(0,tDialog);
         dialoglistView.invalidateViews();
         dialoglistView.setSelection(0);

@@ -33,9 +33,9 @@ public class FileUtil {
         String filePath="null";
         if(file.exists()){
             filePath=dir+hash;
-            System.out.println("=========文件存在"+filePath);
+            System.out.println("=========文件存在："+filePath);
         }else{
-            System.out.println("=========文件不存在");
+            System.out.println("=========文件不存在："+filePath);
         }
         return filePath;
     }

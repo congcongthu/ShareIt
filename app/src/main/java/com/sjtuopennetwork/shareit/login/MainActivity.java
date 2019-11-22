@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +38,8 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "===============";
+
     //UI控件
     Button huaweiLogin;
     Button shareItLogin;
@@ -48,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences pref;
 
     //内存数据
-    boolean isLogin;
-    String avatarpath;
+    boolean isLogin; //是否已经登录，从pref中读出
+    String avatarpath; //存放登录时头像图片的路径
 
     //华为ID
     private HuaweiIdSignInClient mSignInClient;
@@ -79,9 +82,9 @@ public class MainActivity extends AppCompatActivity {
             editText=findViewById(R.id.edt_name);
 
             //去掉状态栏
-            View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
-            decorView.setSystemUiVisibility(uiOptions);
+//            View decorView = getWindow().getDecorView();
+//            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+//            decorView.setSystemUiVisibility(uiOptions);
 
             registerAvatar.setOnClickListener(v -> {
                 PictureSelector.create(this, PictureSelector.SELECT_REQUEST_CODE).selectPicture();
@@ -92,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor=pref.edit();
                 String myname=editText.getText().toString();
                 editor.putString("myname",myname);
+                Log.d(TAG, "onCreate: 登录时选择头像："+avatarpath);
                 editor.putString("avatarpath",avatarpath); //如果没选则为""
                 editor.commit();
 
@@ -131,17 +135,14 @@ public class MainActivity extends AppCompatActivity {
 //                //已经调用华为授权，使用方法：requestIdToken(String clientId)返回IDtoken，验证其有效性；
 //                String clientId = myclientid;
 //                String id_token =huaweiAccount.getIdToken();
-//                System.out.println("====================================3" + huaweiAccount.getIdToken());
 //                JWT jwt= new JWT(id_token);
 //                String issuer = jwt.getIssuer();
-//                System.out.println("====================================issuer" + issuer);
 
                 //IDToken有效性验证完成，调用requestId() 返回OpenId，与textile账号关联
 
                 String openid = huaweiAccount.getOpenId();
                 String avatarUri=huaweiAccount.getPhotoUrl().toString();
                 String myname=huaweiAccount.getDisplayName();
-                System.out.println("================openid:"+openid+" myname:"+myname+" avat:"+avatarUri);
                 SharedPreferences.Editor editor=pref.edit();
                 editor.putString("myname",myname);
                 editor.putString("openid",openid);
@@ -154,26 +155,19 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             } else{ //先不处理登录失败
                 int status = ((ApiException) signInHuaweiIdTask.getException()).getStatusCode();
-                System.out.println("=============================signIn failed: "+status);
-                System.out.println("=============================Result code: "+resultCode);
                 //  Log.i(TAG, "signIn failed: " + status);
                 if (status == HuaweiIdStatusCodes.SIGN_IN_UNLOGIN) {
                     //      Log.i(TAG, "Account not logged in");
                     //Account not logged in , try to sign in with getSignInIntent()
-                    System.out.println("=============================Account not logged in");
                 } else if (status == HuaweiIdStatusCodes.SIGN_IN_AUTH) {
                     //      Log.i(TAG, "Account not authorized");
                     //Account not authorized  , try to authorize with getSignInIntent()
-                    System.out.println("=============================Account not authorized");
                 } else if (status == HuaweiIdStatusCodes.SIGN_IN_CHECK_PASSWORD) {
                     //Huawei Account Need Password Check
-                    System.out.println("=============================Account Need Password Check");
                 } else if (status == HuaweiIdStatusCodes.SIGN_IN_NETWORK_ERROR) {
                     //Network exception, please CP handle it by itsel
-                    System.out.println("=============================SIGN_IN_NETWORK_ERROR");
                 } else {
                     //other exception, please CP handle it by itsel
-                    System.out.println("=============================other_error");
                 }
             }
         }
@@ -187,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
   }
 
     private void getPermission() {
-        System.out.println("=========输出");
         if(PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)==PermissionChecker.PERMISSION_DENIED){
             ActivityCompat.requestPermissions(this,
                     new String[]{"android.permission.WRITE_EXTERNAL_STORAGE",
