@@ -268,7 +268,7 @@ public class VideoMeta {
                 .setId(videoHash)
                 //.setCaption(stringInfo())
                 .setCaption(filename)
-                .setVideoLength((int)duration_long)
+                .setVideoLength((int)duration_long*1000)
                 .setPoster(posterHash)
                 .build();
 
