@@ -83,7 +83,7 @@ public class VideoPlayActivity extends AppCompatActivity {
     int m3u8WriteCount;
     Model.Video video;
     boolean finished;
-    static int gap = 1000;
+    static int gap = 100000;
     Map<String, String> addressMap;
     private ProgressBar mProgressBar;
     FileWriter fileWriter;
@@ -264,7 +264,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                         System.out.println("================获取到了chunk："+v.getChunk());
                     }
                     writeM3u8(v);
-                    if(v.getEndTime()>=videoLenth - gap){ //如果是最后一个就终止
+                    if(v.getEndTime()>=videoLenth - gap){ //如果是最后一个就终止,videolength是微秒，
                         System.out.println("==========末端差距："+v.getEndTime()+" "+(videoLenth - gap));
                         finished=true;
                         writeM3u8End();
@@ -333,7 +333,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 
     public void writeM3u8(Model.VideoChunk v){
 //        m3u8file=new File(dir+"/chunks/playlist.m3u8");
-        int duration0=v.getEndTime()-v.getStartTime(); //毫秒
+        int duration0=v.getEndTime()-v.getStartTime(); //微秒
         float size = (float)duration0/1000000;
         DecimalFormat df = new DecimalFormat("0.000000");//格式化小数，不足的补0
         String duration = df.format(size);//返回的是String类型的
@@ -348,7 +348,7 @@ public class VideoPlayActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         m3u8WriteCount++;
-        System.out.println("=================m3u8写的次数："+m3u8WriteCount);
+        Log.d(TAG, "writeM3u8: 写次数："+m3u8WriteCount);
     }
 
     public void writeM3u8End(){
@@ -406,7 +406,6 @@ public class VideoPlayActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getAnResult(Model.VideoChunk videoChunk){
-        System.out.println("==============得到videoChunk的hash:" + videoChunk.getChunk()+" "+ videoChunk.getEndTime()+" "+videoChunk.getAddress());
         addressMap.put(videoChunk.getChunk(),videoChunk.getAddress()); //拿到一个结果就放进来一个，可能会相同
         videorHelper.receiveChunk(videoChunk); //将对应的视频保存到本地
     }
