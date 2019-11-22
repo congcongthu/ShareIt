@@ -26,12 +26,14 @@ public class VideoFileListener extends FileObserver {
                 Log.d(TAG, String.format("%s closed at %d", path, System.currentTimeMillis()));
                 //Log.d(TAG, String.format("Chunk Index :%d", getIndFromPath(path)));
                 String tsAbsolutePath = String.format("%s/%s", observeredDir, path);
-                VideoUploadTask currentTask = new VideoUploadTask(videoId, path, tsAbsolutePath, chunkQueue, false);
-                try {
-                    videoQueue.add(currentTask);
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
+
+//                VideoUploadTask currentTask = new VideoUploadTask(videoId, path, tsAbsolutePath, chunkQueue, false);
+//                try {
+//                    videoQueue.add(currentTask);
+//                }catch(Exception e){
+//                    e.printStackTrace();
+//                }
+
 
         }
     }

@@ -4,6 +4,8 @@ import android.util.Log;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import sjtu.opennet.textilepb.Model;
+
 /**
  * Upload video in a async way.
  * Each video will have its own VideoUploader (In order to count duration)
@@ -42,39 +44,27 @@ public class VideoUploader extends Thread{
     @Override
     public void run(){
         Log.d(TAG, "Uploader start to run.");
-        BlockingQueue<Integer> blockQueue = new LinkedBlockingQueue<>();
         VideoUploadTask vTask;
-        int endDuration;
-        int returnStat;
-        long currentTime;
-        long endTime;
         while(!complete) {
             try {
                 vTask = videoQueue.take();
-
-
-
-                Log.d(TAG, String.format("Task %s start to execute.", vTask.getChunkName()));
-                currentTime = System.currentTimeMillis();
-                endDuration = vTask.upload(currentDuration, blockQueue);
-                Log.d(TAG, String.format("Task %s upload return.", vTask.getChunkName()));
-                returnStat = blockQueue.take();
-
-
-
-                endTime = System.currentTimeMillis();
-                currentDuration = endDuration;
-                if(endDuration < 0){
-                    Log.d(TAG, "End Upload Task Received. End the thread.");
+                if(vTask.isEnd()){
+                    Log.d(TAG, "End task received. Stop the uploader.");
                     complete = true;
+                }else {
+                    Log.d(TAG, String.format("Task at %d start to execute.", currentDuration));
+                    Model.VideoChunk videoChunk = vTask.upload(currentDuration);
+                    Log.d(TAG, String.format("Task at %d upload return.", currentDuration));
+
+                    currentDuration = videoChunk.getEndTime();
                 }
-                Log.d(TAG, String.format("Task %s upload and ipfs add complete. Task use time %d.", vTask.getChunkName(), endTime - currentTime));
+
             } catch (InterruptedException ie) {
                 Log.e(TAG, "Unexpected Interrupt.");
                 ie.printStackTrace();
                 interrupt();
-            } catch(Exception e){
-                Log.e(TAG, "Unknown exception when run uploader. Interrupt thread.");
+            } catch(VideoExceptions.UnexpectedEndException e){
+                Log.e(TAG, "Un expected end tag.");
                 e.printStackTrace();
                 interrupt();
             }

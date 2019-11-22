@@ -105,6 +105,7 @@ public class VideoActivity extends AppCompatActivity {
             //vMeta.logCatPrint();
               //VideoHelper vHelper = new VideoHelper(this, filePath);
               VideoUploadHelper vHelper = new VideoUploadHelper(this, filePath);
+              vHelper.upload();
 //            long endTime = System.currentTimeMillis();
 //            Log.d(TAG, "Meta get end");
 //            Log.d(TAG, String.format("Meta get time %d ms", endTime - startTime));
@@ -114,9 +115,9 @@ public class VideoActivity extends AppCompatActivity {
 //            endTime = System.currentTimeMillis();
 //            Log.d(TAG, String.format("Meta publish time %d ms", endTime - startTime));
 //            Log.d(TAG, "Try to stream video");
-            Log.d(TAG, "seg only");
+            //Log.d(TAG, "seg only");
             //vHelper.segmentOnly();
-            vHelper.testDecodeM3u8();
+            //vHelper.testDecodeM3u8();
             /*
             Log.d(TAG, "Try to receive thumbnail from ipfs");
             Model.Video tmpVpb = vHelper.getVideoPb();

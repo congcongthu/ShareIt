@@ -10,9 +10,9 @@ public class ModuleTest {
 
     public static void run(Context context, String videoPath){
 
-        String testPath = FileUtil.getAppExternalPath(context, "test");
-        VideoUploadHelper vHelper = new VideoUploadHelper(context, videoPath);
-        vHelper.publishMeta();
+        //String testPath = FileUtil.getAppExternalPath(context, "test");
+        //VideoUploadHelper vHelper = new VideoUploadHelper(context, videoPath);
+        //vHelper.publishMeta();
     }
 
 }

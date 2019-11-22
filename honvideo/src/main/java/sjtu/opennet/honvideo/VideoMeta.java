@@ -276,18 +276,6 @@ public class VideoMeta {
         return videopb;
     }
 
-    public Video getPb2(String posterHash, String m3u8Content){
-        Video videopb = Video.newBuilder()
-                .setId(videoHash)
-                //.setCaption(stringInfo())
-                .setCaption(m3u8Content)
-                .setVideoLength((int)duration_long)
-                .setPoster(posterHash)
-                .build();
-
-        //videopb.writeTo();
-        return videopb;
-    }
 
     public String getHash(){
         return videoHash;
