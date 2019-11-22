@@ -48,26 +48,27 @@ public class VideoUploadHelper {
     private BlockingQueue<ChunkPublishTask> chunkQueue;
     private ChunkPublisher chunkpublisher;
 
+    private ExitUploader exitUploader;
+
     private Context context;
     private String filePath;
-    private Model.Video videoPb;
+    private Model.Video videoPb = null;
+    private String posterHash;
 
     static private Bitmap bitmapFromIpfs;
 
     String threadId;
     M3u8Listener listObserver;
 
+    private boolean completeList = false;
+    final Object POSTERLOCK = new Object();
+    final Object SEGLOCK = new Object();
+
     public VideoUploadHelper(Context context, String filePath){
         this.context = context;
         this.filePath = filePath;
 
         vMeta = new VideoMeta(filePath);
-
-
-        //setVideoPb();   //set the value of videoPb
-        //Change log:
-        //  call set VideoPb after segment is end.
-
 
         rootPath = FileUtil.getAppExternalPath(context,"video");
         String tmpPath = String.format("video/%s", vMeta.getHash());
@@ -83,202 +84,37 @@ public class VideoUploadHelper {
         chunkQueue = new PriorityBlockingQueue<>();
         videoUploader = new VideoUploader(videoQueue, chunkQueue);
         chunkpublisher = new ChunkPublisher(chunkQueue);
+        exitUploader = new ExitUploader();
 
+        listObserver = new M3u8Listener(videoPath, vMeta.getHash(), videoQueue, chunkQueue);
         vObserver = new VideoFileListener(chunkPath, vMeta.getHash(), videoQueue, chunkQueue);
         Log.d(TAG, String.format("Uploader initialize complete for video ID %s.", vMeta.getHash()));
-
-
     }
 
     public String getVideoId(){
         return vMeta.getHash();
     }
+
     /**
-     * shutDownUploader is used to stop the uploader binding with this helper.
+     * stop the uploader binding with this helper.
      * It will do following things:<br />
      *  - Run a new thread so the main thread would not be blocked.<br />
-     *  - Sleep for 1 second to make sure that the Observer will add the last task to videoQueue.<br />
+     *  - Sleep for 100ms to make sure that the Observer will add the last task to videoQueue.<br />
      *  - Add the end task to videoQueue to notify the VideoUploader that these are all the task.
      */
-    public class shutDownUploader extends Thread{
+    public class ExitUploader extends Thread{
         @Override
         public void run(){
             try {
-                Thread.sleep(1000);
+                Log.d(TAG, "ExitUploader start.");
+                Thread.sleep(100);
                 videoQueue.add(VideoUploadTask.endTask());
+                Log.d(TAG, "ExitUploader complete. End task added to task queue.");
             }catch(InterruptedException ie){
                 ie.printStackTrace();
             }
         }
     }
-
-    /**
-     * segHandler is called by FFmpeg binary executor within {@link Segmenter#segment}
-     */
-    private ExecuteBinaryResponseHandler segHandler = new ExecuteBinaryResponseHandler(){
-        @Override
-        public void onSuccess(String message) {
-            Log.d(TAG, String.format("FFmpeg segment success\n%s", message));
-
-            vObserver.stopWatching();
-            new shutDownUploader().start();
-            //tailer.stop();
-            //tailerRunning = false;
-        }
-
-        @Override
-        public void onProgress(String message){
-        }
-
-        @Override
-        public void onFailure(String message) {
-            Log.e(TAG, "Command failure.");
-
-            vObserver.stopWatching();
-            videoUploader.shutDown();   //shut it down instead of safely exit it using shutDownUploader
-        }
-
-        @Override
-        public void onStart() {
-            Log.d(TAG, "FFmpeg segment start.");
-            videoUploader.start();      //Do not use run!!!!
-            //chunkpublisher.start();   //chunk publish has nothing to do with listener.
-                                        //so we didn't make chunk publisher ffmpeg-driven.
-            vObserver.startWatching();
-        }
-
-        @Override
-        public void onFinish() {
-            vObserver.stopWatching();
-        }
-    };
-
-
-    /**
-     * segHandler is called by FFmpeg binary executor within {@link Segmenter#segment}
-     */
-    private ExecuteBinaryResponseHandler segHandler2 = new ExecuteBinaryResponseHandler(){
-        @Override
-        public void onSuccess(String message) {
-            Log.d(TAG, String.format("FFmpeg segment success\n%s", message));
-
-            vObserver.stopWatching();
-            new shutDownUploader().start();
-            //tailer.stop();
-            //tailerRunning = false;
-        }
-
-        @Override
-        public void onProgress(String message){
-        }
-
-        @Override
-        public void onFailure(String message) {
-            Log.e(TAG, "Command failure.");
-
-            vObserver.stopWatching();
-            videoUploader.shutDown();   //shut it down instead of safely exit it using shutDownUploader
-        }
-
-        @Override
-        public void onStart() {
-            Log.d(TAG, "FFmpeg segment start with handler v2.");
-            videoUploader.start();      //Do not use run!!!!
-            //chunkpublisher.start();   //chunk publish has nothing to do with listener.
-            //so we didn't make chunk publisher ffmpeg-driven.
-            vObserver.startWatching();
-        }
-
-        @Override
-        public void onFinish() {
-            vObserver.stopWatching();
-            setVideoPb2();
-        }
-    };
-
-    private ExecuteBinaryResponseHandler segHandler3 = new ExecuteBinaryResponseHandler(){
-        @Override
-        public void onSuccess(String message) {
-            Log.d(TAG, String.format("FFmpeg segment success\n%s", message));
-
-            listObserver.stopWatching();
-            //new shutDownUploader().start();
-        }
-
-        @Override
-        public void onProgress(String message){
-        }
-
-        @Override
-        public void onFailure(String message) {
-            Log.e(TAG, "Command failure.");
-
-            listObserver.stopWatching();
-            //videoUploader.shutDown();   //shut it down instead of safely exit it using shutDownUploader
-        }
-
-        @Override
-        public void onStart() {
-            Log.d(TAG, "FFmpeg segment start with handler v2.");
-            //videoUploader.start();      //Do not use run!!!!
-            listObserver.startWatching();
-        }
-
-        @Override
-        public void onFinish() {
-            listObserver.stopWatching();
-            //setVideoPb2();
-        }
-    };
-
-    private Handlers.IpfsAddDataHandler posterHandler = new Handlers.IpfsAddDataHandler() {
-        @Override
-        public void onComplete(String path) {
-            Log.d(TAG, String.format("poster ipfs path: %s", path));
-            videoPb = vMeta.getPb(path);
-        }
-
-        @Override
-        public void onError(Exception e) {
-            e.printStackTrace();
-        }
-    };
-
-    private Handlers.IpfsAddDataHandler posterHandler2 = new Handlers.IpfsAddDataHandler() {
-        @Override
-        public void onComplete(String path) {
-            Log.d(TAG, String.format("Poster ipfs add complete. ipfs path: %s", path));
-            byte[] m3u8bytes = FileUtil.readAllBytes(m3u8Path);
-            if(m3u8bytes == null){
-                Log.e(TAG, "Can not get content from m3u8 file. Write empty string to video meta.");
-                videoPb = vMeta.getPb2(path, "");
-            }else{
-                Log.d(TAG, "m3u8 content got. Write it to video meta.");
-                videoPb = vMeta.getPb2(path, new String(m3u8bytes));
-                publishMeta2();
-            }
-
-        }
-
-        @Override
-        public void onError(Exception e) {
-            e.printStackTrace();
-        }
-    };
-
-    static private Handlers.DataHandler posterReceiveHandler = new Handlers.DataHandler() {
-        @Override
-        public void onComplete(byte[] data, String media) {
-            Log.d(TAG, String.format("Received media: %s", media));
-            bitmapFromIpfs = BitmapFactory.decodeByteArray(data,0,data.length);
-        }
-
-        @Override
-        public void onError(Exception e) {
-
-        }
-    };
-
 
     /**
      * Segment, upload and publish video.
@@ -294,62 +130,42 @@ public class VideoUploadHelper {
     }
 
     public void segment(String threadId){
-        this.threadId = threadId;
-        try {
-            chunkpublisher.start(); //It was ended by upload task.
-            Segmenter.segment(context, 3, filePath, m3u8Path, chunkPath, segHandler2);
-            //Segmenter.segment(context, 1, filePath, m3u8Path, chunkPath, segHandler);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+
     }
 
-    /**
-     *
-     */
-    public void segmentOnly(){
+
+    public static void publishMeta(Model.Video videoPb){
         try {
-            Segmenter.segment(context, 3, filePath, m3u8Path, chunkPath, Segmenter.defaultHandler);
+            Textile.instance().videos.addVideo(videoPb);
+            Textile.instance().videos.publishVideo(videoPb);
         }catch(Exception e){
-            Log.e(TAG, "Unknown error when doing segment only.");
             e.printStackTrace();
         }
-    }
-
-    public void testDecodeM3u8(){
-        listObserver = new M3u8Listener(m3u8Path);
-        try {
-            Segmenter.segment(context, 3, filePath, m3u8Path, chunkPath, segHandler3);
-        }catch(Exception e){
-            Log.e(TAG, "Unknown error when test m3u8 decoder.");
-            e.printStackTrace();
-        }
-
     }
 
     public void publishMeta(){
         try {
             Textile.instance().videos.addVideo(videoPb);
-            System.out.println("================了publish");
             Textile.instance().videos.publishVideo(videoPb);
-            System.out.println("================卡住了");
         }catch(Exception e){
             e.printStackTrace();
         }
     }
 
-    public void publishMeta2(){
-        try {
-            Textile.instance().videos.addVideo(videoPb);
-            System.out.println("================了publish");
-            Textile.instance().videos.publishVideo(videoPb);
-            System.out.println("================卡住了");
-            Textile.instance().videos.threadAddVideo(threadId,videoPb.getId());
-        }catch(Exception e){
-            e.printStackTrace();
+
+    class metaPublisher implements Runnable{
+        @Override
+        public void run(){
+            Log.d(TAG, "Meta publish thread start.");
+            publishMeta();
+            Log.d(TAG, "Meta publish thread end.");
         }
     }
 
+    /**
+     * Clean the whole upload folder.
+     * @param context
+     */
     public static void cleanAll(Context context){
         String rootPath = FileUtil.getAppExternalPath(context, "video");
         File rmFile = new File(rootPath);
@@ -357,55 +173,114 @@ public class VideoUploadHelper {
     }
 
     /**
-     * setVideoPb will add poster to ipfs and use the ipfs hash path to create video protobuf object.
-     * It will called when create the new helper instance and assigned protobuf object to variable videoPb.
+     * getVideoPb will add poster to ipfs and use the ipfs hash path to create video protobuf object.
+     * <s>NOTE: <s/>This will take a bit time. So it is wise to run it in a separated thread (for the first time).
      */
-    private void setVideoPb(){
-        Textile.instance().ipfs.ipfsAddData(vMeta.getPosterByte(),true,false,posterHandler);
+    public Model.Video getVideoPb(){
+        if(videoPb != null){
+            return videoPb;
+        }
+
+        //Upload poster to ipfs
+        synchronized (POSTERLOCK){
+            try {
+                Textile.instance().ipfs.ipfsAddData(vMeta.getPosterByte(), true, false, posterHandler);
+                POSTERLOCK.wait();
+            }catch(InterruptedException ie){
+                Log.e(TAG, "InterruptedException occurred when add poster to ipfs.");
+                ie.printStackTrace();
+            }
+        }
+        videoPb = vMeta.getPb(posterHash);
+        return videoPb;
     }
 
-    /**
-     * setVideoPb will add poster to ipfs and use the ipfs hash path to create video protobuf object.
-     * It will called when create the new helper instance and assigned protobuf object to variable videoPb.
-     */
-    private void setVideoPb2(){
-        Textile.instance().ipfs.ipfsAddData(vMeta.getPosterByte(),true,false,posterHandler2);
-    }
+
 
 
     public Bitmap getPoster(){
         return vMeta.getPoster();
     }
 
-    public static void saveBitmap(Bitmap bitmapToSave, String outPath){
-        try {
-            File img = new File(outPath);
-            OutputStream fout = new FileOutputStream(img);
-            bitmapToSave.compress(Bitmap.CompressFormat.PNG, 100, fout);
-            fout.flush();
-            fout.close();
-        }catch(FileNotFoundException fe){
-            Log.e(TAG, "File not found");
-            fe.printStackTrace();
-        }catch(IOException ie){
-            Log.e(TAG, "ioerror");
-            ie.printStackTrace();
-        }catch(NullPointerException ne){
-            Log.e(TAG, "Bitmap is NULL.");
-            ne.printStackTrace();
-        }
-    }
 
-    public Model.Video getVideoPb(){
-        return videoPb;
-    }
-
-    public String getVideoPath(){
-        return videoPath;
-    }
 
     public static String getVideoPathFromID(Context context, String ID){
         String tmpPath = String.format("video/%s", ID);
         return FileUtil.getAppExternalPath(context, tmpPath);
+    }
+
+    /**
+     * Handler of ipfsAddData.
+     */
+    private Handlers.IpfsAddDataHandler posterHandler = new Handlers.IpfsAddDataHandler() {
+        @Override
+        public void onComplete(String path) {
+            synchronized (POSTERLOCK) {
+                Log.d(TAG, String.format("Poster ipfs path: %s", path));
+                posterHash = path;
+                POSTERLOCK.notify();
+            }
+        }
+
+        @Override
+        public void onError(Exception e) {
+            e.printStackTrace();
+            POSTERLOCK.notify();
+        }
+    };
+
+    private ExecuteBinaryResponseHandler segHandler = new ExecuteBinaryResponseHandler(){
+        @Override
+        public void onSuccess(String message) {
+            Log.d(TAG, String.format("FFmpeg segment success\n%s", message));
+        }
+
+        @Override
+        public void onProgress(String message){
+        }
+
+        @Override
+        public void onFailure(String message) {
+            Log.e(TAG, "Command failure.");
+
+        }
+
+        @Override
+        public void onStart() {
+            Log.d(TAG, "FFmpeg segment start.");
+        }
+
+        @Override
+        public void onFinish() {
+            listObserver.stopWatching();
+            exitUploader.start();
+            //shutDownUploader
+        }
+    };
+
+    /**
+     * upload is the main interface of upload helper. It will do following tasks:<br />
+     *  - Publish video proto to database and cafe. <br />
+     *  - Run ffmpeg segment command.<br />
+     *  - Start the chunk upload (add data to ipfs peer) and publish (publish meta to database and cafe.) threads<br />
+     *  - Build the video proto object.
+     * @return
+     */
+    public void upload(){
+        //Publish video meta.
+        getVideoPb();
+        new Thread(new metaPublisher()).start();
+
+        //Do segmentation
+        try {
+            videoUploader.start();
+            chunkpublisher.start(); //It was ended by upload task.
+            listObserver.startWatching();
+            Segmenter.segment(context, 3, filePath, m3u8Path, chunkPath, segHandler);
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
     }
 }

@@ -136,5 +136,22 @@ public class FileUtil {
         return new String(readAllBytes(filePath));
     }
 
-    //public static
+    public static void saveBitmap(Bitmap bitmapToSave, String outPath){
+        try {
+            File img = new File(outPath);
+            OutputStream fout = new FileOutputStream(img);
+            bitmapToSave.compress(Bitmap.CompressFormat.PNG, 100, fout);
+            fout.flush();
+            fout.close();
+        }catch(FileNotFoundException fe){
+            Log.e(TAG, "File not found");
+            fe.printStackTrace();
+        }catch(IOException ie){
+            Log.e(TAG, "ioerror");
+            ie.printStackTrace();
+        }catch(NullPointerException ne){
+            Log.e(TAG, "Bitmap is NULL.");
+            ne.printStackTrace();
+        }
+    }
 }

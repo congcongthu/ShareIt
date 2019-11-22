@@ -84,6 +84,7 @@ public class Segmenter {
 //        String command = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -f segment -segment_time 10 -segment_list %s/out.m3u8 %s/out%%04d.ts", filePath, outDir, outDir);
         String command = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -f segment " +
                 "-segment_time %d " +
+                "-segment_list_size 1 " +
                 "-segment_list %s " +
                 "%s/out%%04d.ts", filePath, segTime, m3u8Path, outDir);
 //        String command = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -b:v 64k -bufsize 64k -f segment " +
@@ -102,6 +103,30 @@ public class Segmenter {
 //                "-segment_time %d " +
 //                "-segment_list %s " +
 //                "%s/out%%04d.ts", filePath, segTime, m3u8Path, outDir);
+        FFmpeg ffmpeg = FFmpeg.getInstance(context);
+        if(handler!=null){
+            ffmpeg.execute(command.split(" "), handler);
+        }else{
+            ffmpeg.execute(command.split(" "), defaultHandler);
+        }
+    }
+
+    public static void testM3u8Segment(Context context, int segTime, String filePath, String m3u8Path, String outDir, ExecuteBinaryResponseHandler handler) throws Exception{
+        Log.i(TAG, String.format("Segment file %s into %s.", filePath, outDir));
+        if(!isInit){
+            Log.w(TAG, "FFmpeg has not be loaded. Try to load it.");
+            initFfmpeg(context);
+        }
+        File outDirf = new File(outDir);
+        if(!outDirf.exists()){
+            outDirf.mkdir();
+        }
+        String command = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -f segment " +
+                "-segment_time %d " +
+                "-segment_list_size 1 " +
+                "-segment_list %s " +
+                "%s/out%%04d.ts", filePath, segTime, m3u8Path, outDir);
+
         FFmpeg ffmpeg = FFmpeg.getInstance(context);
         if(handler!=null){
             ffmpeg.execute(command.split(" "), handler);

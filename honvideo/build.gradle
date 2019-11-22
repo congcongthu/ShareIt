@@ -54,3 +54,16 @@ dependencies {
     implementation project(':hon')
     implementation "sjtu.opennet:hon-textile-mobile:0.1.55"
 }
+
+apply plugin: 'maven'
+uploadArchives{
+    repositories.mavenDeployer {
+        def mavenDirPath = file('maven')
+        repository(url:"file:${mavenDirPath}")
+        pom.project{
+            groupId "sjtu.opennet"
+            artifactId "honvideo"
+            version "1.0"
+        }
+    }
+}

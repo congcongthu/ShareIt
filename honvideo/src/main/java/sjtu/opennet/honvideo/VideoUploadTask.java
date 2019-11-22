@@ -3,6 +3,8 @@ package sjtu.opennet.honvideo;
 
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
+
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.BlockingQueue;
@@ -13,86 +15,114 @@ import sjtu.opennet.textilepb.Model.VideoChunk;
 
 /**
  * Video upload task.
- *
+ * It does the following task:<br />
+ *  -
  */
 
 public class VideoUploadTask {
-    private final String TAG = "HONVIDEO.VideoUploadTask";
+    private static final String TAG = "HONVIDEO.VideoUploadTask";
+    private static final TimeLog timeLog = new TimeLog("HONVIDEO.VideoUploadTask");
+
     //private boolean ipfsComplete = false;
+
+    //lock object used to let main thread wait for ipfs thread.
+    final Object LOCK = new Object();
 
     //Variables get from constructor
     private String videoId;
     private String tsPath;
     private String tsAbsolutePath;
-    private BlockingQueue<ChunkPublishTask> chunkQueue;
     private boolean endTag;
 
     //Variables assigned during running
     private int currentDuration = 0;
     private int duration_int = 0;
-    private BlockingQueue<Integer> blockQueue;
 
-    public VideoUploadTask(String videoId, String tsPath, String tsAbsolutePathPath, BlockingQueue<ChunkPublishTask> chunkQueue, boolean endTag){
+    //Returned chunk proto
+    private VideoChunk videoChunk;
+
+    /**
+     * Constructor of VideoUploadTask.
+     * @param videoId
+     * @param tsPath
+     * @param tsAbsolutePathPath
+     * @param endTag
+     */
+    public VideoUploadTask(String videoId, String tsPath, String tsAbsolutePathPath, boolean endTag){
         this.videoId = videoId;
         this.tsPath = tsPath;
         this.tsAbsolutePath = tsAbsolutePathPath;
-        this.chunkQueue = chunkQueue;
         this.endTag = endTag;
     }
 
-    public String getChunkName(){
-        if(endTag){
-            return "ENDTASK";
-        }
-        return tsPath;
+    public VideoUploadTask(String videoId, String tsPath, String tsAbsolutePathPath, int duration, boolean endTag){
+        this(videoId, tsPath, tsAbsolutePathPath, endTag);
+        duration_int = duration;
+    }
+
+    public boolean isEnd(){
+        return endTag;
     }
 
     /**
      * This handler is called by ipfsAddData
      * It does the following things:<br />
-     *  - create VideoChunk proto object<br />
-     *  - add it to thread<br />
-     *  - upload it to cafe peer
-     *
-     * @TODO:
-     * Use two blocking queue to do segment and upload.
+     *  - create VideoChunk proto object.
      */
     private Handlers.IpfsAddDataHandler tsHandler = new Handlers.IpfsAddDataHandler() {
         @Override
         public void onComplete(String path) {
-            Log.d(TAG, String.format("IPFS add complete for file %s with ipfs path: %s", tsPath, path));
-            //ipfsComplete = true;
-            VideoChunk videoChunk = VideoChunk.newBuilder()
-                    .setId(videoId)
-                    .setChunk(tsPath)
-                    .setAddress(path)
-                    .setStartTime(currentDuration)
-                    .setEndTime(currentDuration + duration_int)
-                    .build();
-            Log.d(TAG, String.format("Add task %s to Publish Queue.", tsPath));
-            chunkQueue.add(new ChunkPublishTask(videoChunk, false));
-            blockQueue.add(1);
-//            int tmpSize = chunkQueue.size();
-//            Log.d(TAG, String.format("Size of chunk queue: %s", tmpSize));
-//            try {
-//                Textile.instance().videos.addVideoChunk(videoChunk);
-//                Textile.instance().videos.publishVideoChunk(videoChunk);
-//            }catch(Exception e){
-//                Log.e(TAG, "Unexpected error when publish video chunk");
-//                e.printStackTrace();
-//            }
+            synchronized (LOCK) {
+                Log.d(TAG, String.format("IPFS add complete for file %s with ipfs path: %s", tsPath, path));
+                videoChunk = VideoChunk.newBuilder()
+                        .setId(videoId)
+                        .setChunk(tsPath)
+                        .setAddress(path)
+                        .setStartTime(currentDuration)
+                        .setEndTime(currentDuration + duration_int)
+                        .build();
+
+                Log.d(TAG, "Chunk proto built.");
+                LOCK.notify();
+            }
         }
 
         @Override
         public void onError(Exception e) {
-            Log.e(TAG, String.format("Unexpect ipfs error when add file %s", tsPath));
-            blockQueue.add(-1);
-            e.printStackTrace();
+            synchronized (LOCK) {
+                Log.e(TAG, String.format("Unexpect ipfs error when add file %s", tsPath));
+                e.printStackTrace();
+                LOCK.notify();
+            }
         }
     };
 
+    /**
+     * Read the duration info from the ts file.
+     * This method is exactly the way we read duration for videoMeta.
+     * It may take a bit time and the duration may be slightly different from the m3u8 list.
+     * @return Duration in us (1/1000 ms)
+     * @TODO int32 is not enough for time in us.
+     */
+    private int readDurationFromReceiver(){
+        Log.d(TAG, String.format("Extract task %s duration from ts file using receiver.", tsPath));
+        timeLog.begin();
+        MediaMetadataRetriever mdataReceiver = null;
+        mdataReceiver = new MediaMetadataRetriever();
+        mdataReceiver.setDataSource(tsAbsolutePath);
+        String duration = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+        mdataReceiver.release();
+        Log.d(TAG, String.format("Extract task %s duration and content use %d ms.", tsPath, timeLog.stopGetTime()));
+        return Integer.parseInt(duration) * 1000;
+    }
+
+    /**
+     * Get the end video upload task. Video task is processed through block queue.
+     * This task will notify the queue to stop.
+     * @return An virtual upload task to notify uploader to stop.
+     */
     public static VideoUploadTask endTask(){
-        return new VideoUploadTask("","", "", null,true);
+        return new VideoUploadTask("","", "",true);
     }
 
     /**
@@ -105,52 +135,33 @@ public class VideoUploadTask {
      * @param currentDuration The duration now. Used as startTime;
      * @return endTime. Used to update duration in video Uploader.
      */
-    public int upload(int currentDuration, BlockingQueue<Integer> blockQueue){
-        long currentTime;
-        long newTime;
-        this.blockQueue = blockQueue;
+    public VideoChunk upload(int currentDuration) throws VideoExceptions.UnexpectedEndException{
         this.currentDuration = currentDuration;
+        //duration_int = readDurationFromReceiver();
         if(endTag){
             Log.d(TAG, "End task received. Return -1 to end the task thread.");
-            blockQueue.add(0);
-            return -1;
+            throw new VideoExceptions.UnexpectedEndException();
         }
-        //Log.d(TAG, String.format("Video Upload Task Begin, Chunk Start Duration %d", currentDuration));
-        //int duration_int = 0;
-        MediaMetadataRetriever mdataReceiver = null;
+
         try {
-
-            Log.d(TAG, String.format("Extract task %s duration and content.", tsPath));
-            currentTime = System.currentTimeMillis();
-            mdataReceiver = new MediaMetadataRetriever();
-            mdataReceiver.setDataSource(tsAbsolutePath);
-            String duration = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            Log.d(TAG, String.format("Add task %s to ipfs.", tsPath));
+            timeLog.begin();
             byte[] fileContent = Files.readAllBytes(Paths.get(tsAbsolutePath));
-            newTime = System.currentTimeMillis();
-            Log.d(TAG, String.format("Extract task %s duration and content use %d MS.", tsPath, newTime - currentTime));
-            currentTime = newTime;
-
-
-            if (duration == null) {
-                Log.w(TAG, "Can not extract dutation.");
-                duration_int = -1;
-                blockQueue.add(-1);
-                return -1;
-            } else {
-                duration_int = Integer.parseInt(duration);
-                Log.d(TAG, String.format("Add task %s to ipfs.", tsPath));
+            synchronized (LOCK) {
                 Textile.instance().ipfs.ipfsAddData(fileContent, true, false, tsHandler);
+                Log.d(TAG, "Task wait for ipfs complete");
+                LOCK.wait();
+                Log.d(TAG, "Task notified");
             }
-            //Log.d(TAG, String.format("Video Upload Task Done, Chunck End Duration: %d", currentDuration + duration_int));
-
-        }catch(Exception e){
-            e.printStackTrace();
-        }finally{
-            //Important: Always release the retriever
-            if(mdataReceiver != null){
-                mdataReceiver.release();
-            }
+            Log.d(TAG, String.format("IPFS add complete. Use time %d ms", timeLog.stopGetTime()));
+        }catch(IOException ie){
+            Log.e(TAG, "Unexpected io exception when read ts contents.");
+            ie.printStackTrace();
+        }catch(InterruptedException ie){
+            Log.e(TAG, "Unexpected interruption when run ipfs add.");
+            ie.printStackTrace();
         }
-        return currentDuration + duration_int;
+
+        return videoChunk;
     }
 }
