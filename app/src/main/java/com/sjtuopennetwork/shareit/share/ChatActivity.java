@@ -282,21 +282,22 @@ public class ChatActivity extends AppCompatActivity {
             System.out.println("=================选择了视频："+filePath);
 //
             VideoUploadHelper videoHelper=new VideoUploadHelper(this,filePath);
-//            videoHelper.segment(threadid); //切割并上传
-            videoHelper.publishMeta(); //添加到本地、上传到cafe
-            Model.Video video=videoHelper.getVideoPb();
+            Model.Video videoPb=videoHelper.getVideoPb();
+
+
+            videoHelper.upload();
             try {
-                Textile.instance().videos.threadAddVideo(threadid,video.getId()); //向thread中添加
-            } catch (Exception e) {
+                Textile.instance().videos.threadAddVideo(threadid,videoPb.getId()); //向thread中添加
+            }catch(Exception e){
                 e.printStackTrace();
             }
+
             Bitmap tmpBmap = videoHelper.getPoster(); //拿到缩略图
             String tmpdir = FileUtil.getAppExternalPath(this, "temp");
             String videoHeadPath=tmpdir+System.currentTimeMillis(); //随机给一个名字
             //将缩略图临时保存到本地
             FileUtil.saveBitmap(videoHeadPath,tmpBmap);
-            String posterAndId=videoHeadPath+"##"+video.getId();
-//            String posterAndId=videoHeadPath+"##"+ videoHelper.getVideoId() ;
+            String posterAndId=videoHeadPath+"##"+videoPb.getId();
             TMsg tMsg= null;
             try {
                 tMsg = new TMsg(1,threadid,2,"",
@@ -306,11 +307,7 @@ public class ChatActivity extends AppCompatActivity {
             }
             msgList.add(tMsg);
             chat_lv.setSelection(msgList.size());
-
-            videoHelper.segment();
-
             DBoperator.changeDialogRead(appdb,threadid,1);
-
         }
     }
 

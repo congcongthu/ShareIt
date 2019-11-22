@@ -229,8 +229,8 @@ public class MsgAdapter extends BaseAdapter {
                 }else{ //是视频就setVideo
                     String[] posterAndId=msgBody.split("##"); //0是poster，1是Id
                     String filePath=FileUtil.getFilePath(posterAndId[0]);
-                    h.chat_photo.setTag(posterAndId[0]);
-                    setVideo(null,filePath,posterAndId[0]);
+//                    h.chat_photo.setTag(posterAndId[0]);
+                    setVideo(h.chat_photo,filePath,posterAndId[0]);
                     h.chat_photo.setOnClickListener(view1 -> {
                         Intent it=new Intent(context, VideoPlayActivity.class);
                         it.putExtra("ismine",false);

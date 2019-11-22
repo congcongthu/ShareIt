@@ -6,6 +6,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
@@ -66,6 +67,8 @@ import sjtu.opennet.textilepb.QueryOuterClass;
 
 
 public class VideoPlayActivity extends AppCompatActivity {
+
+    private static final String TAG = "=================";
 
     //内存数据
     String videoid;
@@ -444,6 +447,7 @@ public class VideoPlayActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
+        Log.d(TAG, "onStop: VideoPlayActivity调用stop");
         if(EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().unregister(this);
         }
