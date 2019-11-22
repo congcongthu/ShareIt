@@ -55,7 +55,8 @@ public class VideoUploader extends Thread{
                     Log.d(TAG, String.format("Task at %d start to execute.", currentDuration));
                     Model.VideoChunk videoChunk = vTask.upload(currentDuration);
                     Log.d(TAG, String.format("Task at %d upload return.", currentDuration));
-
+                    Log.d(TAG, String.format("Task at %d add to chunk task queue.", currentDuration));
+                    chunkQueue.add(new ChunkPublishTask(videoChunk, false));
                     currentDuration = videoChunk.getEndTime();
                 }
 
