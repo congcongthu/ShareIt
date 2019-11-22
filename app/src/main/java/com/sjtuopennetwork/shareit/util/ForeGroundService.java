@@ -523,7 +523,7 @@ public class ForeGroundService extends Service {
                         feedItemData.feedVideo.getDate().getSeconds(), ismine);
 
                 EventBus.getDefault().post(updateDialog);
-                if(ismine==0){  //不是我的图片才广播出去，因为我自己的消息直接显示了
+                if(ismine==0){  //不是我的视频才广播出去，因为我自己的消息直接显示了
                     EventBus.getDefault().post(tMsg);
                 }
             }
