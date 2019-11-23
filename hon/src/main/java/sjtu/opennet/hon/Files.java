@@ -1,6 +1,7 @@
 package sjtu.opennet.hon;
 
 import mobile.Mobile_;
+import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.Model.Block;
 import sjtu.opennet.textilepb.View.FilesList;
 
@@ -126,5 +127,13 @@ public class Files extends NodeDependent {
                 handler.onError(exception);
             }
         });
+    }
+
+    public void addSyncFile(final Model.SyncFile sFile) throws Exception {
+        node.addSyncFile(sFile.toByteArray());
+    }
+
+    public void publicSuynFile(final Model.SyncFile sFile) throws Exception {
+        node.publishSyncFile(sFile.toByteArray());
     }
 }
