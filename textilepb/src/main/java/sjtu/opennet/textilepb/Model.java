@@ -41276,9 +41276,9 @@ public final class Model {
         getCaptionBytes();
 
     /**
-     * <code>int32 videoLength = 3;</code>
+     * <code>int64 videoLength = 3;</code>
      */
-    int getVideoLength();
+    long getVideoLength();
 
     /**
      * <code>string poster = 4;</code>
@@ -41305,7 +41305,7 @@ public final class Model {
     private Video() {
       id_ = "";
       caption_ = "";
-      videoLength_ = 0;
+      videoLength_ = 0L;
       poster_ = "";
     }
 
@@ -41347,7 +41347,7 @@ public final class Model {
             }
             case 24: {
 
-              videoLength_ = input.readInt32();
+              videoLength_ = input.readInt64();
               break;
             }
             case 34: {
@@ -41457,11 +41457,11 @@ public final class Model {
     }
 
     public static final int VIDEOLENGTH_FIELD_NUMBER = 3;
-    private int videoLength_;
+    private long videoLength_;
     /**
-     * <code>int32 videoLength = 3;</code>
+     * <code>int64 videoLength = 3;</code>
      */
-    public int getVideoLength() {
+    public long getVideoLength() {
       return videoLength_;
     }
 
@@ -41519,8 +41519,8 @@ public final class Model {
       if (!getCaptionBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, caption_);
       }
-      if (videoLength_ != 0) {
-        output.writeInt32(3, videoLength_);
+      if (videoLength_ != 0L) {
+        output.writeInt64(3, videoLength_);
       }
       if (!getPosterBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 4, poster_);
@@ -41540,9 +41540,9 @@ public final class Model {
       if (!getCaptionBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, caption_);
       }
-      if (videoLength_ != 0) {
+      if (videoLength_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, videoLength_);
+          .computeInt64Size(3, videoLength_);
       }
       if (!getPosterBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, poster_);
@@ -41587,7 +41587,8 @@ public final class Model {
       hash = (37 * hash) + CAPTION_FIELD_NUMBER;
       hash = (53 * hash) + getCaption().hashCode();
       hash = (37 * hash) + VIDEOLENGTH_FIELD_NUMBER;
-      hash = (53 * hash) + getVideoLength();
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getVideoLength());
       hash = (37 * hash) + POSTER_FIELD_NUMBER;
       hash = (53 * hash) + getPoster().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -41727,7 +41728,7 @@ public final class Model {
 
         caption_ = "";
 
-        videoLength_ = 0;
+        videoLength_ = 0L;
 
         poster_ = "";
 
@@ -41817,7 +41818,7 @@ public final class Model {
           caption_ = other.caption_;
           onChanged();
         }
-        if (other.getVideoLength() != 0) {
+        if (other.getVideoLength() != 0L) {
           setVideoLength(other.getVideoLength());
         }
         if (!other.getPoster().isEmpty()) {
@@ -41991,28 +41992,28 @@ public final class Model {
         return this;
       }
 
-      private int videoLength_ ;
+      private long videoLength_ ;
       /**
-       * <code>int32 videoLength = 3;</code>
+       * <code>int64 videoLength = 3;</code>
        */
-      public int getVideoLength() {
+      public long getVideoLength() {
         return videoLength_;
       }
       /**
-       * <code>int32 videoLength = 3;</code>
+       * <code>int64 videoLength = 3;</code>
        */
-      public Builder setVideoLength(int value) {
+      public Builder setVideoLength(long value) {
         
         videoLength_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 videoLength = 3;</code>
+       * <code>int64 videoLength = 3;</code>
        */
       public Builder clearVideoLength() {
         
-        videoLength_ = 0;
+        videoLength_ = 0L;
         onChanged();
         return this;
       }
@@ -46254,7 +46255,7 @@ public final class Model {
       "feClientThread\022\n\n\002id\030\001 \001(\t\022\016\n\006client\030\002 \001" +
       "(\t\022\022\n\nciphertext\030\003 \001(\014\"I\n\005Video\022\n\n\002id\030\001 " +
       "\001(\t\022\017\n\007caption\030\002 \001(\t\022\023\n\013videoLength\030\003 \001(" +
-      "\005\022\016\n\006poster\030\004 \001(\t\"\\\n\nVideoChunk\022\n\n\002id\030\001 " +
+      "\003\022\016\n\006poster\030\004 \001(\t\"\\\n\nVideoChunk\022\n\n\002id\030\001 " +
       "\001(\t\022\r\n\005chunk\030\002 \001(\t\022\017\n\007address\030\003 \001(\t\022\021\n\ts" +
       "tartTime\030\004 \001(\003\022\017\n\007endTime\030\005 \001(\003\",\n\016Video" +
       "ChunkList\022\032\n\005items\030\001 \003(\0132\013.VideoChunk\"g\n" +
