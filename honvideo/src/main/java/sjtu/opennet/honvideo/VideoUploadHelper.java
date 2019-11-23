@@ -103,13 +103,13 @@ public class VideoUploadHelper {
         this.context = context;
         this.filePath = filePath;
 
+        vMeta = new VideoMeta(filePath);
         rootPath = FileUtil.getAppExternalPath(context, "video");
         String tmpPath = String.format("video/%s", vMeta.getHash());
         videoPath = FileUtil.getAppExternalPath(context, tmpPath);
         tmpPath = String.format("%s/chunks", tmpPath);
         chunkPath = FileUtil.getAppExternalPath(context, tmpPath);
 
-        vMeta = new VideoMeta(filePath);
         vMeta.saveThumbnail(videoPath);
         m3u8Path = String.format("%s/playlist.m3u8", videoPath);
 
@@ -138,6 +138,10 @@ public class VideoUploadHelper {
     public static String getVideoPathFromID(Context context, String ID) {
         String tmpPath = String.format("video/%s", ID);
         return FileUtil.getAppExternalPath(context, tmpPath);
+    }
+
+    public String getVideoPath(){
+        return filePath;
     }
 
     public String getVideoId() {
@@ -246,4 +250,6 @@ public class VideoUploadHelper {
             Log.d(TAG, "Meta publish thread end.");
         }
     }
+
 }
+

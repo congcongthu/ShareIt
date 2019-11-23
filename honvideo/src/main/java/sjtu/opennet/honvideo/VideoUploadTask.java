@@ -35,8 +35,8 @@ public class VideoUploadTask {
     private boolean endTag;
 
     //Variables assigned during running
-    private int currentDuration = 0;
-    private int duration_int = 0;
+    private long currentDuration = 0;
+    private long duration_long = 0;
 
     //Returned chunk proto
     private VideoChunk videoChunk;
@@ -55,9 +55,9 @@ public class VideoUploadTask {
         this.endTag = endTag;
     }
 
-    public VideoUploadTask(String videoId, String tsPath, String tsAbsolutePathPath, int duration, boolean endTag){
+    public VideoUploadTask(String videoId, String tsPath, String tsAbsolutePathPath, long duration, boolean endTag){
         this(videoId, tsPath, tsAbsolutePathPath, endTag);
-        duration_int = duration;
+        duration_long = duration;
     }
 
     public boolean isEnd(){
@@ -79,7 +79,7 @@ public class VideoUploadTask {
                         .setChunk(tsPath)
                         .setAddress(path)
                         .setStartTime(currentDuration)
-                        .setEndTime(currentDuration + duration_int)
+                        .setEndTime(currentDuration + duration_long)
                         .build();
 
                 Log.d(TAG, "Chunk proto built.");
@@ -135,7 +135,7 @@ public class VideoUploadTask {
      * @param currentDuration The duration now. Used as startTime;
      * @return endTime. Used to update duration in video Uploader.
      */
-    public VideoChunk upload(int currentDuration) throws VideoExceptions.UnexpectedEndException{
+    public VideoChunk upload(long currentDuration) throws VideoExceptions.UnexpectedEndException{
         this.currentDuration = currentDuration;
         //duration_int = readDurationFromReceiver();
         if(endTag){

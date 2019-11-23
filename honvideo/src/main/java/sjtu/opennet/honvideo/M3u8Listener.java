@@ -16,8 +16,8 @@ public class M3u8Listener extends FileObserver {
 
     static class chunkInfo{
         public String filename;
-        public int duration;
-        chunkInfo(String filename, int duration){
+        public long duration;
+        chunkInfo(String filename, long duration){
             this.filename = filename;
             this.duration = duration;
         }
@@ -39,7 +39,7 @@ public class M3u8Listener extends FileObserver {
 
         //Log.d(TAG, String.format("Line: %s", infoLine));
         //Log.d(TAG, String.format("Line: %s", infoLine.substring(8, infoLine.length()-1)));
-        int duration = (int)(Double.parseDouble(infoLine.substring(8, infoLine.length()-1))*1000000);
+        long duration = (long)(Double.parseDouble(infoLine.substring(8, infoLine.length()-1))*1000000);
         return new chunkInfo(filename, duration);
     }
 

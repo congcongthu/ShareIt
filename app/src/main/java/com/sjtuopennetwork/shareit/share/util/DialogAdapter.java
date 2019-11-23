@@ -88,13 +88,6 @@ public class DialogAdapter extends ArrayAdapter {
         }
     }
 
-    Handler handler=new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-
-        }
-    };
-
     private void setAvatar(ImageView imageView, String avatarHash){
         String avatarPath= FileUtil.getFilePath(avatarHash);
         if(avatarPath.equals("null")){ //如果没有存储过这个头像文件

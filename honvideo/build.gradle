@@ -52,7 +52,7 @@ dependencies {
     implementation 'com.google.protobuf:protobuf-java:3.5.1'
     implementation project(':textilepb')
     implementation project(':hon')
-    implementation "sjtu.opennet:hon-textile-mobile:0.1.55"
+    implementation "sjtu.opennet:hon-textile-mobile:0.1.57"
 }
 
 apply plugin: 'maven'

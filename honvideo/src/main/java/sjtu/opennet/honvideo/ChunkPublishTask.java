@@ -14,7 +14,7 @@ import sjtu.opennet.textilepb.Model;
 public class ChunkPublishTask implements Comparable<ChunkPublishTask> {
     private static final String TAG = "HONVIDEO.ChunkPublishTask";
     private boolean endTag;
-    private int chunkStartTime;
+    private long chunkStartTime;
     private Model.VideoChunk videoChunk;
 
     ChunkPublishTask(Model.VideoChunk videoChunk, boolean endTag){
@@ -32,7 +32,7 @@ public class ChunkPublishTask implements Comparable<ChunkPublishTask> {
     public boolean isEnd(){
         return endTag;
     }
-    public int getChunkStartTime(){
+    public long getChunkStartTime(){
         return chunkStartTime;
     }
 
@@ -45,7 +45,7 @@ public class ChunkPublishTask implements Comparable<ChunkPublishTask> {
         if(another.endTag){
             return -1;
         }
-        return this.chunkStartTime - another.chunkStartTime;
+        return (int)(this.chunkStartTime - another.chunkStartTime);
     }
 
     /**

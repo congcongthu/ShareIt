@@ -31,7 +31,7 @@ public class VideoReceiveHelper {
     private Context context;
     //Variables got from video pb
     private String videoId;
-    private int totalDuration;
+    private long totalDuration;
 
     //Variables set during running
     private String videoPath;
