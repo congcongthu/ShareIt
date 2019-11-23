@@ -18,22 +18,22 @@ public class SyncFileUtil {
     String peerAddress;
     SyncFile.Type sType;
 
-    private Handlers.IpfsAddDataHandler posterHandler = new Handlers.IpfsAddDataHandler() {
-        @Override
-        public void onComplete(String path) {
-            synchronized (POSTERLOCK) {
-                Log.d(TAG, String.format("Poster ipfs path: %s", path));
-                posterHash = path;
-                POSTERLOCK.notify();
-            }
-        }
-
-        @Override
-        public void onError(Exception e) {
-            e.printStackTrace();
-            POSTERLOCK.notify();
-        }
-    };
+//    private Handlers.IpfsAddDataHandler posterHandler = new Handlers.IpfsAddDataHandler() {
+//        @Override
+//        public void onComplete(String path) {
+//            synchronized (POSTERLOCK) {
+//                Log.d(TAG, String.format("Poster ipfs path: %s", path));
+//                posterHash = path;
+//                POSTERLOCK.notify();
+//            }
+//        }
+//
+//        @Override
+//        public void onError(Exception e) {
+//            e.printStackTrace();
+//            POSTERLOCK.notify();
+//        }
+//    };
 
     public SyncFileUtil(String filePath, String peerAddress, SyncFile.Type sType){
         this.filePath = filePath;
