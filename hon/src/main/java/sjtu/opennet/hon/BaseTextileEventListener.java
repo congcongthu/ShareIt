@@ -102,6 +102,11 @@ public abstract class BaseTextileEventListener implements TextileEventListener {
     }
 
     @Override
+    public void syncFileQueryResult(final String queryId, final SyncFile file) {
+    
+    }
+
+    @Override
     public void syncUpdate(final CafeSyncGroupStatus status) {
 
     }

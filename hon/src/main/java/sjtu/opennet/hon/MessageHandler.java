@@ -122,6 +122,11 @@ class MessageHandler implements Messenger {
                                 for (final TextileEventListener listener : listeners) {
                                     listener.videoChunkQueryResult(queryEvent.getId(), vchunk);
                                 }
+                            } else if (type.equals("SyncFile")) {
+                                final SyncFile sf = SyncFile.parseFrom(queryEvent.getData().getValue.getValue());
+                                for (final TextileEventListener listener : listeners) {
+                                    listener.syncFileResult(queryEvent.getId(), sf);
+                                }
                             }
                             break;
                         case DONE:
