@@ -22,7 +22,7 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
 
 
     private BlockingQueue<Integer> lockQueue;
-    public int chunkStartTime;
+    public long chunkStartTime;
 
     private Handlers.DataHandler handler = new Handlers.DataHandler() {
         @Override
@@ -78,6 +78,7 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
     public boolean isDestroy(){
         return destroyTag;
     }
+
     @Override
     public int compareTo(VideoReceiveTask another){
         // end task has the lowest priority.
@@ -94,7 +95,7 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
             return -1;
         }
 
-        return this.chunkStartTime - another.chunkStartTime;
+        return (int)(this.chunkStartTime - another.chunkStartTime);
     }
 
     /**
