@@ -5,6 +5,7 @@ import sjtu.opennet.textilepb.Model.Contact;
 import sjtu.opennet.textilepb.Model.VideoChunk;
 import sjtu.opennet.textilepb.Model.Notification;
 import sjtu.opennet.textilepb.Model.Thread;
+import sjtu.opennet.textilepb.Model.SyncFile;
 
 /**
  * A default implementation of TextileEventListener that can be extended to override specific methods

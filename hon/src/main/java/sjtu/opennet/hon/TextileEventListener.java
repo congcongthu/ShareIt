@@ -1,5 +1,6 @@
 package sjtu.opennet.hon;
 
+import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.Model.CafeSyncGroupStatus;
 import sjtu.opennet.textilepb.Model.Contact;
 import sjtu.opennet.textilepb.Model.VideoChunk;
@@ -119,6 +120,8 @@ public interface TextileEventListener {
      * @param vchunk A videoChunk query result
      */
     void videoChunkQueryResult(final String queryId, final VideoChunk vchunk);
+
+    void syncFileQueryResult(final String queryId, final Model.SyncFile file);
 
     /**
      * Called when there is an update about a sync group
