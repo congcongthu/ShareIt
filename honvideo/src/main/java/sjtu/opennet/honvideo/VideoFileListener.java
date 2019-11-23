@@ -5,6 +5,10 @@ import android.util.Log;
 
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * Observe the creation of video chunk file.
+ * @deprecated Use M3u8Listener instead.
+ */
 public class VideoFileListener extends FileObserver {
     private final String TAG = "HONVIDEO.VideoFileListener";
     private String observeredDir;
