@@ -2,6 +2,7 @@ package com.sjtuopennetwork.shareit.contact.util;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,9 @@ import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 
 public class DiscoverAdapter extends BaseAdapter {
+
+    private static final String TAG = "======================";
+
     List<ResultContact> datas;
     private LayoutInflater mInflater;
     private MyClickListener mListener;
@@ -32,6 +36,20 @@ public class DiscoverAdapter extends BaseAdapter {
         this.mListener = mListener;
 
         mChecked = new ArrayList<>();
+    }
+
+    public void selectAll(boolean all){
+        if(all){ //全选
+            Log.d(TAG, "selectAll: 设置全选");
+            for(int i=0;i<mChecked.size();i++){
+                mChecked.set(i,true);
+            }
+        }else{
+            Log.d(TAG, "selectAll: 设置全不选");
+            for(int i=0;i<mChecked.size();i++){
+                mChecked.set(i,false);
+            }
+        }
     }
 
     @Override
@@ -100,14 +118,11 @@ public class DiscoverAdapter extends BaseAdapter {
         }
 
         //复选框
-        vh.createGp.setOnClickListener(view1 -> {
-            System.out.println("===========mChecked："+mChecked.size()+" "+datas.size());
-            mChecked.set(position,((CheckBox)view1).isChecked());
-        });
+        vh.createGp.setChecked(mChecked.get(position));
+        vh.createGp.setOnClickListener(view1 -> mChecked.set(position,((CheckBox)view1).isChecked()));
 
         return view;
     }
-
 
     class ViewHolder{
         public NiceImageView avatar;
@@ -123,11 +138,6 @@ public class DiscoverAdapter extends BaseAdapter {
             addFriend=v.findViewById(R.id.bt_add_discover_friend);
             createGp=v.findViewById(R.id.discover_create_group);
         }
-    }
-
-
-    public interface MyCallback{
-        void Click(View v);
     }
 
     public static abstract class MyClickListener implements View.OnClickListener {

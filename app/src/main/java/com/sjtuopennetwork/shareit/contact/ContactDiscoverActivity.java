@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -36,7 +37,7 @@ public class ContactDiscoverActivity extends AppCompatActivity {
     ResultAdapter searchResultAdapter;  //搜索结果适配器
     DiscoverAdapter discoverAdapter;
     Button createNewGroup;
-
+    CheckBox selectAll;
 
     //内存数据
     List<Model.Peer> myFriends;
@@ -91,18 +92,25 @@ public class ContactDiscoverActivity extends AppCompatActivity {
     }
 
     void initData(){
-
+        selectAll=findViewById(R.id.chkbx_select_all);
         createNewGroup=findViewById(R.id.bt_create_new_group);
-
         discover_lv=findViewById(R.id.contact_discover_result_lv);
         myFriends= ContactUtil.getFriendList();
-
         resultContacts= Collections.synchronizedList(new LinkedList<>());
         newContacts=Collections.synchronizedList(new LinkedList<>());
         discoverAdapter=new DiscoverAdapter(this,resultContacts,myClickListener);
         discoverAdapter.notifyDataSetChanged();
         discover_lv.setAdapter(discoverAdapter);
 
+        selectAll.setOnClickListener(view -> {
+            if(selectAll.isChecked()){
+                discoverAdapter.selectAll(true);
+                discoverAdapter.notifyDataSetChanged();
+            }else{
+                discoverAdapter.selectAll(false);
+                discoverAdapter.notifyDataSetChanged();
+            }
+        });
         createNewGroup.setOnClickListener(view -> {
             //获得所有的选中的contact
             listItemID=new ArrayList<>();
@@ -113,7 +121,7 @@ public class ContactDiscoverActivity extends AppCompatActivity {
             }
 
             //对话框得到群组名
-            //先弹出对话框，输入thread名称之后获取到名称，然后调佣addNewThread方法
+            //先弹出对话框，输入thread名称之后获取到名称，然后调用addNewThread方法
             final EditText newThreadEdit=new EditText(this);
             AlertDialog.Builder addThread=new AlertDialog.Builder(this);
             addThread.setTitle("新建群组");
@@ -156,7 +164,7 @@ public class ContactDiscoverActivity extends AppCompatActivity {
         }
         newContacts.add(c); //添加
         resultContacts.add(new ResultContact(c.getAddress(),c.getName(),c.getAvatar(),null,isMyFriend));
-        discoverAdapter.mChecked.add(false);
+        discoverAdapter.mChecked.add(true); //默认是选中的
         discover_lv.setSelection(0);
     }
 
@@ -189,7 +197,6 @@ public class ContactDiscoverActivity extends AppCompatActivity {
                 finish();
             }
         }
-
     }
 
     @Override

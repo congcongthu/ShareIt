@@ -422,9 +422,8 @@ public class VideoPlayActivity extends AppCompatActivity {
         finished=true;
 
         //结束下载
-        if(player!=null){
-            player.release(); //释放播放器
-        }
+        player.release(); //释放播放器
+
     }
 
 }
