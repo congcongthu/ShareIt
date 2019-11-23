@@ -42,6 +42,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
+import java.util.Map;
 
 import sjtu.opennet.honvideo.VideoMeta;
 import sjtu.opennet.honvideo.VideoUploadHelper;
@@ -75,6 +76,7 @@ public class ChatActivity extends AppCompatActivity {
     List<LocalMedia> choosePic;
     List<LocalMedia> chooseVideo;
     String avatarpath;
+    Map<String,String> videoPaths;
 
     //退出群组相关
     public static final String REMOVE_DIALOG="you get out";
@@ -100,6 +102,8 @@ public class ChatActivity extends AppCompatActivity {
         super.onStart();
 
         drawUI();
+
+
 
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
@@ -236,7 +240,6 @@ public class ChatActivity extends AppCompatActivity {
 
         //还要把相应的Dialog表改为已读
         DBoperator.changeDialogRead(appdb,threadid,1);
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -283,7 +286,6 @@ public class ChatActivity extends AppCompatActivity {
 //
             VideoUploadHelper videoHelper=new VideoUploadHelper(this,filePath);
             Model.Video videoPb=videoHelper.getVideoPb();
-
 
             videoHelper.upload();
             try {
