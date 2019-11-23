@@ -140,6 +140,10 @@ public class VideoUploadHelper {
         return FileUtil.getAppExternalPath(context, tmpPath);
     }
 
+    public String getVideoPath(){
+        return filePath;
+    }
+
     public String getVideoId() {
         return vMeta.getHash();
     }
@@ -246,4 +250,6 @@ public class VideoUploadHelper {
             Log.d(TAG, "Meta publish thread end.");
         }
     }
+
 }
+

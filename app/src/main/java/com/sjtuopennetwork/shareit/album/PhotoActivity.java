@@ -220,8 +220,13 @@ public class PhotoActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PictureConfig.CHOOSE_REQUEST && resultCode == RESULT_OK) {
+
+
+
+
             //myDataset.clear();
             //选择或拍摄照片之后的回调，将对应图片添加到photo_thread中
+            //=====================================
             choosePic = PictureSelector.obtainMultipleResult(data);
             String filePath = choosePic.get(0).getPath();
             pref = getSharedPreferences("txt1", MODE_PRIVATE);

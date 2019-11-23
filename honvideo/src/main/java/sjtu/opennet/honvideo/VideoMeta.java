@@ -289,4 +289,7 @@ public class VideoMeta {
     public Bitmap getPoster(){
         return thumbnail_small;
     }
+    public String getPath(){
+        return path;
+    }
 }
