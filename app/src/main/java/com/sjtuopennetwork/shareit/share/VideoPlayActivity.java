@@ -119,12 +119,7 @@ public class VideoPlayActivity extends AppCompatActivity {
             System.out.println("===================完全下载了，就直接开始播放");
             finished = true;
 
-            new Thread(){
-                @Override
-                public void run() {
-                    writeCompleteM3u8();
-                }
-            }.start();
+            writeCompleteM3u8();
 
             System.out.println("开始播放");
             PlayerView playerView = findViewById(R.id.player_view);
