@@ -77,7 +77,7 @@ public class VideoPlayActivity extends AppCompatActivity {
     SimpleExoPlayer player;
     VideoReceiveHelper videorHelper;
     ConcatenatingMediaSource mediaSource;
-    int videoLenth;
+    long videoLenth;
     File m3u8file;
     String dir;
     int m3u8WriteCount;
@@ -146,7 +146,7 @@ public class VideoPlayActivity extends AppCompatActivity {
             System.out.println("no local chunks");
             return false;
         }
-        int maxEndtime = 0;
+        long maxEndtime = 0;
         String lastChunk = "";
         for (Model.VideoChunk c : tmp){
             if (c.getEndTime() > maxEndtime) {
@@ -328,8 +328,8 @@ public class VideoPlayActivity extends AppCompatActivity {
 
     public void writeM3u8(Model.VideoChunk v){
 //        m3u8file=new File(dir+"/chunks/playlist.m3u8");
-        int duration0=v.getEndTime()-v.getStartTime(); //微秒
-        float size = (float)duration0/1000000;
+        long duration0=v.getEndTime()-v.getStartTime(); //微秒
+        double size = (double)duration0/1000000;
         DecimalFormat df = new DecimalFormat("0.000000");//格式化小数，不足的补0
         String duration = df.format(size);//返回的是String类型的
         try {
