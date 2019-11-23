@@ -15,6 +15,7 @@ import java.util.Date;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Model.SyncFile;
+import sjtu.opennet.textilepb.QueryOuterClass;
 
 public class SyncFileUtil {
     private static final String TAG = "SyncFileUtil";
@@ -64,12 +65,10 @@ public class SyncFileUtil {
         }catch(IOException ie){
             ie.printStackTrace();
         }
-
         executor(SyncFile.Operation.ADD);
     }
 
     private static Timestamp getTimeStamp(){
-
         return Timestamps.fromMillis(new Date().getTime());
     }
 
@@ -87,5 +86,17 @@ public class SyncFileUtil {
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void searchSyncFiles(String peerAddress, SyncFile.Type sType){
+        QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder()
+                .setWait(1)
+                .setLimit(1)
+                .build();
+        QueryOuterClass.SyncFileQuery query=QueryOuterClass.SyncFileQuery.newBuilder()
+                .setAddress(peerAddress)
+                .setType(sType)
+                .build();
+        //Textile.instance().files.search(query,options);
     }
 }
