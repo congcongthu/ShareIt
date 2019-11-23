@@ -264,6 +264,9 @@ public class VideoMeta {
 
 
     public Video getPb(String posterHash){
+        /**
+         * @TODO Change video length to long type
+         */
         Video videopb = Video.newBuilder()
                 .setId(videoHash)
                 //.setCaption(stringInfo())

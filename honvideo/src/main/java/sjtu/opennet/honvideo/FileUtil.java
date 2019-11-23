@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 
 public class FileUtil {
     private static final String TAG = "HONVIDEO.FileUtil";
+
     /**
      * Get Application's external storage file path.
      * @param context Activity context.
@@ -43,6 +44,10 @@ public class FileUtil {
         return directoryPath;
     }
 
+    /**
+     * Delete a directory (or file) and its contents recurisively.
+     * @param fileOrDir
+     */
     public static void deleteRecursive(File fileOrDir){
         if (fileOrDir.isDirectory())
             for (File child : fileOrDir.listFiles())
@@ -50,6 +55,11 @@ public class FileUtil {
         fileOrDir.delete();
     }
 
+    /**
+     * Delete the contents inside a directory.
+     * Note that the directory itself would not be removed.
+     * @param directory
+     */
     public static void deleteContents(File directory){
         if (!directory.isDirectory()){
             Log.e(TAG, "%s is not a directory.\n" +
