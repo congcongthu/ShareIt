@@ -135,7 +135,7 @@ public class VideoUploadTask {
      * @param currentDuration The duration now. Used as startTime;
      * @return endTime. Used to update duration in video Uploader.
      */
-    public VideoChunk upload(int currentDuration) throws VideoExceptions.UnexpectedEndException{
+    public VideoChunk upload(long currentDuration) throws VideoExceptions.UnexpectedEndException{
         this.currentDuration = currentDuration;
         //duration_int = readDurationFromReceiver();
         if(endTag){

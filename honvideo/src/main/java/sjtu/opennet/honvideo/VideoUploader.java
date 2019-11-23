@@ -15,7 +15,7 @@ public class VideoUploader extends Thread{
     private BlockingQueue<VideoUploadTask> videoQueue;
     private BlockingQueue<ChunkPublishTask> chunkQueue;     //Used to send endTag to chunkpublisher.
     private final String TAG = "HONVIDEO.VideoUploader";
-    private int currentDuration = 0;
+    private long currentDuration = 0;
     private boolean complete = false;
     public VideoUploader(BlockingQueue<VideoUploadTask> bQueue, BlockingQueue<ChunkPublishTask> cQueue){
         videoQueue = bQueue;
