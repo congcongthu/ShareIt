@@ -307,6 +307,14 @@ public final class MessageOuterClass {
        */
       CAFE_PUBLISH_VIDEO_CHUNK_ACK(203),
       /**
+       * <code>CAFE_SYNC_FILE = 204;</code>
+       */
+      CAFE_SYNC_FILE(204),
+      /**
+       * <code>CAFE_SYNC_FILE_ACK = 205;</code>
+       */
+      CAFE_SYNC_FILE_ACK(205),
+      /**
        * <code>CAFE_PUBSUB_QUERY = 102;</code>
        */
       CAFE_PUBSUB_QUERY(102),
@@ -482,6 +490,14 @@ public final class MessageOuterClass {
        */
       public static final int CAFE_PUBLISH_VIDEO_CHUNK_ACK_VALUE = 203;
       /**
+       * <code>CAFE_SYNC_FILE = 204;</code>
+       */
+      public static final int CAFE_SYNC_FILE_VALUE = 204;
+      /**
+       * <code>CAFE_SYNC_FILE_ACK = 205;</code>
+       */
+      public static final int CAFE_SYNC_FILE_ACK_VALUE = 205;
+      /**
        * <code>CAFE_PUBSUB_QUERY = 102;</code>
        */
       public static final int CAFE_PUBSUB_QUERY_VALUE = 102;
@@ -564,6 +580,8 @@ public final class MessageOuterClass {
           case 201: return CAFE_PUBLISH_VIDEO_ACK;
           case 202: return CAFE_PUBLISH_VIDEO_CHUNK;
           case 203: return CAFE_PUBLISH_VIDEO_CHUNK_ACK;
+          case 204: return CAFE_SYNC_FILE;
+          case 205: return CAFE_SYNC_FILE_ACK;
           case 102: return CAFE_PUBSUB_QUERY;
           case 103: return CAFE_PUBSUB_QUERY_RES;
           case 500: return ERROR;
@@ -2655,9 +2673,9 @@ public final class MessageOuterClass {
   static {
     java.lang.String[] descriptorData = {
       "\n\rmessage.proto\032\031google/protobuf/any.pro" +
-      "to\"\333\010\n\007Message\022\033\n\004type\030\001 \001(\0162\r.Message.T" +
+      "to\"\211\t\n\007Message\022\033\n\004type\030\001 \001(\0162\r.Message.T" +
       "ype\022%\n\007payload\030\002 \001(\0132\024.google.protobuf.A" +
-      "ny\022\017\n\007request\030\003 \001(\005\022\020\n\010response\030\004 \001(\010\"\350\007" +
+      "ny\022\017\n\007request\030\003 \001(\005\022\020\n\010response\030\004 \001(\010\"\226\010" +
       "\n\004Type\022\010\n\004PING\020\000\022\010\n\004PONG\020\001\022\023\n\017THREAD_ENV" +
       "ELOPE\020\n\022\027\n\023THREAD_ENVELOPE_ACK\020\013\022\022\n\016CAFE" +
       "_CHALLENGE\0202\022\016\n\nCAFE_NONCE\0203\022\025\n\021CAFE_REG" +
@@ -2678,15 +2696,16 @@ public final class MessageOuterClass {
       "ES\020G\022\027\n\022CAFE_PUBLISH_VIDEO\020\310\001\022\033\n\026CAFE_PU" +
       "BLISH_VIDEO_ACK\020\311\001\022\035\n\030CAFE_PUBLISH_VIDEO" +
       "_CHUNK\020\312\001\022!\n\034CAFE_PUBLISH_VIDEO_CHUNK_AC" +
-      "K\020\313\001\022\025\n\021CAFE_PUBSUB_QUERY\020f\022\031\n\025CAFE_PUBS" +
-      "UB_QUERY_RES\020g\022\n\n\005ERROR\020\364\003\022\032\n\022CAFE_CONTA" +
-      "CT_QUERY\020D\032\002\010\001\022\036\n\026CAFE_CONTACT_QUERY_RES" +
-      "\020E\032\002\010\001\022!\n\031CAFE_PUBSUB_CONTACT_QUERY\020d\032\002\010" +
-      "\001\022%\n\035CAFE_PUBSUB_CONTACT_QUERY_RES\020e\032\002\010\001" +
-      "\"2\n\010Envelope\022\031\n\007message\030\001 \001(\0132\010.Message\022" +
-      "\013\n\003sig\030\002 \001(\014\"&\n\005Error\022\014\n\004code\030\001 \001(\r\022\017\n\007m" +
-      "essage\030\002 \001(\tB\034\n\026sjtu.opennet.textilepbZ\002" +
-      "pbb\006proto3"
+      "K\020\313\001\022\023\n\016CAFE_SYNC_FILE\020\314\001\022\027\n\022CAFE_SYNC_F" +
+      "ILE_ACK\020\315\001\022\025\n\021CAFE_PUBSUB_QUERY\020f\022\031\n\025CAF" +
+      "E_PUBSUB_QUERY_RES\020g\022\n\n\005ERROR\020\364\003\022\032\n\022CAFE" +
+      "_CONTACT_QUERY\020D\032\002\010\001\022\036\n\026CAFE_CONTACT_QUE" +
+      "RY_RES\020E\032\002\010\001\022!\n\031CAFE_PUBSUB_CONTACT_QUER" +
+      "Y\020d\032\002\010\001\022%\n\035CAFE_PUBSUB_CONTACT_QUERY_RES" +
+      "\020e\032\002\010\001\"2\n\010Envelope\022\031\n\007message\030\001 \001(\0132\010.Me" +
+      "ssage\022\013\n\003sig\030\002 \001(\014\"&\n\005Error\022\014\n\004code\030\001 \001(" +
+      "\r\022\017\n\007message\030\002 \001(\tB\034\n\026sjtu.opennet.texti" +
+      "lepbZ\002pbb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
