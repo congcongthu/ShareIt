@@ -18,6 +18,7 @@ import sjtu.opennet.textilepb.View.AccountUpdate;
 import sjtu.opennet.textilepb.View.FeedItem;
 import sjtu.opennet.textilepb.Model.Thread;
 import sjtu.opennet.textilepb.MessageOuterClass.Error;
+import sjtu.opennet.textilepb.Model.SyncFile;
 
 
 class MessageHandler implements Messenger {
@@ -123,9 +124,9 @@ class MessageHandler implements Messenger {
                                     listener.videoChunkQueryResult(queryEvent.getId(), vchunk);
                                 }
                             } else if (type.equals("SyncFile")) {
-                                final SyncFile sf = SyncFile.parseFrom(queryEvent.getData().getValue.getValue());
+                                final SyncFile sf = SyncFile.parseFrom(queryEvent.getData().getValue().getValue());
                                 for (final TextileEventListener listener : listeners) {
-                                    listener.syncFileResult(queryEvent.getId(), sf);
+                                    listener.syncFileQueryResult(queryEvent.getId(), sf);
                                 }
                             }
                             break;

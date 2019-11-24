@@ -97,6 +97,10 @@ public class SyncFileUtil {
                 .setAddress(peerAddress)
                 .setType(sType)
                 .build();
-        //Textile.instance().files.search(query,options);
+        try {
+            Textile.instance().files.searchSyncFiles(query, options);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }

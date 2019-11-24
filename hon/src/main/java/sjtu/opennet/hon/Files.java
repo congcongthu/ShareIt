@@ -1,8 +1,10 @@
 package sjtu.opennet.hon;
 
 import mobile.Mobile_;
+import mobile.SearchHandle;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.Model.Block;
+import sjtu.opennet.textilepb.QueryOuterClass;
 import sjtu.opennet.textilepb.View.FilesList;
 
 /**
@@ -135,5 +137,8 @@ public class Files extends NodeDependent {
 
     public void publicSuynFile(final Model.SyncFile sFile) throws Exception {
         node.publishSyncFile(sFile.toByteArray());
+    }
+    public SearchHandle searchSyncFiles(final QueryOuterClass.SyncFileQuery query, final QueryOuterClass.QueryOptions options) throws Exception {
+        return node.searchSyncFiles(query.toByteArray(), options.toByteArray());
     }
 }
