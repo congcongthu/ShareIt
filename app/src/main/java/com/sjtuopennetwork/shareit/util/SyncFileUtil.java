@@ -51,7 +51,7 @@ public class SyncFileUtil {
         this.sType = sType;
     }
 
-    public void syncAdd(){
+    public void Add(){
         try {
             byte[] fileContent = Files.readAllBytes(Paths.get(filePath));
             synchronized (LOCK) {
@@ -68,10 +68,19 @@ public class SyncFileUtil {
         executor(SyncFile.Operation.ADD);
     }
 
+
+    public void Sync(){
+
+    }
+
     private static Timestamp getTimeStamp(){
         return Timestamps.fromMillis(new Date().getTime());
     }
 
+    /**
+     * @TODO Add file name to SyncFile
+     * @param op
+     */
     private void executor(SyncFile.Operation op){
         SyncFile sFile =  SyncFile.newBuilder()
                 .setPeerAddress(peerAddress)
