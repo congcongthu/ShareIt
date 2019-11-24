@@ -343,6 +343,12 @@ public class ForeGroundService extends Service {
         }
 
         @Override
+        public void syncFileQueryResult(final String queryId, final Model.SyncFile file){
+            Log.d(TAG, String.format("Get sync file query result %s:%s",file.getPeerAddress(), file.getFile()));
+            EventBus.getDefault().post(file);
+        }
+
+        @Override
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
             //要保证在所有界面收到消息，就只能是在这里更新数据库了。默认是未读的，但是在聊天界面得到消息就要改为已读
             //发送消息的目的就是更新界面，所以不用sticky

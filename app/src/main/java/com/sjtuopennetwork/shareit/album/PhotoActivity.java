@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -20,8 +21,10 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.util.FileUtil;
+import com.sjtuopennetwork.shareit.util.SyncFileUtil;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -54,7 +57,7 @@ public class PhotoActivity extends AppCompatActivity {
     List<String> dataset=new ArrayList<String>();
     String picPath;
     List<LocalMedia> choosePic;
-
+    private SyncFileUtil mSyncFile;
 
     //持久化数据
     SharedPreferences pref;
@@ -62,6 +65,7 @@ public class PhotoActivity extends AppCompatActivity {
     private int listnum_2;
     boolean sysn_suc=false;
     private boolean ceshi=false;
+    private String peerid;
 
     private Lock lock = new ReentrantLock();
 
@@ -70,15 +74,28 @@ public class PhotoActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
 
     //
+
     CircleProgressDialog circleProgressDialog; //等待照片同步圆环
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Set EventBus for Query Result.
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
+
         setContentView(R.layout.activity_photo);
         pref =getSharedPreferences("txt1",MODE_PRIVATE);
         thread_photo_id = pref.getString("thread_photo_id","");
+
+        try {
+            peerid=Textile.instance().account.address();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+       // System.out.println("=========================PEER ID: " +peerid);
 
 
         //同步所有thread中的照片到手机
@@ -99,6 +116,14 @@ public class PhotoActivity extends AppCompatActivity {
             initData(thread_photo_id);
             mAdapter.notifyDataSetChanged();
         });
+    }
+    @Override
+    protected void onStart(){
+        super.onStart();
+        //Set EventBus for Query Result.
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
     }
 
     private  void initUI() {
@@ -122,6 +147,11 @@ public class PhotoActivity extends AppCompatActivity {
     //得到photo thread中的所有hash
     //将hash转为本地路径
     //设置适配器
+    private void initDataTest(){
+        mSyncFile.Add();
+    }
+
+
     private  void initData(String threadId){
         dataset.clear();
         largeHash.clear();
@@ -175,8 +205,8 @@ public class PhotoActivity extends AppCompatActivity {
             }
             // System.out.println("=============================datapath: "+dataset.get(i));
         }
-
     }
+
     //
 //    private  void initDataTest(String threadId){
 //
@@ -216,11 +246,13 @@ public class PhotoActivity extends AppCompatActivity {
 //        }
 //
 //    }
+
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PictureConfig.CHOOSE_REQUEST && resultCode == RESULT_OK) {
 
+            System.out.println("======================回调");
 
 
 
@@ -229,6 +261,13 @@ public class PhotoActivity extends AppCompatActivity {
             //=====================================
             choosePic = PictureSelector.obtainMultipleResult(data);
             String filePath = choosePic.get(0).getPath();
+            mSyncFile = new SyncFileUtil(filePath,peerid, Model.SyncFile.Type.PHOTO);
+            mSyncFile.Add();
+
+            mSyncFile.searchSyncFiles(peerid, Model.SyncFile.Type.PHOTO);
+
+            System.out.println("======================ggggggg");
+/*
             pref = getSharedPreferences("txt1", MODE_PRIVATE);
             thread_photo_id = pref.getString("thread_photo_id", "");
             Textile.instance().files.addFiles(filePath, thread_photo_id, "", new Handlers.BlockHandler() {//调用textile接口添加图片到photo_thread
@@ -266,7 +305,7 @@ public class PhotoActivity extends AppCompatActivity {
                     }
                 }).start();
             }
-
+*/
 
         }
     }
@@ -299,4 +338,20 @@ public class PhotoActivity extends AppCompatActivity {
 
         }
     };
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void getAnResult(Model.SyncFile sFile) {
+        sFile.getFile();
+        System.out.println("=====================photo getfile"+ sFile.getFile());
+       // addressMap.put(videoChunk.getChunk(),videoChunk.getAddress()); //拿到一个结果就放进来一个，可能会相同
+       // videorHelper.receiveChunk(videoChunk); //将对应的视频保存到本地
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+      //  Log.d(TAG, "Activity end. Unregister the eventbus.");
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
+    }
 }

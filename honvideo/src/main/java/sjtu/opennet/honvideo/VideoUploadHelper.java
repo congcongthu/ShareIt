@@ -46,7 +46,11 @@ public class VideoUploadHelper {
     private String filePath;
     private Model.Video videoPb = null;
     private String posterHash;
+    private ReceiveChunkListener receiveListener = null;
 
+    interface ReceiveChunkListener{
+        default void onChunkReceive(Model.VideoChunk vChunk){}
+    }
 
     /**
      * Handler of ipfsAddData.
