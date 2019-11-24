@@ -251,7 +251,11 @@ public class PhotoActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PictureConfig.CHOOSE_REQUEST && resultCode == RESULT_OK) {
+
             System.out.println("======================回调");
+
+
+
             //myDataset.clear();
             //选择或拍摄照片之后的回调，将对应图片添加到photo_thread中
             //=====================================
@@ -261,6 +265,8 @@ public class PhotoActivity extends AppCompatActivity {
             mSyncFile.Add();
 
             mSyncFile.searchSyncFiles(peerid, Model.SyncFile.Type.PHOTO);
+
+            System.out.println("======================ggggggg");
 /*
             pref = getSharedPreferences("txt1", MODE_PRIVATE);
             thread_photo_id = pref.getString("thread_photo_id", "");
