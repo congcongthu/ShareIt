@@ -12,6 +12,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -51,6 +52,9 @@ import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 
 public class ChatActivity extends AppCompatActivity {
+
+    private static final String TAG = "======================";
+
     //UI控件
     TextView chat_name_toolbar;
     ListView chat_lv;
@@ -102,8 +106,6 @@ public class ChatActivity extends AppCompatActivity {
         super.onStart();
 
         drawUI();
-
-
 
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
@@ -220,9 +222,7 @@ public class ChatActivity extends AppCompatActivity {
 
     public void drawUI(){
         msgList= DBoperator.queryMsg(appdb,threadid);
-        System.out.println("=============消息数："+msgList.size());
 
-//        chat_lv=findViewById(R.id.chat_lv);
         MsgAdapter msgAdapter=new MsgAdapter(this,msgList,avatarpath);
         chat_lv.setAdapter(msgAdapter);
         chat_lv.invalidateViews();
@@ -235,7 +235,6 @@ public class ChatActivity extends AppCompatActivity {
             msgList.add(tMsg);
             chat_lv.invalidateViews(); //强制刷新
             chat_lv.setSelection(msgList.size()); //图片有时候不立即显示，因为Item大小完全相同。
-            System.out.println("==================收到了消息："+tMsg.body);
         }
 
         //还要把相应的Dialog表改为已读
@@ -246,7 +245,6 @@ public class ChatActivity extends AppCompatActivity {
     public void updateListView(Integer integer){
         if(integer==4583){
             chat_lv.invalidateViews(); //强制刷新
-//            chat_lv.setSelection(msgList.size());
         }
     }
 
@@ -282,8 +280,8 @@ public class ChatActivity extends AppCompatActivity {
         }else if(requestCode==PictureConfig.TYPE_VIDEO && resultCode==RESULT_OK){ //如果是选择了视频
             chooseVideo=PictureSelector.obtainMultipleResult(data);
             String filePath=chooseVideo.get(0).getPath();
-            System.out.println("=================选择了视频："+filePath);
-//
+            Log.d(TAG, "onActivityResult: 选择了视频："+filePath);
+
             VideoUploadHelper videoHelper=new VideoUploadHelper(this,filePath);
             Model.Video videoPb=videoHelper.getVideoPb();
 

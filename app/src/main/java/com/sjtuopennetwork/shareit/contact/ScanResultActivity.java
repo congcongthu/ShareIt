@@ -39,7 +39,6 @@ public class ScanResultActivity extends AppCompatActivity {
         if (getIntent() != null){
             Bundle bundle = getIntent().getExtras();
             address = bundle.getString("result");
-            System.out.println("===========扫码信息页面得到结果："+address);
         }
 
         //注册监听器
@@ -72,7 +71,6 @@ public class ScanResultActivity extends AppCompatActivity {
                 .build();
         try {
             Textile.instance().contacts.search(query, options);
-            System.out.println("===========查询已发送："+address);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,7 +80,6 @@ public class ScanResultActivity extends AppCompatActivity {
     //得到搜索结果
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getResult(Model.Contact c){
-        System.out.println("==============得到了搜索结果："+c.getName());
         resultContact=c;
         //这里再设置
         drawUI();
@@ -96,7 +93,6 @@ public class ScanResultActivity extends AppCompatActivity {
         res_name.setText(name);
         res_address.setText(address);
         String getAvatar="/ipfs/" + avatar + "/0/small/content";
-        System.out.println("=========getAvatar:"+getAvatar);
         Textile.instance().ipfs.dataAtPath(getAvatar, new Handlers.DataHandler() {
             @Override
             public void onComplete(byte[] data, String media) {
@@ -104,7 +100,6 @@ public class ScanResultActivity extends AppCompatActivity {
             }
             @Override
             public void onError(Exception e) {
-                System.out.println("=========扫码获得头像失败:");
 //                        vh.avatar.setImageResource(R.drawable.ic_default_avatar);
             }
         });
@@ -122,9 +117,7 @@ public class ScanResultActivity extends AppCompatActivity {
         try {
 //            Model.Thread t=Textile.instance().threads.get(threadId);
             Textile.instance().contacts.add(resultContact);
-            System.out.println("=============contact的address："+resultContact.getAddress());
             Textile.instance().invites.add(threadId,address); //key就是联系人的address
-            System.out.println("===============发送了邀请");
             finish();
         } catch (Exception e) {
             e.printStackTrace();

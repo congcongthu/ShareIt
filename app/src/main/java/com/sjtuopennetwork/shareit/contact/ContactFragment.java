@@ -64,12 +64,9 @@ public class ContactFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-
-
         initUI();
 
         initData();
-
     }
 
     private void initData(){
@@ -78,7 +75,6 @@ public class ContactFragment extends Fragment {
 
         //显示好友列表
         myFriends= ContactUtil.getFriendList();
-        System.out.println("=============myFriends数量："+myFriends.size());
         contactBeans=new LinkedList<>();
 
         for(Model.Peer p:myFriends){
@@ -135,7 +131,5 @@ public class ContactFragment extends Fragment {
             application_badge.setVisibility(View.GONE);
         }
     }
-
-
 
 }
