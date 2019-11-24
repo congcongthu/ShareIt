@@ -9730,6 +9730,1214 @@ public final class QueryOuterClass {
 
   }
 
+  public interface IpfsQueryOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:IpfsQuery)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated string items = 1;</code>
+     */
+    java.util.List<java.lang.String>
+        getItemsList();
+    /**
+     * <code>repeated string items = 1;</code>
+     */
+    int getItemsCount();
+    /**
+     * <code>repeated string items = 1;</code>
+     */
+    java.lang.String getItems(int index);
+    /**
+     * <code>repeated string items = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getItemsBytes(int index);
+  }
+  /**
+   * Protobuf type {@code IpfsQuery}
+   */
+  public  static final class IpfsQuery extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:IpfsQuery)
+      IpfsQueryOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use IpfsQuery.newBuilder() to construct.
+    private IpfsQuery(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private IpfsQuery() {
+      items_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private IpfsQuery(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                items_ = new com.google.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              items_.add(s);
+              break;
+            }
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          items_ = items_.getUnmodifiableView();
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return sjtu.opennet.textilepb.QueryOuterClass.internal_static_IpfsQuery_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return sjtu.opennet.textilepb.QueryOuterClass.internal_static_IpfsQuery_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.class, sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.Builder.class);
+    }
+
+    public static final int ITEMS_FIELD_NUMBER = 1;
+    private com.google.protobuf.LazyStringList items_;
+    /**
+     * <code>repeated string items = 1;</code>
+     */
+    public com.google.protobuf.ProtocolStringList
+        getItemsList() {
+      return items_;
+    }
+    /**
+     * <code>repeated string items = 1;</code>
+     */
+    public int getItemsCount() {
+      return items_.size();
+    }
+    /**
+     * <code>repeated string items = 1;</code>
+     */
+    public java.lang.String getItems(int index) {
+      return items_.get(index);
+    }
+    /**
+     * <code>repeated string items = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getItemsBytes(int index) {
+      return items_.getByteString(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < items_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, items_.getRaw(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      {
+        int dataSize = 0;
+        for (int i = 0; i < items_.size(); i++) {
+          dataSize += computeStringSizeNoTag(items_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getItemsList().size();
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery)) {
+        return super.equals(obj);
+      }
+      sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery other = (sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery) obj;
+
+      boolean result = true;
+      result = result && getItemsList()
+          .equals(other.getItemsList());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getItemsCount() > 0) {
+        hash = (37 * hash) + ITEMS_FIELD_NUMBER;
+        hash = (53 * hash) + getItemsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code IpfsQuery}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:IpfsQuery)
+        sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return sjtu.opennet.textilepb.QueryOuterClass.internal_static_IpfsQuery_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return sjtu.opennet.textilepb.QueryOuterClass.internal_static_IpfsQuery_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.class, sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.Builder.class);
+      }
+
+      // Construct using sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        items_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return sjtu.opennet.textilepb.QueryOuterClass.internal_static_IpfsQuery_descriptor;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery getDefaultInstanceForType() {
+        return sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery build() {
+        sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery buildPartial() {
+        sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery result = new sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery(this);
+        int from_bitField0_ = bitField0_;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          items_ = items_.getUnmodifiableView();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.items_ = items_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery) {
+          return mergeFrom((sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery other) {
+        if (other == sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.getDefaultInstance()) return this;
+        if (!other.items_.isEmpty()) {
+          if (items_.isEmpty()) {
+            items_ = other.items_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureItemsIsMutable();
+            items_.addAll(other.items_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.LazyStringList items_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureItemsIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          items_ = new com.google.protobuf.LazyStringArrayList(items_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public com.google.protobuf.ProtocolStringList
+          getItemsList() {
+        return items_.getUnmodifiableView();
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public int getItemsCount() {
+        return items_.size();
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public java.lang.String getItems(int index) {
+        return items_.get(index);
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getItemsBytes(int index) {
+        return items_.getByteString(index);
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public Builder setItems(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureItemsIsMutable();
+        items_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public Builder addItems(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureItemsIsMutable();
+        items_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public Builder addAllItems(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureItemsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, items_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public Builder clearItems() {
+        items_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public Builder addItemsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        ensureItemsIsMutable();
+        items_.add(value);
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:IpfsQuery)
+    }
+
+    // @@protoc_insertion_point(class_scope:IpfsQuery)
+    private static final sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery();
+    }
+
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<IpfsQuery>
+        PARSER = new com.google.protobuf.AbstractParser<IpfsQuery>() {
+      @java.lang.Override
+      public IpfsQuery parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new IpfsQuery(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<IpfsQuery> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<IpfsQuery> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface IpfsQueryResultOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:IpfsQueryResult)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated string items = 1;</code>
+     */
+    java.util.List<java.lang.String>
+        getItemsList();
+    /**
+     * <code>repeated string items = 1;</code>
+     */
+    int getItemsCount();
+    /**
+     * <code>repeated string items = 1;</code>
+     */
+    java.lang.String getItems(int index);
+    /**
+     * <code>repeated string items = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getItemsBytes(int index);
+  }
+  /**
+   * Protobuf type {@code IpfsQueryResult}
+   */
+  public  static final class IpfsQueryResult extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:IpfsQueryResult)
+      IpfsQueryResultOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use IpfsQueryResult.newBuilder() to construct.
+    private IpfsQueryResult(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private IpfsQueryResult() {
+      items_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private IpfsQueryResult(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                items_ = new com.google.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              items_.add(s);
+              break;
+            }
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          items_ = items_.getUnmodifiableView();
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return sjtu.opennet.textilepb.QueryOuterClass.internal_static_IpfsQueryResult_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return sjtu.opennet.textilepb.QueryOuterClass.internal_static_IpfsQueryResult_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.class, sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.Builder.class);
+    }
+
+    public static final int ITEMS_FIELD_NUMBER = 1;
+    private com.google.protobuf.LazyStringList items_;
+    /**
+     * <code>repeated string items = 1;</code>
+     */
+    public com.google.protobuf.ProtocolStringList
+        getItemsList() {
+      return items_;
+    }
+    /**
+     * <code>repeated string items = 1;</code>
+     */
+    public int getItemsCount() {
+      return items_.size();
+    }
+    /**
+     * <code>repeated string items = 1;</code>
+     */
+    public java.lang.String getItems(int index) {
+      return items_.get(index);
+    }
+    /**
+     * <code>repeated string items = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getItemsBytes(int index) {
+      return items_.getByteString(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < items_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, items_.getRaw(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      {
+        int dataSize = 0;
+        for (int i = 0; i < items_.size(); i++) {
+          dataSize += computeStringSizeNoTag(items_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getItemsList().size();
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult)) {
+        return super.equals(obj);
+      }
+      sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult other = (sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult) obj;
+
+      boolean result = true;
+      result = result && getItemsList()
+          .equals(other.getItemsList());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getItemsCount() > 0) {
+        hash = (37 * hash) + ITEMS_FIELD_NUMBER;
+        hash = (53 * hash) + getItemsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code IpfsQueryResult}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:IpfsQueryResult)
+        sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResultOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return sjtu.opennet.textilepb.QueryOuterClass.internal_static_IpfsQueryResult_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return sjtu.opennet.textilepb.QueryOuterClass.internal_static_IpfsQueryResult_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.class, sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.Builder.class);
+      }
+
+      // Construct using sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        items_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return sjtu.opennet.textilepb.QueryOuterClass.internal_static_IpfsQueryResult_descriptor;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult getDefaultInstanceForType() {
+        return sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult build() {
+        sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult buildPartial() {
+        sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult result = new sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult(this);
+        int from_bitField0_ = bitField0_;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          items_ = items_.getUnmodifiableView();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.items_ = items_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult) {
+          return mergeFrom((sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult other) {
+        if (other == sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.getDefaultInstance()) return this;
+        if (!other.items_.isEmpty()) {
+          if (items_.isEmpty()) {
+            items_ = other.items_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureItemsIsMutable();
+            items_.addAll(other.items_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.LazyStringList items_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureItemsIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          items_ = new com.google.protobuf.LazyStringArrayList(items_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public com.google.protobuf.ProtocolStringList
+          getItemsList() {
+        return items_.getUnmodifiableView();
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public int getItemsCount() {
+        return items_.size();
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public java.lang.String getItems(int index) {
+        return items_.get(index);
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getItemsBytes(int index) {
+        return items_.getByteString(index);
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public Builder setItems(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureItemsIsMutable();
+        items_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public Builder addItems(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureItemsIsMutable();
+        items_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public Builder addAllItems(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureItemsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, items_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public Builder clearItems() {
+        items_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string items = 1;</code>
+       */
+      public Builder addItemsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        ensureItemsIsMutable();
+        items_.add(value);
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:IpfsQueryResult)
+    }
+
+    // @@protoc_insertion_point(class_scope:IpfsQueryResult)
+    private static final sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult();
+    }
+
+    public static sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<IpfsQueryResult>
+        PARSER = new com.google.protobuf.AbstractParser<IpfsQueryResult>() {
+      @java.lang.Override
+      public IpfsQueryResult parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new IpfsQueryResult(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<IpfsQueryResult> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<IpfsQueryResult> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_QueryOptions_descriptor;
   private static final 
@@ -9785,6 +10993,16 @@ public final class QueryOuterClass {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_SyncFileQuery_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_IpfsQuery_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_IpfsQuery_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_IpfsQueryResult_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_IpfsQueryResult_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -9825,8 +11043,9 @@ public final class QueryOuterClass {
       "\021\n\tstartTime\030\003 \001(\005\022\017\n\007endTime\030\004 \001(\005\"\030\n\nV" +
       "ideoQuery\022\n\n\002id\030\001 \001(\t\">\n\rSyncFileQuery\022\017" +
       "\n\007address\030\001 \001(\t\022\034\n\004type\030\002 \001(\0162\016.SyncFile" +
-      ".TypeB\034\n\026sjtu.opennet.textilepbZ\002pbb\006pro" +
-      "to3"
+      ".Type\"\032\n\tIpfsQuery\022\r\n\005items\030\001 \003(\t\" \n\017Ipf" +
+      "sQueryResult\022\r\n\005items\030\001 \003(\tB\034\n\026sjtu.open" +
+      "net.textilepbZ\002pbb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -9909,6 +11128,18 @@ public final class QueryOuterClass {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_SyncFileQuery_descriptor,
         new java.lang.String[] { "Address", "Type", });
+    internal_static_IpfsQuery_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_IpfsQuery_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_IpfsQuery_descriptor,
+        new java.lang.String[] { "Items", });
+    internal_static_IpfsQueryResult_descriptor =
+      getDescriptor().getMessageTypes().get(12);
+    internal_static_IpfsQueryResult_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_IpfsQueryResult_descriptor,
+        new java.lang.String[] { "Items", });
     com.google.protobuf.AnyProto.getDescriptor();
     com.google.protobuf.TimestampProto.getDescriptor();
     sjtu.opennet.textilepb.Model.getDescriptor();
