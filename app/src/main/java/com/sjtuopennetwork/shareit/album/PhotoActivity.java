@@ -222,8 +222,6 @@ public class PhotoActivity extends AppCompatActivity {
         if (requestCode == PictureConfig.CHOOSE_REQUEST && resultCode == RESULT_OK) {
 
 
-
-
             //myDataset.clear();
             //选择或拍摄照片之后的回调，将对应图片添加到photo_thread中
             //=====================================
