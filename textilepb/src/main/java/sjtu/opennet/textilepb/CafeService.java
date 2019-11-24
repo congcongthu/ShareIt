@@ -16876,6 +16876,1357 @@ public final class CafeService {
 
   }
 
+  public interface CafeFindIpfsAddrOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:CafeFindIpfsAddr)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string token = 1;</code>
+     */
+    java.lang.String getToken();
+    /**
+     * <code>string token = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getTokenBytes();
+
+    /**
+     * <code>.IpfsQuery query = 2;</code>
+     */
+    boolean hasQuery();
+    /**
+     * <code>.IpfsQuery query = 2;</code>
+     */
+    sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery getQuery();
+    /**
+     * <code>.IpfsQuery query = 2;</code>
+     */
+    sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryOrBuilder getQueryOrBuilder();
+  }
+  /**
+   * Protobuf type {@code CafeFindIpfsAddr}
+   */
+  public  static final class CafeFindIpfsAddr extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:CafeFindIpfsAddr)
+      CafeFindIpfsAddrOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use CafeFindIpfsAddr.newBuilder() to construct.
+    private CafeFindIpfsAddr(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private CafeFindIpfsAddr() {
+      token_ = "";
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private CafeFindIpfsAddr(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              token_ = s;
+              break;
+            }
+            case 18: {
+              sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.Builder subBuilder = null;
+              if (query_ != null) {
+                subBuilder = query_.toBuilder();
+              }
+              query_ = input.readMessage(sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(query_);
+                query_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return sjtu.opennet.textilepb.CafeService.internal_static_CafeFindIpfsAddr_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return sjtu.opennet.textilepb.CafeService.internal_static_CafeFindIpfsAddr_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr.class, sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr.Builder.class);
+    }
+
+    public static final int TOKEN_FIELD_NUMBER = 1;
+    private volatile java.lang.Object token_;
+    /**
+     * <code>string token = 1;</code>
+     */
+    public java.lang.String getToken() {
+      java.lang.Object ref = token_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        token_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string token = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getTokenBytes() {
+      java.lang.Object ref = token_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        token_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int QUERY_FIELD_NUMBER = 2;
+    private sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery query_;
+    /**
+     * <code>.IpfsQuery query = 2;</code>
+     */
+    public boolean hasQuery() {
+      return query_ != null;
+    }
+    /**
+     * <code>.IpfsQuery query = 2;</code>
+     */
+    public sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery getQuery() {
+      return query_ == null ? sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.getDefaultInstance() : query_;
+    }
+    /**
+     * <code>.IpfsQuery query = 2;</code>
+     */
+    public sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryOrBuilder getQueryOrBuilder() {
+      return getQuery();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getTokenBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, token_);
+      }
+      if (query_ != null) {
+        output.writeMessage(2, getQuery());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getTokenBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, token_);
+      }
+      if (query_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getQuery());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr)) {
+        return super.equals(obj);
+      }
+      sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr other = (sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr) obj;
+
+      boolean result = true;
+      result = result && getToken()
+          .equals(other.getToken());
+      result = result && (hasQuery() == other.hasQuery());
+      if (hasQuery()) {
+        result = result && getQuery()
+            .equals(other.getQuery());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + TOKEN_FIELD_NUMBER;
+      hash = (53 * hash) + getToken().hashCode();
+      if (hasQuery()) {
+        hash = (37 * hash) + QUERY_FIELD_NUMBER;
+        hash = (53 * hash) + getQuery().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code CafeFindIpfsAddr}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:CafeFindIpfsAddr)
+        sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return sjtu.opennet.textilepb.CafeService.internal_static_CafeFindIpfsAddr_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return sjtu.opennet.textilepb.CafeService.internal_static_CafeFindIpfsAddr_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr.class, sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr.Builder.class);
+      }
+
+      // Construct using sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        token_ = "";
+
+        if (queryBuilder_ == null) {
+          query_ = null;
+        } else {
+          query_ = null;
+          queryBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return sjtu.opennet.textilepb.CafeService.internal_static_CafeFindIpfsAddr_descriptor;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr getDefaultInstanceForType() {
+        return sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr build() {
+        sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr buildPartial() {
+        sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr result = new sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr(this);
+        result.token_ = token_;
+        if (queryBuilder_ == null) {
+          result.query_ = query_;
+        } else {
+          result.query_ = queryBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr) {
+          return mergeFrom((sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr other) {
+        if (other == sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr.getDefaultInstance()) return this;
+        if (!other.getToken().isEmpty()) {
+          token_ = other.token_;
+          onChanged();
+        }
+        if (other.hasQuery()) {
+          mergeQuery(other.getQuery());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object token_ = "";
+      /**
+       * <code>string token = 1;</code>
+       */
+      public java.lang.String getToken() {
+        java.lang.Object ref = token_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          token_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string token = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getTokenBytes() {
+        java.lang.Object ref = token_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          token_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string token = 1;</code>
+       */
+      public Builder setToken(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        token_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string token = 1;</code>
+       */
+      public Builder clearToken() {
+        
+        token_ = getDefaultInstance().getToken();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string token = 1;</code>
+       */
+      public Builder setTokenBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        token_ = value;
+        onChanged();
+        return this;
+      }
+
+      private sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery query_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery, sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.Builder, sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryOrBuilder> queryBuilder_;
+      /**
+       * <code>.IpfsQuery query = 2;</code>
+       */
+      public boolean hasQuery() {
+        return queryBuilder_ != null || query_ != null;
+      }
+      /**
+       * <code>.IpfsQuery query = 2;</code>
+       */
+      public sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery getQuery() {
+        if (queryBuilder_ == null) {
+          return query_ == null ? sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.getDefaultInstance() : query_;
+        } else {
+          return queryBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.IpfsQuery query = 2;</code>
+       */
+      public Builder setQuery(sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery value) {
+        if (queryBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          query_ = value;
+          onChanged();
+        } else {
+          queryBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.IpfsQuery query = 2;</code>
+       */
+      public Builder setQuery(
+          sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.Builder builderForValue) {
+        if (queryBuilder_ == null) {
+          query_ = builderForValue.build();
+          onChanged();
+        } else {
+          queryBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.IpfsQuery query = 2;</code>
+       */
+      public Builder mergeQuery(sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery value) {
+        if (queryBuilder_ == null) {
+          if (query_ != null) {
+            query_ =
+              sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.newBuilder(query_).mergeFrom(value).buildPartial();
+          } else {
+            query_ = value;
+          }
+          onChanged();
+        } else {
+          queryBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.IpfsQuery query = 2;</code>
+       */
+      public Builder clearQuery() {
+        if (queryBuilder_ == null) {
+          query_ = null;
+          onChanged();
+        } else {
+          query_ = null;
+          queryBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.IpfsQuery query = 2;</code>
+       */
+      public sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.Builder getQueryBuilder() {
+        
+        onChanged();
+        return getQueryFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.IpfsQuery query = 2;</code>
+       */
+      public sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryOrBuilder getQueryOrBuilder() {
+        if (queryBuilder_ != null) {
+          return queryBuilder_.getMessageOrBuilder();
+        } else {
+          return query_ == null ?
+              sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.getDefaultInstance() : query_;
+        }
+      }
+      /**
+       * <code>.IpfsQuery query = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery, sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.Builder, sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryOrBuilder> 
+          getQueryFieldBuilder() {
+        if (queryBuilder_ == null) {
+          queryBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery, sjtu.opennet.textilepb.QueryOuterClass.IpfsQuery.Builder, sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryOrBuilder>(
+                  getQuery(),
+                  getParentForChildren(),
+                  isClean());
+          query_ = null;
+        }
+        return queryBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:CafeFindIpfsAddr)
+    }
+
+    // @@protoc_insertion_point(class_scope:CafeFindIpfsAddr)
+    private static final sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr();
+    }
+
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<CafeFindIpfsAddr>
+        PARSER = new com.google.protobuf.AbstractParser<CafeFindIpfsAddr>() {
+      @java.lang.Override
+      public CafeFindIpfsAddr parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new CafeFindIpfsAddr(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<CafeFindIpfsAddr> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<CafeFindIpfsAddr> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddr getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface CafeFindIpfsAddrAckOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:CafeFindIpfsAddrAck)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.IpfsQueryResult result = 1;</code>
+     */
+    boolean hasResult();
+    /**
+     * <code>.IpfsQueryResult result = 1;</code>
+     */
+    sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult getResult();
+    /**
+     * <code>.IpfsQueryResult result = 1;</code>
+     */
+    sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResultOrBuilder getResultOrBuilder();
+  }
+  /**
+   * Protobuf type {@code CafeFindIpfsAddrAck}
+   */
+  public  static final class CafeFindIpfsAddrAck extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:CafeFindIpfsAddrAck)
+      CafeFindIpfsAddrAckOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use CafeFindIpfsAddrAck.newBuilder() to construct.
+    private CafeFindIpfsAddrAck(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private CafeFindIpfsAddrAck() {
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private CafeFindIpfsAddrAck(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.Builder subBuilder = null;
+              if (result_ != null) {
+                subBuilder = result_.toBuilder();
+              }
+              result_ = input.readMessage(sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(result_);
+                result_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return sjtu.opennet.textilepb.CafeService.internal_static_CafeFindIpfsAddrAck_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return sjtu.opennet.textilepb.CafeService.internal_static_CafeFindIpfsAddrAck_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck.class, sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck.Builder.class);
+    }
+
+    public static final int RESULT_FIELD_NUMBER = 1;
+    private sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult result_;
+    /**
+     * <code>.IpfsQueryResult result = 1;</code>
+     */
+    public boolean hasResult() {
+      return result_ != null;
+    }
+    /**
+     * <code>.IpfsQueryResult result = 1;</code>
+     */
+    public sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult getResult() {
+      return result_ == null ? sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.getDefaultInstance() : result_;
+    }
+    /**
+     * <code>.IpfsQueryResult result = 1;</code>
+     */
+    public sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResultOrBuilder getResultOrBuilder() {
+      return getResult();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (result_ != null) {
+        output.writeMessage(1, getResult());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (result_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getResult());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck)) {
+        return super.equals(obj);
+      }
+      sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck other = (sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck) obj;
+
+      boolean result = true;
+      result = result && (hasResult() == other.hasResult());
+      if (hasResult()) {
+        result = result && getResult()
+            .equals(other.getResult());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasResult()) {
+        hash = (37 * hash) + RESULT_FIELD_NUMBER;
+        hash = (53 * hash) + getResult().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code CafeFindIpfsAddrAck}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:CafeFindIpfsAddrAck)
+        sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAckOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return sjtu.opennet.textilepb.CafeService.internal_static_CafeFindIpfsAddrAck_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return sjtu.opennet.textilepb.CafeService.internal_static_CafeFindIpfsAddrAck_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck.class, sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck.Builder.class);
+      }
+
+      // Construct using sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (resultBuilder_ == null) {
+          result_ = null;
+        } else {
+          result_ = null;
+          resultBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return sjtu.opennet.textilepb.CafeService.internal_static_CafeFindIpfsAddrAck_descriptor;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck getDefaultInstanceForType() {
+        return sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck build() {
+        sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck buildPartial() {
+        sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck result = new sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck(this);
+        if (resultBuilder_ == null) {
+          result.result_ = result_;
+        } else {
+          result.result_ = resultBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck) {
+          return mergeFrom((sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck other) {
+        if (other == sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck.getDefaultInstance()) return this;
+        if (other.hasResult()) {
+          mergeResult(other.getResult());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult result_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult, sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.Builder, sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResultOrBuilder> resultBuilder_;
+      /**
+       * <code>.IpfsQueryResult result = 1;</code>
+       */
+      public boolean hasResult() {
+        return resultBuilder_ != null || result_ != null;
+      }
+      /**
+       * <code>.IpfsQueryResult result = 1;</code>
+       */
+      public sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult getResult() {
+        if (resultBuilder_ == null) {
+          return result_ == null ? sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.getDefaultInstance() : result_;
+        } else {
+          return resultBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.IpfsQueryResult result = 1;</code>
+       */
+      public Builder setResult(sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult value) {
+        if (resultBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          result_ = value;
+          onChanged();
+        } else {
+          resultBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.IpfsQueryResult result = 1;</code>
+       */
+      public Builder setResult(
+          sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.Builder builderForValue) {
+        if (resultBuilder_ == null) {
+          result_ = builderForValue.build();
+          onChanged();
+        } else {
+          resultBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.IpfsQueryResult result = 1;</code>
+       */
+      public Builder mergeResult(sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult value) {
+        if (resultBuilder_ == null) {
+          if (result_ != null) {
+            result_ =
+              sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.newBuilder(result_).mergeFrom(value).buildPartial();
+          } else {
+            result_ = value;
+          }
+          onChanged();
+        } else {
+          resultBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.IpfsQueryResult result = 1;</code>
+       */
+      public Builder clearResult() {
+        if (resultBuilder_ == null) {
+          result_ = null;
+          onChanged();
+        } else {
+          result_ = null;
+          resultBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.IpfsQueryResult result = 1;</code>
+       */
+      public sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.Builder getResultBuilder() {
+        
+        onChanged();
+        return getResultFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.IpfsQueryResult result = 1;</code>
+       */
+      public sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResultOrBuilder getResultOrBuilder() {
+        if (resultBuilder_ != null) {
+          return resultBuilder_.getMessageOrBuilder();
+        } else {
+          return result_ == null ?
+              sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.getDefaultInstance() : result_;
+        }
+      }
+      /**
+       * <code>.IpfsQueryResult result = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult, sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.Builder, sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResultOrBuilder> 
+          getResultFieldBuilder() {
+        if (resultBuilder_ == null) {
+          resultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult, sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResult.Builder, sjtu.opennet.textilepb.QueryOuterClass.IpfsQueryResultOrBuilder>(
+                  getResult(),
+                  getParentForChildren(),
+                  isClean());
+          result_ = null;
+        }
+        return resultBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:CafeFindIpfsAddrAck)
+    }
+
+    // @@protoc_insertion_point(class_scope:CafeFindIpfsAddrAck)
+    private static final sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck();
+    }
+
+    public static sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<CafeFindIpfsAddrAck>
+        PARSER = new com.google.protobuf.AbstractParser<CafeFindIpfsAddrAck>() {
+      @java.lang.Override
+      public CafeFindIpfsAddrAck parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new CafeFindIpfsAddrAck(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<CafeFindIpfsAddrAck> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<CafeFindIpfsAddrAck> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public sjtu.opennet.textilepb.CafeService.CafeFindIpfsAddrAck getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface CafeDeliverMessageOrBuilder extends
       // @@protoc_insertion_point(interface_extends:CafeDeliverMessage)
       com.google.protobuf.MessageOrBuilder {
@@ -20114,6 +21465,16 @@ public final class CafeService {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_CafeSyncFileAck_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_CafeFindIpfsAddr_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_CafeFindIpfsAddr_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_CafeFindIpfsAddrAck_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_CafeFindIpfsAddrAck_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_CafeDeliverMessage_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -20147,44 +21508,48 @@ public final class CafeService {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\022cafe_service.proto\032\013model.proto\" \n\rCaf" +
-      "eChallenge\022\017\n\007address\030\001 \001(\t\"\032\n\tCafeNonce" +
-      "\022\r\n\005value\030\001 \001(\t\"]\n\020CafeRegistration\022\017\n\007a" +
-      "ddress\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\022\r\n\005nonce\030\003 \001" +
-      "(\t\022\013\n\003sig\030\004 \001(\014\022\r\n\005token\030\005 \001(\t\"#\n\022CafeDe" +
-      "registration\022\r\n\005token\030\001 \001(\t\"#\n\025CafeDereg" +
-      "istrationAck\022\n\n\002id\030\001 \001(\t\"5\n\022CafeRefreshS" +
-      "ession\022\016\n\006access\030\001 \001(\t\022\017\n\007refresh\030\002 \001(\t\"" +
-      "5\n\017CafePublishPeer\022\r\n\005token\030\001 \001(\t\022\023\n\004pee" +
-      "r\030\002 \001(\0132\005.Peer\" \n\022CafePublishPeerAck\022\n\n\002" +
-      "id\030\001 \001(\t\"(\n\tCafeStore\022\r\n\005token\030\001 \001(\t\022\014\n\004" +
-      "cids\030\002 \003(\t\"\032\n\014CafeStoreAck\022\n\n\002id\030\001 \001(\t\"*" +
-      "\n\013CafeUnstore\022\r\n\005token\030\001 \001(\t\022\014\n\004cids\030\002 \003" +
-      "(\t\"\036\n\016CafeUnstoreAck\022\014\n\004cids\030\001 \003(\t\"\036\n\016Ca" +
-      "feObjectList\022\014\n\004cids\030\001 \003(\t\"D\n\nCafeObject" +
-      "\022\r\n\005token\030\001 \001(\t\022\013\n\003cid\030\002 \001(\t\022\014\n\004data\030\003 \001" +
-      "(\014\022\014\n\004node\030\004 \001(\014\"@\n\017CafeStoreThread\022\r\n\005t" +
-      "oken\030\001 \001(\t\022\n\n\002id\030\002 \001(\t\022\022\n\nciphertext\030\003 \001" +
-      "(\014\" \n\022CafeStoreThreadAck\022\n\n\002id\030\001 \001(\t\".\n\021" +
-      "CafeUnstoreThread\022\r\n\005token\030\001 \001(\t\022\n\n\002id\030\002" +
-      " \001(\t\"\"\n\024CafeUnstoreThreadAck\022\n\n\002id\030\001 \001(\t" +
-      "\"8\n\020CafePublishVideo\022\r\n\005token\030\001 \001(\t\022\025\n\005v" +
-      "ideo\030\002 \001(\0132\006.Video\"!\n\023CafePublishVideoAc" +
-      "k\022\n\n\002id\030\001 \001(\t\"8\n\014CafeSendFile\022\014\n\004name\030\001 " +
-      "\001(\t\022\014\n\004size\030\002 \001(\005\022\014\n\004data\030\003 \001(\014\"_\n\025CafeP" +
-      "ublishVideoChunk\022\r\n\005token\030\001 \001(\t\022\032\n\005chunk" +
-      "\030\002 \001(\0132\013.VideoChunk\022\033\n\004file\030\003 \001(\0132\r.Cafe" +
-      "SendFile\"5\n\030CafePublishVideoChunkAck\022\n\n\002" +
-      "id\030\001 \001(\t\022\r\n\005chunk\030\002 \001(\t\"6\n\014CafeSyncFile\022" +
-      "\r\n\005token\030\001 \001(\t\022\027\n\004file\030\002 \001(\0132\t.SyncFile\"" +
-      "4\n\017CafeSyncFileAck\022\023\n\013peerAddress\030\001 \001(\t\022" +
-      "\014\n\004file\030\002 \001(\t\"=\n\022CafeDeliverMessage\022\n\n\002i" +
-      "d\030\001 \001(\t\022\016\n\006client\030\002 \001(\t\022\013\n\003env\030\003 \001(\014\"\"\n\021" +
-      "CafeCheckMessages\022\r\n\005token\030\001 \001(\t\".\n\014Cafe" +
-      "Messages\022\036\n\010messages\030\001 \003(\0132\014.CafeMessage" +
-      "\"#\n\022CafeDeleteMessages\022\r\n\005token\030\001 \001(\t\"%\n" +
-      "\025CafeDeleteMessagesAck\022\014\n\004more\030\001 \001(\010B\034\n\026" +
-      "sjtu.opennet.textilepbZ\002pbb\006proto3"
+      "\n\022cafe_service.proto\032\013model.proto\032\013query" +
+      ".proto\" \n\rCafeChallenge\022\017\n\007address\030\001 \001(\t" +
+      "\"\032\n\tCafeNonce\022\r\n\005value\030\001 \001(\t\"]\n\020CafeRegi" +
+      "stration\022\017\n\007address\030\001 \001(\t\022\r\n\005value\030\002 \001(\t" +
+      "\022\r\n\005nonce\030\003 \001(\t\022\013\n\003sig\030\004 \001(\014\022\r\n\005token\030\005 " +
+      "\001(\t\"#\n\022CafeDeregistration\022\r\n\005token\030\001 \001(\t" +
+      "\"#\n\025CafeDeregistrationAck\022\n\n\002id\030\001 \001(\t\"5\n" +
+      "\022CafeRefreshSession\022\016\n\006access\030\001 \001(\t\022\017\n\007r" +
+      "efresh\030\002 \001(\t\"5\n\017CafePublishPeer\022\r\n\005token" +
+      "\030\001 \001(\t\022\023\n\004peer\030\002 \001(\0132\005.Peer\" \n\022CafePubli" +
+      "shPeerAck\022\n\n\002id\030\001 \001(\t\"(\n\tCafeStore\022\r\n\005to" +
+      "ken\030\001 \001(\t\022\014\n\004cids\030\002 \003(\t\"\032\n\014CafeStoreAck\022" +
+      "\n\n\002id\030\001 \001(\t\"*\n\013CafeUnstore\022\r\n\005token\030\001 \001(" +
+      "\t\022\014\n\004cids\030\002 \003(\t\"\036\n\016CafeUnstoreAck\022\014\n\004cid" +
+      "s\030\001 \003(\t\"\036\n\016CafeObjectList\022\014\n\004cids\030\001 \003(\t\"" +
+      "D\n\nCafeObject\022\r\n\005token\030\001 \001(\t\022\013\n\003cid\030\002 \001(" +
+      "\t\022\014\n\004data\030\003 \001(\014\022\014\n\004node\030\004 \001(\014\"@\n\017CafeSto" +
+      "reThread\022\r\n\005token\030\001 \001(\t\022\n\n\002id\030\002 \001(\t\022\022\n\nc" +
+      "iphertext\030\003 \001(\014\" \n\022CafeStoreThreadAck\022\n\n" +
+      "\002id\030\001 \001(\t\".\n\021CafeUnstoreThread\022\r\n\005token\030" +
+      "\001 \001(\t\022\n\n\002id\030\002 \001(\t\"\"\n\024CafeUnstoreThreadAc" +
+      "k\022\n\n\002id\030\001 \001(\t\"8\n\020CafePublishVideo\022\r\n\005tok" +
+      "en\030\001 \001(\t\022\025\n\005video\030\002 \001(\0132\006.Video\"!\n\023CafeP" +
+      "ublishVideoAck\022\n\n\002id\030\001 \001(\t\"8\n\014CafeSendFi" +
+      "le\022\014\n\004name\030\001 \001(\t\022\014\n\004size\030\002 \001(\005\022\014\n\004data\030\003" +
+      " \001(\014\"_\n\025CafePublishVideoChunk\022\r\n\005token\030\001" +
+      " \001(\t\022\032\n\005chunk\030\002 \001(\0132\013.VideoChunk\022\033\n\004file" +
+      "\030\003 \001(\0132\r.CafeSendFile\"5\n\030CafePublishVide" +
+      "oChunkAck\022\n\n\002id\030\001 \001(\t\022\r\n\005chunk\030\002 \001(\t\"6\n\014" +
+      "CafeSyncFile\022\r\n\005token\030\001 \001(\t\022\027\n\004file\030\002 \001(" +
+      "\0132\t.SyncFile\"4\n\017CafeSyncFileAck\022\023\n\013peerA" +
+      "ddress\030\001 \001(\t\022\014\n\004file\030\002 \001(\t\"<\n\020CafeFindIp" +
+      "fsAddr\022\r\n\005token\030\001 \001(\t\022\031\n\005query\030\002 \001(\0132\n.I" +
+      "pfsQuery\"7\n\023CafeFindIpfsAddrAck\022 \n\006resul" +
+      "t\030\001 \001(\0132\020.IpfsQueryResult\"=\n\022CafeDeliver" +
+      "Message\022\n\n\002id\030\001 \001(\t\022\016\n\006client\030\002 \001(\t\022\013\n\003e" +
+      "nv\030\003 \001(\014\"\"\n\021CafeCheckMessages\022\r\n\005token\030\001" +
+      " \001(\t\".\n\014CafeMessages\022\036\n\010messages\030\001 \003(\0132\014" +
+      ".CafeMessage\"#\n\022CafeDeleteMessages\022\r\n\005to" +
+      "ken\030\001 \001(\t\"%\n\025CafeDeleteMessagesAck\022\014\n\004mo" +
+      "re\030\001 \001(\010B\034\n\026sjtu.opennet.textilepbZ\002pbb\006" +
+      "proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -20198,6 +21563,7 @@ public final class CafeService {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           sjtu.opennet.textilepb.Model.getDescriptor(),
+          sjtu.opennet.textilepb.QueryOuterClass.getDescriptor(),
         }, assigner);
     internal_static_CafeChallenge_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -20349,37 +21715,50 @@ public final class CafeService {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeSyncFileAck_descriptor,
         new java.lang.String[] { "PeerAddress", "File", });
-    internal_static_CafeDeliverMessage_descriptor =
+    internal_static_CafeFindIpfsAddr_descriptor =
       getDescriptor().getMessageTypes().get(25);
+    internal_static_CafeFindIpfsAddr_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_CafeFindIpfsAddr_descriptor,
+        new java.lang.String[] { "Token", "Query", });
+    internal_static_CafeFindIpfsAddrAck_descriptor =
+      getDescriptor().getMessageTypes().get(26);
+    internal_static_CafeFindIpfsAddrAck_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_CafeFindIpfsAddrAck_descriptor,
+        new java.lang.String[] { "Result", });
+    internal_static_CafeDeliverMessage_descriptor =
+      getDescriptor().getMessageTypes().get(27);
     internal_static_CafeDeliverMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeDeliverMessage_descriptor,
         new java.lang.String[] { "Id", "Client", "Env", });
     internal_static_CafeCheckMessages_descriptor =
-      getDescriptor().getMessageTypes().get(26);
+      getDescriptor().getMessageTypes().get(28);
     internal_static_CafeCheckMessages_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeCheckMessages_descriptor,
         new java.lang.String[] { "Token", });
     internal_static_CafeMessages_descriptor =
-      getDescriptor().getMessageTypes().get(27);
+      getDescriptor().getMessageTypes().get(29);
     internal_static_CafeMessages_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeMessages_descriptor,
         new java.lang.String[] { "Messages", });
     internal_static_CafeDeleteMessages_descriptor =
-      getDescriptor().getMessageTypes().get(28);
+      getDescriptor().getMessageTypes().get(30);
     internal_static_CafeDeleteMessages_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeDeleteMessages_descriptor,
         new java.lang.String[] { "Token", });
     internal_static_CafeDeleteMessagesAck_descriptor =
-      getDescriptor().getMessageTypes().get(29);
+      getDescriptor().getMessageTypes().get(31);
     internal_static_CafeDeleteMessagesAck_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeDeleteMessagesAck_descriptor,
         new java.lang.String[] { "More", });
     sjtu.opennet.textilepb.Model.getDescriptor();
+    sjtu.opennet.textilepb.QueryOuterClass.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)
