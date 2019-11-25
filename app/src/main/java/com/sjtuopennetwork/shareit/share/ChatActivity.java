@@ -103,8 +103,6 @@ public class ChatActivity extends AppCompatActivity {
 
         drawUI();
 
-
-
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
@@ -250,7 +248,6 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -283,7 +280,7 @@ public class ChatActivity extends AppCompatActivity {
             chooseVideo=PictureSelector.obtainMultipleResult(data);
             String filePath=chooseVideo.get(0).getPath();
             System.out.println("=================选择了视频："+filePath);
-//
+
             VideoUploadHelper videoHelper=new VideoUploadHelper(this,filePath);
             Model.Video videoPb=videoHelper.getVideoPb();
 
@@ -299,7 +296,7 @@ public class ChatActivity extends AppCompatActivity {
             String videoHeadPath=tmpdir+System.currentTimeMillis(); //随机给一个名字
             //将缩略图临时保存到本地
             FileUtil.saveBitmap(videoHeadPath,tmpBmap);
-            String posterAndId=videoHeadPath+"##"+videoPb.getId();
+            String posterAndId=videoHeadPath+"##"+videoPb.getId()+"##"+filePath;
             TMsg tMsg= null;
             try {
                 tMsg = new TMsg(1,threadid,2,"",

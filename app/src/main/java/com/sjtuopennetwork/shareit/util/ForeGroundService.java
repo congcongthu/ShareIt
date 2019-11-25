@@ -356,7 +356,7 @@ public class ForeGroundService extends Service {
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
             //要保证在所有界面收到消息，就只能是在这里更新数据库了。默认是未读的，但是在聊天界面得到消息就要改为已读
             //发送消息的目的就是更新界面，所以不用sticky
-            System.out.println("============收到么么么么么"+feedItemData.type.name());
+            String myAddr=Textile.instance().account.address();
 
             Model.Thread thread=null;
             try {
@@ -376,12 +376,8 @@ public class ForeGroundService extends Service {
                 if(DBoperator.queryDialogByThreadID(appdb,threadId)!=null){ //如果已经有了就不要再插入了
                     return;
                 }
-                System.out.println("=========收到JOIN消息，thread白名单个数："+thread.getWhitelistCount());
-                String myAddr=Textile.instance().account.address();
                 int whiteListCount=thread.getWhitelistCount();
-                boolean keyIsMyAddress=thread.getKey().equals(myAddr); //如果key是自己的address，说明这是同意他人的好友申请
                 boolean authorIsMe=feedItemData.join.getUser().getAddress().equals(myAddr); //表明是否是自己的JOIN
-
                 if(whiteListCount==2){ //双人thread
                     System.out.println("===========JOIN消息，白名单个数为2");
                     if(!authorIsMe){  //双人thread收到他人的JOIN，只可能是同意他人好友申请或者自己的好友申请被他人同意，都要插入一条记录
@@ -434,9 +430,8 @@ public class ForeGroundService extends Service {
             }
 
             if(feedItemData.type.equals(FeedItemType.TEXT)){ //如果是文本消息
-                System.out.println("=================收到文本消息："+feedItemData.text.getBody());
                 int ismine=0;
-                if(feedItemData.text.getUser().getAddress().equals(Textile.instance().account.address())){
+                if(feedItemData.text.getUser().getAddress().equals(myAddr)){
                     ismine=1;
                 }
                 //插入msgs表
@@ -459,79 +454,128 @@ public class ForeGroundService extends Service {
                 }
             }
 
-            if(feedItemData.type.equals(FeedItemType.FILES)){
-                //在这里就不存储图片，直接拿到hash放进去，adapter中进行展示。因为有可能老消息不需要展示，等到需要时再去拉
-                //如果是双人的不更新Dialog的图片，如果是群聊就要更新
-                String large_hash="";
+            if(feedItemData.type.equals(FeedItemType.FILES)){ //接收到图片
+                TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId); //必然能够查出来对话
                 try {
-                    large_hash = Textile.instance().files.list(threadId,"",3).getItems(0).getFiles(0).getLinksMap().get("large").getHash();
-                    System.out.println("======================图片消息的hash值："+large_hash);
+                    //图片消息的hash
+                    final String large_hash = Textile.instance().files.list(threadId,"",3).getItems(0).getFiles(0).getLinksMap().get("large").getHash();
+                    Textile.instance().files.content(large_hash, new Handlers.DataHandler() {
+                        @Override
+                        public void onComplete(byte[] data, String media) { //获得图片成功
+                            String newPath=FileUtil.storeFile(data,large_hash); //将图片存到本地
+                            String dialogimg="";
+                            if(isSingle){ //单人的thread,图片就是对方的头像，不改
+                                dialogimg=tDialog.imgpath;
+                            }else{
+                                dialogimg=newPath; //多人群组的对话图片就要更新
+                            }
+                            Log.d(TAG, "onComplete: 获取图片成功"+newPath);
+
+                            //将更新后的对话存到数据库
+                            TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
+                                    feedItemData.files.getUser().getName()+"分享了图片", feedItemData.files.getDate().getSeconds(),
+                                    dialogimg);
+                            updateDialog.isRead=false;
+
+                            //插入msgs表
+                            int ismine=0;
+                            if(feedItemData.files.getUser().getAddress().equals(myAddr)){
+                                ismine=1;
+                            }
+                            TMsg tMsg=DBoperator.insertMsg(appdb,threadId,1, feedItemData.files.getBlock(),
+                                    feedItemData.files.getUser().getName(),
+                                    feedItemData.files.getUser().getAvatar(),
+                                    newPath,
+                                    feedItemData.files.getDate().getSeconds(), ismine);
+                            EventBus.getDefault().post(updateDialog);
+                            if(ismine==0){  //不是我的图片才广播出去
+                                EventBus.getDefault().post(tMsg);
+                            }
+                        }
+                        @Override
+                        public void onError(Exception e) { //获得图片失败
+                            Log.d(TAG, "onComplete: 获取图片失败");
+                            //将更新后的对话存到数据库
+                            TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
+                                    feedItemData.files.getUser().getName()+"分享了图片", feedItemData.files.getDate().getSeconds(),
+                                    "null");
+                            updateDialog.isRead=false;
+
+                            //插入msgs表
+                            int ismine=0;
+                            if(feedItemData.files.getUser().getAddress().equals(myAddr)){
+                                ismine=1;
+                            }
+                            TMsg tMsg=DBoperator.insertMsg(appdb,threadId,1, feedItemData.files.getBlock(),
+                                    feedItemData.files.getUser().getName(),
+                                    feedItemData.files.getUser().getAvatar(),
+                                    "null",
+                                    feedItemData.files.getDate().getSeconds(), ismine);
+                            EventBus.getDefault().post(updateDialog);
+                            if(ismine==0){  //不是我的图片才广播出去
+                                EventBus.getDefault().post(tMsg);
+                            }
+                        }
+                    });
+
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
-
-                //DIalog
-                TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
-                String dialogimg="";
-                if(isSingle){ //单人的thread
-                    dialogimg=tDialog.imgpath;
-                }else{ //多人的群组
-                    dialogimg=large_hash;
-                }
-                System.out.println("================是否是单人的："+isSingle+" "+dialogimg);
-                TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
-                        feedItemData.files.getUser().getName()+"分享了图片", feedItemData.files.getDate().getSeconds(),
-                        dialogimg);
-                updateDialog.isRead=false;
-
-                //Msg
-                int ismine=0;
-                if(feedItemData.files.getUser().getAddress().equals(Textile.instance().account.address())){
-                    ismine=1;
-                }
-                //插入msgs表
-                TMsg tMsg=DBoperator.insertMsg(appdb,threadId,1, feedItemData.files.getBlock(),
-                        feedItemData.files.getUser().getName(),
-                        feedItemData.files.getUser().getAvatar(),
-                        large_hash,
-                        feedItemData.files.getDate().getSeconds(), ismine);
-                System.out.println("=============msgs：" + tMsg.authorname+" " + tMsg.authorname);
-
-                EventBus.getDefault().post(updateDialog);
-                if(ismine==0){  //不是我的图片才广播出去
-                    EventBus.getDefault().post(tMsg);
                 }
             }
 
             if(feedItemData.type.equals(FeedItemType.VIDEO)){
                 Model.Video video=feedItemData.feedVideo.getVideo();
-                System.out.println("==========收到视频："
-                        +" "+video.getPoster()  //这个就是缩略图的ipfs哈希值，使用ipfs.dataAtPath就能够得到
-                        +" "+video.getId());
-
-                //DIalog
                 TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
                         feedItemData.feedVideo.getUser().getName()+"分享了视频", feedItemData.feedVideo.getDate().getSeconds(),
                         tDialog.imgpath);
-
-                //Msg
-                int ismine=0;
-                if(feedItemData.feedVideo.getUser().getAddress().equals(Textile.instance().account.address())){
-                    ismine=1;
-                }
-                String posterAndId=video.getPoster()+"##"+video.getId();
-                //插入msgs表
-                TMsg tMsg=DBoperator.insertMsg(appdb,threadId,2, feedItemData.feedVideo.getBlock(),
-                        feedItemData.feedVideo.getUser().getName(),
-                        feedItemData.feedVideo.getUser().getAvatar(),
-                        posterAndId, //poster和id的hash值
-                        feedItemData.feedVideo.getDate().getSeconds(), ismine);
-
                 EventBus.getDefault().post(updateDialog);
-                if(ismine==0){  //不是我的视频才广播出去，因为我自己的消息直接显示了
-                    EventBus.getDefault().post(tMsg);
-                }
+
+                String posterHash=video.getPoster();
+                String videoPath=video.getCaption();
+                String videoID=video.getId();
+                Log.d(TAG, "threadUpdateReceived: 得到视频的地址："+videoPath);
+                Textile.instance().ipfs.dataAtPath(posterHash, new Handlers.DataHandler() {
+                    @Override
+                    public void onComplete(byte[] data, String media) { //成功拿到缩略图
+                        String posterPath=FileUtil.storeFile(data,posterHash); //将图片存到本地
+                        String msgBody=posterPath+"##"+videoID+"##"+videoPath;
+                        //Msg
+                        int ismine=0;
+                        if(feedItemData.feedVideo.getUser().getAddress().equals(myAddr)){
+                            ismine=1;
+                        }
+                        //插入msgs表
+                        TMsg tMsg=DBoperator.insertMsg(appdb,threadId,2, feedItemData.feedVideo.getBlock(),
+                                feedItemData.feedVideo.getUser().getName(),
+                                feedItemData.feedVideo.getUser().getAvatar(),
+                                msgBody, //poster和id的hash值
+                                feedItemData.feedVideo.getDate().getSeconds(), ismine);
+                        if(ismine==0){  //不是我的视频才广播出去，因为我自己的消息直接显示了
+                            EventBus.getDefault().post(tMsg);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        String msgBody="null##"+videoID+"##"+videoPath;
+                        //Msg
+                        int ismine=0;
+                        if(feedItemData.feedVideo.getUser().getAddress().equals(myAddr)){
+                            ismine=1;
+                        }
+                        //插入msgs表
+                        TMsg tMsg=DBoperator.insertMsg(appdb,threadId,2, feedItemData.feedVideo.getBlock(),
+                                feedItemData.feedVideo.getUser().getName(),
+                                feedItemData.feedVideo.getUser().getAvatar(),
+                                msgBody, //poster和id的hash值
+                                feedItemData.feedVideo.getDate().getSeconds(), ismine);
+                        if(ismine==0){  //不是我的视频才广播出去，因为我自己的消息直接显示了
+                            EventBus.getDefault().post(tMsg);
+                        }
+                    }
+                });
+
             }
 
             if(feedItemData.type.equals(FeedItemType.ADDADMIN)){
