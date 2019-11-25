@@ -98,7 +98,7 @@ public class SyncFileUtil {
         }
     }
 
-    public void searchSyncFiles(String peerAddress, SyncFile.Type sType){
+    public static void searchSyncFiles(String peerAddress, SyncFile.Type sType){
         QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder()
                 .setWait(1)
                 .setLimit(1)
