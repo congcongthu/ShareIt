@@ -122,8 +122,6 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent=new Intent(this,ForeGroundService.class);
             intent.putExtra("login",login);
             startForegroundService(intent);
-
-
         }
     }
 
