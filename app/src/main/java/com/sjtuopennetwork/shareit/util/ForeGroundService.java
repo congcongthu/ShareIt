@@ -228,7 +228,24 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-            tryConnectCafe(new Double(2.34));
+            new Thread(){
+                @Override
+                public void run() {
+                    tryConnectCafe(new Double(2.34));
+                    while(true){
+                        try {
+                            Thread.sleep(5000);
+
+                            //发送心跳，接口回调来处理，如果成功就不做事情，如果不成功就进行操作
+                            //
+
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }.start();
+
 
             createDeviceThread();
 

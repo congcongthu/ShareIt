@@ -83,7 +83,7 @@ public class VideoPlayActivity extends AppCompatActivity {
     int m3u8WriteCount;
     Model.Video video;
     boolean finished;
-    static int gap = 100000;
+    static int gap = 200000;
     Map<String, String> addressMap;
     private ProgressBar mProgressBar;
     FileWriter fileWriter;
@@ -208,7 +208,6 @@ public class VideoPlayActivity extends AppCompatActivity {
     public class MyEventListener implements Player.EventListener {
         @Override
         public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-            System.out.println("===============事件："+playbackState);
             switch (playbackState){
                 case ExoPlayer.STATE_ENDED: //4
                     //Stop playback and return to start position
@@ -413,12 +412,23 @@ public class VideoPlayActivity extends AppCompatActivity {
             EventBus.getDefault().unregister(this);
         }
 
-        videorHelper.stopReceiver();
         finished=true;
 
-        //结束下载
-        player.release(); //释放播放器
+        if(videorHelper!=null){
+            Log.d(TAG, "onStop: videoHelper不为空");
+            videorHelper.stopReceiver(); //不能停止
+        }else{
+            Log.d(TAG, "onStop: videoHelper为空");
+        }
 
+
+        //结束下载
+        if(player!=null){
+            Log.d(TAG, "onStop: player不为空");
+            player.release(); //释放播放器
+        }else{
+            Log.d(TAG, "onStop: player为空");
+        }
     }
 
 }
