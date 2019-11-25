@@ -56,7 +56,6 @@ public class ContactInfoActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("======用户详情"+contact.getName()+" ");
 
         initUI();
 
@@ -112,7 +111,6 @@ public class ContactInfoActivity extends AppCompatActivity {
 
         //从address得到peerid
         try {
-            System.out.println("===========用户详情的threaid："+threadid);
             List<Model.Peer> peers=Textile.instance().threads.peers(threadid).getItemsList();
             for(Model.Peer p:peers){
                 if(p.getAddress().equals(address)){
@@ -131,7 +129,6 @@ public class ContactInfoActivity extends AppCompatActivity {
             delFriend.setPositiveButton("确定", (dialog, which) -> {
                 //删除好友,removeThread，并在自己的数据库中删除记录
                 try {
-                    System.out.println("================将要removePeer：threadid/peeraId"+threadid+" "+peer.getId());
                     Textile.instance().threads.removePeer(threadid, peer.getId()); //将对方移出peer
                     Textile.instance().threads.remove(threadid); //将自己的thread删除
                 } catch (Exception e) {

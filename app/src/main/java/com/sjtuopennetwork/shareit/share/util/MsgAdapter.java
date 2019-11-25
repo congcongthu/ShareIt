@@ -261,39 +261,6 @@ public class MsgAdapter extends BaseAdapter {
         }
     }
 
-    private void setVideo(ImageView imageView,String filePath,String fileHash){
-        Handler handler=new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                switch(msg.what){
-                    case 1:
-                        String newPath=msg.getData().getString("newPath");
-                        Log.d(TAG, "handleMessage: 拿到图片："+newPath);
-                        Glide.with(context).load(newPath).thumbnail(0.3f).into(imageView);
-                }
-            }
-        };
-        if(filePath.equals("null")){ //如果没有存储过图片
-            Textile.instance().ipfs.dataAtPath(fileHash, new Handlers.DataHandler() {
-                @Override
-                public void onComplete(byte[] data, String media) {
-                    String newPath=FileUtil.storeFile(data,fileHash);
-                    Message msg=new Message(); msg.what=1;
-                    Bundle b=new Bundle();b.putString("newPath",newPath);
-                    msg.setData(b);
-                    handler.sendMessage(msg);
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    e.printStackTrace();
-                }
-            });
-        }else{
-            Glide.with(context).load(filePath).thumbnail(0.3f).into(imageView);
-        }
-    }
-
     @Override
     public boolean isEnabled(int position) {
         return false;

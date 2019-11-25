@@ -177,10 +177,7 @@ public class ForeGroundService extends Service {
         if(register.equals(2.34)){
             Textile.instance().cafes.register(
                     "http://202.120.38.131:40601",
-//                    "http://192.168.1.109:40601",
-//                    "http://202.120.40.60:40601",
                     "2GmWwR2S2cW9UPe1tD3an4QzbUxo7hodsGef8reSLrL6sf4uCo77qrGqcw98m",
-//                    "29TkBsmjFfEnR1Sack63qWK5WkPGjJtA2kXFHvTijmSE1KYMvVopBRWagHLbE",
                     new Handlers.ErrorHandler() {
                         @Override
                         public void onComplete() {
@@ -231,7 +228,24 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-            tryConnectCafe(new Double(2.34));
+            new Thread(){
+                @Override
+                public void run() {
+                    tryConnectCafe(new Double(2.34));
+                    while(true){
+                        try {
+                            Thread.sleep(5000);
+
+                            //发送心跳，接口回调来处理，如果成功就不做事情，如果不成功就进行操作
+                            //
+
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }.start();
+
 
             createDeviceThread();
 
@@ -242,7 +256,7 @@ public class ForeGroundService extends Service {
 //            }
 
 //            根据登录方式，设置name和头像
-            System.out.println("=========login:"+login);
+            Log.d(TAG, "nodeOnline: login的值："+login);
             switch(login){
                 case 0: //已经登录过的，不用设置name、avatar
                     break;
@@ -342,7 +356,6 @@ public class ForeGroundService extends Service {
 
         @Override
         public void videoChunkQueryResult(String queryId, Model.VideoChunk vchunk) {
-            System.out.println("==========监听器找到VideoChunk："+vchunk.getChunk());
             EventBus.getDefault().post(vchunk);
         }
 
@@ -357,6 +370,7 @@ public class ForeGroundService extends Service {
             //要保证在所有界面收到消息，就只能是在这里更新数据库了。默认是未读的，但是在聊天界面得到消息就要改为已读
             //发送消息的目的就是更新界面，所以不用sticky
             String myAddr=Textile.instance().account.address();
+            Log.d(TAG, "threadUpdateReceived: 收到消息，类型为："+feedItemData.type.name());
 
             Model.Thread thread=null;
             try {
@@ -365,23 +379,21 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-            //如果是不共享的thread，包括相册thread，设备thread，就不对消息进行处理
+            //如果是不共享的thread，包括相册thread，设备thread等，就不对消息进行处理
             if (thread.getSharing().equals(Model.Thread.Sharing.NOT_SHARED)){
                 return ;
             }
 
             boolean isSingle=thread.getWhitelistCount()==2;
 
-            if(feedItemData.type.equals(FeedItemType.JOIN)){
+            if(feedItemData.type.equals(FeedItemType.JOIN)){ //收到JION类型的消息
                 if(DBoperator.queryDialogByThreadID(appdb,threadId)!=null){ //如果已经有了就不要再插入了
                     return;
                 }
                 int whiteListCount=thread.getWhitelistCount();
                 boolean authorIsMe=feedItemData.join.getUser().getAddress().equals(myAddr); //表明是否是自己的JOIN
                 if(whiteListCount==2){ //双人thread
-                    System.out.println("===========JOIN消息，白名单个数为2");
                     if(!authorIsMe){  //双人thread收到他人的JOIN，只可能是同意他人好友申请或者自己的好友申请被他人同意，都要插入一条记录
-                        System.out.println("============白名单数为2的JOIN："+feedItemData.join.getUser().getName());
                         TDialog tDialog=DBoperator.insertDialog(appdb,threadId, feedItemData.join.getUser().getName(),
                                 "你好啊，现在我们已经成为好友了",
                                 feedItemData.join.getDate().getSeconds(),
@@ -397,11 +409,9 @@ public class ForeGroundService extends Service {
                         EventBus.getDefault().post(tMsg);
                     }
                 }else{//收到群组thread，就先查一下看数据库有没有，没有就插入，有就更新。
-                    System.out.println("==================群组JOIN："+thread.getName());
                     TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
                     TDialog updateDialog=null;
                     if(tDialog!=null){ //如果数据库已经有了，就更新
-                        System.out.println("================得到群组JOIN消息"+feedItemData.join.getUser().getName()+" 加入了群组");
                         updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
                                 feedItemData.join.getUser().getName()+" 加入了群组", feedItemData.join.getDate().getSeconds(),
                                 tDialog.imgpath);
@@ -441,7 +451,7 @@ public class ForeGroundService extends Service {
                         feedItemData.text.getBody(),
                         feedItemData.text.getDate().getSeconds(), ismine);
 
-//                更新dialogs表
+                //更新dialogs表
                 TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
                         feedItemData.text.getBody(), feedItemData.text.getDate().getSeconds(),
@@ -575,22 +585,18 @@ public class ForeGroundService extends Service {
                         }
                     }
                 });
-
             }
 
             if(feedItemData.type.equals(FeedItemType.ADDADMIN)){
-                System.out.println("============收到添加管理员："+feedItemData.addAdmin.getUser().getName());
+
             }
 
             if(feedItemData.type.equals(FeedItemType.REMOVEPEER)){
                 //收到自己被移出群组的消息，就要手动删除这个群组
                 String removeThreadId=thread.getId();
 
-                System.out.println("================收到删除消息");
-
                 //判断是不是删自己，如果是的就把相应的thread和dialog删掉
                 String peerId=feedItemData.removePeer.getTarget();
-                System.out.println("==============删除："+peerId);
                 Model.User user = null;
                 try {
                     user = Textile.instance().peers.peerUser(peerId);
@@ -617,7 +623,6 @@ public class ForeGroundService extends Service {
                 for(Model.Thread t:devicethreads){
                     if(t.getName().equals("mydevice1219")){
                         hasDevice=true;
-                        System.out.println("=============已经有mydevice1219");
                         break;
                     }
                     if(t.getName().equals("!@#$1234FileStorage")){

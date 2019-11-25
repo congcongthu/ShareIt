@@ -23,16 +23,14 @@ public class ContactQRCodeAtivity extends DefaultQRScanActivity {
     protected void onAlbumResult(int requestCode, int resultCode, String recode) {
         Bundle bundle = new Bundle();
         bundle.putString("result",recode);
-        System.out.println("============相册得到结果："+recode);
         startActivity(new Intent(ContactQRCodeAtivity.this,ScanResultActivity.class).putExtras(bundle));
-//        finish();
+        finish();
     }
 
     @Override
     protected void handleDecodeResult(String rawResult, Bundle bundle) {
         bundle.putString("result",rawResult);
-        System.out.println("===========扫码得到结果："+rawResult);
         startActivity(new Intent(ContactQRCodeAtivity.this,ScanResultActivity.class).putExtras(bundle));
-//        finish();
+        finish();
     }
 }
