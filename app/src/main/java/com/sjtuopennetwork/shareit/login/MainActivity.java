@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.huawei.hmf.tasks.Task;
 import com.huawei.hms.auth.api.signin.HuaweiIdSignIn;
@@ -44,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
     Button huaweiLogin;
     Button shareItLogin;
     Button shareItRegister;
-    NiceImageView registerAvatar;
+//    NiceImageView registerAvatar;
+    ImageView registerAvatar;
     EditText editText;
 
     //持久化存储

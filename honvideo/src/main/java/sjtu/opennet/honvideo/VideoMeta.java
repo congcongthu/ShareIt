@@ -270,7 +270,7 @@ public class VideoMeta {
         Video videopb = Video.newBuilder()
                 .setId(videoHash)
                 //.setCaption(stringInfo())
-                .setCaption(filename)
+                .setCaption(path)
                 .setVideoLength((int)duration_long*1000)
                 .setPoster(posterHash)
                 .build();

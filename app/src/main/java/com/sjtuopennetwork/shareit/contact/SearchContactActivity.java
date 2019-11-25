@@ -131,13 +131,11 @@ public class SearchContactActivity extends AppCompatActivity {
         }
 
         //添加到结果列表
-        System.out.println("========得到搜索结果："+c.getName());
         String addr=c.getAddress();
         String addr_last10="address: "+addr.substring(addr.length()-10);
         newContacts.add(c);
         resultContacts.add(new ResultContact(addr_last10,c.getName(),c.getAvatar(),null,false));
         searchView.clearFocus();
-        System.out.println("===============结果长度："+resultContacts.size());
     }
 
     //双人thread创建成功后就发送邀请，用户看起来就是好友申请
@@ -145,7 +143,6 @@ public class SearchContactActivity extends AppCompatActivity {
     public void sendInvite(String threadId){
         try{
             Textile.instance().invites.add(threadId,targetAddress); //key就是联系人的address
-            System.out.println("===============发送了邀请");
         } catch (Exception e) {
             e.printStackTrace();
         }

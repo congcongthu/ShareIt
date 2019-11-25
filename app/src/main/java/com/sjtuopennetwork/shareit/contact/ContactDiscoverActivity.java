@@ -140,7 +140,6 @@ public class ContactDiscoverActivity extends AppCompatActivity {
     //一次得到一个搜索结果
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getAnResult(Model.Contact c){
-        System.out.println("===========本地发现得到用户："+c.getName());
 
         //看是不是已经添加过了，如果是则过滤掉。
         for(Model.Contact contact:newContacts){
@@ -181,13 +180,11 @@ public class ContactDiscoverActivity extends AppCompatActivity {
         if(t.getWhitelistCount()==2){ //如果是添加好友的threadAdd
             try{
                 Textile.instance().invites.add(threadId,targetAddress); //key就是联系人的address
-                System.out.println("===============发送了邀请");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }else{ //如果是创建群组的threadAdd
             for (Integer integer:listItemID){
-                System.out.println("================发现选中了："+integer);
                 //逐个发邀请
                 try {
                     Textile.instance().invites.add(threadId,resultContacts.get(integer).address);

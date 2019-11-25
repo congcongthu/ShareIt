@@ -12,21 +12,26 @@ import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.View;
 import sjtu.opennet.hon.Textile;
 
+/**
+ * Include some static methods which operate contacts or friends.
+ */
 public class ContactUtil {
 
+    /**
+     * Get the list of all friends.
+     * If both the whitelist count and the peer count are 2, the peer is a friend.
+     * If the whitelist count is 2 but the peer count is 1, it is a friend application which is still not accepted.
+     * @return
+     */
     public static List<Model.Peer> getFriendList(){
         List<Model.Peer> result=new LinkedList<>();
         List<Model.Thread> threads;
         try {
             threads=Textile.instance().threads.list().getItemsList();
-            System.out.println("==============thread数量"+threads.size());
             for(Model.Thread t:threads){
-                //后面要改成thread的peer能够得到自己
                 if(t.getWhitelistCount()==2){ //如果是双人thread，并且的确有两个人
                     List<Model.Peer> peers=Textile.instance().threads.peers(t.getId()).getItemsList();
-                    System.out.println("=========白名单为2的thread及其peer数："+t.getName()+" "+t.getId()+" "+peers.size());
                     for(Model.Peer p:peers){
-                        System.out.println("==============peer:"+p.getName()+" "+p.getAddress());
                         if(!p.getAddress().equals(Textile.instance().account.address())){ //不是自己就是好友
                             if(t.getKey().equals(p.getAddress()) && //thread的key等于这个peer的address，说明自己是申请者
                                     !Textile.instance().threads.isAdmin(t.getId(),p.getId())){ //如果好友不是管理员
@@ -43,12 +48,16 @@ public class ContactUtil {
         return result;
     }
 
+    /**
+     * Get friend application and the corresponding applier.
+     * If the name of an invite is "FriendThread1219", the invite is an friend application.
+     * @return
+     */
     public static Pair<List<View.InviteView>,List<ResultContact>> getApplication(){
         List<ResultContact> applications=new LinkedList<>();
         List<View.InviteView> friendApplications=new LinkedList<>();
         try {
             List<View.InviteView> invites = Textile.instance().invites.list().getItemsList();
-            System.out.println("=============invite数量："+invites.size());
             for (View.InviteView inviteView : invites) {
                 if(inviteView.getName().equals("FriendThread1219")){ //找到好友申请的邀请
                     ResultContact resultContact=new ResultContact(inviteView.getInviter().getAddress(),inviteView.getInviter().getName(),inviteView.getInviter().getAvatar(),null,false);
@@ -63,7 +72,11 @@ public class ContactUtil {
         return result;
     }
 
-    //创建一个新的双人thread
+    /**
+     * Create a friend thread, called when sending a friend application to the contact.
+     * The thread key is set to target address, and the whitelist includes the address of target user and applier.
+     * @param targetAddress
+     */
     public static void createTwoPersonThread(String targetAddress){
         sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema=
                 sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
@@ -83,7 +96,11 @@ public class ContactUtil {
         }
     }
 
-    //创建一个新的多人thread
+    /**
+     * Create a group thread , called when creating a group.
+     * The thread key is set to a random UUID string.
+     * @param threadName
+     */
     public static void createMultiPersonThread(String threadName){
         String key= UUID.randomUUID().toString();
         sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()

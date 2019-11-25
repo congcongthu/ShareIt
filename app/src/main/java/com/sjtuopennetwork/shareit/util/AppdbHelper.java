@@ -30,7 +30,7 @@ public class AppdbHelper extends SQLiteOpenHelper {
             "lastmsg text," +
             "lastmsgdate integer," +
             "isread integer," +
-            "imgpath text,"+ //存放图片的hash值，在adapter中加载图片
+            "imgpath text,"+ //存放图片的路径，加载失败就用默认图片
             "issingle integer,"+ //1为双人thread，0为多人thread
             "isvisible integer)"; //1为可见，0为不可见。双人thread不能被删除，只能是设置为不可见
 
@@ -42,7 +42,7 @@ public class AppdbHelper extends SQLiteOpenHelper {
             "blockid text," +  //评论和点赞是直接对block添加，需要blockid
             "authorname text,"+ //作者昵称
             "authoravatar text," +  //作者头像
-            "body text," + //内容，文本消息就是消息，图片消息是图片的hash值（adapter中加载图片）
+            "body text," + //内容，文本消息就是消息，图片消息是图片的路径，视频消息是视频的缩略图拼视频的VideoID
             "sendtime integer," +
             "ismine integer)"; //1表示是我的消息，0为别人消息
     //文件表
