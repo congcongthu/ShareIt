@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sjtuopennetwork.shareit.util.RoundImageView;
 import com.wildma.pictureselector.PictureSelector;
 import com.sjtuopennetwork.shareit.R;
 
@@ -31,7 +32,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private TextView info_addr; //公钥
     private TextView info_phrase; //助记词
    // private ImageView avatar_img;//头像
-    com.shehuan.niv.NiceImageView avatar_img;
+    //com.shehuan.niv.NiceImageView avatar_img;
+    private RoundImageView avatar_img;//头像
     private LinearLayout info_avatar_layout;   //头像板块
     private LinearLayout info_name_layout;  //昵称板块
     private LinearLayout info_addr_layout;  //公钥地址板块
