@@ -31,8 +31,6 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private TextView info_name; //昵称
     private TextView info_addr; //公钥
     private TextView info_phrase; //助记词
-   // private ImageView avatar_img;//头像
-    //com.shehuan.niv.NiceImageView avatar_img;
     private RoundImageView avatar_img;//头像
     private LinearLayout info_avatar_layout;   //头像板块
     private LinearLayout info_name_layout;  //昵称板块

@@ -11,8 +11,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.util.RoundImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +119,7 @@ public class DiscoverAdapter extends BaseAdapter {
     }
 
     class ViewHolder{
-        public NiceImageView avatar;
+        public RoundImageView avatar;
         public TextView name;
         public TextView addr;
         public Button addFriend;

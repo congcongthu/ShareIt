@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.util.Pair;
 import android.widget.TextView;
 
-import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
+import com.sjtuopennetwork.shareit.util.RoundImageView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -23,7 +23,7 @@ public class ScanResultActivity extends AppCompatActivity {
 
     //UI控件
     TextView add_friend;
-    NiceImageView res_avatar;
+    RoundImageView res_avatar;
     TextView res_name;
     TextView res_address;
 
