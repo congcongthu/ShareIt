@@ -7,13 +7,13 @@
     android:gravity="center_vertical"
     android:layout_height="70dp">
 
-    <com.shehuan.niv.NiceImageView
+    <com.sjtuopennetwork.shareit.util.RoundImageView
         android:src="@drawable/ic_default_avatar"
-        android:id="@+id/discover_avatar"
+        app:corner_radius="20dp"
         android:layout_margin="10dp"
-        app:corner_radius="10dp"
+        android:id="@+id/discover_avatar"
         android:layout_width="50dp"
-        android:layout_height="50dp"/>
+        android:layout_height="50dp" />
 
     <LinearLayout
         android:id="@+id/discover_name_and_addr"

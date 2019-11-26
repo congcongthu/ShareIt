@@ -22,7 +22,6 @@ import com.huawei.hms.common.ApiException;
 import com.huawei.hms.support.api.hwid.HuaweiIdSignInOptions;
 import com.huawei.hms.support.api.hwid.HuaweiIdStatusCodes;
 import com.huawei.hms.support.api.hwid.SignInHuaweiId;
-import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.HomeActivity;
 import com.wildma.pictureselector.PictureSelector;

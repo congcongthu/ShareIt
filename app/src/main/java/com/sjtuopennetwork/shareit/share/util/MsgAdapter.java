@@ -19,11 +19,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.ImageInfoActivity;
 import com.sjtuopennetwork.shareit.share.VideoPlayActivity;
 import com.sjtuopennetwork.shareit.util.FileUtil;
+import com.sjtuopennetwork.shareit.util.RoundImageView;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -55,7 +55,7 @@ public class MsgAdapter extends BaseAdapter {
     public static class TextViewHolder{
         public TextView msg_name,msg_time,chat_words;
         public TextView msg_name_r,msg_time_r,chat_words_r;
-        public NiceImageView msg_avatar,msg_avatar_r;
+        public RoundImageView msg_avatar,msg_avatar_r;
         public LinearLayout send_text_left,send_text_right;
 
         public TextViewHolder(View v){
@@ -75,7 +75,7 @@ public class MsgAdapter extends BaseAdapter {
     public static class PhotoViewHolder{
         public TextView photo_name,photo_time;
         public TextView photo_name_r,photo_time_r;
-        public NiceImageView photo_avatar,photo_avatar_r;
+        public RoundImageView photo_avatar,photo_avatar_r;
         public ImageView chat_photo,chat_photo_r,video_icon,video_icon_r;
         public LinearLayout send_photo_left,send_photo_right;
 
@@ -227,7 +227,7 @@ public class MsgAdapter extends BaseAdapter {
         return view;
     }
 
-    private void setAvatar(NiceImageView imageView,String avatarPath,String avatarHash){
+    private void setAvatar(RoundImageView imageView, String avatarPath, String avatarHash){
 
         Handler handler=new Handler(){
             @Override
