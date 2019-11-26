@@ -8,8 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.shehuan.niv.NiceImageView;
+
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.util.RoundImageView;
 
 import java.util.List;
 
@@ -70,12 +71,12 @@ public class ResultAdapter extends ArrayAdapter {
     }
 
     class ViewHolder{
-        public NiceImageView avatar;
+        public RoundImageView avatar;
         public TextView name;
         public TextView addr;
 
         public ViewHolder(View v){
-            avatar=v.findViewById(R.id.result_avatar);
+            avatar=v.findViewById(R.id.contact_result_avatar);
             name=v.findViewById(R.id.result_name);
             addr=v.findViewById(R.id.result_address);
         }

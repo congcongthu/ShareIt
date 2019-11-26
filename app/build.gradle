@@ -51,13 +51,11 @@ dependencies {
     implementation project(':hon')
     implementation project(':textilepb')
     implementation "sjtu.opennet:hon-textile-mobile:0.1.71"
+
     implementation "com.google.protobuf:protobuf-java:3.9.2"
 
     //EventBus，用于异步消息通信
     implementation 'org.greenrobot:eventbus:3.1.1'
-
-    //圆角ImageView
-    implementation 'com.github.SheHuan:NiceImageView:1.0.5'
 
     //弹窗
     implementation 'com.github.razerdp:BasePopup:2.2.1'

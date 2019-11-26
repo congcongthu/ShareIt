@@ -11,13 +11,12 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.ChatActivity;
-import com.sjtuopennetwork.shareit.share.GroupInfoActivity;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
 import com.sjtuopennetwork.shareit.util.FileUtil;
+import com.sjtuopennetwork.shareit.util.RoundImageView;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class ContactInfoActivity extends AppCompatActivity {
     //UI控件
     TextView contact_name;
     TextView contact_addr;
-    NiceImageView contact_avatar;
+    RoundImageView contact_avatar;
     TextView contact_del;
     TextView contact_send;
 

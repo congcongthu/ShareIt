@@ -21,14 +21,15 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <com.shehuan.niv.NiceImageView
-        android:id="@+id/scan_result_avatar"
-        android:layout_margin="20dp"
+    <com.sjtuopennetwork.shareit.util.RoundImageView
+        android:src="@drawable/ic_default_avatar"
+        app:corner_radius="20dp"
         android:layout_gravity="center"
-        android:src="@drawable/ic_people"
-        app:corner_radius="15dp"
+        android:layout_margin="20dp"
+        android:id="@+id/scan_result_avatar"
         android:layout_width="120dp"
-        android:layout_height="120dp"  />
+        android:layout_height="120dp" />
+
 
     <TextView
         android:id="@+id/scan_result_name"
