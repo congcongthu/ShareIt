@@ -174,6 +174,7 @@ public class ForeGroundService extends Service {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void tryConnectCafe(Double register){
+        Log.d(TAG, "tryConnectCafe: 尝试连接cafe");
         if(register.equals(2.34)){
             Textile.instance().cafes.register(
                     "http://202.120.38.131:40601",
@@ -228,23 +229,25 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-            new Thread(){
-                @Override
-                public void run() {
-                    tryConnectCafe(new Double(2.34));
-                    while(true){
-                        try {
-                            Thread.sleep(5000);
-
-                            //发送心跳，接口回调来处理，如果成功就不做事情，如果不成功就进行操作
-                            //
-
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }.start();
+            tryConnectCafe(new Double(2.34));
+//
+//            new Thread(){
+//                @Override
+//                public void run() {
+//
+//                    while(true){
+//                        try {
+//                            Thread.sleep(5000);
+//
+//                            //发送心跳，接口回调来处理，如果成功就不做事情，如果不成功就进行操作
+//                            //
+//
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//            }.start();
 
 
             createDeviceThread();
