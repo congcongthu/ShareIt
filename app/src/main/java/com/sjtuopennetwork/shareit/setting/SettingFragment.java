@@ -23,6 +23,7 @@ import com.sjtuopennetwork.shareit.setting.util.GetIpAddress;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
 import com.sjtuopennetwork.shareit.util.ForeGroundService;
+import com.sjtuopennetwork.shareit.util.RoundImageView;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -44,7 +45,8 @@ public class SettingFragment extends Fragment {
     LinearLayout notification_layout;
     LinearLayout devices_layout;
     TextView tv_name;
-    com.shehuan.niv.NiceImageView avatar_layout;
+//    com.shehuan.niv.NiceImageView avatar_layout;
+    RoundImageView avatar_layout;
     TextView logout_layout;
     //持久化
     private SharedPreferences pref;
@@ -191,7 +193,8 @@ public class SettingFragment extends Fragment {
 
         if (!imagePath.equals("null") && !imagePath.equals("")) {
             avatar_layout.setImageBitmap(BitmapFactory.decodeFile(imagePath));
-            avatar_layout.setCornerRadius(10);
+            //avatar_layout.setCornerRadius(10);
+            System.out.println("======显示圆角头像");
         }
     }
 

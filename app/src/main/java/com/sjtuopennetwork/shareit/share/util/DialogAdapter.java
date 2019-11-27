@@ -13,7 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.shehuan.niv.NiceImageView;
+
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 

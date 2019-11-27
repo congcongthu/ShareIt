@@ -28,7 +28,7 @@
 
         <Button
             android:id="@+id/bt_create_new_group"
-            android:layout_width="80dp"
+            android:layout_width="75dp"
             android:layout_height="35dp"
             android:layout_gravity="right"
             android:layout_marginTop="8dp"

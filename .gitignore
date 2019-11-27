@@ -15,3 +15,5 @@
 .project
 .idea
 /honvideo/maven
+app/debug
+app/release

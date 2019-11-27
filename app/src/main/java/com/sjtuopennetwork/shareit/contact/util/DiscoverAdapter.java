@@ -11,8 +11,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.util.RoundImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,25 +83,19 @@ public class DiscoverAdapter extends BaseAdapter {
         vh.addr.setText(datas.get(position).address.substring(0,10)+"...");
         //头像
         if(datas.get(position).avatarhash.equals("")){ //如果没有设置头像
-            System.out.println("=====没有设置头像："+datas.get(position).name);
             vh.avatar.setImageResource(R.drawable.ic_default_avatar);
         }else{ //设置过头像
-            System.out.println("=====设置了头像："+datas.get(position).name+" "+datas.get(position).avatarhash);
             img=datas.get(position).avatar;
             if(img==null){
                 String getAvatar="/ipfs/" + datas.get(position).avatarhash + "/0/small/content";
-                System.out.println("=========getAvatar:"+getAvatar);
                 Textile.instance().ipfs.dataAtPath(getAvatar, new Handlers.DataHandler() {
                     @Override
                     public void onComplete(byte[] data, String media) {
-                        System.out.println("===============获得了头像:"+datas.get(position).name);
                         img=data;
                         vh.avatar.setImageBitmap(BitmapFactory.decodeByteArray(img,0,img.length));
                     }
                     @Override
                     public void onError(Exception e) {
-                        System.out.println("=========获得头像失败:"+datas.get(position).name);
-//                        vh.avatar.setImageResource(R.drawable.ic_default_avatar);
                     }
                 });
             }else{
@@ -125,7 +119,7 @@ public class DiscoverAdapter extends BaseAdapter {
     }
 
     class ViewHolder{
-        public NiceImageView avatar;
+        public RoundImageView avatar;
         public TextView name;
         public TextView addr;
         public Button addFriend;
@@ -146,8 +140,6 @@ public class DiscoverAdapter extends BaseAdapter {
 
         @Override
         public void onClick(View view) {
-//            myOnClick((Integer) view.getTag(), view);
-            System.out.println("===================点击添加好友："+view.toString());
             Integer integer=(Integer) view.getTag();
             myOnClick(integer, view);
         }

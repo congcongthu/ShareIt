@@ -17,7 +17,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class FileUtil {
-    private static final String TAG = "FileUtil";
+    private static final String TAG = "========================";
     private static String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtlimg/";
 
     /**
@@ -33,9 +33,9 @@ public class FileUtil {
         String filePath="null";
         if(file.exists()){
             filePath=dir+hash;
-            System.out.println("=========文件存在："+filePath);
+            Log.d(TAG, "getFilePath: 文件存在："+filePath);
         }else{
-            System.out.println("=========文件不存在："+filePath);
+            Log.d(TAG, "getFilePath: 文件不存在："+filePath);
         }
         return filePath;
     }
@@ -81,7 +81,6 @@ public class FileUtil {
 
 
     public static String getHuaweiAvatar(String url){
-        System.out.println("=============华为头像："+url);
         //创建文件夹
         File f = new File(dir);
         if(!f.exists()){

@@ -24,7 +24,6 @@ public class NewFriendActivity extends AppCompatActivity {
     ListView new_friend_lv;
 
     //内存数据
-    List<View.InviteView> invites;
     List<View.InviteView> friendApplications;
     List<ResultContact> applications;
     Pair<List<View.InviteView>,List<ResultContact>> result;
