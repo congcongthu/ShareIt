@@ -70,7 +70,8 @@ public class NotificationActivity extends AppCompatActivity {
             acceptOr.setPositiveButton("接受", (dialogInterface, i1) -> {
                 try {
                     Textile.instance().notifications.acceptInvite(notiid);
-                    finish();
+                    init();
+                    //finish();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -78,7 +79,8 @@ public class NotificationActivity extends AppCompatActivity {
             acceptOr.setNegativeButton("忽略", (dialog, which) -> {
                 try {
                     Textile.instance().notifications.ignoreInvite(notiid);
-                    finish();
+                    init();
+                   // finish();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -93,6 +95,10 @@ public class NotificationActivity extends AppCompatActivity {
             notification_listView.expandGroup(i);
         }
     }
+
+    private void remove() {
+    }
+
     private void initData() {
         inviteData = new ArrayList<>();
         commentData = new ArrayList<>();
@@ -107,21 +113,24 @@ public class NotificationActivity extends AppCompatActivity {
                             gData.add(new NotificationGroup("邀请"));
                             invite_flag = false;
                         }
-                        inviteData.add(new NotificationItem(n.getId(), n.getUser().getAvatar(), n.getUser().getName(), "邀请你", n.getDate().getSeconds(), true));
+                        inviteData.add(new NotificationItem(n.getId(), n.getUser().getAvatar(), n.getUser().getName(),
+                                "邀请你", n.getDate().getSeconds(), true));
                         break;
                     case COMMENT_ADDED:
                         if (commit_flag == true) {
                             gData.add(new NotificationGroup("评论"));
                             commit_flag = false;
                         }
-                        commentData.add(new NotificationItem(n.getId(),n.getUser().getAvatar(),n.getUser().getName(), "进行了评论",n.getDate().getSeconds(),true));
+                        commentData.add(new NotificationItem(n.getId(),n.getUser().getAvatar(),n.getUser().getName(),
+                                "进行了评论",n.getDate().getSeconds(),true));
                         break;
                     case LIKE_ADDED:
                         if (like_flag == true) {
                             gData.add(new NotificationGroup("点赞"));
                             like_flag = false;
                         }
-                        likeData.add(new NotificationItem(n.getId(),n.getUser().getAvatar(),n.getUser().getName(), "点赞了",n.getDate().getSeconds(),true));
+                        likeData.add(new NotificationItem(n.getId(),n.getUser().getAvatar(),n.getUser().getName(),
+                                "点赞了",n.getDate().getSeconds(),true));
                         break;
                     default:
                         break;
