@@ -140,6 +140,10 @@ public class DBoperator {
     public static void changeDialogRead(SQLiteDatabase appdb,String threadid, int isread){
         ContentValues v=new ContentValues();
         v.put("isread",isread);
+        appdb.beginTransaction();
         appdb.update("dialogs",v,"threadid=?",new String[]{threadid});
+        appdb.setTransactionSuccessful();
+        appdb.endTransaction();
+        Log.d(TAG, "changeDialogRead: 将对话状态修改为已读");
     }
 }

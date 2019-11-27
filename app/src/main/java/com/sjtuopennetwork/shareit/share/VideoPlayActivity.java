@@ -79,7 +79,7 @@ public class VideoPlayActivity extends AppCompatActivity {
     SimpleExoPlayer player;
     VideoReceiveHelper videorHelper;
     ConcatenatingMediaSource mediaSource;
-    long videoLenth;
+    long videoLength;
     File m3u8file;
     String dir;
     int m3u8WriteCount;
@@ -127,8 +127,8 @@ public class VideoPlayActivity extends AppCompatActivity {
                 video = Textile.instance().videos.getVideo(videoid);
                 videorHelper = new VideoReceiveHelper(this, video);
                 dir = VideoUploadHelper.getVideoPathFromID(this, videoid);
-                videoLenth = video.getVideoLength();
-                Log.d(TAG, "onCreate: 视频长度："+videoLenth);
+                videoLength = video.getVideoLength();
+                Log.d(TAG, "onCreate: 视频长度："+videoLength);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -284,8 +284,8 @@ public class VideoPlayActivity extends AppCompatActivity {
                         System.out.println("================获取到了chunk："+v.getChunk());
                     }
                     writeM3u8(v);
-                    if(v.getEndTime()>=videoLenth - gap){ //如果是最后一个就终止,videolength是微秒，
-                        System.out.println("==========末端差距："+v.getEndTime()+" "+(videoLenth - gap));
+                    if(v.getEndTime()>=videoLength - gap){ //如果是最后一个就终止,videolength是微秒，
+                        System.out.println("==========末端差距："+v.getEndTime()+" "+(videoLength - gap));
                         finished=true;
                         writeM3u8End();
                     }
@@ -419,8 +419,10 @@ public class VideoPlayActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getAnResult(Model.VideoChunk videoChunk){
-        addressMap.put(videoChunk.getChunk(),videoChunk.getAddress()); //拿到一个结果就放进来一个，可能会相同
-        videorHelper.receiveChunk(videoChunk); //将对应的视频保存到本地
+        if(videoChunk.getId().equals(videoid)){
+            addressMap.put(videoChunk.getChunk(),videoChunk.getAddress()); //拿到一个结果就放进来一个，可能会相同
+            videorHelper.receiveChunk(videoChunk); //将对应的视频保存到本地
+        }
     }
 
     @Override
