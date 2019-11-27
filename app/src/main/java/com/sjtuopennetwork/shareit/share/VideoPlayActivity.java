@@ -91,6 +91,7 @@ public class VideoPlayActivity extends AppCompatActivity {
     FileWriter fileWriter;
     MediaSource videoSource;
     boolean notplayed;
+    boolean finishGetHash=false;
 
     //两个线程
     GetChunkThread getChunkThread=new GetChunkThread();
@@ -261,13 +262,14 @@ public class VideoPlayActivity extends AppCompatActivity {
                 try {
                     v=Textile.instance().videos.getVideoChunk(videoid, chunkName);
                     if (v == null) {
-                        while(true){ //本地没有就一直去找，直到找到为止
+                        while(!finishGetHash){ //本地没有就一直去找，直到找到为止
                             v = Textile.instance().videos.getVideoChunk(videoid, chunkName);
                             if (v != null) //如果已经获取到了ts文件
                                 break;
                             System.out.println("==========获取chunk："+chunkName);
                             if(!addressMap.containsKey(chunkName)) { //如果还没有ts的hash就去找hash
                                 System.out.println("======gettinghash："+chunkName);
+                                Log.d(TAG, "run: gettinghash："+finished);
                                 searchTheChunk(chunkName);
                             }else{
                                 System.out.println("======获取到hash了："+chunkName);
@@ -351,11 +353,11 @@ public class VideoPlayActivity extends AppCompatActivity {
 
     public void writeM3u8(Model.VideoChunk v){
 //        m3u8file=new File(dir+"/chunks/playlist.m3u8");
-        long duration0=v.getEndTime()-v.getStartTime(); //微秒
-        double size = (double)duration0/1000000;
-        DecimalFormat df = new DecimalFormat("0.000000");//格式化小数，不足的补0
-        String duration = df.format(size);//返回的是String类型的
         try {
+            long duration0=v.getEndTime()-v.getStartTime(); //微秒
+            double size = (double)duration0/1000000;
+            DecimalFormat df = new DecimalFormat("0.000000");//格式化小数，不足的补0
+            String duration = df.format(size);//返回的是String类型的
 //            FileWriter fileWriter = new FileWriter(m3u8file,true);
             String append = "#EXTINF:"+duration+",\n"+
                     v.getChunk()+"\n";
@@ -430,6 +432,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         }
 
         finished=true;
+        finishGetHash=true;
 
         if(videorHelper!=null){
             videorHelper.stopReceiver();
