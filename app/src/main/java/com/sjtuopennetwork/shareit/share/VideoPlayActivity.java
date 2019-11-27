@@ -89,6 +89,8 @@ public class VideoPlayActivity extends AppCompatActivity {
     Map<String, String> addressMap;
     private ProgressBar mProgressBar;
     FileWriter fileWriter;
+    MediaSource videoSource;
+    boolean notplayed;
 
     //两个线程
     GetChunkThread getChunkThread=new GetChunkThread();
@@ -104,9 +106,10 @@ public class VideoPlayActivity extends AppCompatActivity {
             //直接播放本地视频文件
             PlayerView playerView = findViewById(R.id.player_view);
             player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
-            playerView.setPlayer(player);DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this,
+            playerView.setPlayer(player);
+            dataSourceFactory = new DefaultDataSourceFactory(this,
                     Util.getUserAgent(this, "ShareIt"));
-            MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+            videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
                     .createMediaSource(Uri.parse(videoPath));
             player.prepare(videoSource);
 
@@ -132,12 +135,10 @@ public class VideoPlayActivity extends AppCompatActivity {
             initM3u8();
 
             if(DownloadComplete(videoid)){
-                System.out.println("===================完全下载了，就直接开始播放");
                 finished = true;
 
                 writeCompleteM3u8();
 
-                System.out.println("开始播放");
                 PlayerView playerView = findViewById(R.id.player_view);
                 player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
                 playerView.setPlayer(player);
@@ -147,6 +148,18 @@ public class VideoPlayActivity extends AppCompatActivity {
                 player.prepare(hlsMediaSource);
             }else{ //没有完全下载下来，去网络中查找，并启动获取线程
 //            searchVideoChunks();
+                notplayed=true;
+
+                //初始化播放器
+                mProgressBar=findViewById(R.id.my_progress_bar);
+                BandwidthMeter bandwidthMeter=new DefaultBandwidthMeter();
+                TrackSelection.Factory trackSelectionFactory=new AdaptiveTrackSelection.Factory(bandwidthMeter);
+                TrackSelector trackSelector = new DefaultTrackSelector(trackSelectionFactory);
+                LoadControl loadControl = new DefaultLoadControl();
+                player=ExoPlayerFactory.newSimpleInstance(this,trackSelector,loadControl);
+                PlayerView playerView = findViewById(R.id.player_view);
+                playerView.setPlayer(player);
+
                 getChunkThread.start(); //如果没有下载完，就去并发下载播放就行了。
             }
         }
@@ -203,15 +216,9 @@ public class VideoPlayActivity extends AppCompatActivity {
     };
 
     public void playVideo(){
-        //初始化播放器
-        mProgressBar=findViewById(R.id.my_progress_bar);
-        BandwidthMeter bandwidthMeter=new DefaultBandwidthMeter();
-        TrackSelection.Factory trackSelectionFactory=new AdaptiveTrackSelection.Factory(bandwidthMeter);
-        TrackSelector trackSelector = new DefaultTrackSelector(trackSelectionFactory);
-        LoadControl loadControl = new DefaultLoadControl();
-        player=ExoPlayerFactory.newSimpleInstance(this,trackSelector,loadControl);
-        PlayerView playerView = findViewById(R.id.player_view);
-        playerView.setPlayer(player);
+        notplayed=false;
+
+
 
         //设置数据源
         dataSourceFactory = new DefaultDataSourceFactory(VideoPlayActivity.this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
@@ -280,7 +287,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                         finished=true;
                         writeM3u8End();
                     }
-                    if(ableToPlay() && player==null){
+                    if((m3u8WriteCount > 1 || finished) && notplayed){
 //                    if(i>4 && player==null){
                         System.out.println("=================开始播放了");
                         Message msg=new Message();
@@ -326,11 +333,11 @@ public class VideoPlayActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         String head="#EXTM3U\n" +
-                    "#EXT-X-VERSION:3\n" +
-                    "#EXT-X-MEDIA-SEQUENCE:0\n" +
-                    "#EXT-X-ALLOW-CACHE:YES\n" +
-                    "#EXT-X-TARGETDURATION:5\n" +
-                    "#EXT-X-PLAYLIST-TYPE:EVENT\n";
+                "#EXT-X-VERSION:3\n" +
+                "#EXT-X-MEDIA-SEQUENCE:0\n" +
+                "#EXT-X-ALLOW-CACHE:YES\n" +
+                "#EXT-X-TARGETDURATION:5\n" +
+                "#EXT-X-PLAYLIST-TYPE:EVENT\n";
         try {
             fileWriter = new FileWriter(m3u8file);
             fileWriter.write(head);
@@ -351,7 +358,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         try {
 //            FileWriter fileWriter = new FileWriter(m3u8file,true);
             String append = "#EXTINF:"+duration+",\n"+
-                            v.getChunk()+"\n";
+                    v.getChunk()+"\n";
             fileWriter.write(append);
             fileWriter.flush();
 //            fileWriter.close();
@@ -408,13 +415,6 @@ public class VideoPlayActivity extends AppCompatActivity {
         }
     }
 
-    private boolean ableToPlay(){
-        System.out.println(m3u8WriteCount);
-        if(m3u8WriteCount > 1 || finished)
-            return true;
-        return false;
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getAnResult(Model.VideoChunk videoChunk){
         addressMap.put(videoChunk.getChunk(),videoChunk.getAddress()); //拿到一个结果就放进来一个，可能会相同
@@ -438,6 +438,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         //结束下载
         if(player!=null){
             Log.d(TAG, "onStop: player不为空");
+            player.stop();
             player.release(); //释放播放器
         }else{
             Log.d(TAG, "onStop: player为空");
