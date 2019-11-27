@@ -431,6 +431,8 @@ public class ForeGroundService extends Service {
                                 feedItemData.join.getUser().getAvatar(),
                                 0, 1);
                     }
+                    EventBus.getDefault().post(updateDialog);
+
                     int ismine=0;
                     if(feedItemData.text.getUser().getAddress().equals(Textile.instance().account.address())){
                         ismine=1;
@@ -441,7 +443,7 @@ public class ForeGroundService extends Service {
                             feedItemData.join.getUser().getName()+" 加入了群组",
                             feedItemData.join.getDate().getSeconds(), ismine);
 
-                    EventBus.getDefault().post(updateDialog);
+
                     EventBus.getDefault().post(tMsg);
                 }
             }

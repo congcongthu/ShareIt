@@ -70,10 +70,11 @@ public class ShareFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+        Log.d(TAG, "onStart: ShareFragment的onSTart方法调用");
+
         initUI();
 
         initData();
-
 
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
@@ -157,7 +158,8 @@ public class ShareFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getNewMsg(TDialog tDialog){ //获取到新的消息后要更新显示
-        //找到对应的那一个，将其删除，并在头部插入
+        Log.d(TAG, "getNewMsg: 对话更新："+tDialog.threadname);
+        //找到对应的那一个，将其删除，并在头部插入，如果没有找到就直接在头部插入。
         for(int i=0;i<dialogs.size();i++){
             if(dialogs.get(i).threadid.equals(tDialog.threadid)){
                 dialogs.remove(i);

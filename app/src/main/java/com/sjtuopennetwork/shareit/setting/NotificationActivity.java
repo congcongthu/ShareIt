@@ -70,7 +70,7 @@ public class NotificationActivity extends AppCompatActivity {
             acceptOr.setPositiveButton("接受", (dialogInterface, i1) -> {
                 try {
                     Textile.instance().notifications.acceptInvite(notiid);
-                    finish();
+//                    finish();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -78,7 +78,7 @@ public class NotificationActivity extends AppCompatActivity {
             acceptOr.setNegativeButton("忽略", (dialog, which) -> {
                 try {
                     Textile.instance().notifications.ignoreInvite(notiid);
-                    finish();
+//                    finish();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
