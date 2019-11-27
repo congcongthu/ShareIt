@@ -233,7 +233,7 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-            tryConnectCafe(new Double(2.34));
+//            tryConnectCafe(new Double(2.34));
 //
 //            new Thread(){
 //                @Override
@@ -358,6 +358,7 @@ public class ForeGroundService extends Service {
 
         @Override
         public void threadAdded(String threadId) {
+            Log.d(TAG, "threadAdded: 创建了一个thread");
             EventBus.getDefault().post(threadId); //只在添加联系人的时候起作用，创建群组的时候要过滤掉
         }
 
@@ -431,8 +432,10 @@ public class ForeGroundService extends Service {
                                 feedItemData.join.getUser().getAvatar(),
                                 0, 1);
                     }
+                    EventBus.getDefault().post(updateDialog);
+
                     int ismine=0;
-                    if(feedItemData.text.getUser().getAddress().equals(Textile.instance().account.address())){
+                    if(feedItemData.join.getUser().getAddress().equals(Textile.instance().account.address())){
                         ismine=1;
                     }
                     TMsg tMsg=DBoperator.insertMsg(appdb,threadId,0, feedItemData.join.getBlock(),
@@ -441,7 +444,7 @@ public class ForeGroundService extends Service {
                             feedItemData.join.getUser().getName()+" 加入了群组",
                             feedItemData.join.getDate().getSeconds(), ismine);
 
-                    EventBus.getDefault().post(updateDialog);
+
                     EventBus.getDefault().post(tMsg);
                 }
             }

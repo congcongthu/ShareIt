@@ -14,7 +14,7 @@
 
         <com.sjtuopennetwork.shareit.util.RoundImageView
             android:src="@drawable/ic_default_avatar"
-            app:corner_radius="20dp"
+            app:corner_radius="5dp"
             android:id="@+id/photo_avatar"
             android:layout_width="40dp"
             android:layout_height="40dp" />
@@ -151,7 +151,7 @@
 
         <com.sjtuopennetwork.shareit.util.RoundImageView
             android:src="@drawable/ic_default_avatar"
-            app:corner_radius="20dp"
+            app:corner_radius="5dp"
             android:id="@+id/photo_avatar_r"
             android:layout_width="40dp"
             android:layout_height="40dp" />

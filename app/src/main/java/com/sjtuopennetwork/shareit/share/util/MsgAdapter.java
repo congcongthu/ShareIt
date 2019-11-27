@@ -148,14 +148,18 @@ public class MsgAdapter extends BaseAdapter {
                 h.send_text_left.setVisibility(View.GONE); //左边的隐藏
                 h.msg_name_r.setText(msgList.get(i).authorname);
                 h.msg_time_r.setText(df.format(msgList.get(i).sendtime*1000));
-                setAvatar(h.msg_avatar_r,avatarPath,msgList.get(i).authoravatar);
+                if(!msgList.get(i).authoravatar.equals("")){
+                    setAvatar(h.msg_avatar_r,avatarPath,msgList.get(i).authoravatar);
+                }
                 h.chat_words_r.setText(msgList.get(i).body);
             }else{ //不是自己的消息
                 h.send_text_left.setVisibility(View.VISIBLE); //左边的显示
                 h.send_text_right.setVisibility(View.GONE); //右边的隐藏
                 h.msg_name.setText(msgList.get(i).authorname);
                 h.msg_time.setText(df.format(msgList.get(i).sendtime*1000));
-                setAvatar(h.msg_avatar,avatarPath,msgList.get(i).authoravatar);
+                if(!msgList.get(i).authoravatar.equals("")) {
+                    setAvatar(h.msg_avatar, avatarPath, msgList.get(i).authoravatar);
+                }
                 h.chat_words.setText(msgList.get(i).body);
             }
         }
@@ -176,7 +180,9 @@ public class MsgAdapter extends BaseAdapter {
                 h.send_photo_left.setVisibility(View.GONE); //左边的隐藏
                 h.photo_name_r.setText(msgList.get(i).authorname);
                 h.photo_time_r.setText(df.format(msgList.get(i).sendtime*1000));
-                setAvatar(h.photo_avatar_r,avatarPath,msgList.get(i).authoravatar); //设置头像
+                if(!msgList.get(i).authoravatar.equals("")) {
+                    setAvatar(h.photo_avatar_r, avatarPath, msgList.get(i).authoravatar); //设置头像
+                }
                 if(!isVideo){ //不是视频就是图片，就隐藏播放图标
                     h.video_icon_r.setVisibility(View.GONE);
                     Glide.with(context).load(msgBody).thumbnail(0.3f).into(h.chat_photo_r);
@@ -202,7 +208,9 @@ public class MsgAdapter extends BaseAdapter {
                 h.send_photo_right.setVisibility(View.GONE); //右边的隐藏
                 h.photo_name.setText(msgList.get(i).authorname);
                 h.photo_time.setText(df.format(msgList.get(i).sendtime*1000));
-                setAvatar(h.photo_avatar,avatarPath,msgList.get(i).authoravatar);
+                if(!msgList.get(i).authoravatar.equals("")) {
+                    setAvatar(h.photo_avatar, avatarPath, msgList.get(i).authoravatar);
+                }
                 if(!isVideo){ //不是视频就隐藏播放图标
                     h.video_icon.setVisibility(View.GONE);
                     Glide.with(context).load(msgBody).thumbnail(0.3f).into(h.chat_photo);

@@ -71,7 +71,6 @@ public class NotificationActivity extends AppCompatActivity {
                 try {
                     Textile.instance().notifications.acceptInvite(notiid);
                     init();
-                    //finish();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -80,7 +79,6 @@ public class NotificationActivity extends AppCompatActivity {
                 try {
                     Textile.instance().notifications.ignoreInvite(notiid);
                     init();
-                   // finish();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
