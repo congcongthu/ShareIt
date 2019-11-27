@@ -184,7 +184,7 @@ public class ForeGroundService extends Service {
 //                    "WwqhHzab1oRqXPs3KnDL2oX1S9h2D7KYotMo2eNUg2MFPJPENWgB1Q2H6m3b", //131
                     "NhYrQb1XfpCFC7WBhX7UHPkax1o4YvAxxzXhZfLg6qJ5cbbfZakmPQZVer7x",//HW159.138.58.61
 //                    "29TkBsmjFfEnR1Sack63qWK5WkPGjJtA2kXFHvTijmSE1KYMvVopBRWagHLbE",
-                    "WwqhHzab1oRqXPs3KnDL2oX1S9h2D7KYotMo2eNUg2MFPJPENWgB1Q2H6m3b",
+//                    "WwqhHzab1oRqXPs3KnDL2oX1S9h2D7KYotMo2eNUg2MFPJPENWgB1Q2H6m3b",
                     new Handlers.ErrorHandler() {
                         @Override
                         public void onComplete() {
@@ -235,7 +235,7 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-//            tryConnectCafe(new Double(2.34));
+            tryConnectCafe(new Double(2.34));
 //
 //            new Thread(){
 //                @Override

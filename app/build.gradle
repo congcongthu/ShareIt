@@ -50,7 +50,7 @@ dependencies {
     //Textile SDKs
     implementation project(':hon')
     implementation project(':textilepb')
-    implementation "sjtu.opennet:hon-textile-mobile:0.1.76"
+    implementation "sjtu.opennet:hon-textile-mobile:0.1.80"
 
     implementation "com.google.protobuf:protobuf-java:3.9.2"
 
