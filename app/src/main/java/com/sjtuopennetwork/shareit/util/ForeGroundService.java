@@ -13,7 +13,9 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.share.ChatActivity;
 import com.sjtuopennetwork.shareit.share.HomeActivity;
+import com.sjtuopennetwork.shareit.share.util.PreloadVideoThread;
 import com.sjtuopennetwork.shareit.share.util.TDialog;
 import com.sjtuopennetwork.shareit.share.util.TMsg;
 
@@ -547,6 +549,10 @@ public class ForeGroundService extends Service {
 
             if(feedItemData.type.equals(FeedItemType.VIDEO)){
                 Model.Video video=feedItemData.feedVideo.getVideo();
+
+                //每得到一个视频就在后台启动预加载线程
+                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
+
                 TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
                         feedItemData.feedVideo.getUser().getName()+"分享了视频", feedItemData.feedVideo.getDate().getSeconds(),
