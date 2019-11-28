@@ -20,7 +20,9 @@ import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
 import com.sjtuopennetwork.shareit.setting.NotificationActivity;
 import com.sjtuopennetwork.shareit.share.util.DialogAdapter;
+import com.sjtuopennetwork.shareit.share.util.PreloadVideoThread;
 import com.sjtuopennetwork.shareit.share.util.TDialog;
+import com.sjtuopennetwork.shareit.share.util.TMsg;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
 
@@ -49,6 +51,7 @@ public class ShareFragment extends Fragment {
 
     //内存数据
     List<TDialog> dialogs; //对话列表数据
+    List<PreloadVideoThread> preloadVideoThreadList;
 
     //持久化存储
     public SQLiteDatabase appdb;
@@ -70,10 +73,13 @@ public class ShareFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+        preloadVideoThreadList=new LinkedList<>();
+
+        Log.d(TAG, "onStart: ShareFragment的onSTart方法调用");
+
         initUI();
 
         initData();
-
 
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
@@ -104,8 +110,6 @@ public class ShareFragment extends Fragment {
     private void initData(){
         pref=getActivity().getSharedPreferences("txtl",Context.MODE_PRIVATE);
         appdb=AppdbHelper.getInstance(getActivity().getApplicationContext(),pref.getString("loginAccount","")).getWritableDatabase();
-        String loginAccount=pref.getString("loginAccount","");
-        Log.d(TAG, "initData: 登录账户: "+loginAccount);
         dialogs=new LinkedList<>();
 
         //从数据库中查出对话
@@ -157,7 +161,8 @@ public class ShareFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getNewMsg(TDialog tDialog){ //获取到新的消息后要更新显示
-        //找到对应的那一个，将其删除，并在头部插入
+        Log.d(TAG, "getNewMsg: 对话更新："+tDialog.threadname);
+        //找到对应的那一个，将其删除，并在头部插入，如果没有找到就直接在头部插入。
         for(int i=0;i<dialogs.size();i++){
             if(dialogs.get(i).threadid.equals(tDialog.threadid)){
                 dialogs.remove(i);

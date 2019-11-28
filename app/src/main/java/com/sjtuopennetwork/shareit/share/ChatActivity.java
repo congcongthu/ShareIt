@@ -29,6 +29,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.util.MsgAdapter;
+import com.sjtuopennetwork.shareit.share.util.PreloadVideoThread;
 import com.sjtuopennetwork.shareit.share.util.TMsg;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
@@ -41,14 +42,19 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import sjtu.opennet.honvideo.VideoMeta;
+import sjtu.opennet.honvideo.VideoReceiveHelper;
 import sjtu.opennet.honvideo.VideoUploadHelper;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
+import sjtu.opennet.textilepb.QueryOuterClass;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -80,6 +86,7 @@ public class ChatActivity extends AppCompatActivity {
     List<LocalMedia> chooseVideo;
     String avatarpath;
     Map<String,String> videoPaths;
+    List<PreloadVideoThread> preloadVideoThreadList;
 
     //退出群组相关
     public static final String REMOVE_DIALOG="you get out";
@@ -89,6 +96,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        preloadVideoThreadList=new LinkedList<>();
 
         initUI();
 
@@ -190,7 +198,6 @@ public class ChatActivity extends AppCompatActivity {
                 msgList.add(tMsg);
                 chat_lv.setSelection(msgList.size());
 
-                DBoperator.changeDialogRead(appdb,threadid,1);
             }else{
                 Toast.makeText(this,"消息不能为空", Toast.LENGTH_SHORT).show();
             }
@@ -235,17 +242,8 @@ public class ChatActivity extends AppCompatActivity {
             chat_lv.invalidateViews(); //强制刷新
             chat_lv.setSelection(msgList.size()); //图片有时候不立即显示，因为Item大小完全相同。
         }
-
-        //还要把相应的Dialog表改为已读
-        DBoperator.changeDialogRead(appdb,threadid,1);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void updateListView(Integer integer){
-        if(integer==4583){
-            chat_lv.invalidateViews(); //强制刷新
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -274,7 +272,7 @@ public class ChatActivity extends AppCompatActivity {
             msgList.add(tMsg);
             chat_lv.setSelection(msgList.size());
 
-            DBoperator.changeDialogRead(appdb,threadid,1);
+
         }else if(requestCode==PictureConfig.TYPE_VIDEO && resultCode==RESULT_OK){ //如果是选择了视频
             chooseVideo=PictureSelector.obtainMultipleResult(data);
             String filePath=chooseVideo.get(0).getPath();
@@ -306,12 +304,21 @@ public class ChatActivity extends AppCompatActivity {
             }
             msgList.add(tMsg);
             chat_lv.setSelection(msgList.size());
-            DBoperator.changeDialogRead(appdb,threadid,1);
         }
     }
 
     @Override
+    public void finish() {
+        super.finish();
+
+        //要把相应的Dialog表改为已读
+        DBoperator.changeDialogRead(appdb,threadid,1);
+
+    }
+
+    @Override
     public void onStop() {
+
         super.onStop();
 
         if(EventBus.getDefault().isRegistered(this)){
