@@ -44,7 +44,7 @@ dependencies {
     // UploadService
     implementation "com.github.textileio:android-upload-service:3.5.4"
 
-    implementation "sjtu.opennet:hon-textile-mobile:0.1.80"
+    implementation "sjtu.opennet:hon-textile-mobile:0.1.83"
 
     implementation project(':textilepb')
     implementation "com.google.protobuf:protobuf-java:3.9.2"

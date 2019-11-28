@@ -8,7 +8,7 @@
 
     <com.sjtuopennetwork.shareit.util.RoundImageView
         android:src="@drawable/ic_default_avatar"
-        app:corner_radius="20dp"
+        app:corner_radius="5dp"
         android:layout_gravity="center"
         android:layout_margin="5dp"
         android:id="@+id/group_member_avatar"
