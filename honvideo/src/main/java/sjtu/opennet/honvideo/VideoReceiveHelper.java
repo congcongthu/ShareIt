@@ -3,9 +3,11 @@ package sjtu.opennet.honvideo;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.HashSet;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import sjtu.opennet.hon.BaseTextileEventListener;
 import sjtu.opennet.hon.Textile;
 
 
@@ -37,8 +39,23 @@ public class VideoReceiveHelper {
     private String videoPath;
     private String chunkPath;
     private VideoReceiver receiver;
+    private boolean complete = false;
 
     private BlockingQueue<VideoReceiveTask> vQueue;
+    private HashSet<Long> receivingChunk;
+
+    private VideoHandlers.ReceiveHandler handler = new VideoHandlers.ReceiveHandler(){
+        @Override
+        public void onChunkComplete(Model.VideoChunk vChunk){
+            return;
+        }
+
+        @Override
+        public void onError(Exception e){
+            e.printStackTrace();
+        }
+    };
+
 
     public VideoReceiveHelper(Context context, Model.Video videoPb){
         this.context = context;
@@ -49,6 +66,20 @@ public class VideoReceiveHelper {
         buildWorkspace();
         receiver = new VideoReceiver(vQueue, videoId, videoPath, chunkPath);
         receiver.start();
+    }
+
+
+
+    public VideoReceiveHelper(Context context, Model.Video videoPb, VideoHandlers.ReceiveHandler handler){
+        this(context, videoPb);
+        this.handler = handler;
+    }
+
+    /**
+     * Search, receive, judge whether to stop
+     */
+    public void downloadVideo(Model.Video videoPb){
+
     }
 
     public void receiveChunk(Model.VideoChunk videoChunk){

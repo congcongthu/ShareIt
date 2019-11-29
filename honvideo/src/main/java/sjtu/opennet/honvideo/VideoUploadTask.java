@@ -144,7 +144,7 @@ public class VideoUploadTask {
         }
 
         try {
-            Log.d(TAG, String.format("Add task %s to ipfs.", tsPath));
+            Log.d(TAG, String.format("VIDEOPIPELINE: %s task added to ipfs.", tsPath));
             timeLog.begin();
             byte[] fileContent = Files.readAllBytes(Paths.get(tsAbsolutePath));
             synchronized (LOCK) {
@@ -153,7 +153,7 @@ public class VideoUploadTask {
                 LOCK.wait();
                 Log.d(TAG, "Task notified");
             }
-            Log.d(TAG, String.format("IPFS add complete. Use time %d ms", timeLog.stopGetTime()));
+            Log.d(TAG, String.format("VIDEOPIPELINE: %s ipfs add complete. Use time %d ms", tsPath, timeLog.stopGetTime()));
         }catch(IOException ie){
             Log.e(TAG, "Unexpected io exception when read ts contents.");
             ie.printStackTrace();

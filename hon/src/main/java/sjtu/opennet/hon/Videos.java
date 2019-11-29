@@ -35,6 +35,16 @@ public class Videos extends NodeDependent {
         }
     }
 
+    public VideoChunk getVideoChunk(final String videoId, final long index) throws Exception{
+        final byte[] bytes = node.getVideoChunkByIndex(videoId, index);
+        try{
+            return VideoChunk.parseFrom(bytes);
+        }catch (NullPointerException e){
+            //e.printStackTrace();
+            return null;
+        }
+    }
+
     public void addVideo(final Video video) throws Exception {
         node.addVideo(video.toByteArray());
     }

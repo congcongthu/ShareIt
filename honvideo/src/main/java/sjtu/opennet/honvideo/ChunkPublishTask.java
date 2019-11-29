@@ -54,9 +54,11 @@ public class ChunkPublishTask implements Comparable<ChunkPublishTask> {
      */
     public boolean process(){
         try {
+            Log.d(TAG, String.format("VIDEOPIPELINE: %s publish task start", videoChunk.getChunk()));
             Textile.instance().videos.addVideoChunk(videoChunk);
+            Log.d(TAG, String.format("VIDEOPIPELINE: %s chunk added to local database", videoChunk.getChunk()));
             Textile.instance().videos.publishVideoChunk(videoChunk);
-            Log.d(TAG, String.format("Chunk at time %d published.", chunkStartTime));
+            Log.d(TAG, String.format("VIDEOPIPELINE: %s chunk published to cafe", videoChunk.getChunk()));
             return true;
         }catch(Exception e){
             Log.e(TAG, "Unexpected error when publish video chunk");

@@ -13,6 +13,7 @@ public class M3u8Listener extends FileObserver {
     private BlockingQueue<VideoUploadTask> videoQueue;      //required bu VideoUploader
     private BlockingQueue<ChunkPublishTask> chunkQueue;     //VideoUploadTask will use this to add publish task
     private String observeredDir;
+    private long currentIndex = 0;
 
     static class chunkInfo{
         public String filename;
