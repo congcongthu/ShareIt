@@ -10,14 +10,22 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
+import com.sjtuopennetwork.shareit.setting.util.NotificationGroup;
+import com.sjtuopennetwork.shareit.setting.util.NotificationItem;
+import com.sjtuopennetwork.shareit.setting.util.SwarmPeerListAdapter;
 import com.sjtuopennetwork.shareit.util.RoundImageView;
 import com.wildma.pictureselector.PictureSelector;
 import com.sjtuopennetwork.shareit.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Handlers;
@@ -32,12 +40,16 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private TextView info_addr; //公钥
     private TextView info_phrase; //助记词
     private TextView info_swarm_address;
+    private TextView delay_time;
     private RoundImageView avatar_img;//头像
     private LinearLayout info_avatar_layout;   //头像板块
     private LinearLayout info_name_layout;  //昵称板块
     private LinearLayout info_addr_layout;  //公钥地址板块
     private LinearLayout info_phrase_layout;    //助记词板块
     private LinearLayout info_swarm_layout;   //swarm地址板块
+    private LinearLayout info_swarm_peer_layout; //swarmPeer列表板块
+
+    private ExpandableListView swarm_peer_listView;
     //持久化
     private SharedPreferences pref;
 
@@ -48,6 +60,14 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private String avatarHash;
     private String phrase;
     private String swarm_address;
+    private ArrayList<NotificationGroup> gData = null;
+    private ArrayList<ArrayList<NotificationItem>> iData = null;
+    private ArrayList<NotificationItem> swarm_peer_list = null;
+    private Model.SwarmPeerList swarmPeerList;
+    private List<Model.SwarmPeer> swarmPeers;
+    private SwarmPeerListAdapter swarmPeerListAdapter=null;
+    private Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +89,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
         }else{
             System.out.println("=============头像路径："+avatarPath);
         }
+        info_swarm_address.setText(swarm_address);
     }
     private void initData() {
         pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
@@ -83,8 +104,48 @@ public class PersonalInfoActivity extends AppCompatActivity {
         }
         avatarPath=pref.getString("avatarpath","null");
         avatarHash=pref.getString("avatarhash","null");
-        //swarm_address=Textile.instance().profile.get()
+        String peerId;
+        try {//获取自己的swarm地址
+            peerId = Textile.instance().profile.get().getId();
+            swarm_address=Textile.instance().ipfs.getSwarmAddress(peerId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        initSwarmPeerList();
+    }
+//获取swarm列表
+    private void initSwarmPeerList() {
+        swarm_peer_list=new ArrayList<>();
+        gData=new ArrayList<>();
+        iData=new ArrayList<>();
+        List<Model.Peer> friendList;
+        friendList= ContactUtil.getFriendList();
+        try {
+            swarmPeerList=Textile.instance().ipfs.connectedAddresses();
+            swarmPeers=swarmPeerList.getItemsList();
+            gData.add(new NotificationGroup("swarm地址列表"));
+            for(Model.SwarmPeer peer:swarmPeers){
+                String avatar="";
+                String name="";
+                for(Model.Peer p:friendList){//如果是好友则显示头像和姓名
+                    if(p.getId().equals(peer.getId())){
+                        avatar=p.getAvatar();
+                        name=p.getName();
+                    }
+                }
+                swarm_peer_list.add(new NotificationItem(peer.getId(),peer.getLatency(),avatar,name,peer.getAddr()));
 
+            }
+            iData.add(swarm_peer_list);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mContext=PersonalInfoActivity.this;
+        swarmPeerListAdapter = new SwarmPeerListAdapter(mContext,gData,iData);
+        swarm_peer_listView.setAdapter(swarmPeerListAdapter);
+
+        swarm_peer_listView.collapseGroup(0);
+        //swarm_peer_listView.expandGroup(0);
     }
 
     private void initUI() {
@@ -98,6 +159,9 @@ public class PersonalInfoActivity extends AppCompatActivity {
         info_swarm_layout=findViewById(R.id.setting_personal_info_swarm_address);
         info_phrase=findViewById(R.id.info_phrase);
         info_swarm_address=findViewById(R.id.info_swarm_address);
+        swarm_peer_listView=findViewById(R.id.swarm_peer_list);
+        info_swarm_peer_layout=findViewById(R.id.setting_personal_info_swarm_peer_list);
+        delay_time=findViewById(R.id.noti_time);
 
         info_avatar_layout.setOnClickListener(v -> {
             PictureSelector.create(this, PictureSelector.SELECT_REQUEST_CODE)
