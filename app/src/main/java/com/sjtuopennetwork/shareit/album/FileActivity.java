@@ -15,6 +15,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -26,6 +27,10 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,6 +46,7 @@ import static android.support.v7.widget.RecyclerView.VERTICAL;
 public class FileActivity extends AppCompatActivity {
 
     public static int REQUESTCODE_FROM_ACTIVITY = 1000;
+    private static final String TAG =  "FileActivity";
     //控件
     ImageView file_add;
     ImageView file_sync;
@@ -66,6 +72,12 @@ public class FileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Set EventBus for Query Result.
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
+
         setContentView(R.layout.activity_file);
         pref =getSharedPreferences("txt1",MODE_PRIVATE);
         thread_file_id = pref.getString("thread_file_id","");
@@ -90,6 +102,15 @@ public class FileActivity extends AppCompatActivity {
             initData(thread_file_id);
         });
 
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        //Set EventBus for Query Result.
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
     }
 
     private void initRecycleview() {
@@ -207,4 +228,19 @@ public class FileActivity extends AppCompatActivity {
         return times;
     }
 
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void getAnResult(Model.SyncFile sFile) {
+        //addressMap.put(videoChunk.getChunk(),videoChunk.getAddress()); //拿到一个结果就放进来一个，可能会相同
+        //videorHelper.receiveChunk(videoChunk); //将对应的视频保存到本地
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "Activity end. Unregister the eventbus.");
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
+    }
 }

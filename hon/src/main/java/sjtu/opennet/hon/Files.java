@@ -139,6 +139,16 @@ public class Files extends NodeDependent {
         node.publishSyncFile(sFile.toByteArray());
     }
     public SearchHandle searchSyncFiles(final QueryOuterClass.SyncFileQuery query, final QueryOuterClass.QueryOptions options) throws Exception {
+        //node.listSyncFile()
         return node.searchSyncFiles(query.toByteArray(), options.toByteArray());
+    }
+
+    public Model.SyncFileList listSyncFile(final String address, Model.SyncFile.Type sType) throws Exception{
+        final byte[] bytes = node.listSyncFile(address, sType.getNumber());
+        try {
+            return Model.SyncFileList.parseFrom(bytes);
+        }catch (NullPointerException e){
+            return null;
+        }
     }
 }

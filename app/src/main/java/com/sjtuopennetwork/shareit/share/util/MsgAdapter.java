@@ -19,11 +19,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.ImageInfoActivity;
 import com.sjtuopennetwork.shareit.share.VideoPlayActivity;
 import com.sjtuopennetwork.shareit.util.FileUtil;
+import com.sjtuopennetwork.shareit.util.RoundImageView;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -55,7 +55,7 @@ public class MsgAdapter extends BaseAdapter {
     public static class TextViewHolder{
         public TextView msg_name,msg_time,chat_words;
         public TextView msg_name_r,msg_time_r,chat_words_r;
-        public NiceImageView msg_avatar,msg_avatar_r;
+        public RoundImageView msg_avatar,msg_avatar_r;
         public LinearLayout send_text_left,send_text_right;
 
         public TextViewHolder(View v){
@@ -75,7 +75,7 @@ public class MsgAdapter extends BaseAdapter {
     public static class PhotoViewHolder{
         public TextView photo_name,photo_time;
         public TextView photo_name_r,photo_time_r;
-        public NiceImageView photo_avatar,photo_avatar_r;
+        public RoundImageView photo_avatar,photo_avatar_r;
         public ImageView chat_photo,chat_photo_r,video_icon,video_icon_r;
         public LinearLayout send_photo_left,send_photo_right;
 
@@ -148,14 +148,20 @@ public class MsgAdapter extends BaseAdapter {
                 h.send_text_left.setVisibility(View.GONE); //左边的隐藏
                 h.msg_name_r.setText(msgList.get(i).authorname);
                 h.msg_time_r.setText(df.format(msgList.get(i).sendtime*1000));
-                setAvatar(h.msg_avatar_r,avatarPath,msgList.get(i).authoravatar);
+                if(!msgList.get(i).authoravatar.equals("")){
+                    setAvatar(h.msg_avatar_r,avatarPath,msgList.get(i).authoravatar);
+                }
                 h.chat_words_r.setText(msgList.get(i).body);
             }else{ //不是自己的消息
                 h.send_text_left.setVisibility(View.VISIBLE); //左边的显示
                 h.send_text_right.setVisibility(View.GONE); //右边的隐藏
                 h.msg_name.setText(msgList.get(i).authorname);
                 h.msg_time.setText(df.format(msgList.get(i).sendtime*1000));
-                setAvatar(h.msg_avatar,avatarPath,msgList.get(i).authoravatar);
+                if(!msgList.get(i).authoravatar.equals("")) {
+                    setAvatar(h.msg_avatar, avatarPath, msgList.get(i).authoravatar);
+                }else{
+                    Glide.with(context).load(R.drawable.ic_default_avatar).thumbnail(0.3f).into(h.msg_avatar);
+                }
                 h.chat_words.setText(msgList.get(i).body);
             }
         }
@@ -176,38 +182,26 @@ public class MsgAdapter extends BaseAdapter {
                 h.send_photo_left.setVisibility(View.GONE); //左边的隐藏
                 h.photo_name_r.setText(msgList.get(i).authorname);
                 h.photo_time_r.setText(df.format(msgList.get(i).sendtime*1000));
-                setAvatar(h.photo_avatar_r,avatarPath,msgList.get(i).authoravatar); //设置头像
+                if(!msgList.get(i).authoravatar.equals("")) {
+                    setAvatar(h.photo_avatar_r, avatarPath, msgList.get(i).authoravatar); //设置头像
+                }
                 if(!isVideo){ //不是视频就是图片，就隐藏播放图标
                     h.video_icon_r.setVisibility(View.GONE);
-                    if(msgBody.charAt(0)=='Q'){ //如果是hash值
-                        String filePath=FileUtil.getFilePath(msgBody);
-                        if(!filePath.equals("null")){ //已经存过这张图片
-                            Log.d(TAG, "handlePhotoView: 准备直接加载图片："+i);
-                            Glide.with(context).load(filePath).thumbnail(0.3f).into(h.chat_photo_r);
-                        }else{ //没有存过，就要后台去取
-                            setPhoto(h.chat_photo_r,filePath,msgBody);
-                        }
-                    }else{ //如果是文件路径，自己发送后立马显示是通过文件路径显示
-                        Glide.with(context).load(msgBody).thumbnail(0.3f).into(h.chat_photo_r);
-                    }
+                    Glide.with(context).load(msgBody).thumbnail(0.3f).into(h.chat_photo_r);
                     h.chat_photo_r.setOnClickListener(v -> {
                         Intent it1=new Intent(context, ImageInfoActivity.class);
                         it1.putExtra("imgpath", msgBody);
                         context.startActivity(it1);
                     });
                 }else{ //是视频就要解出缩略图的hash
-                    String[] posterAndId_r=msgBody.split("##"); //0是poster，1是Id
-                    String filePath=FileUtil.getFilePath(posterAndId_r[0]);
-                    if(posterAndId_r[0].charAt(0)=='Q'){ //如果是hash值
-                        setVideo(h.chat_photo_r,filePath,posterAndId_r[0]);
-                    }else{
-                        Glide.with(context).load(posterAndId_r[0]).thumbnail(0.3f).into(h.chat_photo_r);
-                    }
-
+                    String[] posterAndId_r=msgBody.split("##"); //0是poster，1是Id，2是视频路径
+                    Log.d(TAG, "handlePhotoView: 自己视频的消息的body："+posterAndId_r[0]+" "+posterAndId_r[1]+" "+posterAndId_r[2]);
+                    Glide.with(context).load(posterAndId_r[0]).thumbnail(0.3f).into(h.chat_photo_r);
                     h.chat_photo_r.setOnClickListener(view1 -> {
                         Intent it=new Intent(context, VideoPlayActivity.class);
                         it.putExtra("ismine",true);
                         it.putExtra("videoid",posterAndId_r[1]);
+                        it.putExtra("videopath",posterAndId_r[2]);
                         context.startActivity(it);
                     });
                 }
@@ -216,11 +210,12 @@ public class MsgAdapter extends BaseAdapter {
                 h.send_photo_right.setVisibility(View.GONE); //右边的隐藏
                 h.photo_name.setText(msgList.get(i).authorname);
                 h.photo_time.setText(df.format(msgList.get(i).sendtime*1000));
-                setAvatar(h.photo_avatar,avatarPath,msgList.get(i).authoravatar);
+                if(!msgList.get(i).authoravatar.equals("")) {
+                    setAvatar(h.photo_avatar, avatarPath, msgList.get(i).authoravatar);
+                }
                 if(!isVideo){ //不是视频就隐藏播放图标
-                    String filePath=FileUtil.getFilePath(msgBody);
                     h.video_icon.setVisibility(View.GONE);
-                    setPhoto(h.chat_photo,filePath,msgBody);
+                    Glide.with(context).load(msgBody).thumbnail(0.3f).into(h.chat_photo);
                     h.chat_photo.setOnClickListener(v -> {
                         Intent it1=new Intent(context, ImageInfoActivity.class);
                         it1.putExtra("imgpath", msgBody);
@@ -228,9 +223,8 @@ public class MsgAdapter extends BaseAdapter {
                     });
                 }else{ //是视频就setVideo
                     String[] posterAndId=msgBody.split("##"); //0是poster，1是Id
-                    String filePath=FileUtil.getFilePath(posterAndId[0]);
-//                    h.chat_photo.setTag(posterAndId[0]);
-                    setVideo(h.chat_photo,filePath,posterAndId[0]);
+                    Log.d(TAG, "handlePhotoView: 收到视频的消息的body："+posterAndId[0]+" "+posterAndId[1]+" "+posterAndId[2]);
+                    Glide.with(context).load(posterAndId[0]).thumbnail(0.3f).into(h.chat_photo);
                     h.chat_photo.setOnClickListener(view1 -> {
                         Intent it=new Intent(context, VideoPlayActivity.class);
                         it.putExtra("ismine",false);
@@ -243,13 +237,16 @@ public class MsgAdapter extends BaseAdapter {
         return view;
     }
 
-    private void setAvatar(NiceImageView imageView,String avatarPath,String avatarHash){
+    private void setAvatar(RoundImageView imageView, String avatarPath, String avatarHash){
+
+
 
         Handler handler=new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 switch(msg.what){
                     case 1:
+
                         String newPath=msg.getData().getString("newPath");
                         Log.d(TAG, "handleMessage: 拿到头像："+newPath);
                         Glide.with(context).load(newPath).thumbnail(0.3f).into(imageView);
@@ -274,73 +271,6 @@ public class MsgAdapter extends BaseAdapter {
             });
         }else{ //如果已经存储过这个头像
             Glide.with(context).load(avatarPath).thumbnail(0.3f).into(imageView);
-        }
-    }
-
-    private void setVideo(ImageView imageView,String filePath,String fileHash){
-        Handler handler=new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                switch(msg.what){
-                    case 1:
-                        String newPath=msg.getData().getString("newPath");
-                        Log.d(TAG, "handleMessage: 拿到图片："+newPath);
-                        Glide.with(context).load(newPath).thumbnail(0.3f).into(imageView);
-                }
-            }
-        };
-        if(filePath.equals("null")){ //如果没有存储过图片
-            Textile.instance().ipfs.dataAtPath(fileHash, new Handlers.DataHandler() {
-                @Override
-                public void onComplete(byte[] data, String media) {
-                    String newPath=FileUtil.storeFile(data,fileHash);
-                    Message msg=new Message(); msg.what=1;
-                    Bundle b=new Bundle();b.putString("newPath",newPath);
-                    msg.setData(b);
-                    handler.sendMessage(msg);
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    e.printStackTrace();
-                }
-            });
-        }else{
-            Glide.with(context).load(filePath).thumbnail(0.3f).into(imageView);
-        }
-    }
-
-    private void setPhoto(ImageView imageView,String filePath,String fileHash){
-
-        Handler handler=new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                switch(msg.what){
-                    case 1:
-                        String newPath=msg.getData().getString("newPath");
-                        Log.d(TAG, "handleMessage: 拿到图片："+newPath);
-                        Glide.with(context).load(newPath).thumbnail(0.3f).into(imageView);
-                }
-            }
-        };
-
-        if(filePath.equals("null")){ //如果没有存储过图片
-            Textile.instance().files.content(fileHash, new Handlers.DataHandler() {
-                @Override
-                public void onComplete(byte[] data, String media) {
-                    String newPath=FileUtil.storeFile(data,fileHash);
-                    Message msg=new Message(); msg.what=1;
-                    Bundle b=new Bundle();b.putString("newPath",newPath);
-                    msg.setData(b);
-                    handler.sendMessage(msg);
-                }
-                @Override
-                public void onError(Exception e) {
-                    e.printStackTrace();
-                }
-            });
-        }else{
-            Glide.with(context).load(filePath).thumbnail(0.3f).into(imageView);
         }
     }
 

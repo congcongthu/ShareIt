@@ -12,12 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-        <com.shehuan.niv.NiceImageView
-            app:corner_radius="10dp"
+        <com.sjtuopennetwork.shareit.util.RoundImageView
+            android:src="@drawable/ic_default_avatar"
+            app:corner_radius="5dp"
             android:id="@+id/photo_avatar"
             android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_people"/>
+            android:layout_height="40dp" />
 
         <LinearLayout
             android:orientation="vertical"
@@ -149,12 +149,13 @@
             </LinearLayout>
         </LinearLayout>
 
-        <com.shehuan.niv.NiceImageView
-            app:corner_radius="10dp"
+        <com.sjtuopennetwork.shareit.util.RoundImageView
+            android:src="@drawable/ic_default_avatar"
+            app:corner_radius="5dp"
             android:id="@+id/photo_avatar_r"
             android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_people"/>
+            android:layout_height="40dp" />
+
     </LinearLayout>
 
 </LinearLayout>

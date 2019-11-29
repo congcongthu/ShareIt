@@ -102,16 +102,16 @@ public class VideoUploadTask {
      * This method is exactly the way we read duration for videoMeta.
      * It may take a bit time and the duration may be slightly different from the m3u8 list.
      * @return Duration in us (1/1000 ms)
-     * @TODO int32 is not enough for time in us.
+     * @deprecated Duration is read from m3u8 file. Se {@link M3u8Listener}
      */
-    private int readDurationFromReceiver(){
+    private int readDurationFromRetriever(){
         Log.d(TAG, String.format("Extract task %s duration from ts file using receiver.", tsPath));
         timeLog.begin();
-        MediaMetadataRetriever mdataReceiver = null;
-        mdataReceiver = new MediaMetadataRetriever();
-        mdataReceiver.setDataSource(tsAbsolutePath);
-        String duration = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-        mdataReceiver.release();
+        MediaMetadataRetriever mdataRetriever = null;
+        mdataRetriever = new MediaMetadataRetriever();
+        mdataRetriever.setDataSource(tsAbsolutePath);
+        String duration = mdataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+        mdataRetriever.release();
         Log.d(TAG, String.format("Extract task %s duration and content use %d ms.", tsPath, timeLog.stopGetTime()));
         return Integer.parseInt(duration) * 1000;
     }

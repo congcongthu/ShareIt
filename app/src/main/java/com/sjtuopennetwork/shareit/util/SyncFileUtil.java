@@ -6,7 +6,6 @@ import com.google.protobuf.Timestamp;
 //import com.google.protobuf.util;
 import com.google.protobuf.util.Timestamps;
 
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,6 +13,7 @@ import java.util.Date;
 
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
+import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.Model.SyncFile;
 import sjtu.opennet.textilepb.QueryOuterClass;
 
@@ -51,7 +51,7 @@ public class SyncFileUtil {
         this.sType = sType;
     }
 
-    public void syncAdd(){
+    public void Add(){
         try {
             byte[] fileContent = Files.readAllBytes(Paths.get(filePath));
             synchronized (LOCK) {
@@ -68,10 +68,19 @@ public class SyncFileUtil {
         executor(SyncFile.Operation.ADD);
     }
 
+
+    public void Sync(){
+
+    }
+
     private static Timestamp getTimeStamp(){
         return Timestamps.fromMillis(new Date().getTime());
     }
 
+    /**
+     * @TODO Add file name to SyncFile
+     * @param op
+     */
     private void executor(SyncFile.Operation op){
         SyncFile sFile =  SyncFile.newBuilder()
                 .setPeerAddress(peerAddress)
@@ -84,11 +93,12 @@ public class SyncFileUtil {
             Textile.instance().files.addSyncFile(sFile);
             Textile.instance().files.publicSuynFile(sFile);
         }catch(Exception e){
+            Log.e(TAG, "Error occur when publish syncfile");
             e.printStackTrace();
         }
     }
 
-    public void searchSyncFiles(String peerAddress, SyncFile.Type sType){
+    public static void searchSyncFiles(String peerAddress, SyncFile.Type sType){
         QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder()
                 .setWait(1)
                 .setLimit(1)
@@ -101,6 +111,16 @@ public class SyncFileUtil {
             Textile.instance().files.searchSyncFiles(query, options);
         }catch(Exception e){
             e.printStackTrace();
+        }
+    }
+
+    public static Model.SyncFileList sFileList(String address, SyncFile.Type sType){
+        try {
+            return Textile.instance().files.listSyncFile(address, sType);
+        }catch(Exception e){
+            Log.e(TAG, "Error occur when list local sync files.");
+            e.printStackTrace();
+            return null;
         }
     }
 }

@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.shehuan.niv.NiceImageView;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.util.FileUtil;
+import com.sjtuopennetwork.shareit.util.RoundImageView;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
     }
 
     public static class ViewHolder extends  RecyclerView.ViewHolder {
-        public NiceImageView avatar;
+        public RoundImageView avatar;
         public TextView name;
 
         public ViewHolder(@NonNull View itemView) {
@@ -63,7 +63,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
         return members.size();
     }
 
-    private void setAvatar(NiceImageView imageView,String avatarPath,String avatarHash){
+    private void setAvatar(RoundImageView imageView,String avatarPath,String avatarHash){
         if(avatarPath.equals("null")){ //如果没有存储过这个头像文件
             Textile.instance().ipfs.dataAtPath("/ipfs/" + avatarHash + "/0/small/content", new Handlers.DataHandler() {
                 @Override

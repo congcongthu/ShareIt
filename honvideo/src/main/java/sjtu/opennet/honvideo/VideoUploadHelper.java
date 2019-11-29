@@ -46,7 +46,11 @@ public class VideoUploadHelper {
     private String filePath;
     private Model.Video videoPb = null;
     private String posterHash;
+    private ReceiveChunkListener receiveListener = null;
 
+    interface ReceiveChunkListener{
+        default void onChunkReceive(Model.VideoChunk vChunk){}
+    }
 
     /**
      * Handler of ipfsAddData.
@@ -213,7 +217,7 @@ public class VideoUploadHelper {
             videoUploader.start();
             chunkpublisher.start(); //It was ended by upload task.
             listObserver.startWatching();
-            Segmenter.segment(context, 3, filePath, m3u8Path, chunkPath, segHandler);
+            Segmenter.segment(context, 2, filePath, m3u8Path, chunkPath, segHandler);
 
         } catch (Exception e) {
             e.printStackTrace();

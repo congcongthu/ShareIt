@@ -43,7 +43,7 @@
         android:textSize="20sp" />
 
 
-    <com.shehuan.niv.NiceImageView
+    <com.sjtuopennetwork.shareit.util.RoundImageView
         android:id="@+id/setting_avatar_niceview"
         android:layout_width="60dp"
         android:layout_height="60dp"
