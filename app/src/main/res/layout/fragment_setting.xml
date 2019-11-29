@@ -39,7 +39,7 @@
             android:layout_margin="10dp"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            app:corner_radius="20dp"/>
+            app:corner_radius="10dp"/>
 
         <LinearLayout
             android:layout_toRightOf="@+id/setting_avatar_photo"

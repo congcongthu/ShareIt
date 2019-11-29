@@ -1,6 +1,7 @@
 package sjtu.opennet.hon;
 
 import mobile.Mobile_;
+import sjtu.opennet.textilepb.Model;
 
 /**
  * Provides access to Textile IPFS related APIs
@@ -29,6 +30,15 @@ public class Ipfs extends NodeDependent {
     public Boolean swarmConnect(final String multiaddr) throws Exception {
         final String result = node.swarmConnect(multiaddr);
         return result.length() > 0;
+    }
+
+    public String getSwarmAddress(final String peerId) throws  Exception {
+        return node.getSwarmAddress(peerId);
+    }
+
+    public Model.SwarmPeerList connectedAddresses() throws  Exception {
+        final byte[] bytes = node.connectedAddresses();
+        return Model.SwarmPeerList.parseFrom(bytes);
     }
 
     /**

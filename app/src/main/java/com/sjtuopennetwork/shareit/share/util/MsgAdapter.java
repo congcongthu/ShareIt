@@ -159,6 +159,8 @@ public class MsgAdapter extends BaseAdapter {
                 h.msg_time.setText(df.format(msgList.get(i).sendtime*1000));
                 if(!msgList.get(i).authoravatar.equals("")) {
                     setAvatar(h.msg_avatar, avatarPath, msgList.get(i).authoravatar);
+                }else{
+                    Glide.with(context).load(R.drawable.ic_default_avatar).thumbnail(0.3f).into(h.msg_avatar);
                 }
                 h.chat_words.setText(msgList.get(i).body);
             }
@@ -237,11 +239,14 @@ public class MsgAdapter extends BaseAdapter {
 
     private void setAvatar(RoundImageView imageView, String avatarPath, String avatarHash){
 
+
+
         Handler handler=new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 switch(msg.what){
                     case 1:
+
                         String newPath=msg.getData().getString("newPath");
                         Log.d(TAG, "handleMessage: 拿到头像："+newPath);
                         Glide.with(context).load(newPath).thumbnail(0.3f).into(imageView);

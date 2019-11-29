@@ -31,11 +31,13 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private TextView info_name; //昵称
     private TextView info_addr; //公钥
     private TextView info_phrase; //助记词
+    private TextView info_swarm_address;
     private RoundImageView avatar_img;//头像
     private LinearLayout info_avatar_layout;   //头像板块
     private LinearLayout info_name_layout;  //昵称板块
     private LinearLayout info_addr_layout;  //公钥地址板块
     private LinearLayout info_phrase_layout;    //助记词板块
+    private LinearLayout info_swarm_layout;   //swarm地址板块
     //持久化
     private SharedPreferences pref;
 
@@ -45,6 +47,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private String myaddr;
     private String avatarHash;
     private String phrase;
+    private String swarm_address;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +83,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
         }
         avatarPath=pref.getString("avatarpath","null");
         avatarHash=pref.getString("avatarhash","null");
+        //swarm_address=Textile.instance().profile.get()
 
     }
 
@@ -91,7 +95,9 @@ public class PersonalInfoActivity extends AppCompatActivity {
         info_name_layout = findViewById(R.id.setting_personal_info_name);
         info_addr_layout = findViewById(R.id.setting_personal_info_address);
         info_phrase_layout=findViewById(R.id.setting_personal_info_phrase);
+        info_swarm_layout=findViewById(R.id.setting_personal_info_swarm_address);
         info_phrase=findViewById(R.id.info_phrase);
+        info_swarm_address=findViewById(R.id.info_swarm_address);
 
         info_avatar_layout.setOnClickListener(v -> {
             PictureSelector.create(this, PictureSelector.SELECT_REQUEST_CODE)
@@ -113,6 +119,12 @@ public class PersonalInfoActivity extends AppCompatActivity {
             // 将文本内容放到系统剪贴板里。
             cm.setText(info_phrase.getText());
             Toast.makeText(this,"已将助记词复制到剪贴板："+info_phrase.getText(),Toast.LENGTH_LONG).show();
+        });
+        info_swarm_layout.setOnClickListener(view -> {
+            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            // 将文本内容放到系统剪贴板里。
+            cm.setText(info_swarm_address.getText());
+            Toast.makeText(this,"已将swarm地址复制到剪贴板："+info_swarm_address.getText(),Toast.LENGTH_LONG).show();
         });
     }
 

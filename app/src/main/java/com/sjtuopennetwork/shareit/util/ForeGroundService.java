@@ -179,12 +179,12 @@ public class ForeGroundService extends Service {
         Log.d(TAG, "tryConnectCafe: 尝试连接cafe");
         if(register.equals(2.34)){
             Textile.instance().cafes.register(
-                    "http://159.138.58.61:40601",
-//                    "http://202.120.38.131:40601",
+//                    "http://159.138.58.61:40601",
+                    "http://202.120.38.131:40601",
 //                    "http://192.168.1.109:40601",
 //                    "http://202.120.40.60:40601",
-//                    "WwqhHzab1oRqXPs3KnDL2oX1S9h2D7KYotMo2eNUg2MFPJPENWgB1Q2H6m3b", //131
-                    "NhYrQb1XfpCFC7WBhX7UHPkax1o4YvAxxzXhZfLg6qJ5cbbfZakmPQZVer7x",//HW159.138.58.61
+                    "WwqhHzab1oRqXPs3KnDL2oX1S9h2D7KYotMo2eNUg2MFPJPENWgB1Q2H6m3b", //131
+//                    "NhYrQb1XfpCFC7WBhX7UHPkax1o4YvAxxzXhZfLg6qJ5cbbfZakmPQZVer7x",//HW159.138.58.61
 //                    "29TkBsmjFfEnR1Sack63qWK5WkPGjJtA2kXFHvTijmSE1KYMvVopBRWagHLbE",
 //                    "WwqhHzab1oRqXPs3KnDL2oX1S9h2D7KYotMo2eNUg2MFPJPENWgB1Q2H6m3b",
                     new Handlers.ErrorHandler() {
@@ -237,7 +237,7 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-            tryConnectCafe(new Double(2.34));
+//            tryConnectCafe(new Double(2.34));
 //
 //            new Thread(){
 //                @Override
