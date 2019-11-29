@@ -7748,14 +7748,14 @@ public final class QueryOuterClass {
         getChunkBytes();
 
     /**
-     * <code>int32 startTime = 3;</code>
+     * <code>int64 startTime = 3;</code>
      */
-    int getStartTime();
+    long getStartTime();
 
     /**
-     * <code>int32 endTime = 4;</code>
+     * <code>int64 endTime = 4;</code>
      */
-    int getEndTime();
+    long getEndTime();
   }
   /**
    * Protobuf type {@code VideoChunkQuery}
@@ -7772,8 +7772,8 @@ public final class QueryOuterClass {
     private VideoChunkQuery() {
       id_ = "";
       chunk_ = "";
-      startTime_ = 0;
-      endTime_ = 0;
+      startTime_ = 0L;
+      endTime_ = 0L;
     }
 
     @java.lang.Override
@@ -7814,12 +7814,12 @@ public final class QueryOuterClass {
             }
             case 24: {
 
-              startTime_ = input.readInt32();
+              startTime_ = input.readInt64();
               break;
             }
             case 32: {
 
-              endTime_ = input.readInt32();
+              endTime_ = input.readInt64();
               break;
             }
             default: {
@@ -7923,20 +7923,20 @@ public final class QueryOuterClass {
     }
 
     public static final int STARTTIME_FIELD_NUMBER = 3;
-    private int startTime_;
+    private long startTime_;
     /**
-     * <code>int32 startTime = 3;</code>
+     * <code>int64 startTime = 3;</code>
      */
-    public int getStartTime() {
+    public long getStartTime() {
       return startTime_;
     }
 
     public static final int ENDTIME_FIELD_NUMBER = 4;
-    private int endTime_;
+    private long endTime_;
     /**
-     * <code>int32 endTime = 4;</code>
+     * <code>int64 endTime = 4;</code>
      */
-    public int getEndTime() {
+    public long getEndTime() {
       return endTime_;
     }
 
@@ -7960,11 +7960,11 @@ public final class QueryOuterClass {
       if (!getChunkBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, chunk_);
       }
-      if (startTime_ != 0) {
-        output.writeInt32(3, startTime_);
+      if (startTime_ != 0L) {
+        output.writeInt64(3, startTime_);
       }
-      if (endTime_ != 0) {
-        output.writeInt32(4, endTime_);
+      if (endTime_ != 0L) {
+        output.writeInt64(4, endTime_);
       }
       unknownFields.writeTo(output);
     }
@@ -7981,13 +7981,13 @@ public final class QueryOuterClass {
       if (!getChunkBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, chunk_);
       }
-      if (startTime_ != 0) {
+      if (startTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, startTime_);
+          .computeInt64Size(3, startTime_);
       }
-      if (endTime_ != 0) {
+      if (endTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, endTime_);
+          .computeInt64Size(4, endTime_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -8029,9 +8029,11 @@ public final class QueryOuterClass {
       hash = (37 * hash) + CHUNK_FIELD_NUMBER;
       hash = (53 * hash) + getChunk().hashCode();
       hash = (37 * hash) + STARTTIME_FIELD_NUMBER;
-      hash = (53 * hash) + getStartTime();
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getStartTime());
       hash = (37 * hash) + ENDTIME_FIELD_NUMBER;
-      hash = (53 * hash) + getEndTime();
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getEndTime());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -8169,9 +8171,9 @@ public final class QueryOuterClass {
 
         chunk_ = "";
 
-        startTime_ = 0;
+        startTime_ = 0L;
 
-        endTime_ = 0;
+        endTime_ = 0L;
 
         return this;
       }
@@ -8259,10 +8261,10 @@ public final class QueryOuterClass {
           chunk_ = other.chunk_;
           onChanged();
         }
-        if (other.getStartTime() != 0) {
+        if (other.getStartTime() != 0L) {
           setStartTime(other.getStartTime());
         }
-        if (other.getEndTime() != 0) {
+        if (other.getEndTime() != 0L) {
           setEndTime(other.getEndTime());
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -8432,54 +8434,54 @@ public final class QueryOuterClass {
         return this;
       }
 
-      private int startTime_ ;
+      private long startTime_ ;
       /**
-       * <code>int32 startTime = 3;</code>
+       * <code>int64 startTime = 3;</code>
        */
-      public int getStartTime() {
+      public long getStartTime() {
         return startTime_;
       }
       /**
-       * <code>int32 startTime = 3;</code>
+       * <code>int64 startTime = 3;</code>
        */
-      public Builder setStartTime(int value) {
+      public Builder setStartTime(long value) {
         
         startTime_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 startTime = 3;</code>
+       * <code>int64 startTime = 3;</code>
        */
       public Builder clearStartTime() {
         
-        startTime_ = 0;
+        startTime_ = 0L;
         onChanged();
         return this;
       }
 
-      private int endTime_ ;
+      private long endTime_ ;
       /**
-       * <code>int32 endTime = 4;</code>
+       * <code>int64 endTime = 4;</code>
        */
-      public int getEndTime() {
+      public long getEndTime() {
         return endTime_;
       }
       /**
-       * <code>int32 endTime = 4;</code>
+       * <code>int64 endTime = 4;</code>
        */
-      public Builder setEndTime(int value) {
+      public Builder setEndTime(long value) {
         
         endTime_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 endTime = 4;</code>
+       * <code>int64 endTime = 4;</code>
        */
       public Builder clearEndTime() {
         
-        endTime_ = 0;
+        endTime_ = 0L;
         onChanged();
         return this;
       }
@@ -11040,7 +11042,7 @@ public final class QueryOuterClass {
       "ry\022\017\n\007address\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\"&\n\023Thr" +
       "eadSnapshotQuery\022\017\n\007address\030\001 \001(\t\"P\n\017Vid" +
       "eoChunkQuery\022\n\n\002id\030\001 \001(\t\022\r\n\005chunk\030\002 \001(\t\022" +
-      "\021\n\tstartTime\030\003 \001(\005\022\017\n\007endTime\030\004 \001(\005\"\030\n\nV" +
+      "\021\n\tstartTime\030\003 \001(\003\022\017\n\007endTime\030\004 \001(\003\"\030\n\nV" +
       "ideoQuery\022\n\n\002id\030\001 \001(\t\">\n\rSyncFileQuery\022\017" +
       "\n\007address\030\001 \001(\t\022\034\n\004type\030\002 \001(\0162\016.SyncFile" +
       ".Type\"\032\n\tIpfsQuery\022\r\n\005items\030\001 \003(\t\" \n\017Ipf" +
