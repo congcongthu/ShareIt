@@ -51,11 +51,21 @@ public class AppdbHelper extends SQLiteOpenHelper {
             "filename text," +
             "filetime text," +
             "filepath text)";
+
+    //图片表
+    private String CREATE_PHOTO="create table photo"+
+            "(id integer primary key autoincrement," +
+            "photoname text,"+
+            "phototime text,"+
+            "photopath text,"+
+            "photodata text,"+
+            "isdele integer)";
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(CREATE_DIALOGS);
         sqLiteDatabase.execSQL(CREATE_MSGS);
         sqLiteDatabase.execSQL(CREATE_FILES);
+        sqLiteDatabase.execSQL(CREATE_PHOTO);
     }
 
     @Override

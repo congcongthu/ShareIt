@@ -2517,6 +2517,1749 @@ public final class Model {
 
   }
 
+  public interface SwarmPeerOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:SwarmPeer)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string addr = 1;</code>
+     */
+    java.lang.String getAddr();
+    /**
+     * <code>string addr = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getAddrBytes();
+
+    /**
+     * <code>string id = 2;</code>
+     */
+    java.lang.String getId();
+    /**
+     * <code>string id = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getIdBytes();
+
+    /**
+     * <code>string latency = 3;</code>
+     */
+    java.lang.String getLatency();
+    /**
+     * <code>string latency = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getLatencyBytes();
+
+    /**
+     * <code>string muxer = 4;</code>
+     */
+    java.lang.String getMuxer();
+    /**
+     * <code>string muxer = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getMuxerBytes();
+  }
+  /**
+   * Protobuf type {@code SwarmPeer}
+   */
+  public  static final class SwarmPeer extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:SwarmPeer)
+      SwarmPeerOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use SwarmPeer.newBuilder() to construct.
+    private SwarmPeer(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private SwarmPeer() {
+      addr_ = "";
+      id_ = "";
+      latency_ = "";
+      muxer_ = "";
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private SwarmPeer(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              addr_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              id_ = s;
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              latency_ = s;
+              break;
+            }
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              muxer_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return sjtu.opennet.textilepb.Model.internal_static_SwarmPeer_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return sjtu.opennet.textilepb.Model.internal_static_SwarmPeer_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              sjtu.opennet.textilepb.Model.SwarmPeer.class, sjtu.opennet.textilepb.Model.SwarmPeer.Builder.class);
+    }
+
+    public static final int ADDR_FIELD_NUMBER = 1;
+    private volatile java.lang.Object addr_;
+    /**
+     * <code>string addr = 1;</code>
+     */
+    public java.lang.String getAddr() {
+      java.lang.Object ref = addr_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        addr_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string addr = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getAddrBytes() {
+      java.lang.Object ref = addr_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        addr_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ID_FIELD_NUMBER = 2;
+    private volatile java.lang.Object id_;
+    /**
+     * <code>string id = 2;</code>
+     */
+    public java.lang.String getId() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        id_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string id = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getIdBytes() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        id_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int LATENCY_FIELD_NUMBER = 3;
+    private volatile java.lang.Object latency_;
+    /**
+     * <code>string latency = 3;</code>
+     */
+    public java.lang.String getLatency() {
+      java.lang.Object ref = latency_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        latency_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string latency = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getLatencyBytes() {
+      java.lang.Object ref = latency_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        latency_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MUXER_FIELD_NUMBER = 4;
+    private volatile java.lang.Object muxer_;
+    /**
+     * <code>string muxer = 4;</code>
+     */
+    public java.lang.String getMuxer() {
+      java.lang.Object ref = muxer_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        muxer_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string muxer = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getMuxerBytes() {
+      java.lang.Object ref = muxer_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        muxer_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getAddrBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, addr_);
+      }
+      if (!getIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, id_);
+      }
+      if (!getLatencyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, latency_);
+      }
+      if (!getMuxerBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, muxer_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getAddrBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, addr_);
+      }
+      if (!getIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, id_);
+      }
+      if (!getLatencyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, latency_);
+      }
+      if (!getMuxerBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, muxer_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof sjtu.opennet.textilepb.Model.SwarmPeer)) {
+        return super.equals(obj);
+      }
+      sjtu.opennet.textilepb.Model.SwarmPeer other = (sjtu.opennet.textilepb.Model.SwarmPeer) obj;
+
+      boolean result = true;
+      result = result && getAddr()
+          .equals(other.getAddr());
+      result = result && getId()
+          .equals(other.getId());
+      result = result && getLatency()
+          .equals(other.getLatency());
+      result = result && getMuxer()
+          .equals(other.getMuxer());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ADDR_FIELD_NUMBER;
+      hash = (53 * hash) + getAddr().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
+      hash = (37 * hash) + LATENCY_FIELD_NUMBER;
+      hash = (53 * hash) + getLatency().hashCode();
+      hash = (37 * hash) + MUXER_FIELD_NUMBER;
+      hash = (53 * hash) + getMuxer().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static sjtu.opennet.textilepb.Model.SwarmPeer parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeer parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeer parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeer parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeer parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeer parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeer parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeer parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeer parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeer parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeer parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeer parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(sjtu.opennet.textilepb.Model.SwarmPeer prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code SwarmPeer}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:SwarmPeer)
+        sjtu.opennet.textilepb.Model.SwarmPeerOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return sjtu.opennet.textilepb.Model.internal_static_SwarmPeer_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return sjtu.opennet.textilepb.Model.internal_static_SwarmPeer_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                sjtu.opennet.textilepb.Model.SwarmPeer.class, sjtu.opennet.textilepb.Model.SwarmPeer.Builder.class);
+      }
+
+      // Construct using sjtu.opennet.textilepb.Model.SwarmPeer.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        addr_ = "";
+
+        id_ = "";
+
+        latency_ = "";
+
+        muxer_ = "";
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return sjtu.opennet.textilepb.Model.internal_static_SwarmPeer_descriptor;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.SwarmPeer getDefaultInstanceForType() {
+        return sjtu.opennet.textilepb.Model.SwarmPeer.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.SwarmPeer build() {
+        sjtu.opennet.textilepb.Model.SwarmPeer result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.SwarmPeer buildPartial() {
+        sjtu.opennet.textilepb.Model.SwarmPeer result = new sjtu.opennet.textilepb.Model.SwarmPeer(this);
+        result.addr_ = addr_;
+        result.id_ = id_;
+        result.latency_ = latency_;
+        result.muxer_ = muxer_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof sjtu.opennet.textilepb.Model.SwarmPeer) {
+          return mergeFrom((sjtu.opennet.textilepb.Model.SwarmPeer)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(sjtu.opennet.textilepb.Model.SwarmPeer other) {
+        if (other == sjtu.opennet.textilepb.Model.SwarmPeer.getDefaultInstance()) return this;
+        if (!other.getAddr().isEmpty()) {
+          addr_ = other.addr_;
+          onChanged();
+        }
+        if (!other.getId().isEmpty()) {
+          id_ = other.id_;
+          onChanged();
+        }
+        if (!other.getLatency().isEmpty()) {
+          latency_ = other.latency_;
+          onChanged();
+        }
+        if (!other.getMuxer().isEmpty()) {
+          muxer_ = other.muxer_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        sjtu.opennet.textilepb.Model.SwarmPeer parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (sjtu.opennet.textilepb.Model.SwarmPeer) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object addr_ = "";
+      /**
+       * <code>string addr = 1;</code>
+       */
+      public java.lang.String getAddr() {
+        java.lang.Object ref = addr_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          addr_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string addr = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getAddrBytes() {
+        java.lang.Object ref = addr_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          addr_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string addr = 1;</code>
+       */
+      public Builder setAddr(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        addr_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string addr = 1;</code>
+       */
+      public Builder clearAddr() {
+        
+        addr_ = getDefaultInstance().getAddr();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string addr = 1;</code>
+       */
+      public Builder setAddrBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        addr_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object id_ = "";
+      /**
+       * <code>string id = 2;</code>
+       */
+      public java.lang.String getId() {
+        java.lang.Object ref = id_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          id_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string id = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getIdBytes() {
+        java.lang.Object ref = id_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          id_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string id = 2;</code>
+       */
+      public Builder setId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string id = 2;</code>
+       */
+      public Builder clearId() {
+        
+        id_ = getDefaultInstance().getId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string id = 2;</code>
+       */
+      public Builder setIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object latency_ = "";
+      /**
+       * <code>string latency = 3;</code>
+       */
+      public java.lang.String getLatency() {
+        java.lang.Object ref = latency_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          latency_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string latency = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getLatencyBytes() {
+        java.lang.Object ref = latency_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          latency_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string latency = 3;</code>
+       */
+      public Builder setLatency(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        latency_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string latency = 3;</code>
+       */
+      public Builder clearLatency() {
+        
+        latency_ = getDefaultInstance().getLatency();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string latency = 3;</code>
+       */
+      public Builder setLatencyBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        latency_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object muxer_ = "";
+      /**
+       * <code>string muxer = 4;</code>
+       */
+      public java.lang.String getMuxer() {
+        java.lang.Object ref = muxer_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          muxer_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string muxer = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getMuxerBytes() {
+        java.lang.Object ref = muxer_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          muxer_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string muxer = 4;</code>
+       */
+      public Builder setMuxer(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        muxer_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string muxer = 4;</code>
+       */
+      public Builder clearMuxer() {
+        
+        muxer_ = getDefaultInstance().getMuxer();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string muxer = 4;</code>
+       */
+      public Builder setMuxerBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        muxer_ = value;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:SwarmPeer)
+    }
+
+    // @@protoc_insertion_point(class_scope:SwarmPeer)
+    private static final sjtu.opennet.textilepb.Model.SwarmPeer DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new sjtu.opennet.textilepb.Model.SwarmPeer();
+    }
+
+    public static sjtu.opennet.textilepb.Model.SwarmPeer getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SwarmPeer>
+        PARSER = new com.google.protobuf.AbstractParser<SwarmPeer>() {
+      @java.lang.Override
+      public SwarmPeer parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SwarmPeer(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<SwarmPeer> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SwarmPeer> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public sjtu.opennet.textilepb.Model.SwarmPeer getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface SwarmPeerListOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:SwarmPeerList)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .SwarmPeer items = 1;</code>
+     */
+    java.util.List<sjtu.opennet.textilepb.Model.SwarmPeer> 
+        getItemsList();
+    /**
+     * <code>repeated .SwarmPeer items = 1;</code>
+     */
+    sjtu.opennet.textilepb.Model.SwarmPeer getItems(int index);
+    /**
+     * <code>repeated .SwarmPeer items = 1;</code>
+     */
+    int getItemsCount();
+    /**
+     * <code>repeated .SwarmPeer items = 1;</code>
+     */
+    java.util.List<? extends sjtu.opennet.textilepb.Model.SwarmPeerOrBuilder> 
+        getItemsOrBuilderList();
+    /**
+     * <code>repeated .SwarmPeer items = 1;</code>
+     */
+    sjtu.opennet.textilepb.Model.SwarmPeerOrBuilder getItemsOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code SwarmPeerList}
+   */
+  public  static final class SwarmPeerList extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:SwarmPeerList)
+      SwarmPeerListOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use SwarmPeerList.newBuilder() to construct.
+    private SwarmPeerList(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private SwarmPeerList() {
+      items_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private SwarmPeerList(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                items_ = new java.util.ArrayList<sjtu.opennet.textilepb.Model.SwarmPeer>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              items_.add(
+                  input.readMessage(sjtu.opennet.textilepb.Model.SwarmPeer.parser(), extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          items_ = java.util.Collections.unmodifiableList(items_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return sjtu.opennet.textilepb.Model.internal_static_SwarmPeerList_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return sjtu.opennet.textilepb.Model.internal_static_SwarmPeerList_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              sjtu.opennet.textilepb.Model.SwarmPeerList.class, sjtu.opennet.textilepb.Model.SwarmPeerList.Builder.class);
+    }
+
+    public static final int ITEMS_FIELD_NUMBER = 1;
+    private java.util.List<sjtu.opennet.textilepb.Model.SwarmPeer> items_;
+    /**
+     * <code>repeated .SwarmPeer items = 1;</code>
+     */
+    public java.util.List<sjtu.opennet.textilepb.Model.SwarmPeer> getItemsList() {
+      return items_;
+    }
+    /**
+     * <code>repeated .SwarmPeer items = 1;</code>
+     */
+    public java.util.List<? extends sjtu.opennet.textilepb.Model.SwarmPeerOrBuilder> 
+        getItemsOrBuilderList() {
+      return items_;
+    }
+    /**
+     * <code>repeated .SwarmPeer items = 1;</code>
+     */
+    public int getItemsCount() {
+      return items_.size();
+    }
+    /**
+     * <code>repeated .SwarmPeer items = 1;</code>
+     */
+    public sjtu.opennet.textilepb.Model.SwarmPeer getItems(int index) {
+      return items_.get(index);
+    }
+    /**
+     * <code>repeated .SwarmPeer items = 1;</code>
+     */
+    public sjtu.opennet.textilepb.Model.SwarmPeerOrBuilder getItemsOrBuilder(
+        int index) {
+      return items_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < items_.size(); i++) {
+        output.writeMessage(1, items_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < items_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, items_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof sjtu.opennet.textilepb.Model.SwarmPeerList)) {
+        return super.equals(obj);
+      }
+      sjtu.opennet.textilepb.Model.SwarmPeerList other = (sjtu.opennet.textilepb.Model.SwarmPeerList) obj;
+
+      boolean result = true;
+      result = result && getItemsList()
+          .equals(other.getItemsList());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getItemsCount() > 0) {
+        hash = (37 * hash) + ITEMS_FIELD_NUMBER;
+        hash = (53 * hash) + getItemsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static sjtu.opennet.textilepb.Model.SwarmPeerList parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeerList parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeerList parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeerList parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeerList parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeerList parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeerList parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeerList parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeerList parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeerList parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeerList parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.SwarmPeerList parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(sjtu.opennet.textilepb.Model.SwarmPeerList prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code SwarmPeerList}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:SwarmPeerList)
+        sjtu.opennet.textilepb.Model.SwarmPeerListOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return sjtu.opennet.textilepb.Model.internal_static_SwarmPeerList_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return sjtu.opennet.textilepb.Model.internal_static_SwarmPeerList_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                sjtu.opennet.textilepb.Model.SwarmPeerList.class, sjtu.opennet.textilepb.Model.SwarmPeerList.Builder.class);
+      }
+
+      // Construct using sjtu.opennet.textilepb.Model.SwarmPeerList.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getItemsFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (itemsBuilder_ == null) {
+          items_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          itemsBuilder_.clear();
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return sjtu.opennet.textilepb.Model.internal_static_SwarmPeerList_descriptor;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.SwarmPeerList getDefaultInstanceForType() {
+        return sjtu.opennet.textilepb.Model.SwarmPeerList.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.SwarmPeerList build() {
+        sjtu.opennet.textilepb.Model.SwarmPeerList result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.SwarmPeerList buildPartial() {
+        sjtu.opennet.textilepb.Model.SwarmPeerList result = new sjtu.opennet.textilepb.Model.SwarmPeerList(this);
+        int from_bitField0_ = bitField0_;
+        if (itemsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            items_ = java.util.Collections.unmodifiableList(items_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.items_ = items_;
+        } else {
+          result.items_ = itemsBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof sjtu.opennet.textilepb.Model.SwarmPeerList) {
+          return mergeFrom((sjtu.opennet.textilepb.Model.SwarmPeerList)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(sjtu.opennet.textilepb.Model.SwarmPeerList other) {
+        if (other == sjtu.opennet.textilepb.Model.SwarmPeerList.getDefaultInstance()) return this;
+        if (itemsBuilder_ == null) {
+          if (!other.items_.isEmpty()) {
+            if (items_.isEmpty()) {
+              items_ = other.items_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureItemsIsMutable();
+              items_.addAll(other.items_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.items_.isEmpty()) {
+            if (itemsBuilder_.isEmpty()) {
+              itemsBuilder_.dispose();
+              itemsBuilder_ = null;
+              items_ = other.items_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              itemsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getItemsFieldBuilder() : null;
+            } else {
+              itemsBuilder_.addAllMessages(other.items_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        sjtu.opennet.textilepb.Model.SwarmPeerList parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (sjtu.opennet.textilepb.Model.SwarmPeerList) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<sjtu.opennet.textilepb.Model.SwarmPeer> items_ =
+        java.util.Collections.emptyList();
+      private void ensureItemsIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          items_ = new java.util.ArrayList<sjtu.opennet.textilepb.Model.SwarmPeer>(items_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          sjtu.opennet.textilepb.Model.SwarmPeer, sjtu.opennet.textilepb.Model.SwarmPeer.Builder, sjtu.opennet.textilepb.Model.SwarmPeerOrBuilder> itemsBuilder_;
+
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public java.util.List<sjtu.opennet.textilepb.Model.SwarmPeer> getItemsList() {
+        if (itemsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(items_);
+        } else {
+          return itemsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public int getItemsCount() {
+        if (itemsBuilder_ == null) {
+          return items_.size();
+        } else {
+          return itemsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public sjtu.opennet.textilepb.Model.SwarmPeer getItems(int index) {
+        if (itemsBuilder_ == null) {
+          return items_.get(index);
+        } else {
+          return itemsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public Builder setItems(
+          int index, sjtu.opennet.textilepb.Model.SwarmPeer value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.set(index, value);
+          onChanged();
+        } else {
+          itemsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public Builder setItems(
+          int index, sjtu.opennet.textilepb.Model.SwarmPeer.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public Builder addItems(sjtu.opennet.textilepb.Model.SwarmPeer value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.add(value);
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public Builder addItems(
+          int index, sjtu.opennet.textilepb.Model.SwarmPeer value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.add(index, value);
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public Builder addItems(
+          sjtu.opennet.textilepb.Model.SwarmPeer.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.add(builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public Builder addItems(
+          int index, sjtu.opennet.textilepb.Model.SwarmPeer.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public Builder addAllItems(
+          java.lang.Iterable<? extends sjtu.opennet.textilepb.Model.SwarmPeer> values) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, items_);
+          onChanged();
+        } else {
+          itemsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public Builder clearItems() {
+        if (itemsBuilder_ == null) {
+          items_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          itemsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public Builder removeItems(int index) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.remove(index);
+          onChanged();
+        } else {
+          itemsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public sjtu.opennet.textilepb.Model.SwarmPeer.Builder getItemsBuilder(
+          int index) {
+        return getItemsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public sjtu.opennet.textilepb.Model.SwarmPeerOrBuilder getItemsOrBuilder(
+          int index) {
+        if (itemsBuilder_ == null) {
+          return items_.get(index);  } else {
+          return itemsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public java.util.List<? extends sjtu.opennet.textilepb.Model.SwarmPeerOrBuilder> 
+           getItemsOrBuilderList() {
+        if (itemsBuilder_ != null) {
+          return itemsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(items_);
+        }
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public sjtu.opennet.textilepb.Model.SwarmPeer.Builder addItemsBuilder() {
+        return getItemsFieldBuilder().addBuilder(
+            sjtu.opennet.textilepb.Model.SwarmPeer.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public sjtu.opennet.textilepb.Model.SwarmPeer.Builder addItemsBuilder(
+          int index) {
+        return getItemsFieldBuilder().addBuilder(
+            index, sjtu.opennet.textilepb.Model.SwarmPeer.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .SwarmPeer items = 1;</code>
+       */
+      public java.util.List<sjtu.opennet.textilepb.Model.SwarmPeer.Builder> 
+           getItemsBuilderList() {
+        return getItemsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          sjtu.opennet.textilepb.Model.SwarmPeer, sjtu.opennet.textilepb.Model.SwarmPeer.Builder, sjtu.opennet.textilepb.Model.SwarmPeerOrBuilder> 
+          getItemsFieldBuilder() {
+        if (itemsBuilder_ == null) {
+          itemsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              sjtu.opennet.textilepb.Model.SwarmPeer, sjtu.opennet.textilepb.Model.SwarmPeer.Builder, sjtu.opennet.textilepb.Model.SwarmPeerOrBuilder>(
+                  items_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          items_ = null;
+        }
+        return itemsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:SwarmPeerList)
+    }
+
+    // @@protoc_insertion_point(class_scope:SwarmPeerList)
+    private static final sjtu.opennet.textilepb.Model.SwarmPeerList DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new sjtu.opennet.textilepb.Model.SwarmPeerList();
+    }
+
+    public static sjtu.opennet.textilepb.Model.SwarmPeerList getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SwarmPeerList>
+        PARSER = new com.google.protobuf.AbstractParser<SwarmPeerList>() {
+      @java.lang.Override
+      public SwarmPeerList parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SwarmPeerList(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<SwarmPeerList> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SwarmPeerList> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public sjtu.opennet.textilepb.Model.SwarmPeerList getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface UserOrBuilder extends
       // @@protoc_insertion_point(interface_extends:User)
       com.google.protobuf.MessageOrBuilder {
@@ -45914,6 +47657,16 @@ public final class Model {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_PeerList_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_SwarmPeer_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_SwarmPeer_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_SwarmPeerList_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_SwarmPeerList_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_User_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -46129,143 +47882,146 @@ public final class Model {
       "\026\n\007inboxes\030\005 \003(\0132\005.Cafe\022+\n\007created\030\006 \001(\013" +
       "2\032.google.protobuf.Timestamp\022+\n\007updated\030" +
       "\007 \001(\0132\032.google.protobuf.Timestamp\" \n\010Pee" +
-      "rList\022\024\n\005items\030\001 \003(\0132\005.Peer\"5\n\004User\022\017\n\007a" +
-      "ddress\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\022\016\n\006avatar\030\003 \001" +
-      "(\t\"_\n\007Contact\022\017\n\007address\030\001 \001(\t\022\014\n\004name\030\002" +
-      " \001(\t\022\016\n\006avatar\030\003 \001(\t\022\024\n\005peers\030\004 \003(\0132\005.Pe" +
-      "er\022\017\n\007threads\030\005 \003(\t\"&\n\013ContactList\022\027\n\005it" +
-      "ems\030\001 \003(\0132\010.Contact\"\354\003\n\006Thread\022\n\n\002id\030\001 \001" +
-      "(\t\022\013\n\003key\030\002 \001(\t\022\n\n\002sk\030\003 \001(\014\022\014\n\004name\030\004 \001(" +
-      "\t\022\016\n\006schema\030\005 \001(\t\022\021\n\tinitiator\030\006 \001(\t\022\032\n\004" +
-      "type\030\007 \001(\0162\014.Thread.Type\022 \n\007sharing\030\010 \001(" +
-      "\0162\017.Thread.Sharing\022\021\n\twhitelist\030\t \003(\t\022 \n" +
-      "\005state\030\n \001(\0162\r.Thread.StateB\002\030\001\022\014\n\004head\030" +
-      "\013 \001(\t\022\033\n\013head_blocks\030e \003(\0132\006.Block\022\032\n\013sc" +
-      "hema_node\030f \001(\0132\005.Node\022\023\n\013block_count\030g " +
-      "\001(\005\022\022\n\npeer_count\030h \001(\005\"8\n\004Type\022\013\n\007PRIVA" +
-      "TE\020\000\022\r\n\tREAD_ONLY\020\001\022\n\n\006PUBLIC\020\002\022\010\n\004OPEN\020" +
-      "\003\"6\n\007Sharing\022\016\n\nNOT_SHARED\020\000\022\017\n\013INVITE_O" +
-      "NLY\020\001\022\n\n\006SHARED\020\002\"7\n\005State\022\020\n\014LOADING_TA" +
-      "IL\020\000\022\n\n\006LOADED\020\001\022\020\n\014LOADING_HEAD\020\002\"$\n\nTh" +
-      "readList\022\026\n\005items\030\001 \003(\0132\007.Thread\"I\n\nThre" +
-      "adPeer\022\n\n\002id\030\001 \001(\t\022\016\n\006thread\030\002 \001(\t\022\020\n\010we" +
-      "lcomed\030\003 \001(\010\022\r\n\005admin\030\004 \001(\010\"\360\003\n\005Block\022\n\n" +
-      "\002id\030\001 \001(\t\022\016\n\006thread\030\002 \001(\t\022\016\n\006author\030\003 \001(" +
-      "\t\022\036\n\004type\030\004 \001(\0162\020.Block.BlockType\022(\n\004dat" +
-      "e\030\005 \001(\0132\032.google.protobuf.Timestamp\022\017\n\007p" +
-      "arents\030\006 \003(\t\022\016\n\006target\030\007 \001(\t\022\014\n\004data\030\t \001" +
-      "(\t\022\014\n\004body\030\010 \001(\t\022\"\n\006status\030\n \001(\0162\022.Block" +
-      ".BlockStatus\022\020\n\010attempts\030\013 \001(\005\022\023\n\004user\030e" +
-      " \001(\0132\005.User\"\265\001\n\tBlockType\022\r\n\005MERGE\020\000\032\002\010\001" +
-      "\022\n\n\006IGNORE\020\001\022\010\n\004FLAG\020\002\022\010\n\004JOIN\020\003\022\014\n\010ANNO" +
-      "UNCE\020\004\022\t\n\005LEAVE\020\005\022\010\n\004TEXT\020\006\022\t\n\005FILES\020\007\022\017" +
-      "\n\007COMMENT\020\010\032\002\010\001\022\010\n\004LIKE\020\t\022\007\n\003ADD\0202\022\014\n\010AD" +
-      "DADMIN\020d\022\016\n\nREMOVEPEER\020e\022\t\n\005VIDEO\020f\"1\n\013B" +
-      "lockStatus\022\t\n\005READY\020\000\022\n\n\006QUEUED\020\001\022\013\n\007PEN" +
-      "DING\020\002\"\"\n\tBlockList\022\025\n\005items\030\001 \003(\0132\006.Blo" +
-      "ck\"j\n\014BlockMessage\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030\002" +
-      " \001(\t\022\026\n\003env\030\003 \001(\0132\t.Envelope\022(\n\004date\030\004 \001" +
-      "(\0132\032.google.protobuf.Timestamp\"\204\001\n\006Invit" +
-      "e\022\n\n\002id\030\001 \001(\t\022\r\n\005block\030\002 \001(\014\022\014\n\004name\030\003 \001" +
-      "(\t\022\026\n\007inviter\030\004 \001(\0132\005.Peer\022(\n\004date\030\005 \001(\013" +
-      "2\032.google.protobuf.Timestamp\022\017\n\007parents\030" +
-      "\006 \003(\t\"$\n\nInviteList\022\026\n\005items\030\001 \003(\0132\007.Inv" +
-      "ite\"\347\001\n\010SyncFile\022\023\n\013peerAddress\030\001 \001(\t\022\014\n" +
-      "\004file\030\002 \001(\t\022\034\n\004type\030\003 \001(\0162\016.SyncFile.Typ" +
-      "e\022(\n\004date\030\004 \001(\0132\032.google.protobuf.Timest" +
-      "amp\022&\n\toperation\030\005 \001(\0162\023.SyncFile.Operat" +
-      "ion\"&\n\004Type\022\010\n\004BLOB\020\000\022\t\n\005PHOTO\020\001\022\t\n\005VIDE" +
-      "O\020\002\" \n\tOperation\022\007\n\003ADD\020\000\022\n\n\006REMOVE\020\001\"(\n" +
-      "\014SyncFileList\022\030\n\005items\030\001 \003(\0132\t.SyncFile\"" +
-      "\362\001\n\tFileIndex\022\014\n\004mill\030\001 \001(\t\022\020\n\010checksum\030" +
-      "\002 \001(\t\022\016\n\006source\030\003 \001(\t\022\014\n\004opts\030\004 \001(\t\022\014\n\004h" +
-      "ash\030\005 \001(\t\022\013\n\003key\030\006 \001(\t\022\r\n\005media\030\007 \001(\t\022\014\n" +
-      "\004name\030\010 \001(\t\022\014\n\004size\030\t \001(\003\022)\n\005added\030\n \001(\013" +
-      "2\032.google.protobuf.Timestamp\022%\n\004meta\030\013 \001" +
-      "(\0132\027.google.protobuf.Struct\022\017\n\007targets\030\014" +
-      " \003(\t\"\222\002\n\004Node\022\014\n\004name\030\001 \001(\t\022\013\n\003pin\030\002 \001(\010" +
-      "\022\021\n\tplaintext\030\003 \001(\010\022\014\n\004mill\030\004 \001(\t\022\035\n\004opt" +
-      "s\030\005 \003(\0132\017.Node.OptsEntry\022,\n\013json_schema\030" +
-      "\006 \001(\0132\027.google.protobuf.Struct\022\037\n\005links\030" +
-      "\010 \003(\0132\020.Node.LinksEntry\032+\n\tOptsEntry\022\013\n\003" +
-      "key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\0323\n\nLinksEnt" +
-      "ry\022\013\n\003key\030\001 \001(\t\022\024\n\005value\030\002 \001(\0132\005.Link:\0028" +
-      "\001\"\273\001\n\004Link\022\013\n\003use\030\001 \001(\t\022\013\n\003pin\030\002 \001(\010\022\021\n\t" +
-      "plaintext\030\003 \001(\010\022\014\n\004mill\030\004 \001(\t\022\035\n\004opts\030\005 " +
-      "\003(\0132\017.Link.OptsEntry\022,\n\013json_schema\030\006 \001(" +
-      "\0132\027.google.protobuf.Struct\032+\n\tOptsEntry\022" +
-      "\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\325\003\n\014Noti" +
-      "fication\022\n\n\002id\030\001 \001(\t\022(\n\004date\030\002 \001(\0132\032.goo" +
-      "gle.protobuf.Timestamp\022\r\n\005actor\030\003 \001(\t\022\017\n" +
-      "\007subject\030\004 \001(\t\022\024\n\014subject_desc\030\005 \001(\t\022\r\n\005" +
-      "block\030\006 \001(\t\022\016\n\006target\030\007 \001(\t\022 \n\004type\030\010 \001(" +
-      "\0162\022.Notification.Type\022\014\n\004body\030\t \001(\t\022\014\n\004r" +
-      "ead\030\n \001(\010\022\023\n\004user\030e \001(\0132\005.User\"\346\001\n\004Type\022" +
-      "\023\n\017INVITE_RECEIVED\020\000\022\027\n\023ACCOUNT_PEER_JOI" +
-      "NED\020\001\022\025\n\021ACCOUNT_PEER_LEFT\020\010\022\017\n\013PEER_JOI" +
-      "NED\020\002\022\r\n\tPEER_LEFT\020\003\022\021\n\rMESSAGE_ADDED\020\004\022" +
-      "\017\n\013FILES_ADDED\020\005\022\021\n\rCOMMENT_ADDED\020\006\022\016\n\nL" +
-      "IKE_ADDED\020\007\022\017\n\013ADMIN_ADDED\020d\022\020\n\014PEER_REM" +
-      "OVED\020e\022\017\n\013VIDEO_ADDED\020f\"0\n\020NotificationL" +
-      "ist\022\034\n\005items\030\001 \003(\0132\r.Notification\"_\n\004Caf" +
-      "e\022\014\n\004peer\030\001 \001(\t\022\017\n\007address\030\002 \001(\t\022\013\n\003api\030" +
-      "\003 \001(\t\022\020\n\010protocol\030\004 \001(\t\022\014\n\004node\030\005 \001(\t\022\013\n" +
-      "\003url\030\006 \001(\t\"\301\001\n\013CafeSession\022\n\n\002id\030\001 \001(\t\022\016" +
-      "\n\006access\030\002 \001(\t\022\'\n\003exp\030\003 \001(\0132\032.google.pro" +
-      "tobuf.Timestamp\022\017\n\007refresh\030\004 \001(\t\022(\n\004rexp" +
-      "\030\005 \001(\0132\032.google.protobuf.Timestamp\022\017\n\007su" +
-      "bject\030\006 \001(\t\022\014\n\004type\030\007 \001(\t\022\023\n\004cafe\030\010 \001(\0132" +
-      "\005.Cafe\".\n\017CafeSessionList\022\033\n\005items\030\001 \003(\013" +
-      "2\014.CafeSession\"\255\003\n\013CafeRequest\022\n\n\002id\030\001 \001" +
-      "(\t\022\014\n\004peer\030\002 \001(\t\022\016\n\006target\030\003 \001(\t\022\023\n\004cafe" +
-      "\030\004 \001(\0132\005.Cafe\022\r\n\005group\030\010 \001(\t\022\022\n\nsync_gro" +
-      "up\030\n \001(\t\022\037\n\004type\030\005 \001(\0162\021.CafeRequest.Typ" +
-      "e\022(\n\004date\030\006 \001(\0132\032.google.protobuf.Timest" +
-      "amp\022\014\n\004size\030\007 \001(\003\022#\n\006status\030\t \001(\0162\023.Cafe" +
-      "Request.Status\022\020\n\010attempts\030\013 \001(\005\022\022\n\ngrou" +
-      "p_size\030\014 \001(\003\022\031\n\021group_transferred\030\r \001(\003\"" +
-      "O\n\004Type\022\t\n\005STORE\020\000\022\013\n\007UNSTORE\020\003\022\020\n\014STORE" +
-      "_THREAD\020\001\022\022\n\016UNSTORE_THREAD\020\004\022\t\n\005INBOX\020\002" +
-      "\",\n\006Status\022\007\n\003NEW\020\000\022\013\n\007PENDING\020\001\022\014\n\010COMP" +
-      "LETE\020\002\".\n\017CafeRequestList\022\033\n\005items\030\001 \003(\013" +
-      "2\014.CafeRequest\"\372\001\n\023CafeSyncGroupStatus\022\n" +
-      "\n\002id\030\001 \001(\t\022\021\n\tnum_total\030\002 \001(\005\022\023\n\013num_pen" +
-      "ding\030\003 \001(\005\022\024\n\014num_complete\030\004 \001(\005\022\022\n\nsize" +
-      "_total\030\005 \001(\003\022\024\n\014size_pending\030\006 \001(\003\022\025\n\rsi" +
-      "ze_complete\030\007 \001(\003\022\031\n\021groups_size_total\030\010" +
-      " \001(\003\022\034\n\024groups_size_complete\030\t \001(\003\022\r\n\005er" +
-      "ror\0302 \001(\t\022\020\n\010error_id\0303 \001(\t\"\330\001\n\017CafeHTTP" +
-      "Request\022#\n\004type\030\001 \001(\0162\025.CafeHTTPRequest." +
-      "Type\022\013\n\003url\030\002 \001(\t\022.\n\007headers\030\003 \003(\0132\035.Caf" +
-      "eHTTPRequest.HeadersEntry\022\014\n\004path\030\004 \001(\t\032" +
-      ".\n\014HeadersEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 " +
-      "\001(\t:\0028\001\"%\n\004Type\022\007\n\003PUT\020\000\022\010\n\004POST\020\001\022\n\n\006DE" +
-      "LETE\020\002\"c\n\013CafeMessage\022\n\n\002id\030\001 \001(\t\022\014\n\004pee" +
-      "r\030\002 \001(\t\022(\n\004date\030\003 \001(\0132\032.google.protobuf." +
-      "Timestamp\022\020\n\010attempts\030\004 \001(\005\"[\n\017CafeClien" +
-      "tNonce\022\r\n\005value\030\001 \001(\t\022\017\n\007address\030\002 \001(\t\022(" +
-      "\n\004date\030\003 \001(\0132\032.google.protobuf.Timestamp" +
-      "\"\217\001\n\nCafeClient\022\n\n\002id\030\001 \001(\t\022\017\n\007address\030\002" +
-      " \001(\t\022+\n\007created\030\003 \001(\0132\032.google.protobuf." +
-      "Timestamp\022(\n\004seen\030\004 \001(\0132\032.google.protobu" +
-      "f.Timestamp\022\r\n\005token\030\005 \001(\t\",\n\016CafeClient" +
-      "List\022\032\n\005items\030\001 \003(\0132\013.CafeClient\"P\n\tCafe" +
-      "Token\022\n\n\002id\030\001 \001(\t\022\r\n\005value\030\002 \001(\014\022(\n\004date" +
-      "\030\003 \001(\0132\032.google.protobuf.Timestamp\"B\n\020Ca" +
-      "feClientThread\022\n\n\002id\030\001 \001(\t\022\016\n\006client\030\002 \001" +
-      "(\t\022\022\n\nciphertext\030\003 \001(\014\"I\n\005Video\022\n\n\002id\030\001 " +
-      "\001(\t\022\017\n\007caption\030\002 \001(\t\022\023\n\013videoLength\030\003 \001(" +
-      "\003\022\016\n\006poster\030\004 \001(\t\"\\\n\nVideoChunk\022\n\n\002id\030\001 " +
-      "\001(\t\022\r\n\005chunk\030\002 \001(\t\022\017\n\007address\030\003 \001(\t\022\021\n\ts" +
-      "tartTime\030\004 \001(\003\022\017\n\007endTime\030\005 \001(\003\",\n\016Video" +
-      "ChunkList\022\032\n\005items\030\001 \003(\0132\013.VideoChunk\"g\n" +
-      "\021CafeClientMessage\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030\002" +
-      " \001(\t\022\016\n\006client\030\003 \001(\t\022(\n\004date\030\004 \001(\0132\032.goo" +
-      "gle.protobuf.Timestamp\"}\n\005BotKV\022\013\n\003key\030\001" +
-      " \001(\t\022\r\n\005value\030\002 \001(\014\022+\n\007created\030\003 \001(\0132\032.g" +
-      "oogle.protobuf.Timestamp\022+\n\007updated\030\004 \001(" +
-      "\0132\032.google.protobuf.TimestampB\034\n\026sjtu.op" +
-      "ennet.textilepbZ\002pbb\006proto3"
+      "rList\022\024\n\005items\030\001 \003(\0132\005.Peer\"E\n\tSwarmPeer" +
+      "\022\014\n\004addr\030\001 \001(\t\022\n\n\002id\030\002 \001(\t\022\017\n\007latency\030\003 " +
+      "\001(\t\022\r\n\005muxer\030\004 \001(\t\"*\n\rSwarmPeerList\022\031\n\005i" +
+      "tems\030\001 \003(\0132\n.SwarmPeer\"5\n\004User\022\017\n\007addres" +
+      "s\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\022\016\n\006avatar\030\003 \001(\t\"_\n" +
+      "\007Contact\022\017\n\007address\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\022" +
+      "\016\n\006avatar\030\003 \001(\t\022\024\n\005peers\030\004 \003(\0132\005.Peer\022\017\n" +
+      "\007threads\030\005 \003(\t\"&\n\013ContactList\022\027\n\005items\030\001" +
+      " \003(\0132\010.Contact\"\354\003\n\006Thread\022\n\n\002id\030\001 \001(\t\022\013\n" +
+      "\003key\030\002 \001(\t\022\n\n\002sk\030\003 \001(\014\022\014\n\004name\030\004 \001(\t\022\016\n\006" +
+      "schema\030\005 \001(\t\022\021\n\tinitiator\030\006 \001(\t\022\032\n\004type\030" +
+      "\007 \001(\0162\014.Thread.Type\022 \n\007sharing\030\010 \001(\0162\017.T" +
+      "hread.Sharing\022\021\n\twhitelist\030\t \003(\t\022 \n\005stat" +
+      "e\030\n \001(\0162\r.Thread.StateB\002\030\001\022\014\n\004head\030\013 \001(\t" +
+      "\022\033\n\013head_blocks\030e \003(\0132\006.Block\022\032\n\013schema_" +
+      "node\030f \001(\0132\005.Node\022\023\n\013block_count\030g \001(\005\022\022" +
+      "\n\npeer_count\030h \001(\005\"8\n\004Type\022\013\n\007PRIVATE\020\000\022" +
+      "\r\n\tREAD_ONLY\020\001\022\n\n\006PUBLIC\020\002\022\010\n\004OPEN\020\003\"6\n\007" +
+      "Sharing\022\016\n\nNOT_SHARED\020\000\022\017\n\013INVITE_ONLY\020\001" +
+      "\022\n\n\006SHARED\020\002\"7\n\005State\022\020\n\014LOADING_TAIL\020\000\022" +
+      "\n\n\006LOADED\020\001\022\020\n\014LOADING_HEAD\020\002\"$\n\nThreadL" +
+      "ist\022\026\n\005items\030\001 \003(\0132\007.Thread\"I\n\nThreadPee" +
+      "r\022\n\n\002id\030\001 \001(\t\022\016\n\006thread\030\002 \001(\t\022\020\n\010welcome" +
+      "d\030\003 \001(\010\022\r\n\005admin\030\004 \001(\010\"\360\003\n\005Block\022\n\n\002id\030\001" +
+      " \001(\t\022\016\n\006thread\030\002 \001(\t\022\016\n\006author\030\003 \001(\t\022\036\n\004" +
+      "type\030\004 \001(\0162\020.Block.BlockType\022(\n\004date\030\005 \001" +
+      "(\0132\032.google.protobuf.Timestamp\022\017\n\007parent" +
+      "s\030\006 \003(\t\022\016\n\006target\030\007 \001(\t\022\014\n\004data\030\t \001(\t\022\014\n" +
+      "\004body\030\010 \001(\t\022\"\n\006status\030\n \001(\0162\022.Block.Bloc" +
+      "kStatus\022\020\n\010attempts\030\013 \001(\005\022\023\n\004user\030e \001(\0132" +
+      "\005.User\"\265\001\n\tBlockType\022\r\n\005MERGE\020\000\032\002\010\001\022\n\n\006I" +
+      "GNORE\020\001\022\010\n\004FLAG\020\002\022\010\n\004JOIN\020\003\022\014\n\010ANNOUNCE\020" +
+      "\004\022\t\n\005LEAVE\020\005\022\010\n\004TEXT\020\006\022\t\n\005FILES\020\007\022\017\n\007COM" +
+      "MENT\020\010\032\002\010\001\022\010\n\004LIKE\020\t\022\007\n\003ADD\0202\022\014\n\010ADDADMI" +
+      "N\020d\022\016\n\nREMOVEPEER\020e\022\t\n\005VIDEO\020f\"1\n\013BlockS" +
+      "tatus\022\t\n\005READY\020\000\022\n\n\006QUEUED\020\001\022\013\n\007PENDING\020" +
+      "\002\"\"\n\tBlockList\022\025\n\005items\030\001 \003(\0132\006.Block\"j\n" +
+      "\014BlockMessage\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022" +
+      "\026\n\003env\030\003 \001(\0132\t.Envelope\022(\n\004date\030\004 \001(\0132\032." +
+      "google.protobuf.Timestamp\"\204\001\n\006Invite\022\n\n\002" +
+      "id\030\001 \001(\t\022\r\n\005block\030\002 \001(\014\022\014\n\004name\030\003 \001(\t\022\026\n" +
+      "\007inviter\030\004 \001(\0132\005.Peer\022(\n\004date\030\005 \001(\0132\032.go" +
+      "ogle.protobuf.Timestamp\022\017\n\007parents\030\006 \003(\t" +
+      "\"$\n\nInviteList\022\026\n\005items\030\001 \003(\0132\007.Invite\"\347" +
+      "\001\n\010SyncFile\022\023\n\013peerAddress\030\001 \001(\t\022\014\n\004file" +
+      "\030\002 \001(\t\022\034\n\004type\030\003 \001(\0162\016.SyncFile.Type\022(\n\004" +
+      "date\030\004 \001(\0132\032.google.protobuf.Timestamp\022&" +
+      "\n\toperation\030\005 \001(\0162\023.SyncFile.Operation\"&" +
+      "\n\004Type\022\010\n\004BLOB\020\000\022\t\n\005PHOTO\020\001\022\t\n\005VIDEO\020\002\" " +
+      "\n\tOperation\022\007\n\003ADD\020\000\022\n\n\006REMOVE\020\001\"(\n\014Sync" +
+      "FileList\022\030\n\005items\030\001 \003(\0132\t.SyncFile\"\362\001\n\tF" +
+      "ileIndex\022\014\n\004mill\030\001 \001(\t\022\020\n\010checksum\030\002 \001(\t" +
+      "\022\016\n\006source\030\003 \001(\t\022\014\n\004opts\030\004 \001(\t\022\014\n\004hash\030\005" +
+      " \001(\t\022\013\n\003key\030\006 \001(\t\022\r\n\005media\030\007 \001(\t\022\014\n\004name" +
+      "\030\010 \001(\t\022\014\n\004size\030\t \001(\003\022)\n\005added\030\n \001(\0132\032.go" +
+      "ogle.protobuf.Timestamp\022%\n\004meta\030\013 \001(\0132\027." +
+      "google.protobuf.Struct\022\017\n\007targets\030\014 \003(\t\"" +
+      "\222\002\n\004Node\022\014\n\004name\030\001 \001(\t\022\013\n\003pin\030\002 \001(\010\022\021\n\tp" +
+      "laintext\030\003 \001(\010\022\014\n\004mill\030\004 \001(\t\022\035\n\004opts\030\005 \003" +
+      "(\0132\017.Node.OptsEntry\022,\n\013json_schema\030\006 \001(\013" +
+      "2\027.google.protobuf.Struct\022\037\n\005links\030\010 \003(\013" +
+      "2\020.Node.LinksEntry\032+\n\tOptsEntry\022\013\n\003key\030\001" +
+      " \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\0323\n\nLinksEntry\022\013\n" +
+      "\003key\030\001 \001(\t\022\024\n\005value\030\002 \001(\0132\005.Link:\0028\001\"\273\001\n" +
+      "\004Link\022\013\n\003use\030\001 \001(\t\022\013\n\003pin\030\002 \001(\010\022\021\n\tplain" +
+      "text\030\003 \001(\010\022\014\n\004mill\030\004 \001(\t\022\035\n\004opts\030\005 \003(\0132\017" +
+      ".Link.OptsEntry\022,\n\013json_schema\030\006 \001(\0132\027.g" +
+      "oogle.protobuf.Struct\032+\n\tOptsEntry\022\013\n\003ke" +
+      "y\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\325\003\n\014Notificat" +
+      "ion\022\n\n\002id\030\001 \001(\t\022(\n\004date\030\002 \001(\0132\032.google.p" +
+      "rotobuf.Timestamp\022\r\n\005actor\030\003 \001(\t\022\017\n\007subj" +
+      "ect\030\004 \001(\t\022\024\n\014subject_desc\030\005 \001(\t\022\r\n\005block" +
+      "\030\006 \001(\t\022\016\n\006target\030\007 \001(\t\022 \n\004type\030\010 \001(\0162\022.N" +
+      "otification.Type\022\014\n\004body\030\t \001(\t\022\014\n\004read\030\n" +
+      " \001(\010\022\023\n\004user\030e \001(\0132\005.User\"\346\001\n\004Type\022\023\n\017IN" +
+      "VITE_RECEIVED\020\000\022\027\n\023ACCOUNT_PEER_JOINED\020\001" +
+      "\022\025\n\021ACCOUNT_PEER_LEFT\020\010\022\017\n\013PEER_JOINED\020\002" +
+      "\022\r\n\tPEER_LEFT\020\003\022\021\n\rMESSAGE_ADDED\020\004\022\017\n\013FI" +
+      "LES_ADDED\020\005\022\021\n\rCOMMENT_ADDED\020\006\022\016\n\nLIKE_A" +
+      "DDED\020\007\022\017\n\013ADMIN_ADDED\020d\022\020\n\014PEER_REMOVED\020" +
+      "e\022\017\n\013VIDEO_ADDED\020f\"0\n\020NotificationList\022\034" +
+      "\n\005items\030\001 \003(\0132\r.Notification\"_\n\004Cafe\022\014\n\004" +
+      "peer\030\001 \001(\t\022\017\n\007address\030\002 \001(\t\022\013\n\003api\030\003 \001(\t" +
+      "\022\020\n\010protocol\030\004 \001(\t\022\014\n\004node\030\005 \001(\t\022\013\n\003url\030" +
+      "\006 \001(\t\"\301\001\n\013CafeSession\022\n\n\002id\030\001 \001(\t\022\016\n\006acc" +
+      "ess\030\002 \001(\t\022\'\n\003exp\030\003 \001(\0132\032.google.protobuf" +
+      ".Timestamp\022\017\n\007refresh\030\004 \001(\t\022(\n\004rexp\030\005 \001(" +
+      "\0132\032.google.protobuf.Timestamp\022\017\n\007subject" +
+      "\030\006 \001(\t\022\014\n\004type\030\007 \001(\t\022\023\n\004cafe\030\010 \001(\0132\005.Caf" +
+      "e\".\n\017CafeSessionList\022\033\n\005items\030\001 \003(\0132\014.Ca" +
+      "feSession\"\255\003\n\013CafeRequest\022\n\n\002id\030\001 \001(\t\022\014\n" +
+      "\004peer\030\002 \001(\t\022\016\n\006target\030\003 \001(\t\022\023\n\004cafe\030\004 \001(" +
+      "\0132\005.Cafe\022\r\n\005group\030\010 \001(\t\022\022\n\nsync_group\030\n " +
+      "\001(\t\022\037\n\004type\030\005 \001(\0162\021.CafeRequest.Type\022(\n\004" +
+      "date\030\006 \001(\0132\032.google.protobuf.Timestamp\022\014" +
+      "\n\004size\030\007 \001(\003\022#\n\006status\030\t \001(\0162\023.CafeReque" +
+      "st.Status\022\020\n\010attempts\030\013 \001(\005\022\022\n\ngroup_siz" +
+      "e\030\014 \001(\003\022\031\n\021group_transferred\030\r \001(\003\"O\n\004Ty" +
+      "pe\022\t\n\005STORE\020\000\022\013\n\007UNSTORE\020\003\022\020\n\014STORE_THRE" +
+      "AD\020\001\022\022\n\016UNSTORE_THREAD\020\004\022\t\n\005INBOX\020\002\",\n\006S" +
+      "tatus\022\007\n\003NEW\020\000\022\013\n\007PENDING\020\001\022\014\n\010COMPLETE\020" +
+      "\002\".\n\017CafeRequestList\022\033\n\005items\030\001 \003(\0132\014.Ca" +
+      "feRequest\"\372\001\n\023CafeSyncGroupStatus\022\n\n\002id\030" +
+      "\001 \001(\t\022\021\n\tnum_total\030\002 \001(\005\022\023\n\013num_pending\030" +
+      "\003 \001(\005\022\024\n\014num_complete\030\004 \001(\005\022\022\n\nsize_tota" +
+      "l\030\005 \001(\003\022\024\n\014size_pending\030\006 \001(\003\022\025\n\rsize_co" +
+      "mplete\030\007 \001(\003\022\031\n\021groups_size_total\030\010 \001(\003\022" +
+      "\034\n\024groups_size_complete\030\t \001(\003\022\r\n\005error\0302" +
+      " \001(\t\022\020\n\010error_id\0303 \001(\t\"\330\001\n\017CafeHTTPReque" +
+      "st\022#\n\004type\030\001 \001(\0162\025.CafeHTTPRequest.Type\022" +
+      "\013\n\003url\030\002 \001(\t\022.\n\007headers\030\003 \003(\0132\035.CafeHTTP" +
+      "Request.HeadersEntry\022\014\n\004path\030\004 \001(\t\032.\n\014He" +
+      "adersEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\002" +
+      "8\001\"%\n\004Type\022\007\n\003PUT\020\000\022\010\n\004POST\020\001\022\n\n\006DELETE\020" +
+      "\002\"c\n\013CafeMessage\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001" +
+      "(\t\022(\n\004date\030\003 \001(\0132\032.google.protobuf.Times" +
+      "tamp\022\020\n\010attempts\030\004 \001(\005\"[\n\017CafeClientNonc" +
+      "e\022\r\n\005value\030\001 \001(\t\022\017\n\007address\030\002 \001(\t\022(\n\004dat" +
+      "e\030\003 \001(\0132\032.google.protobuf.Timestamp\"\217\001\n\n" +
+      "CafeClient\022\n\n\002id\030\001 \001(\t\022\017\n\007address\030\002 \001(\t\022" +
+      "+\n\007created\030\003 \001(\0132\032.google.protobuf.Times" +
+      "tamp\022(\n\004seen\030\004 \001(\0132\032.google.protobuf.Tim" +
+      "estamp\022\r\n\005token\030\005 \001(\t\",\n\016CafeClientList\022" +
+      "\032\n\005items\030\001 \003(\0132\013.CafeClient\"P\n\tCafeToken" +
+      "\022\n\n\002id\030\001 \001(\t\022\r\n\005value\030\002 \001(\014\022(\n\004date\030\003 \001(" +
+      "\0132\032.google.protobuf.Timestamp\"B\n\020CafeCli" +
+      "entThread\022\n\n\002id\030\001 \001(\t\022\016\n\006client\030\002 \001(\t\022\022\n" +
+      "\nciphertext\030\003 \001(\014\"I\n\005Video\022\n\n\002id\030\001 \001(\t\022\017" +
+      "\n\007caption\030\002 \001(\t\022\023\n\013videoLength\030\003 \001(\003\022\016\n\006" +
+      "poster\030\004 \001(\t\"\\\n\nVideoChunk\022\n\n\002id\030\001 \001(\t\022\r" +
+      "\n\005chunk\030\002 \001(\t\022\017\n\007address\030\003 \001(\t\022\021\n\tstartT" +
+      "ime\030\004 \001(\003\022\017\n\007endTime\030\005 \001(\003\",\n\016VideoChunk" +
+      "List\022\032\n\005items\030\001 \003(\0132\013.VideoChunk\"g\n\021Cafe" +
+      "ClientMessage\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022" +
+      "\016\n\006client\030\003 \001(\t\022(\n\004date\030\004 \001(\0132\032.google.p" +
+      "rotobuf.Timestamp\"}\n\005BotKV\022\013\n\003key\030\001 \001(\t\022" +
+      "\r\n\005value\030\002 \001(\014\022+\n\007created\030\003 \001(\0132\032.google" +
+      ".protobuf.Timestamp\022+\n\007updated\030\004 \001(\0132\032.g" +
+      "oogle.protobuf.TimestampB\034\n\026sjtu.opennet" +
+      ".textilepbZ\002pbb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -46294,92 +48050,104 @@ public final class Model {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_PeerList_descriptor,
         new java.lang.String[] { "Items", });
-    internal_static_User_descriptor =
+    internal_static_SwarmPeer_descriptor =
       getDescriptor().getMessageTypes().get(2);
+    internal_static_SwarmPeer_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_SwarmPeer_descriptor,
+        new java.lang.String[] { "Addr", "Id", "Latency", "Muxer", });
+    internal_static_SwarmPeerList_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_SwarmPeerList_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_SwarmPeerList_descriptor,
+        new java.lang.String[] { "Items", });
+    internal_static_User_descriptor =
+      getDescriptor().getMessageTypes().get(4);
     internal_static_User_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_User_descriptor,
         new java.lang.String[] { "Address", "Name", "Avatar", });
     internal_static_Contact_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_Contact_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Contact_descriptor,
         new java.lang.String[] { "Address", "Name", "Avatar", "Peers", "Threads", });
     internal_static_ContactList_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_ContactList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ContactList_descriptor,
         new java.lang.String[] { "Items", });
     internal_static_Thread_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_Thread_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Thread_descriptor,
         new java.lang.String[] { "Id", "Key", "Sk", "Name", "Schema", "Initiator", "Type", "Sharing", "Whitelist", "State", "Head", "HeadBlocks", "SchemaNode", "BlockCount", "PeerCount", });
     internal_static_ThreadList_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_ThreadList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ThreadList_descriptor,
         new java.lang.String[] { "Items", });
     internal_static_ThreadPeer_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_ThreadPeer_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ThreadPeer_descriptor,
         new java.lang.String[] { "Id", "Thread", "Welcomed", "Admin", });
     internal_static_Block_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_Block_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Block_descriptor,
         new java.lang.String[] { "Id", "Thread", "Author", "Type", "Date", "Parents", "Target", "Data", "Body", "Status", "Attempts", "User", });
     internal_static_BlockList_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_BlockList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_BlockList_descriptor,
         new java.lang.String[] { "Items", });
     internal_static_BlockMessage_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_BlockMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_BlockMessage_descriptor,
         new java.lang.String[] { "Id", "Peer", "Env", "Date", });
     internal_static_Invite_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_Invite_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Invite_descriptor,
         new java.lang.String[] { "Id", "Block", "Name", "Inviter", "Date", "Parents", });
     internal_static_InviteList_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_InviteList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_InviteList_descriptor,
         new java.lang.String[] { "Items", });
     internal_static_SyncFile_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_SyncFile_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_SyncFile_descriptor,
         new java.lang.String[] { "PeerAddress", "File", "Type", "Date", "Operation", });
     internal_static_SyncFileList_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_SyncFileList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_SyncFileList_descriptor,
         new java.lang.String[] { "Items", });
     internal_static_FileIndex_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_FileIndex_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_FileIndex_descriptor,
         new java.lang.String[] { "Mill", "Checksum", "Source", "Opts", "Hash", "Key", "Media", "Name", "Size", "Added", "Meta", "Targets", });
     internal_static_Node_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_Node_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Node_descriptor,
@@ -46397,7 +48165,7 @@ public final class Model {
         internal_static_Node_LinksEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_Link_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_Link_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Link_descriptor,
@@ -46409,55 +48177,55 @@ public final class Model {
         internal_static_Link_OptsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_Notification_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_Notification_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Notification_descriptor,
         new java.lang.String[] { "Id", "Date", "Actor", "Subject", "SubjectDesc", "Block", "Target", "Type", "Body", "Read", "User", });
     internal_static_NotificationList_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_NotificationList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_NotificationList_descriptor,
         new java.lang.String[] { "Items", });
     internal_static_Cafe_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_Cafe_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Cafe_descriptor,
         new java.lang.String[] { "Peer", "Address", "Api", "Protocol", "Node", "Url", });
     internal_static_CafeSession_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_CafeSession_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeSession_descriptor,
         new java.lang.String[] { "Id", "Access", "Exp", "Refresh", "Rexp", "Subject", "Type", "Cafe", });
     internal_static_CafeSessionList_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_CafeSessionList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeSessionList_descriptor,
         new java.lang.String[] { "Items", });
     internal_static_CafeRequest_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(25);
     internal_static_CafeRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeRequest_descriptor,
         new java.lang.String[] { "Id", "Peer", "Target", "Cafe", "Group", "SyncGroup", "Type", "Date", "Size", "Status", "Attempts", "GroupSize", "GroupTransferred", });
     internal_static_CafeRequestList_descriptor =
-      getDescriptor().getMessageTypes().get(24);
+      getDescriptor().getMessageTypes().get(26);
     internal_static_CafeRequestList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeRequestList_descriptor,
         new java.lang.String[] { "Items", });
     internal_static_CafeSyncGroupStatus_descriptor =
-      getDescriptor().getMessageTypes().get(25);
+      getDescriptor().getMessageTypes().get(27);
     internal_static_CafeSyncGroupStatus_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeSyncGroupStatus_descriptor,
         new java.lang.String[] { "Id", "NumTotal", "NumPending", "NumComplete", "SizeTotal", "SizePending", "SizeComplete", "GroupsSizeTotal", "GroupsSizeComplete", "Error", "ErrorId", });
     internal_static_CafeHTTPRequest_descriptor =
-      getDescriptor().getMessageTypes().get(26);
+      getDescriptor().getMessageTypes().get(28);
     internal_static_CafeHTTPRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeHTTPRequest_descriptor,
@@ -46469,67 +48237,67 @@ public final class Model {
         internal_static_CafeHTTPRequest_HeadersEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_CafeMessage_descriptor =
-      getDescriptor().getMessageTypes().get(27);
+      getDescriptor().getMessageTypes().get(29);
     internal_static_CafeMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeMessage_descriptor,
         new java.lang.String[] { "Id", "Peer", "Date", "Attempts", });
     internal_static_CafeClientNonce_descriptor =
-      getDescriptor().getMessageTypes().get(28);
+      getDescriptor().getMessageTypes().get(30);
     internal_static_CafeClientNonce_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeClientNonce_descriptor,
         new java.lang.String[] { "Value", "Address", "Date", });
     internal_static_CafeClient_descriptor =
-      getDescriptor().getMessageTypes().get(29);
+      getDescriptor().getMessageTypes().get(31);
     internal_static_CafeClient_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeClient_descriptor,
         new java.lang.String[] { "Id", "Address", "Created", "Seen", "Token", });
     internal_static_CafeClientList_descriptor =
-      getDescriptor().getMessageTypes().get(30);
+      getDescriptor().getMessageTypes().get(32);
     internal_static_CafeClientList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeClientList_descriptor,
         new java.lang.String[] { "Items", });
     internal_static_CafeToken_descriptor =
-      getDescriptor().getMessageTypes().get(31);
+      getDescriptor().getMessageTypes().get(33);
     internal_static_CafeToken_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeToken_descriptor,
         new java.lang.String[] { "Id", "Value", "Date", });
     internal_static_CafeClientThread_descriptor =
-      getDescriptor().getMessageTypes().get(32);
+      getDescriptor().getMessageTypes().get(34);
     internal_static_CafeClientThread_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeClientThread_descriptor,
         new java.lang.String[] { "Id", "Client", "Ciphertext", });
     internal_static_Video_descriptor =
-      getDescriptor().getMessageTypes().get(33);
+      getDescriptor().getMessageTypes().get(35);
     internal_static_Video_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Video_descriptor,
         new java.lang.String[] { "Id", "Caption", "VideoLength", "Poster", });
     internal_static_VideoChunk_descriptor =
-      getDescriptor().getMessageTypes().get(34);
+      getDescriptor().getMessageTypes().get(36);
     internal_static_VideoChunk_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_VideoChunk_descriptor,
         new java.lang.String[] { "Id", "Chunk", "Address", "StartTime", "EndTime", });
     internal_static_VideoChunkList_descriptor =
-      getDescriptor().getMessageTypes().get(35);
+      getDescriptor().getMessageTypes().get(37);
     internal_static_VideoChunkList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_VideoChunkList_descriptor,
         new java.lang.String[] { "Items", });
     internal_static_CafeClientMessage_descriptor =
-      getDescriptor().getMessageTypes().get(36);
+      getDescriptor().getMessageTypes().get(38);
     internal_static_CafeClientMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeClientMessage_descriptor,
         new java.lang.String[] { "Id", "Peer", "Client", "Date", });
     internal_static_BotKV_descriptor =
-      getDescriptor().getMessageTypes().get(37);
+      getDescriptor().getMessageTypes().get(39);
     internal_static_BotKV_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_BotKV_descriptor,
