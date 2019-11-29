@@ -110,6 +110,7 @@ public class DialogAdapter extends ArrayAdapter {
 
         String avatarPath = FileUtil.getFilePath(avatarHash);
         if (avatarPath.equals("null")) { //如果没有存储过这个头像文件
+            System.out.println(avatarPath);
             Textile.instance().ipfs.dataAtPath("/ipfs/" + avatarHash + "/0/small/content", new Handlers.DataHandler() {
                 @Override
                 public void onComplete(byte[] data, String media) {
