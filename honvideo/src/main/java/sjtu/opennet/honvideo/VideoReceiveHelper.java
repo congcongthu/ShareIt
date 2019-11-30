@@ -56,6 +56,16 @@ public class VideoReceiveHelper {
         }
     };
 
+    private VideoHandlers.SearchResultHandler searchHandler = new VideoHandlers.SearchResultHandler(){
+        @Override
+        public void onGetAnResult(Model.VideoChunk vChunk){
+            receiveChunk(vChunk);
+        }
+        @Override
+        public void onError(Exception e){
+            e.printStackTrace();
+        }
+    };
 
     public VideoReceiveHelper(Context context, Model.Video videoPb){
         this.context = context;
@@ -79,7 +89,11 @@ public class VideoReceiveHelper {
      * Search, receive, judge whether to stop
      */
     public void downloadVideo(Model.Video videoPb){
+        new VideoSearcher(videoId, receivingChunk, searchHandler).start();
+    }
 
+    public void preloadVideo(Model.Video videoPb){
+        new VideoSearcher(videoId, receivingChunk, searchHandler, 3).start();
     }
 
     public void receiveChunk(Model.VideoChunk videoChunk){

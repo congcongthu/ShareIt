@@ -36,7 +36,6 @@ public class VideoSearcher extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Textile.instance().addEventListener(new ChunkQueryListener());
     }
 
     VideoSearcher(String videoId, HashSet<Long> receivingChunk, VideoHandlers.SearchResultHandler handler, long toIndex){
@@ -48,10 +47,13 @@ public class VideoSearcher extends Thread {
         @Override
         public void videoChunkQueryResult(String queryId, Model.VideoChunk vchunk) {
             //EventBus.getDefault().post(vchunk);
-            if(queryId == videoId){
-                Log.d(TAG, String.format("VIDEOPIPELINE: %s, search result received.", vchunk.getChunk()));
-                receivingChunk.add(vchunk.getIndex());
-                handler.onGetAnResult(vchunk);
+            synchronized (WAITLOCK) {
+                if (queryId == videoId) {
+                    Log.d(TAG, String.format("VIDEOPIPELINE: %s, search result received.", vchunk.getChunk()));
+                    receivingChunk.add(vchunk.getIndex());
+                    handler.onGetAnResult(vchunk);
+                    WAITLOCK.notify();
+                }
             }
         }
     }
@@ -88,26 +90,34 @@ public class VideoSearcher extends Thread {
     public void run() {
         synchronized (LOCK) {
             try {
+                ChunkQueryListener searchListener = new ChunkQueryListener();
+                Textile.instance().addEventListener(searchListener);
                 Log.d(TAG, String.format("VIDEOPIPELINE: %s, search thread start.", videoId));
                 int currentIndex = 0;
                 long videoLength = videoPb.getVideoLength();
 
-                while ((toIndex < 0 || currentIndex <= toIndex) && !stopThread){
+                while ((toIndex < 0 || currentIndex <= toIndex) && !stopThread && !isInterrupted()){
                     Log.d(TAG, String.format("VIDEOPIPELINE: %d, try search this index", currentIndex));
                     Model.VideoChunk v = Textile.instance().videos.getVideoChunk(videoId, currentIndex);
-                    if(v != null){ //Microsecond, equals to 200 ms
+
+                    //When chunk is already in the local DB.
+                    if(v != null){
                         Log.d(TAG, String.format("Chunk %d already get", currentIndex));
-                        if(v.getEndTime() >=videoLength - 200000) {
+                        if(v.getEndTime() >=videoLength - 200000) {   //Microsecond, equals to 200 ms
                             return;
                         }else{
                             currentIndex++;
                         }
-                    }
-
-                    if(v == null && !receivingChunk.contains(currentIndex)){
+                    } else if(receivingChunk.contains(currentIndex)){
+                        Log.d(TAG, String.format("Chunk %d already searched", currentIndex));
+                        currentIndex++;
+                    } else {
+                        Log.d(TAG, String.format("Do search for chunk %d", currentIndex));
                         searchTheChunk(videoId, currentIndex, 1200);
                     }
                 }
+
+                Textile.instance().removeEventListener(searchListener);
             }catch(Exception e){
                 e.printStackTrace();
                 Log.e(TAG, "Error occur when search video chunk");

@@ -30,6 +30,17 @@ public class VideoReceiver extends Thread{
 
     //private String controlLock;
     //private HashSet<int> chunk
+    private VideoHandlers.ReceiveHandler handler = new VideoHandlers.ReceiveHandler(){
+        @Override
+        public void onChunkComplete(Model.VideoChunk vChunk){
+            return;
+        }
+
+        @Override
+        public void onError(Exception e){
+            e.printStackTrace();
+        }
+    };
 
     public VideoReceiver(BlockingQueue<VideoReceiveTask> vQueue, String videoId, String videoPath, String chunkPath){
         this.vQueue = vQueue;
@@ -40,6 +51,11 @@ public class VideoReceiver extends Thread{
         this.m3u8Path = String.format("%s/playList.m3u8", videoPath);
 
         //lockQueue = new LinkedBlockingQueue<>();
+    }
+
+    public VideoReceiver(BlockingQueue<VideoReceiveTask> vQueue, String videoId, String videoPath, String chunkPath, VideoHandlers.ReceiveHandler handler){
+        this(vQueue, videoId, videoPath, chunkPath);
+        this.handler = handler;
     }
 
 
@@ -99,6 +115,7 @@ public class VideoReceiver extends Thread{
                             Log.e(TAG, String.format("Add the failed task %s back to queue", fileName));
                         }else if(returnStat == 1){
                             Log.d(TAG, "Task success.");
+                            handler.onChunkComplete(vTask.getChunk());
                         } else if(returnStat == 0){
                             Log.e(TAG, "That should not happen.");
                         }

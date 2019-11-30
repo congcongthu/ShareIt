@@ -125,4 +125,8 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
         }
         //return fileName;
     }
+
+    Model.VideoChunk getChunk(){
+        return vChunk;
+    }
 }
