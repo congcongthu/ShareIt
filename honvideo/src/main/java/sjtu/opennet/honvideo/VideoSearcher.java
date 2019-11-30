@@ -15,7 +15,7 @@ import sjtu.opennet.textilepb.QueryOuterClass;
  * search, create receive task
  */
 public class VideoSearcher extends Thread {
-    private static final String TAG = "VideoSearcher";
+    private static final String TAG = "HONVIDEO.VideoSearcher";
     private String videoId;
     private Model.Video videoPb;
     //private long fromIndex = -1;
