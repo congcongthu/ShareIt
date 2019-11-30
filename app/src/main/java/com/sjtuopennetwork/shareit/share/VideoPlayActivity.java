@@ -131,6 +131,8 @@ public class VideoPlayActivity extends AppCompatActivity {
                 videorHelper=new VideoReceiveHelper(this, video, new VideoHandlers.ReceiveHandler() {
                     @Override
                     public void onChunkComplete(Model.VideoChunk vChunk) {
+                        m3u8WriteCount++;
+                        Log.d(TAG, "onChunkComplete: 写m3u8"+m3u8WriteCount);
                         writeM3u8(vChunk);
                     }
 
@@ -139,11 +141,10 @@ public class VideoPlayActivity extends AppCompatActivity {
 
                     }
                 });
+
                 dir = VideoUploadHelper.getVideoPathFromID(this, videoid);
                 videoLength = video.getVideoLength();
                 Log.d(TAG, "onCreate: 视频长度："+videoLength);
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -166,8 +167,6 @@ public class VideoPlayActivity extends AppCompatActivity {
 //            searchVideoChunks();
                 notplayed=true;
 
-//                videorHelper=new VideoReceiveHelper(this,video);
-
                 videorHelper.downloadVideo();
 
                 //初始化播放器
@@ -180,11 +179,11 @@ public class VideoPlayActivity extends AppCompatActivity {
                 PlayerView playerView = findViewById(R.id.player_view);
                 playerView.setPlayer(player);
 
+
 //                getChunkThread.start(); //如果没有下载完，就去并发下载播放就行了。
 
                 //播放
-
-
+                playVideo();
 
             }
         }
@@ -243,8 +242,6 @@ public class VideoPlayActivity extends AppCompatActivity {
     public void playVideo(){
         notplayed=false;
 
-
-
         //设置数据源
         dataSourceFactory = new DefaultDataSourceFactory(VideoPlayActivity.this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
         hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory)
@@ -252,6 +249,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         player.setPlayWhenReady(true);
         player.prepare(hlsMediaSource);
         player.addListener(new MyEventListener());
+
     }
 
     public class MyEventListener implements Player.EventListener {

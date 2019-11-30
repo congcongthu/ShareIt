@@ -40,6 +40,7 @@ public class VideoReceiveHelper {
     private String chunkPath;
     private VideoReceiver receiver;
     private boolean complete = false;
+    private VideoSearcher searcher = null;
 
     private BlockingQueue<VideoReceiveTask> vQueue;
     private HashSet<Long> receivingChunk=new HashSet<>();
@@ -83,17 +84,20 @@ public class VideoReceiveHelper {
     public VideoReceiveHelper(Context context, Model.Video videoPb, VideoHandlers.ReceiveHandler handler){
         this(context, videoPb);
         this.handler = handler;
+        receiver.setHandler(handler);
     }
 
     /**
      * Search, receive, judge whether to stop
      */
     public void downloadVideo(){
-        new VideoSearcher(videoId, receivingChunk, searchHandler).start();
+        searcher = new VideoSearcher(videoId, receivingChunk, searchHandler);
+        searcher.start();
     }
 
     public void preloadVideo(){
-        new VideoSearcher(videoId, receivingChunk, searchHandler, 3).start();
+        searcher = new VideoSearcher(videoId, receivingChunk, searchHandler, 3);
+        searcher.start();
     }
 
     public void receiveChunk(Model.VideoChunk videoChunk){
@@ -126,6 +130,9 @@ public class VideoReceiveHelper {
     public void stopReceiver(){
         Log.d(TAG, "Stop receiver. Add stop task to task queue.");
         vQueue.add(VideoReceiveTask.destroyTask());
+        if(searcher!=null){
+            searcher.stopThread();
+        }
     }
 
     private void buildWorkspace(){
