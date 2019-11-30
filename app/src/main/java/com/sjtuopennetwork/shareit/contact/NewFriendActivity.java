@@ -3,6 +3,7 @@ package com.sjtuopennetwork.shareit.contact;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -19,6 +20,8 @@ import sjtu.opennet.hon.Textile;
 
 
 public class NewFriendActivity extends AppCompatActivity {
+
+    private static final String TAG = "================";
 
     //UI控件
     ListView new_friend_lv;
@@ -54,12 +57,24 @@ public class NewFriendActivity extends AppCompatActivity {
             accept.setMessage("确定接收 "+resultContact.name+" 的好友申请吗？");
             accept.setPositiveButton("接受", (dialog, which) -> {
                 try {
+                    Log.d(TAG, "showApplications: 同意申请："+inviteView.getId());
                     Textile.instance().invites.accept(inviteView.getId());
+
+                    //忽略所有其他的同一个人来的申请
+                    ContactUtil.ignoreOtherApplies(inviteView.getInviter().getAddress());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
-            accept.setNegativeButton("取消", (dialog, which) -> Toast.makeText(NewFriendActivity.this,"已取消",Toast.LENGTH_SHORT).show());
+            accept.setNegativeButton("忽略", (dialog, which) -> {
+                Toast.makeText(NewFriendActivity.this, "已取消", Toast.LENGTH_SHORT).show();
+                try {
+                    //忽略当前所有这个人的申请
+                    ContactUtil.ignoreOtherApplies(inviteView.getInviter().getAddress());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
             accept.show();
         });
     }
