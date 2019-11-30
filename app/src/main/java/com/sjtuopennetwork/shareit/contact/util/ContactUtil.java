@@ -1,5 +1,6 @@
 package com.sjtuopennetwork.shareit.contact.util;
 
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.HashMap;
@@ -16,6 +17,8 @@ import sjtu.opennet.hon.Textile;
  * Include some static methods which operate contacts or friends.
  */
 public class ContactUtil {
+
+    private static final String TAG = "==============";
 
     /**
      * Get the list of all friends.
@@ -48,6 +51,22 @@ public class ContactUtil {
         return result;
     }
 
+    public static void ignoreOtherApplies(String address){
+        try {
+            List<View.InviteView> invites = Textile.instance().invites.list().getItemsList();
+            for (View.InviteView inviteView : invites) {
+                if (inviteView.getName().equals("FriendThread1219")) { //找到好友申请的邀请
+                    String applier = inviteView.getInviter().getAddress();
+                    if(applier.equals(address)){
+                        Textile.instance().invites.ignore(inviteView.getId());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Get friend application and the corresponding applier.
      * If the name of an invite is "FriendThread1219", the invite is an friend application.
@@ -60,9 +79,26 @@ public class ContactUtil {
             List<View.InviteView> invites = Textile.instance().invites.list().getItemsList();
             for (View.InviteView inviteView : invites) {
                 if(inviteView.getName().equals("FriendThread1219")){ //找到好友申请的邀请
-                    ResultContact resultContact=new ResultContact(inviteView.getInviter().getAddress(),inviteView.getInviter().getName(),inviteView.getInviter().getAvatar(),null,false);
-                    applications.add(resultContact);
-                    friendApplications.add(inviteView);
+                    String applier=inviteView.getInviter().getAddress();
+                    Log.d(TAG, "getApplication: 申请者address："+applier);
+
+                    int oldindex=-1;
+                    for(int i=0;i<friendApplications.size();i++){
+                        if(friendApplications.get(i).getInviter().getAddress().equals(applier)){
+                            Log.d(TAG, "getApplication: 申请是老的"+i);
+                            oldindex=i;
+                            break;
+                        }
+                    }
+
+                    if(oldindex==-1){
+                        Log.d(TAG, "getApplication: 这个申请是第一次："+inviteView.getId());
+                        ResultContact resultContact=new ResultContact(inviteView.getInviter().getAddress(),inviteView.getInviter().getName(),inviteView.getInviter().getAvatar(),null,false);
+                        applications.add(resultContact);
+                        friendApplications.add(inviteView);
+                    }else{
+                        Textile.instance().invites.ignore(inviteView.getId());
+                    }
                 }
             }
         }catch (Exception e){
@@ -72,12 +108,29 @@ public class ContactUtil {
         return result;
     }
 
+
     /**
      * Create a friend thread, called when sending a friend application to the contact.
      * The thread key is set to target address, and the whitelist includes the address of target user and applier.
      * @param targetAddress
      */
     public static void createTwoPersonThread(String targetAddress){
+        //找到key是address的
+        boolean applied=false;
+        try {
+            List<Model.Thread> threads=Textile.instance().threads.list().getItemsList();
+            for(Model.Thread t:threads){
+                if(t.getKey().equals(targetAddress)){
+                    Textile.instance().threads.remove(t.getId());
+                    Log.d(TAG, "createTwoPersonThread: 已删除key："+targetAddress);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema=
                 sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
                         .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.MEDIA)
@@ -94,6 +147,7 @@ public class ContactUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     /**

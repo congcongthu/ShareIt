@@ -388,7 +388,7 @@ public class ForeGroundService extends Service {
             try {
                 thread=Textile.instance().threads.get(threadId);
             } catch (Exception e) {
-                e.printStackTrace();
+
             }
 
             //如果是不共享的thread，包括相册thread，设备thread等，就不对消息进行处理
@@ -551,7 +551,7 @@ public class ForeGroundService extends Service {
                 Model.Video video=feedItemData.feedVideo.getVideo();
 
                 //每得到一个视频就在后台启动预加载线程
-                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
+//                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
 
                 TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,

@@ -251,6 +251,28 @@ public class VideoPlayActivity extends AppCompatActivity {
         }
     }
 
+    public class SearchChunk extends Thread{
+        public String chunkName;
+        public boolean searchFinish;
+
+        public SearchChunk(String chunkName){
+            this.chunkName=chunkName;
+            searchFinish=false;
+        }
+
+        @Override
+        public void run() {
+            while (!searchFinish){
+                searchTheChunk(chunkName);
+                try {
+                    sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public class GetChunkThread extends Thread{
         @Override
         public void run() {
@@ -258,40 +280,29 @@ public class VideoPlayActivity extends AppCompatActivity {
             Model.VideoChunk v=null;
             while(!finished){
                 String chunkName="out"+String.format("%04d", i)+".ts";
-                System.out.println("===================chunkName+"+chunkName);
                 try {
                     v=Textile.instance().videos.getVideoChunk(videoid, chunkName);
                     if (v == null) {
+                        SearchChunk searchChunk=new SearchChunk(chunkName);
+                        searchChunk.start();
                         while(!finishGetHash){ //本地没有就一直去找，直到找到为止
                             v = Textile.instance().videos.getVideoChunk(videoid, chunkName);
-                            if (v != null) //如果已经获取到了ts文件
+                            if (v != null) { //如果已经获取到了ts文件
+                                searchChunk.searchFinish = true;
                                 break;
-                            System.out.println("==========获取chunk："+chunkName);
-                            if(!addressMap.containsKey(chunkName)) { //如果还没有ts的hash就去找hash
-                                System.out.println("======gettinghash："+chunkName);
-                                Log.d(TAG, "run: gettinghash："+finished);
-                                searchTheChunk(chunkName);
-                            }else{
-                                System.out.println("======获取到hash了："+chunkName);
                             }
-                            try {
-                                sleep(1500);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                            if(addressMap.containsKey(chunkName)) { //如果还没有ts的hash就去找hash
+                                searchChunk.searchFinish=true;
                             }
                         }
-                    }else{
-                        System.out.println("================获取到了chunk："+v.getChunk());
                     }
                     writeM3u8(v);
                     if(v.getEndTime()>=videoLength - gap){ //如果是最后一个就终止,videolength是微秒，
-                        System.out.println("==========末端差距："+v.getEndTime()+" "+(videoLength - gap));
                         finished=true;
                         writeM3u8End();
                     }
-                    if((m3u8WriteCount > 1 || finished) && notplayed){
-//                    if(i>4 && player==null){
-                        System.out.println("=================开始播放了");
+                    if((m3u8WriteCount > 2 || finished) && notplayed){
+
                         Message msg=new Message();
                         msg.what=1;
                         handler.sendMessage(msg);
