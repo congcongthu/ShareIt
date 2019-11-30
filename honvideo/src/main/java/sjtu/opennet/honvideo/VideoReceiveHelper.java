@@ -88,11 +88,11 @@ public class VideoReceiveHelper {
     /**
      * Search, receive, judge whether to stop
      */
-    public void downloadVideo(Model.Video videoPb){
+    public void downloadVideo(){
         new VideoSearcher(videoId, receivingChunk, searchHandler).start();
     }
 
-    public void preloadVideo(Model.Video videoPb){
+    public void preloadVideo(){
         new VideoSearcher(videoId, receivingChunk, searchHandler, 3).start();
     }
 
