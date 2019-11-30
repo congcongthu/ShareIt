@@ -92,7 +92,7 @@ public class VideoReceiveHelper {
         new VideoSearcher(videoId, receivingChunk, searchHandler).start();
     }
 
-    public void preloadVideo(Model.Video videoPb){
+    public void preloadVideo(){
         new VideoSearcher(videoId, receivingChunk, searchHandler, 3).start();
     }
 

@@ -127,6 +127,18 @@ public class VideoPlayActivity extends AppCompatActivity {
             try {
                 video = Textile.instance().videos.getVideo(videoid);
 //                videorHelper = new VideoReceiveHelper(this, video);
+
+                videorHelper=new VideoReceiveHelper(this, video, new VideoHandlers.ReceiveHandler() {
+                    @Override
+                    public void onChunkComplete(Model.VideoChunk vChunk) {
+                        writeM3u8(vChunk);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
                 dir = VideoUploadHelper.getVideoPathFromID(this, videoid);
                 videoLength = video.getVideoLength();
                 Log.d(TAG, "onCreate: 视频长度："+videoLength);
@@ -154,20 +166,9 @@ public class VideoPlayActivity extends AppCompatActivity {
 //            searchVideoChunks();
                 notplayed=true;
 
-                videorHelper=new VideoReceiveHelper(this,video);
+//                videorHelper=new VideoReceiveHelper(this,video);
 
-//                videorHelper=new VideoReceiveHelper(this, video, new VideoHandlers.ReceiveHandler() {
-//                    @Override
-//                    public void onChunkComplete(Model.VideoChunk vChunk) {
-//                        writeM3u8(vChunk);
-//                    }
-//
-//                    @Override
-//                    public void onError(Exception e) {
-//
-//                    }
-//                });
-//                videorHelper.downloadVideo();
+                videorHelper.downloadVideo();
 
                 //初始化播放器
                 mProgressBar=findViewById(R.id.my_progress_bar);
