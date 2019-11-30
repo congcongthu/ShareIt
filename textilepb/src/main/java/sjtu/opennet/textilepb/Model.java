@@ -43925,6 +43925,11 @@ public final class Model {
      * <code>int64 endTime = 5;</code>
      */
     long getEndTime();
+
+    /**
+     * <code>int64 index = 6;</code>
+     */
+    long getIndex();
   }
   /**
    * Protobuf type {@code VideoChunk}
@@ -43944,6 +43949,7 @@ public final class Model {
       address_ = "";
       startTime_ = 0L;
       endTime_ = 0L;
+      index_ = 0L;
     }
 
     @java.lang.Override
@@ -43996,6 +44002,11 @@ public final class Model {
             case 40: {
 
               endTime_ = input.readInt64();
+              break;
+            }
+            case 48: {
+
+              index_ = input.readInt64();
               break;
             }
             default: {
@@ -44150,6 +44161,15 @@ public final class Model {
       return endTime_;
     }
 
+    public static final int INDEX_FIELD_NUMBER = 6;
+    private long index_;
+    /**
+     * <code>int64 index = 6;</code>
+     */
+    public long getIndex() {
+      return index_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -44179,6 +44199,9 @@ public final class Model {
       if (endTime_ != 0L) {
         output.writeInt64(5, endTime_);
       }
+      if (index_ != 0L) {
+        output.writeInt64(6, index_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -44204,6 +44227,10 @@ public final class Model {
       if (endTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(5, endTime_);
+      }
+      if (index_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(6, index_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -44231,6 +44258,8 @@ public final class Model {
           == other.getStartTime());
       result = result && (getEndTime()
           == other.getEndTime());
+      result = result && (getIndex()
+          == other.getIndex());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -44254,6 +44283,9 @@ public final class Model {
       hash = (37 * hash) + ENDTIME_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getEndTime());
+      hash = (37 * hash) + INDEX_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getIndex());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -44397,6 +44429,8 @@ public final class Model {
 
         endTime_ = 0L;
 
+        index_ = 0L;
+
         return this;
       }
 
@@ -44428,6 +44462,7 @@ public final class Model {
         result.address_ = address_;
         result.startTime_ = startTime_;
         result.endTime_ = endTime_;
+        result.index_ = index_;
         onBuilt();
         return result;
       }
@@ -44493,6 +44528,9 @@ public final class Model {
         }
         if (other.getEndTime() != 0L) {
           setEndTime(other.getEndTime());
+        }
+        if (other.getIndex() != 0L) {
+          setIndex(other.getIndex());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -44778,6 +44816,32 @@ public final class Model {
       public Builder clearEndTime() {
         
         endTime_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long index_ ;
+      /**
+       * <code>int64 index = 6;</code>
+       */
+      public long getIndex() {
+        return index_;
+      }
+      /**
+       * <code>int64 index = 6;</code>
+       */
+      public Builder setIndex(long value) {
+        
+        index_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 index = 6;</code>
+       */
+      public Builder clearIndex() {
+        
+        index_ = 0L;
         onChanged();
         return this;
       }
@@ -48011,17 +48075,17 @@ public final class Model {
       "entThread\022\n\n\002id\030\001 \001(\t\022\016\n\006client\030\002 \001(\t\022\022\n" +
       "\nciphertext\030\003 \001(\014\"I\n\005Video\022\n\n\002id\030\001 \001(\t\022\017" +
       "\n\007caption\030\002 \001(\t\022\023\n\013videoLength\030\003 \001(\003\022\016\n\006" +
-      "poster\030\004 \001(\t\"\\\n\nVideoChunk\022\n\n\002id\030\001 \001(\t\022\r" +
+      "poster\030\004 \001(\t\"k\n\nVideoChunk\022\n\n\002id\030\001 \001(\t\022\r" +
       "\n\005chunk\030\002 \001(\t\022\017\n\007address\030\003 \001(\t\022\021\n\tstartT" +
-      "ime\030\004 \001(\003\022\017\n\007endTime\030\005 \001(\003\",\n\016VideoChunk" +
-      "List\022\032\n\005items\030\001 \003(\0132\013.VideoChunk\"g\n\021Cafe" +
-      "ClientMessage\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022" +
-      "\016\n\006client\030\003 \001(\t\022(\n\004date\030\004 \001(\0132\032.google.p" +
-      "rotobuf.Timestamp\"}\n\005BotKV\022\013\n\003key\030\001 \001(\t\022" +
-      "\r\n\005value\030\002 \001(\014\022+\n\007created\030\003 \001(\0132\032.google" +
-      ".protobuf.Timestamp\022+\n\007updated\030\004 \001(\0132\032.g" +
-      "oogle.protobuf.TimestampB\034\n\026sjtu.opennet" +
-      ".textilepbZ\002pbb\006proto3"
+      "ime\030\004 \001(\003\022\017\n\007endTime\030\005 \001(\003\022\r\n\005index\030\006 \001(" +
+      "\003\",\n\016VideoChunkList\022\032\n\005items\030\001 \003(\0132\013.Vid" +
+      "eoChunk\"g\n\021CafeClientMessage\022\n\n\002id\030\001 \001(\t" +
+      "\022\014\n\004peer\030\002 \001(\t\022\016\n\006client\030\003 \001(\t\022(\n\004date\030\004" +
+      " \001(\0132\032.google.protobuf.Timestamp\"}\n\005BotK" +
+      "V\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\014\022+\n\007created" +
+      "\030\003 \001(\0132\032.google.protobuf.Timestamp\022+\n\007up" +
+      "dated\030\004 \001(\0132\032.google.protobuf.TimestampB" +
+      "\034\n\026sjtu.opennet.textilepbZ\002pbb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -48283,7 +48347,7 @@ public final class Model {
     internal_static_VideoChunk_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_VideoChunk_descriptor,
-        new java.lang.String[] { "Id", "Chunk", "Address", "StartTime", "EndTime", });
+        new java.lang.String[] { "Id", "Chunk", "Address", "StartTime", "EndTime", "Index", });
     internal_static_VideoChunkList_descriptor =
       getDescriptor().getMessageTypes().get(37);
     internal_static_VideoChunkList_fieldAccessorTable = new
