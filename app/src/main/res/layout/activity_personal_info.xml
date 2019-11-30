@@ -155,6 +155,40 @@
             android:text=""
             android:textSize="18sp"/>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/personal_info_cafe"
+        android:paddingLeft="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?selectableItemBackground"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+        <TextView
+            android:id="@+id/cafe_caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cafe连接成功"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+        <TextView
+            android:layout_marginLeft="20dp"
+            android:paddingLeft="10dp"
+            android:id="@+id/personal_cafe_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:ellipsize="end"
+            android:maxEms="12"
+            android:text=""
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="1dp"
