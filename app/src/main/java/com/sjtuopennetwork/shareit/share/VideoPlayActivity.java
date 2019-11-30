@@ -180,7 +180,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                 PlayerView playerView = findViewById(R.id.player_view);
                 playerView.setPlayer(player);
 
-                getChunkThread.start(); //如果没有下载完，就去并发下载播放就行了。
+//                getChunkThread.start(); //如果没有下载完，就去并发下载播放就行了。
 
                 //播放
 

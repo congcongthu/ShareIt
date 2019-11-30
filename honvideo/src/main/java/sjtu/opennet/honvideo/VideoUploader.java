@@ -16,6 +16,7 @@ public class VideoUploader extends Thread{
     private BlockingQueue<ChunkPublishTask> chunkQueue;     //Used to send endTag to chunkpublisher.
     private final String TAG = "HONVIDEO.VideoUploader";
     private long currentDuration = 0;
+    private long currentIndex = 0;
     private boolean complete = false;
     public VideoUploader(BlockingQueue<VideoUploadTask> bQueue, BlockingQueue<ChunkPublishTask> cQueue){
         videoQueue = bQueue;
@@ -53,11 +54,12 @@ public class VideoUploader extends Thread{
                     complete = true;
                 }else {
                     Log.d(TAG, String.format("Task at %d start to execute.", currentDuration));
-                    Model.VideoChunk videoChunk = vTask.upload(currentDuration);
+                    Model.VideoChunk videoChunk = vTask.upload(currentDuration, currentIndex);
                     Log.d(TAG, String.format("Task at %d upload return.", currentDuration));
                     Log.d(TAG, String.format("Task at %d add to chunk task queue.", currentDuration));
                     chunkQueue.add(new ChunkPublishTask(videoChunk, false));
                     currentDuration = videoChunk.getEndTime();
+                    currentIndex++;
                 }
 
             } catch (InterruptedException ie) {
