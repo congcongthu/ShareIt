@@ -60,6 +60,10 @@ public class ForeGroundService extends Service {
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
         repoPath=intent.getStringExtra("repopath");
 
+        SharedPreferences.Editor editor=pref.edit();
+        editor.putBoolean("131ok",false);
+        editor.commit();
+
         new Thread(){
             @Override
             public void run() {
@@ -176,8 +180,8 @@ public class ForeGroundService extends Service {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void tryConnectCafe(Double register){
-        Log.d(TAG, "tryConnectCafe: 尝试连接cafe");
         if(register.equals(2.34)){
+            Log.d(TAG, "tryConnectCafe: 尝试连接cafe");
             Textile.instance().cafes.register(
 //                    "http://159.138.58.61:40601",
                     "http://202.120.38.131:40601",
@@ -191,6 +195,9 @@ public class ForeGroundService extends Service {
                         @Override
                         public void onComplete() {
                             Log.d(TAG, "onComplete: 131cafe连接成功");
+                            SharedPreferences.Editor editor=pref.edit();
+                            editor.putBoolean("131ok",true);
+                            editor.commit();
                             QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
                             try {
                                 Textile.instance().account.sync(options);
@@ -237,8 +244,8 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-//            tryConnectCafe(new Double(2.34));
-//
+            tryConnectCafe(new Double(2.34));
+
 //            new Thread(){
 //                @Override
 //                public void run() {
