@@ -42,7 +42,7 @@ public class VideoReceiveHelper {
     private boolean complete = false;
 
     private BlockingQueue<VideoReceiveTask> vQueue;
-    private HashSet<Long> receivingChunk;
+    private HashSet<Long> receivingChunk=new HashSet<>();
 
     private VideoHandlers.ReceiveHandler handler = new VideoHandlers.ReceiveHandler(){
         @Override
@@ -88,7 +88,7 @@ public class VideoReceiveHelper {
     /**
      * Search, receive, judge whether to stop
      */
-    public void downloadVideo(Model.Video videoPb){
+    public void downloadVideo(){
         new VideoSearcher(videoId, receivingChunk, searchHandler).start();
     }
 

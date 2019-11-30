@@ -61,6 +61,7 @@ import java.util.Map;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.honvideo.Segmenter;
+import sjtu.opennet.honvideo.VideoHandlers;
 import sjtu.opennet.honvideo.VideoReceiveHelper;
 import sjtu.opennet.honvideo.VideoReceiver;
 import sjtu.opennet.honvideo.VideoUploadHelper;
@@ -125,10 +126,12 @@ public class VideoPlayActivity extends AppCompatActivity {
 
             try {
                 video = Textile.instance().videos.getVideo(videoid);
-                videorHelper = new VideoReceiveHelper(this, video);
+//                videorHelper = new VideoReceiveHelper(this, video);
                 dir = VideoUploadHelper.getVideoPathFromID(this, videoid);
                 videoLength = video.getVideoLength();
                 Log.d(TAG, "onCreate: 视频长度："+videoLength);
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -151,6 +154,21 @@ public class VideoPlayActivity extends AppCompatActivity {
 //            searchVideoChunks();
                 notplayed=true;
 
+                videorHelper=new VideoReceiveHelper(this,video);
+
+//                videorHelper=new VideoReceiveHelper(this, video, new VideoHandlers.ReceiveHandler() {
+//                    @Override
+//                    public void onChunkComplete(Model.VideoChunk vChunk) {
+//                        writeM3u8(vChunk);
+//                    }
+//
+//                    @Override
+//                    public void onError(Exception e) {
+//
+//                    }
+//                });
+//                videorHelper.downloadVideo();
+
                 //初始化播放器
                 mProgressBar=findViewById(R.id.my_progress_bar);
                 BandwidthMeter bandwidthMeter=new DefaultBandwidthMeter();
@@ -162,6 +180,11 @@ public class VideoPlayActivity extends AppCompatActivity {
                 playerView.setPlayer(player);
 
                 getChunkThread.start(); //如果没有下载完，就去并发下载播放就行了。
+
+                //播放
+
+
+
             }
         }
     }
