@@ -186,6 +186,7 @@ public class ForeGroundService extends Service {
 //                    "http://159.138.58.61:40601",
                     "http://202.120.38.131:40601",
 //                    "http://192.168.1.109:40601",
+//                    "http://202.120.40.60:40601"
 //                    "http://202.120.40.60:40601",
                     "aqWLNkfatxbqNjwUGLaLZFiz6n85Ze7w8ptUx5QzKbex4h53tELTPgsf7FzL", //131
 //                    "NhYrQb1XfpCFC7WBhX7UHPkax1o4YvAxxzXhZfLg6qJ5cbbfZakmPQZVer7x",//HW159.138.58.61
@@ -559,7 +560,7 @@ public class ForeGroundService extends Service {
 
                 //每得到一个视频就在后台启动预加载线程
                 //TODO: change it to
-                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
+//                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
 
                 TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,

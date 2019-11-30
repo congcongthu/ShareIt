@@ -42,7 +42,7 @@ public class VideoReceiveHelper {
     private boolean complete = false;
 
     private BlockingQueue<VideoReceiveTask> vQueue;
-    private HashSet<Long> receivingChunk;
+    private HashSet<Long> receivingChunk=new HashSet<>();
 
     private VideoHandlers.ReceiveHandler handler = new VideoHandlers.ReceiveHandler(){
         @Override
