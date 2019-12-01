@@ -375,7 +375,7 @@ public class ForeGroundService extends Service {
         @Override
         public void videoChunkQueryResult(String queryId, Model.VideoChunk vchunk) {
             Log.d(TAG, "videoChunkQueryResult: VIDEOCHUNK得到结果");
-//            EventBus.getDefault().post(vchunk);
+            EventBus.getDefault().post(vchunk);
         }
 
         @Override
@@ -559,7 +559,7 @@ public class ForeGroundService extends Service {
 
                 //每得到一个视频就在后台启动预加载线程
                 //TODO: change it to
-//                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
+                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
 
                 TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,

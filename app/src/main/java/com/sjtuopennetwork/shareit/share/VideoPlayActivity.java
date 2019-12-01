@@ -118,9 +118,6 @@ public class VideoPlayActivity extends AppCompatActivity {
 
         }else{
 
-            //如果已经下载
-
-
             m3u8WriteCount=0;
             addressMap = new HashMap<>();
 
@@ -166,12 +163,11 @@ public class VideoPlayActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            initM3u8();
-
             if(DownloadComplete(videoid)){
                 finished = true;
 
-                writeCompleteM3u8();
+                //读取m3u8文件
+                m3u8file=new File(dir+"/chunks/playlist.m3u8");
 
                 PlayerView playerView = findViewById(R.id.player_view);
                 player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
@@ -182,6 +178,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                 player.prepare(hlsMediaSource);
             }else{ //没有完全下载下来，去网络中查找，并启动获取线程
 //            searchVideoChunks();
+                initM3u8();
                 finished=false;
 
                 videorHelper.downloadVideo();
@@ -245,17 +242,17 @@ public class VideoPlayActivity extends AppCompatActivity {
 
         Model.VideoChunk v=null;
         try {
-            v=Textile.instance().videos.getVideoChunk(vid,"VIRTUAL");
-
+            v=Textile.instance().videos.getVideoChunk(vid,VideoHandlers.chunkEndTag);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
 
         if(v==null){
+            Log.d(TAG, "DownloadComplete: not completed");
             return false;
         }
-
+        Log.d(TAG, "DownloadComplete: already completed");
         return true;
     }
 
