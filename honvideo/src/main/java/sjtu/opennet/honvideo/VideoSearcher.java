@@ -47,9 +47,9 @@ public class VideoSearcher extends Thread {
         @Override
         public void videoChunkQueryResult(String queryId, Model.VideoChunk vchunk) {
             //EventBus.getDefault().post(vchunk);
-            Log.d(TAG, "query result get !!!!!!!!");
+            //Log.d(TAG, "query result get !!!!!!!!");
             synchronized (WAITLOCK) {
-                Log.d(TAG, String.format("query result lock get !!!!!!!!%s, %s",vchunk.getId(), videoId));
+                //Log.d(TAG, String.format("query result lock get !!!!!!!!%s, %s",vchunk.getId(), videoId));
                 if (vchunk.getId().equals(videoId)) {
                     Log.d(TAG, String.format("VIDEOPIPELINE: %s, search result received.", vchunk.getChunk()));
                     receivingChunk.add(vchunk.getIndex());
