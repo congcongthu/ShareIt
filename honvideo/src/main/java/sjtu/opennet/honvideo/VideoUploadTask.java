@@ -74,7 +74,7 @@ public class VideoUploadTask {
         @Override
         public void onComplete(String path) {
             synchronized (LOCK) {
-                Log.d(TAG, String.format("IPFS add complete for file %s with ipfs path: %s", tsPath, path));
+                //Log.d(TAG, String.format("IPFS add complete for file %s with ipfs path: %s", tsPath, path));
                 videoChunk = VideoChunk.newBuilder()
                         .setId(videoId)
                         .setChunk(tsPath)
@@ -84,7 +84,7 @@ public class VideoUploadTask {
                         .setIndex(currentIndex)
                         .build();
 
-                Log.d(TAG, "Chunk proto built.");
+                //Log.d(TAG, "Chunk proto built.");
                 LOCK.notify();
             }
         }
@@ -147,16 +147,16 @@ public class VideoUploadTask {
         }
 
         try {
-            Log.d(TAG, String.format("VIDEOPIPELINE: %s task added to ipfs.", tsPath));
-            timeLog.begin();
+            //Log.d(TAG, String.format("VIDEOPIPELINE: %s task added to ipfs.", tsPath));
+            //timeLog.begin();
             byte[] fileContent = Files.readAllBytes(Paths.get(tsAbsolutePath));
             synchronized (LOCK) {
                 Textile.instance().ipfs.ipfsAddData(fileContent, true, false, tsHandler);
-                Log.d(TAG, "Task wait for ipfs complete");
+                //Log.d(TAG, "Task wait for ipfs complete");
                 LOCK.wait();
-                Log.d(TAG, "Task notified");
+                //Log.d(TAG, "Task notified");
             }
-            Log.d(TAG, String.format("VIDEOPIPELINE: %s ipfs add complete. Use time %d ms", tsPath, timeLog.stopGetTime()));
+            //Log.d(TAG, String.format("VIDEOPIPELINE: %s ipfs add complete. Use time %d ms", tsPath, timeLog.stopGetTime()));
         }catch(IOException ie){
             Log.e(TAG, "Unexpected io exception when read ts contents.");
             ie.printStackTrace();

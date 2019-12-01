@@ -29,7 +29,7 @@ import sjtu.opennet.textilepb.Model;
 public class VideoUploadHelper {
     private static final String TAG = "HONVIDEO.VideoUploadHelper";
     final Object POSTERLOCK = new Object();
-    final Object SEGLOCK = new Object();
+    //final Object SEGLOCK = new Object();
     M3u8Listener listObserver;
     private VideoMeta vMeta;
     private String rootPath;
@@ -46,11 +46,6 @@ public class VideoUploadHelper {
     private String filePath;
     private Model.Video videoPb = null;
     private String posterHash;
-    private ReceiveChunkListener receiveListener = null;
-
-    interface ReceiveChunkListener{
-        default void onChunkReceive(Model.VideoChunk vChunk){}
-    }
 
     /**
      * Handler of ipfsAddData.
@@ -59,7 +54,7 @@ public class VideoUploadHelper {
         @Override
         public void onComplete(String path) {
             synchronized (POSTERLOCK) {
-                Log.d(TAG, String.format("Poster ipfs path: %s", path));
+                //Log.d(TAG, String.format("Poster ipfs path: %s", path));
                 posterHash = path;
                 POSTERLOCK.notify();
             }
@@ -87,7 +82,7 @@ public class VideoUploadHelper {
 
         @Override
         public void onFailure(String message) {
-            Log.e(TAG, "Command failure.");
+            Log.e(TAG, "FFmpeg command failure.");
 
         }
 
@@ -249,9 +244,9 @@ public class VideoUploadHelper {
     class metaPublisher implements Runnable {
         @Override
         public void run() {
-            Log.d(TAG, "Meta publish thread start.");
+            Log.d(TAG, "VIDEOPIPELINE: Meta publish thread start.");
             publishMeta();
-            Log.d(TAG, "Meta publish thread end.");
+            Log.d(TAG, "VIDEOPIPELINE: Meta publish thread end.");
         }
     }
 
