@@ -11,6 +11,7 @@ public class VideoHandlers {
     public interface ReceiveHandler {
         //void onComplete(Model.Video videoPb);
         void onChunkComplete(Model.VideoChunk vChunk);
+        void onVideoComplete();
         void onError(final Exception e);
     }
 

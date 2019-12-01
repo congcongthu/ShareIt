@@ -37,6 +37,11 @@ public class VideoReceiver extends Thread{
         }
 
         @Override
+        public void onVideoComplete() {
+            return;
+        }
+
+        @Override
         public void onError(Exception e){
             e.printStackTrace();
         }
@@ -135,6 +140,7 @@ public class VideoReceiver extends Thread{
             }
 
         }
+        handler.onVideoComplete();
         Log.d(TAG, "Receiver end safely.");
     }
 }
