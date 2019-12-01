@@ -28,13 +28,11 @@ public class PreloadVideoThread extends Thread{
 //    boolean finishGetHash=false;
 
     String videoId;
-    Map<String, String> addressMap;
     VideoReceiveHelper videoReceiveHelper;
     Model.Video video ;
     Context context;
-    File m3u8file;
     String dir;
-    FileWriter fileWriter;
+
 
     private int writeM3u8Count;
 
@@ -53,19 +51,10 @@ public class PreloadVideoThread extends Thread{
 
         writeM3u8Count=0;
 
-
         videoReceiveHelper=new VideoReceiveHelper(context, video, new VideoHandlers.ReceiveHandler() {
             @Override
             public void onChunkComplete(Model.VideoChunk vChunk) {
-                if(writeM3u8Count<3){
-                    writeM3u8(vChunk);
-                }else{
-                    try {
-                        fileWriter.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+
             }
 
             @Override
@@ -79,8 +68,6 @@ public class PreloadVideoThread extends Thread{
             }
         });
 
-        initM3u8();
-
 
 
 //        videoReceiveHelper= new VideoReceiveHelper(context, video);
@@ -89,54 +76,6 @@ public class PreloadVideoThread extends Thread{
 //        if(!EventBus.getDefault().isRegistered(this)){
 //            EventBus.getDefault().register(this);
 //        }
-    }
-
-
-
-    public void initM3u8(){
-        m3u8file=new File(dir+"/chunks/playlist.m3u8");
-        try{
-            if(!m3u8file.exists()){ //从dir中找到文件复制到chunks里面
-                m3u8file.createNewFile();
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        String head="#EXTM3U\n" +
-                "#EXT-X-VERSION:3\n" +
-                "#EXT-X-MEDIA-SEQUENCE:0\n" +
-                "#EXT-X-ALLOW-CACHE:YES\n" +
-                "#EXT-X-TARGETDURATION:5\n" +
-                "#EXT-X-PLAYLIST-TYPE:EVENT\n";
-        try {
-            fileWriter = new FileWriter(m3u8file);
-            fileWriter.write(head);
-            fileWriter.flush();
-//            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println("===========m3u8文件初始化");
-    }
-
-    public void writeM3u8(Model.VideoChunk v){
-//        m3u8file=new File(dir+"/chunks/playlist.m3u8");
-        try {
-            long duration0=v.getEndTime()-v.getStartTime(); //微秒
-            double size = (double)duration0/1000000;
-            DecimalFormat df = new DecimalFormat("0.000000");//格式化小数，不足的补0
-            String duration = df.format(size);//返回的是String类型的
-//            FileWriter fileWriter = new FileWriter(m3u8file,true);
-            String append = "#EXTINF:"+duration+",\n"+
-                    v.getChunk()+"\n";
-            fileWriter.write(append);
-            fileWriter.flush();
-//            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        writeM3u8Count++;
-        Log.d(TAG, "writeM3u8: 预加载写次数："+writeM3u8Count);
     }
 
 //
@@ -174,7 +113,7 @@ public class PreloadVideoThread extends Thread{
     @Override
     public void run() {
 
-        videoReceiveHelper.preloadVideo();
+        videoReceiveHelper.preloadVideo(4);
 //        int i=0;
 //        long videoLength=video.getVideoLength();
 //        Model.VideoChunk v=null;
