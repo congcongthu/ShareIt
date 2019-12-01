@@ -64,7 +64,7 @@ public class VideoReceiveHelper {
         @Override
         public void onGetAnResult(Model.VideoChunk vChunk, boolean isEnd){
             if(isEnd){
-                vQueue.add(VideoReceiveTask.endTask()); //add end task to receiver
+                vQueue.add(VideoReceiveTask.endTask(vChunk)); //add end task to receiver
             }else {
                 receiveChunk(vChunk);
             }
@@ -122,17 +122,17 @@ public class VideoReceiveHelper {
      *  - Sleep for 1 second to make sure that there is no chunk left if it is called after receiving all chunks.<br />
      *  - Add the end task to videoQueue to notify the VideoReceiver that these are all the task.
      */
-    public class shutDownReceiver extends Thread{
-        @Override
-        public void run(){
-            try {
-                Thread.sleep(1000);
-                vQueue.add(VideoReceiveTask.endTask());
-            }catch(InterruptedException ie){
-                ie.printStackTrace();
-            }
-        }
-    }
+//    public class shutDownReceiver extends Thread{
+//        @Override
+//        public void run(){
+//            try {
+//                Thread.sleep(1000);
+//                vQueue.add(VideoReceiveTask.endTask());
+//            }catch(InterruptedException ie){
+//                ie.printStackTrace();
+//            }
+//        }
+//    }
 
     public void stopReceiver(){
         Log.d(TAG, "Stop receiver. Add stop task to task queue.");
