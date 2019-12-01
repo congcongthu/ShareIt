@@ -52,6 +52,9 @@ public class VideoReceiveHelper {
         }
 
         @Override
+        public void onVideoComplete(){return;}
+
+        @Override
         public void onError(Exception e){
             e.printStackTrace();
         }
