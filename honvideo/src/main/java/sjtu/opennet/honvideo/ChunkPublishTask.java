@@ -25,8 +25,16 @@ public class ChunkPublishTask implements Comparable<ChunkPublishTask> {
         }
     }
 
-    public static ChunkPublishTask getEndTask(){
-        return new ChunkPublishTask(null, true);
+    public static ChunkPublishTask getEndTask(String videoId, long currentIndex){
+        Model.VideoChunk virtualChunk = Model.VideoChunk.newBuilder()
+                .setId(videoId)
+                .setChunk(VideoHandlers.chunkEndTag)
+                .setAddress(VideoHandlers.chunkEndTag)
+                .setStartTime(-2)
+                .setEndTime(-2)
+                .setIndex(currentIndex)
+                .build();
+        return new ChunkPublishTask(virtualChunk, true);
     }
 
     public boolean isEnd(){
