@@ -53,7 +53,14 @@ public class VideoSearcher extends Thread {
                 if (vchunk.getId().equals(videoId)) {
                     Log.d(TAG, String.format("VIDEOPIPELINE: %s, search result received.", vchunk.getChunk()));
                     receivingChunk.add(vchunk.getIndex());
-                    handler.onGetAnResult(vchunk);
+
+                    if(vchunk.getChunk().equals(VideoHandlers.chunkEndTag)){
+                        Log.d(TAG, "VIDEOPIPELINE: Set stopThread to true");
+                        handler.onGetAnResult(vchunk, true);
+                        stopThread = true;
+                    }else{
+                        handler.onGetAnResult(vchunk, false);
+                    }
                     WAITLOCK.notify();
                 }
             }
@@ -105,11 +112,12 @@ public class VideoSearcher extends Thread {
                     //When chunk is already in the local DB.
                     if(v != null){
                         Log.d(TAG, String.format("Chunk %d already get", currentIndex));
-                        if(v.getEndTime() >=videoLength - 200000) {   //Microsecond, equals to 200 ms
-                            return;
-                        }else{
-                            currentIndex++;
-                        }
+                        currentIndex++;
+//                        if(v.getEndTime() >=videoLength - 200000) {   //Microsecond, equals to 200 ms
+//                            return;
+//                        }else{
+//                            currentIndex++;
+//                        }
                     } else if(receivingChunk.contains(currentIndex)){
                         Log.d(TAG, String.format("Chunk %d already searched", currentIndex));
                         currentIndex++;
@@ -118,8 +126,8 @@ public class VideoSearcher extends Thread {
                         searchTheChunk(videoId, currentIndex, 1200);
                     }
                 }
-
                 Textile.instance().removeEventListener(searchListener);
+                Log.d(TAG, "VIDEOPIPELINE: Searcher end safely");
             }catch(Exception e){
                 e.printStackTrace();
                 Log.e(TAG, "Error occur when search video chunk");

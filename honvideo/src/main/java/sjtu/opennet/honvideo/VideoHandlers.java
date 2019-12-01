@@ -15,7 +15,9 @@ public class VideoHandlers {
     }
 
     public interface SearchResultHandler{
-        void onGetAnResult(Model.VideoChunk vChunk);
+        void onGetAnResult(Model.VideoChunk vChunk, boolean isEnd);
         void onError(final Exception e);
     }
+
+    public final static String chunkEndTag = "VIRTUAL";
 }

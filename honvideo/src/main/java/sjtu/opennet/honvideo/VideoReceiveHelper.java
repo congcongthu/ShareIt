@@ -59,7 +59,10 @@ public class VideoReceiveHelper {
 
     private VideoHandlers.SearchResultHandler searchHandler = new VideoHandlers.SearchResultHandler(){
         @Override
-        public void onGetAnResult(Model.VideoChunk vChunk){
+        public void onGetAnResult(Model.VideoChunk vChunk, boolean isEnd){
+            if(isEnd){
+                vQueue.add(VideoReceiveTask.endTask()); //add end task to receiver
+            }
             receiveChunk(vChunk);
         }
         @Override

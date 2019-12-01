@@ -14,13 +14,16 @@ import sjtu.opennet.textilepb.Model;
 public class VideoUploader extends Thread{
     private BlockingQueue<VideoUploadTask> videoQueue;
     private BlockingQueue<ChunkPublishTask> chunkQueue;     //Used to send endTag to chunkpublisher.
+    private String videoId;                                 //Used to add virtual end chunk to datastore and cafe.
     private final String TAG = "HONVIDEO.VideoUploader";
     private long currentDuration = 0;
     private long currentIndex = 0;
     private boolean complete = false;
-    public VideoUploader(BlockingQueue<VideoUploadTask> bQueue, BlockingQueue<ChunkPublishTask> cQueue){
+
+    public VideoUploader(String videoId, BlockingQueue<VideoUploadTask> bQueue, BlockingQueue<ChunkPublishTask> cQueue){
         videoQueue = bQueue;
         chunkQueue = cQueue;
+        this.videoId = videoId;
     }
 
     public void shutDown(){
@@ -37,7 +40,7 @@ public class VideoUploader extends Thread{
             ie.printStackTrace();
         }finally {
             Log.d(TAG, "Add end task to Chunk Publish Task Queue");
-            chunkQueue.add(ChunkPublishTask.getEndTask());
+            chunkQueue.add(ChunkPublishTask.getEndTask(videoId, currentIndex));
         }
     }
 
