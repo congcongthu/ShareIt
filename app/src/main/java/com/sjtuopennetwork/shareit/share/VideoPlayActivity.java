@@ -136,7 +136,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                     public void onChunkComplete(Model.VideoChunk vChunk) {
                         Log.d(TAG, "onChunkComplete: 写m3u8"+m3u8WriteCount);
                         writeM3u8(vChunk);
-                        if((m3u8WriteCount > 1 || finished) && notplayed){
+                        if((m3u8WriteCount > 2 ) && notplayed){ //写了3次就可以播放
                             Log.d(TAG, "onChunkComplete: 开始播放");
                             Message msg=new Message();
                             msg.what=1;
@@ -173,7 +173,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                 player.prepare(hlsMediaSource);
             }else{ //没有完全下载下来，去网络中查找，并启动获取线程
 //            searchVideoChunks();
-
+                finished=false;
 
                 videorHelper.downloadVideo();
 
@@ -191,7 +191,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 //                getChunkThread.start(); //如果没有下载完，就去并发下载播放就行了。
 
                 //播放
-                playVideo();
+//                playVideo();
 
             }
         }

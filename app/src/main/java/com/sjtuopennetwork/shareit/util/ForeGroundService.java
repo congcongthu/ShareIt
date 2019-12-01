@@ -153,7 +153,7 @@ public class ForeGroundService extends Service {
 
         //启动Textile
         try {
-            Textile.launch(ForeGroundService.this, repoPath, false);
+            Textile.launch(ForeGroundService.this, repoPath, true);
             Textile.instance().addEventListener(new MyTextileListener());
         } catch (Exception e) {
             e.printStackTrace();
@@ -187,7 +187,6 @@ public class ForeGroundService extends Service {
                     "http://202.120.38.131:40601",
 //                    "http://192.168.1.109:40601",
 //                    "http://202.120.40.60:40601"
-//                    "http://202.120.40.60:40601",
                     "aqWLNkfatxbqNjwUGLaLZFiz6n85Ze7w8ptUx5QzKbex4h53tELTPgsf7FzL", //131
 //                    "NhYrQb1XfpCFC7WBhX7UHPkax1o4YvAxxzXhZfLg6qJ5cbbfZakmPQZVer7x",//HW159.138.58.61
 //                    "29TkBsmjFfEnR1Sack63qWK5WkPGjJtA2kXFHvTijmSE1KYMvVopBRWagHLbE",
