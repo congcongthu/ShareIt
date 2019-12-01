@@ -119,7 +119,7 @@ public class VideoUploadHelper {
 
         videoQueue = new LinkedBlockingQueue<>();
         chunkQueue = new PriorityBlockingQueue<>();
-        videoUploader = new VideoUploader(videoQueue, chunkQueue);
+        videoUploader = new VideoUploader(vMeta.getHash(), videoQueue, chunkQueue);
         chunkpublisher = new ChunkPublisher(chunkQueue);
         exitUploader = new ExitUploader();
 
