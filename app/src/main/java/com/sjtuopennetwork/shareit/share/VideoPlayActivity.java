@@ -118,9 +118,10 @@ public class VideoPlayActivity extends AppCompatActivity {
         }else{
             m3u8WriteCount=0;
             addressMap = new HashMap<>();
-            if(!EventBus.getDefault().isRegistered(this)){
-                EventBus.getDefault().register(this);
-            }
+
+//            if(!EventBus.getDefault().isRegistered(this)){
+//                EventBus.getDefault().register(this);
+//            }
 
             videoid = getIntent().getStringExtra("videoid");
 
@@ -128,12 +129,18 @@ public class VideoPlayActivity extends AppCompatActivity {
                 video = Textile.instance().videos.getVideo(videoid);
 //                videorHelper = new VideoReceiveHelper(this, video);
 
+                notplayed=true;
                 videorHelper=new VideoReceiveHelper(this, video, new VideoHandlers.ReceiveHandler() {
                     @Override
                     public void onChunkComplete(Model.VideoChunk vChunk) {
                         m3u8WriteCount++;
                         Log.d(TAG, "onChunkComplete: 写m3u8"+m3u8WriteCount);
                         writeM3u8(vChunk);
+                        if((m3u8WriteCount > 2 || finished) && notplayed){
+                            Message msg=new Message();
+                            msg.what=1;
+                            handler.sendMessage(msg);
+                        }
                     }
 
                     @Override
@@ -165,7 +172,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                 player.prepare(hlsMediaSource);
             }else{ //没有完全下载下来，去网络中查找，并启动获取线程
 //            searchVideoChunks();
-                notplayed=true;
+
 
                 videorHelper.downloadVideo();
 
@@ -450,21 +457,23 @@ public class VideoPlayActivity extends AppCompatActivity {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getAnResult(Model.VideoChunk videoChunk){
-        if(videoChunk.getId().equals(videoid)){
-            addressMap.put(videoChunk.getChunk(),videoChunk.getAddress()); //拿到一个结果就放进来一个，可能会相同
-            videorHelper.receiveChunk(videoChunk); //将对应的视频保存到本地
-        }
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void getAnResult(Model.VideoChunk videoChunk){
+//        Log.d(TAG, "getAnResult: 得到videoChunk结果");
+//        if(videoChunk.getId().equals(videoid)){
+//            addressMap.put(videoChunk.getChunk(),videoChunk.getAddress()); //拿到一个结果就放进来一个，可能会相同
+//            videorHelper.receiveChunk(videoChunk); //将对应的视频保存到本地
+//        }
+//    }
 
     @Override
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop: VideoPlayActivity调用stop");
-        if(EventBus.getDefault().isRegistered(this)){
-            EventBus.getDefault().unregister(this);
-        }
+
+//        if(EventBus.getDefault().isRegistered(this)){
+//            EventBus.getDefault().unregister(this);
+//        }
 
         finished=true;
         finishGetHash=true;

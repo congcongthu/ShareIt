@@ -153,7 +153,7 @@ public class ForeGroundService extends Service {
 
         //启动Textile
         try {
-            Textile.launch(ForeGroundService.this, repoPath, true);
+            Textile.launch(ForeGroundService.this, repoPath, false);
             Textile.instance().addEventListener(new MyTextileListener());
         } catch (Exception e) {
             e.printStackTrace();
@@ -376,7 +376,8 @@ public class ForeGroundService extends Service {
 
         @Override
         public void videoChunkQueryResult(String queryId, Model.VideoChunk vchunk) {
-            EventBus.getDefault().post(vchunk);
+            Log.d(TAG, "videoChunkQueryResult: VIDEOCHUNK得到结果");
+//            EventBus.getDefault().post(vchunk);
         }
 
         @Override
