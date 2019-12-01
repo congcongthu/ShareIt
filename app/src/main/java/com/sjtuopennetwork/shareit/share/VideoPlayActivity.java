@@ -93,6 +93,7 @@ public class VideoPlayActivity extends AppCompatActivity {
     MediaSource videoSource;
     boolean notplayed;
     boolean finishGetHash=false;
+    private long NextChunk = 0;
 
     //两个线程
 //    GetChunkThread getChunkThread=new GetChunkThread();
@@ -101,6 +102,8 @@ public class VideoPlayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_play);
+        finished =false;
+        NextChunk = 0;
 
         boolean isMine=getIntent().getBooleanExtra("ismine",false);
         if(isMine){ //如果是我自己的
@@ -136,7 +139,18 @@ public class VideoPlayActivity extends AppCompatActivity {
                     @Override
                     public void onChunkComplete(Model.VideoChunk vChunk) {
                         Log.d(TAG, "onChunkComplete: 写m3u8"+m3u8WriteCount+" "+vChunk.getChunk());
+
+                        long index = vChunk.getIndex();
+                        for (long cur = NextChunk; cur < index; cur++){
+                            try {
+                                Model.VideoChunk v = Textile.instance().videos.getVideoChunk(videoid, cur);
+                                writeM3u8(v);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
                         writeM3u8(vChunk);
+                        NextChunk = index+1;
                         if((m3u8WriteCount > 2 || finished) && notplayed){ //写了3次就可以播放
                             Log.d(TAG, "onChunkComplete: 开始播放");
                             Message msg=new Message();
@@ -147,9 +161,9 @@ public class VideoPlayActivity extends AppCompatActivity {
 
                     @Override
                     public void onVideoComplete() {
-                        if(fileWriter!=null){
-                            writeM3u8End();
-                        }
+//                        if(fileWriter!=null){
+//                            writeM3u8End();
+//                        }
                     }
 
                     @Override
@@ -165,13 +179,8 @@ public class VideoPlayActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            if(DownloadComplete(videoid)){
-                finished = true;
-
-                //读取m3u8文件
-                m3u8file=new File(dir+"/chunks/playlist.m3u8");
-//                writeCompleteM3u8();
-
+            initM3u8();
+            if(finished){
                 PlayerView playerView = findViewById(R.id.player_view);
                 player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
                 playerView.setPlayer(player);
@@ -179,13 +188,9 @@ public class VideoPlayActivity extends AppCompatActivity {
                 hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
                 player.setPlayWhenReady(true);
                 player.prepare(hlsMediaSource);
-            }else{ //没有完全下载下来
-                initM3u8();
-                finished=false;
-
+            } else{
                 videorHelper.downloadVideo();
 
-                //初始化播放器
                 mProgressBar=findViewById(R.id.my_progress_bar);
                 BandwidthMeter bandwidthMeter=new DefaultBandwidthMeter();
                 TrackSelection.Factory trackSelectionFactory=new AdaptiveTrackSelection.Factory(bandwidthMeter);
@@ -195,9 +200,41 @@ public class VideoPlayActivity extends AppCompatActivity {
                 PlayerView playerView = findViewById(R.id.player_view);
                 playerView.setPlayer(player);
 
-//                getChunkThread.start(); //如果没有下载完，就去并发下载播放就行了。
-
             }
+
+//            if(DownloadComplete(videoid)){
+//                finished = true;
+//
+//                //读取m3u8文件
+//                m3u8file=new File(dir+"/chunks/playlist.m3u8");
+////                writeCompleteM3u8();
+//
+//                PlayerView playerView = findViewById(R.id.player_view);
+//                player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
+//                playerView.setPlayer(player);
+//                dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
+//                hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
+//                player.setPlayWhenReady(true);
+//                player.prepare(hlsMediaSource);
+//            }else{ //没有完全下载下来
+//                initM3u8();
+//                finished=false;
+//
+//                videorHelper.downloadVideo();
+//
+//                //初始化播放器
+//                mProgressBar=findViewById(R.id.my_progress_bar);
+//                BandwidthMeter bandwidthMeter=new DefaultBandwidthMeter();
+//                TrackSelection.Factory trackSelectionFactory=new AdaptiveTrackSelection.Factory(bandwidthMeter);
+//                TrackSelector trackSelector = new DefaultTrackSelector(trackSelectionFactory);
+//                LoadControl loadControl = new DefaultLoadControl();
+//                player=ExoPlayerFactory.newSimpleInstance(this,trackSelector,loadControl);
+//                PlayerView playerView = findViewById(R.id.player_view);
+//                playerView.setPlayer(player);
+//
+////                getChunkThread.start(); //如果没有下载完，就去并发下载播放就行了。
+//
+//            }
         }
     }
 
@@ -396,23 +433,45 @@ public class VideoPlayActivity extends AppCompatActivity {
 
         m3u8file=new File(dir+"/chunks/playlist.m3u8");
         try{
-            if(!m3u8file.exists()){ //从dir中找到文件复制到chunks里面
-                m3u8file.createNewFile();
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        try {
+//            if(!m3u8file.exists()){ //从dir中找到文件复制到chunks里面
+//                m3u8file.createNewFile();
+//                fileWriter = new FileWriter(m3u8file);
+//                fileWriter.write(head);
+//                fileWriter.flush();
+//            }else{
+//                fileWriter = new FileWriter(m3u8file,true);
+//            }
+
             fileWriter = new FileWriter(m3u8file);
-            fileWriter.write(head);
-            fileWriter.flush();
-        } catch (IOException e) {
+            while(true){
+                try {
+                    Model.VideoChunk v=Textile.instance().videos.getVideoChunk(videoid, NextChunk);
+                    if ( v!=null ){ //本地有了，就写m3u8文件
+                        Log.d(TAG, "writeCompleteM3u8: 从数据库读出来："+v.getChunk());
+                        writeM3u8(v);
+                    }
+                    else {
+                        break;
+                    }
+                    NextChunk++; //处理下一个视频
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+
+        }catch (Exception e){
             e.printStackTrace();
         }
         System.out.println("===========m3u8文件初始化");
     }
 
     public void writeM3u8(Model.VideoChunk v){
+        if(v.getChunk().equals(VideoHandlers.chunkEndTag)){
+            writeM3u8End();
+            finished = true;
+            return;
+        }
 //        m3u8file=new File(dir+"/chunks/playlist.m3u8");
         try {
             long duration0=v.getEndTime()-v.getStartTime(); //微秒
