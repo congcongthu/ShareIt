@@ -32,14 +32,14 @@ public class VideoUploader extends Thread{
     }
 
     private void safelyExitPublisher(int delay){
-        Log.d(TAG, String.format("Chunk publisher end tag will be added in %s secends.",delay));
+        Log.d(TAG, String.format("VIDEOPIPELINE: Chunk publisher end tag will be added in %s millsecends.",delay));
         try {
             Thread.sleep(delay);
         }catch(InterruptedException ie){
             Log.e(TAG, "Unexpected thread interruption happened when uploader sleeping to end publisher.");
             ie.printStackTrace();
         }finally {
-            Log.d(TAG, "Add end task to Chunk Publish Task Queue");
+            Log.d(TAG, String.format("VIDEOPIPELINE: index %d: Add end task to Chunk Publish Task Queue", currentIndex));
             chunkQueue.add(ChunkPublishTask.getEndTask(videoId, currentIndex));
         }
     }
@@ -47,20 +47,22 @@ public class VideoUploader extends Thread{
 
     @Override
     public void run(){
-        Log.d(TAG, "Uploader start to run.");
+        Log.d(TAG, "VIDEOPIPELINE: Uploader start to run.");
         VideoUploadTask vTask;
         while(!complete) {
             try {
                 vTask = videoQueue.take();
                 if(vTask.isEnd()){
-                    Log.d(TAG, "End task received. Stop the uploader.");
+                    //Log.d(TAG, "End task received. Stop the uploader.");
                     complete = true;
                 }else {
-                    Log.d(TAG, String.format("Task at %d start to execute.", currentDuration));
+                    //Log.d(TAG, String.format("Task at %d start to execute.", currentDuration));
                     Model.VideoChunk videoChunk = vTask.upload(currentDuration, currentIndex);
-                    Log.d(TAG, String.format("Task at %d upload return.", currentDuration));
-                    Log.d(TAG, String.format("Task at %d add to chunk task queue.", currentDuration));
+
+                    //Log.d(TAG, String.format("Task at %d upload return.", currentDuration));
+                    //Log.d(TAG, String.format("Task at %d add to chunk task queue.", currentDuration));
                     chunkQueue.add(new ChunkPublishTask(videoChunk, false));
+                    Log.d(TAG, String.format("VIDEOPIPELINE: index %d, chunk %s, Chunk built and add to chunk queue.", videoChunk.getIndex(), videoChunk.getChunk()));
                     currentDuration = videoChunk.getEndTime();
                     currentIndex++;
                 }
@@ -76,7 +78,7 @@ public class VideoUploader extends Thread{
             }
         }
         safelyExitPublisher(1000);
-        Log.d(TAG, "Uploader end safely.");
+        Log.d(TAG, "VIDEOPIPELINE: Uploader end safely.");
     }
 
 
