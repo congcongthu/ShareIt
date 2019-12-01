@@ -95,7 +95,8 @@ public class VideoPlayActivity extends AppCompatActivity {
     boolean finishGetHash=false;
 
     //两个线程
-    GetChunkThread getChunkThread=new GetChunkThread();
+//    GetChunkThread getChunkThread=new GetChunkThread();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,10 +134,10 @@ public class VideoPlayActivity extends AppCompatActivity {
                 videorHelper=new VideoReceiveHelper(this, video, new VideoHandlers.ReceiveHandler() {
                     @Override
                     public void onChunkComplete(Model.VideoChunk vChunk) {
-                        m3u8WriteCount++;
                         Log.d(TAG, "onChunkComplete: 写m3u8"+m3u8WriteCount);
                         writeM3u8(vChunk);
-                        if((m3u8WriteCount > 2 || finished) && notplayed){
+                        if((m3u8WriteCount > 1 || finished) && notplayed){
+                            Log.d(TAG, "onChunkComplete: 开始播放");
                             Message msg=new Message();
                             msg.what=1;
                             handler.sendMessage(msg);
