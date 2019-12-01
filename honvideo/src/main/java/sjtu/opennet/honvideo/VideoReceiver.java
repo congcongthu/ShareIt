@@ -58,7 +58,9 @@ public class VideoReceiver extends Thread{
         this.handler = handler;
     }
 
-
+    public void setHandler( VideoHandlers.ReceiveHandler handler){
+        this.handler = handler;
+    }
     public void shutDown(){
         Log.w(TAG, "Video Receiver Shut Down!!\nNote that this is not the normal exit method.");
         interrupt();
