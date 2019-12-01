@@ -62,8 +62,9 @@ public class VideoReceiveHelper {
         public void onGetAnResult(Model.VideoChunk vChunk, boolean isEnd){
             if(isEnd){
                 vQueue.add(VideoReceiveTask.endTask()); //add end task to receiver
+            }else {
+                receiveChunk(vChunk);
             }
-            receiveChunk(vChunk);
         }
         @Override
         public void onError(Exception e){
