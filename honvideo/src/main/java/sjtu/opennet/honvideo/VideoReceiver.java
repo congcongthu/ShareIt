@@ -94,6 +94,7 @@ public class VideoReceiver extends Thread{
                     Log.d(TAG, "VIDEOPIPELINE: End task received. End the thread.");
                     Log.d(TAG, String.format("Add chunk %s to local DB.", vTask.getChunk().getChunk()));
                     Textile.instance().videos.addVideoChunk(vTask.getChunk());
+                    handler.onChunkComplete(vTask.getChunk());
                     handler.onVideoComplete();
                     complete = true;
                 }else if(vTask.isDestroy()){
