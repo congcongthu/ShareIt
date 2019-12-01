@@ -67,8 +67,8 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
         return fileName;
     }
 
-    public static VideoReceiveTask endTask(){
-        return new VideoReceiveTask(null, "", true, false);
+    public static VideoReceiveTask endTask(Model.VideoChunk vchunk){
+        return new VideoReceiveTask(vchunk, "", true, false);
     }
     public static VideoReceiveTask destroyTask(){
         return new VideoReceiveTask(null, "", false, true);
