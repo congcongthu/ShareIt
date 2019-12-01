@@ -102,8 +102,11 @@ public class VideoReceiveHelper {
         searcher.start();
     }
 
-    public void preloadVideo(){
-        searcher = new VideoSearcher(videoId, receivingChunk, searchHandler, 3);
+    /**
+     * search, ipfs get. (No local DB write. Just cache to ipfs)
+     */
+    public void preloadVideo(int toIndex){
+        searcher = VideoSearcher.createPreloadSearcher(videoId,  toIndex);
         searcher.start();
     }
 

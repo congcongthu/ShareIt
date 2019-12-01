@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.concurrent.BlockingQueue;
 
 import sjtu.opennet.hon.BaseTextileEventListener;
+import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.QueryOuterClass;
@@ -27,6 +28,21 @@ public class VideoSearcher extends Thread {
     private static final Object LOCK = new Object(); //Make sure that there is only one Searcher running at the same time.
     private final Object WAITLOCK = new Object();
 
+    public boolean preloadOnly = false;
+
+    private Handlers.DataHandler ipfsHandler = new Handlers.DataHandler() {
+        @Override
+        public void onComplete(byte[] data, String media) {
+            Log.d(TAG, "VIDEOPIPELINE: preload: ipfs.dataAtPath success.");
+        }
+
+        @Override
+        public void onError(Exception e) {
+            Log.e(TAG, "VIDEOPIPELINE: preload: ipfs.dataAtPath throws unexpected error when preload.");
+            e.printStackTrace();
+        }
+    };
+
     VideoSearcher(String videoId, HashSet<Long> receivingChunk, VideoHandlers.SearchResultHandler handler){
         this.videoId = videoId;
         this.receivingChunk = receivingChunk;
@@ -43,24 +59,36 @@ public class VideoSearcher extends Thread {
         this.toIndex = toIndex;
     }
 
+    public static VideoSearcher createPreloadSearcher(String videoId, long toIndex){
+        HashSet<Long> tmpList = new HashSet<>();
+        VideoSearcher searcher = new VideoSearcher(videoId, tmpList, null, toIndex);
+        searcher.preloadOnly = true;
+        return searcher;
+    }
+
     class ChunkQueryListener extends BaseTextileEventListener {
         @Override
         public void videoChunkQueryResult(String queryId, Model.VideoChunk vchunk) {
-            //EventBus.getDefault().post(vchunk);
-            //Log.d(TAG, "query result get !!!!!!!!");
             synchronized (WAITLOCK) {
-                //Log.d(TAG, String.format("query result lock get !!!!!!!!%s, %s",vchunk.getId(), videoId));
                 if (vchunk.getId().equals(videoId)) {
                     Log.d(TAG, String.format("VIDEOPIPELINE: index %d, chunk %s. Search result get.", vchunk.getIndex(), vchunk.getChunk()));
-                    //Log.d(TAG, String.format("VIDEOPIPELINE: %s, search result received.", vchunk.getChunk()));
                     receivingChunk.add(vchunk.getIndex());
-
-                    if(vchunk.getChunk().equals(VideoHandlers.chunkEndTag)){
-                        //Log.d(TAG, "VIDEOPIPELINE: Set stopThread to true");
-                        handler.onGetAnResult(vchunk, true);
-                        stopThread = true;
+                    if(!preloadOnly) {
+                        if (vchunk.getChunk().equals(VideoHandlers.chunkEndTag)) {
+                            //Log.d(TAG, "VIDEOPIPELINE: Set stopThread to true");
+                            handler.onGetAnResult(vchunk, true);
+                            stopThread = true;
+                        } else {
+                            handler.onGetAnResult(vchunk, false);
+                        }
                     }else{
-                        handler.onGetAnResult(vchunk, false);
+                        Log.d(TAG, String.format("VIDEOPIPELINE: index %d, chunk %s. Call ipfs.dataAtPath.", vchunk.getIndex(), vchunk.getChunk()));
+                        if (vchunk.getChunk().equals(VideoHandlers.chunkEndTag)) {
+                            stopThread = true;
+                        } else {
+                            //Do ipfs dataAtPath only.
+                            Textile.instance().ipfs.dataAtPath(vchunk.getAddress(), ipfsHandler);
+                        }
                     }
                     WAITLOCK.notify();
                 }
@@ -102,9 +130,12 @@ public class VideoSearcher extends Thread {
             try {
                 ChunkQueryListener searchListener = new ChunkQueryListener();
                 Textile.instance().addEventListener(searchListener);
-                Log.d(TAG, String.format("VIDEOPIPELINE: %s, search thread start.", videoId));
+                if(!preloadOnly) {
+                    Log.d(TAG, String.format("VIDEOPIPELINE: %s, search thread start.", videoId));
+                }else{
+                    Log.d(TAG, String.format("VIDEOPIPELINE: %s, preload thread start.", videoId));
+                }
                 Long currentIndex = new Long(0);
-                long videoLength = videoPb.getVideoLength();
 
                 while ((toIndex < 0 || currentIndex <= toIndex) && !stopThread && !isInterrupted()){
                     Log.d(TAG, String.format("VIDEOPIPELINE: %d, try search this index", currentIndex));
@@ -114,11 +145,6 @@ public class VideoSearcher extends Thread {
                     if(v != null){
                         Log.d(TAG, String.format("Chunk %d already get", currentIndex));
                         currentIndex++;
-//                        if(v.getEndTime() >=videoLength - 200000) {   //Microsecond, equals to 200 ms
-//                            return;
-//                        }else{
-//                            currentIndex++;
-//                        }
                     } else if(receivingChunk.contains(currentIndex)){
                         Log.d(TAG, String.format("Chunk %d already searched", currentIndex));
                         currentIndex++;
@@ -128,7 +154,11 @@ public class VideoSearcher extends Thread {
                     }
                 }
                 Textile.instance().removeEventListener(searchListener);
-                Log.d(TAG, "VIDEOPIPELINE: Searcher end safely");
+                if(!preloadOnly) {
+                    Log.d(TAG, "VIDEOPIPELINE: Searcher end safely");
+                }else{
+                    Log.d(TAG, "VIDEOPIPELINE: Preloader end safely");
+                }
             }catch(Exception e){
                 e.printStackTrace();
                 Log.e(TAG, "Error occur when search video chunk");
