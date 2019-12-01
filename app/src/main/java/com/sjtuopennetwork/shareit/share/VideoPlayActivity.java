@@ -147,7 +147,9 @@ public class VideoPlayActivity extends AppCompatActivity {
 
                     @Override
                     public void onVideoComplete() {
-                        writeM3u8End();
+                        if(fileWriter!=null){
+                            writeM3u8End();
+                        }
                     }
 
                     @Override
@@ -192,10 +194,8 @@ public class VideoPlayActivity extends AppCompatActivity {
                 player=ExoPlayerFactory.newSimpleInstance(this,trackSelector,loadControl);
                 PlayerView playerView = findViewById(R.id.player_view);
                 playerView.setPlayer(player);
-//                getChunkThread.start(); //如果没有下载完，就去并发下载播放就行了。
 
-                //播放
-//                playVideo();
+//                getChunkThread.start(); //如果没有下载完，就去并发下载播放就行了。
 
             }
         }
@@ -312,6 +312,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         @Override
         public void run() {
             while (!searchFinish){
+
                 searchTheChunk(chunkName);
                 try {
                     sleep(1500);
@@ -351,7 +352,6 @@ public class VideoPlayActivity extends AppCompatActivity {
                         writeM3u8End();
                     }
                     if((m3u8WriteCount > 2 || finished) && notplayed){
-
                         Message msg=new Message();
                         msg.what=1;
                         handler.sendMessage(msg);
