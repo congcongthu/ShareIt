@@ -443,6 +443,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 //            }
 
             fileWriter = new FileWriter(m3u8file);
+            fileWriter.write(head);
             while(true){
                 try {
                     Model.VideoChunk v=Textile.instance().videos.getVideoChunk(videoid, NextChunk);
