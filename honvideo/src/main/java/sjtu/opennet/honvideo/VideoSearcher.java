@@ -51,11 +51,12 @@ public class VideoSearcher extends Thread {
             synchronized (WAITLOCK) {
                 //Log.d(TAG, String.format("query result lock get !!!!!!!!%s, %s",vchunk.getId(), videoId));
                 if (vchunk.getId().equals(videoId)) {
-                    Log.d(TAG, String.format("VIDEOPIPELINE: %s, search result received.", vchunk.getChunk()));
+                    Log.d(TAG, String.format("VIDEOPIPELINE: index %d, chunk %s. Search result get.", vchunk.getIndex(), vchunk.getChunk()));
+                    //Log.d(TAG, String.format("VIDEOPIPELINE: %s, search result received.", vchunk.getChunk()));
                     receivingChunk.add(vchunk.getIndex());
 
                     if(vchunk.getChunk().equals(VideoHandlers.chunkEndTag)){
-                        Log.d(TAG, "VIDEOPIPELINE: Set stopThread to true");
+                        //Log.d(TAG, "VIDEOPIPELINE: Set stopThread to true");
                         handler.onGetAnResult(vchunk, true);
                         stopThread = true;
                     }else{
@@ -81,7 +82,7 @@ public class VideoSearcher extends Thread {
             synchronized (WAITLOCK) {
                 Log.d(TAG, String.format("VIDEOPIPELINE: %d search start.", chunkIndex));
                 Textile.instance().videos.searchVideoChunks(query, options);
-                Log.d(TAG, String.format("VIDEOPIPELINE: %d search wait for %d ms at most.", chunkIndex, waitTime));
+                //Log.d(TAG, String.format("VIDEOPIPELINE: %d search wait for %d ms at most.", chunkIndex, waitTime));
                 WAITLOCK.wait(waitTime);    //Wait for waitTime ms at most. It can be notified by getAnResult.
                 Log.d(TAG, String.format("VIDEOPIPELINE: %d search time out or notified", chunkIndex));
             }

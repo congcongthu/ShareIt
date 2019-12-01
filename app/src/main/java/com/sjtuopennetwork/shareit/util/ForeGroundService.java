@@ -187,7 +187,6 @@ public class ForeGroundService extends Service {
                     "http://202.120.38.131:40601",
 //                    "http://192.168.1.109:40601",
 //                    "http://202.120.40.60:40601"
-//                    "http://202.120.40.60:40601",
                     "aqWLNkfatxbqNjwUGLaLZFiz6n85Ze7w8ptUx5QzKbex4h53tELTPgsf7FzL", //131
 //                    "NhYrQb1XfpCFC7WBhX7UHPkax1o4YvAxxzXhZfLg6qJ5cbbfZakmPQZVer7x",//HW159.138.58.61
 //                    "29TkBsmjFfEnR1Sack63qWK5WkPGjJtA2kXFHvTijmSE1KYMvVopBRWagHLbE",
@@ -245,7 +244,7 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-            tryConnectCafe(new Double(2.34));
+//            tryConnectCafe(new Double(2.34));
 
 //            new Thread(){
 //                @Override
@@ -264,7 +263,6 @@ public class ForeGroundService extends Service {
 //                    }
 //                }
 //            }.start();
-
 
             createDeviceThread();
 
@@ -377,7 +375,7 @@ public class ForeGroundService extends Service {
         @Override
         public void videoChunkQueryResult(String queryId, Model.VideoChunk vchunk) {
             Log.d(TAG, "videoChunkQueryResult: VIDEOCHUNK得到结果");
-//            EventBus.getDefault().post(vchunk);
+            EventBus.getDefault().post(vchunk);
         }
 
         @Override

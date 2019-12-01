@@ -58,11 +58,8 @@ public class PreloadVideoThread extends Thread{
                 .setId(videoid).build();
         try {
             synchronized (WAITLOCK) {
-                Log.d(TAG, String.format("VIDEOPIPELINE: %s search start.", chunkName));
                 Textile.instance().videos.searchVideoChunks(query, options);
-                Log.d(TAG, String.format("VIDEOPIPELINE: %s search wait for %d ms at most.", chunkName, waitTime));
                 WAITLOCK.wait(waitTime);    //Wait for waitTime ms at most. It can be notified by getAnResult.
-                Log.d(TAG, String.format("VIDEOPIPELINE: %s search time out or notified", chunkName));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,19 +93,9 @@ public class PreloadVideoThread extends Thread{
                             v = Textile.instance().videos.getVideoChunk(videoId, chunkName);
                             if (v != null) //如果已经获取到了ts文件
                                 break;
-                            System.out.println("==========获取chunk：" + chunkName);
                             if (!addressMap.containsKey(chunkName)) { //如果还没有ts的hash就去找hash
-                                System.out.println("======gettinghash：" + chunkName);
-                                Log.d(TAG, "run: gettinghash：" + finished);
                                 searchTheChunk(videoId, chunkName, 1000);
-                            } else {
-                                System.out.println("======获取到hash了：" + chunkName);
                             }
-    //                        try {
-    //                            sleep(1000);
-    //                        } catch (InterruptedException e) {
-    //                            e.printStackTrace();
-    //                        }
                         }
                     }
                 }

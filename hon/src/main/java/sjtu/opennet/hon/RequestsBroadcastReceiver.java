@@ -48,7 +48,6 @@ public class RequestsBroadcastReceiver extends UploadServiceBroadcastReceiver {
 
     @Override
     public void onCompleted(final Context context, final UploadInfo info, final ServerResponse response) {
-        System.out.println("=================Receiver完成");
         handle(() -> Textile.instance().cafes.completeCafeRequest(info.getUploadId()));
         handle(this::flushNext);
     }
