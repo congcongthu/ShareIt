@@ -90,11 +90,15 @@ public class VideoReceiver extends Thread{
         while(!complete) {
             try {
                 vTask = vQueue.take();
-
-                if(vTask.isEnd()||vTask.isDestroy()){
-                    Log.d(TAG, "End or destroy Task received. End the thread.");
+                if(vTask.isEnd()){
+                    Log.d(TAG, "End task received. End the thread.");
+                    Log.d(TAG, String.format("Add chunk %s to local DB.", vTask.getChunk().getChunk()));
+                    Textile.instance().videos.addVideoChunk(vTask.getChunk());
                     complete = true;
-                }else{
+                }else if(vTask.isDestroy()){
+                    Log.d(TAG, "Destroy task received. End the thread.");
+                    complete = true;
+                }else {
 
 
                     String fileName = vTask.getFileName();
