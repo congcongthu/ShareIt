@@ -98,7 +98,7 @@ public class VideoReceiveHelper {
      * Search, receive, judge whether to stop
      */
     public void downloadVideo(){
-        searcher = new VideoSearcher(videoId, receivingChunk, searchHandler);
+        searcher = new VideoSearcher(videoId, receivingChunk, searchHandler, handler);
         searcher.start();
     }
 

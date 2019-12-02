@@ -23,6 +23,7 @@ public class VideoSearcher extends Thread {
     private long toIndex = -1;
     private HashSet<Long> receivingChunk;
     private VideoHandlers.SearchResultHandler handler;
+    private VideoHandlers.ReceiveHandler receiveHandler;
     private boolean stopThread = false;
 
     private static final Object LOCK = new Object(); //Make sure that there is only one Searcher running at the same time.
@@ -43,10 +44,11 @@ public class VideoSearcher extends Thread {
         }
     };
 
-    VideoSearcher(String videoId, HashSet<Long> receivingChunk, VideoHandlers.SearchResultHandler handler){
+    VideoSearcher(String videoId, HashSet<Long> receivingChunk, VideoHandlers.SearchResultHandler handler, VideoHandlers.ReceiveHandler receiveHandler){
         this.videoId = videoId;
         this.receivingChunk = receivingChunk;
         this.handler = handler;
+        this.receiveHandler = receiveHandler;
         try {
             videoPb = Textile.instance().videos.getVideo(videoId);
         } catch (Exception e) {
@@ -54,14 +56,14 @@ public class VideoSearcher extends Thread {
         }
     }
 
-    VideoSearcher(String videoId, HashSet<Long> receivingChunk, VideoHandlers.SearchResultHandler handler, long toIndex){
-        this(videoId, receivingChunk, handler);
+    VideoSearcher(String videoId, HashSet<Long> receivingChunk, VideoHandlers.SearchResultHandler handler, VideoHandlers.ReceiveHandler receiveHandler, long toIndex){
+        this(videoId, receivingChunk, handler, receiveHandler);
         this.toIndex = toIndex;
     }
 
     public static VideoSearcher createPreloadSearcher(String videoId, long toIndex){
         HashSet<Long> tmpList = new HashSet<>();
-        VideoSearcher searcher = new VideoSearcher(videoId, tmpList, null, toIndex);
+        VideoSearcher searcher = new VideoSearcher(videoId, tmpList, null, null, toIndex);
         searcher.preloadOnly = true;
         return searcher;
     }
