@@ -164,7 +164,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
         swarm_peer_listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
-                String swarm_url=iData.get(0).get(i1).swarmAddress;
+                String swarm_url=iData.get(0).get(i1).swarmAddress+"/ipfs/"+iData.get(0).get(i1).peerId;
                 Log.d(TAG, "onChildClick: swarmAddress："+swarm_url);
                 Toast.makeText(PersonalInfoActivity.this,"已将swarm地址复制到剪贴板："+swarm_url,Toast.LENGTH_LONG).show();
                 ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
