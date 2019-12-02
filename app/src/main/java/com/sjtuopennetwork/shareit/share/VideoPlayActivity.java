@@ -150,7 +150,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 
                         writeM3u8(vChunk);
                         NextChunk = index+1;
-                        if((notplayed && (m3u8WriteCount > 0 || finished)) ){ //写了3次就可以播放
+                        if((notplayed && (m3u8WriteCount > 2 || finished)) ){ //写了3次就可以播放
                             Log.d(TAG, "onChunkComplete: 开始播放");
                             Message msg=new Message();
                             msg.what=1;
@@ -380,7 +380,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                 "#EXT-X-VERSION:3\n" +
                 "#EXT-X-MEDIA-SEQUENCE:0\n" +
                 "#EXT-X-ALLOW-CACHE:YES\n" +
-                "#EXT-X-TARGETDURATION:5\n" +
+                "#EXT-X-TARGETDURATION:2\n" +
                 "#EXT-X-PLAYLIST-TYPE:EVENT\n";
 
         m3u8file=new File(dir+"/chunks/playlist.m3u8");
@@ -429,7 +429,7 @@ public class VideoPlayActivity extends AppCompatActivity {
             String append = "#EXTINF:"+duration+",\n"+
                     v.getChunk()+"\n";
             fileWriter.write(append);
-            fileWriter.flush();
+//            fileWriter.flush();
             fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();

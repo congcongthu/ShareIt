@@ -244,7 +244,7 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-            tryConnectCafe(new Double(2.34));
+//            tryConnectCafe(new Double(2.34));
 
 //            new Thread(){
 //                @Override
@@ -558,7 +558,6 @@ public class ForeGroundService extends Service {
                 Model.Video video=feedItemData.feedVideo.getVideo();
 
                 //每得到一个视频就在后台启动预加载线程
-                //TODO: change it to
 //                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
 
                 TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
