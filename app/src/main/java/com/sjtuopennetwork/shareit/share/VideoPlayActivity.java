@@ -79,7 +79,6 @@ public class VideoPlayActivity extends AppCompatActivity {
     DataSource.Factory dataSourceFactory;
     SimpleExoPlayer player;
     VideoReceiveHelper videorHelper;
-    ConcatenatingMediaSource mediaSource;
     long videoLength;
     File m3u8file;
     String dir;
@@ -95,7 +94,6 @@ public class VideoPlayActivity extends AppCompatActivity {
     boolean finishGetHash=false;
     private long NextChunk = 0;
 
-    //两个线程
 //    GetChunkThread getChunkThread=new GetChunkThread();
 
     @Override
@@ -123,11 +121,9 @@ public class VideoPlayActivity extends AppCompatActivity {
 
             m3u8WriteCount=0;
             addressMap = new HashMap<>();
-
 //            if(!EventBus.getDefault().isRegistered(this)){
 //                EventBus.getDefault().register(this);
 //            }
-
             videoid = getIntent().getStringExtra("videoid");
 
             try {
@@ -138,9 +134,11 @@ public class VideoPlayActivity extends AppCompatActivity {
                 videorHelper=new VideoReceiveHelper(this, video, new VideoHandlers.ReceiveHandler() {
                     @Override
                     public void onChunkComplete(Model.VideoChunk vChunk) {
-                        Log.d(TAG, "onChunkComplete: 写m3u8"+m3u8WriteCount+" "+vChunk.getChunk());
+                        Log.d(TAG, "onChunkComplete: 写m3u8 "+m3u8WriteCount+" "+vChunk.getChunk());
 
+                        //把可能的补充起来
                         long index = vChunk.getIndex();
+                        Log.d(TAG, "onChunkComplete: intdex nextChunk "+index+" "+NextChunk);
                         for (long cur = NextChunk; cur < index; cur++){
                             try {
                                 Model.VideoChunk v = Textile.instance().videos.getVideoChunk(videoid, cur);
@@ -149,9 +147,10 @@ public class VideoPlayActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
+
                         writeM3u8(vChunk);
                         NextChunk = index+1;
-                        if((m3u8WriteCount > 2 || finished) && notplayed){ //写了3次就可以播放
+                        if((notplayed && (m3u8WriteCount > 0 || finished)) ){ //写了3次就可以播放
                             Log.d(TAG, "onChunkComplete: 开始播放");
                             Message msg=new Message();
                             msg.what=1;
@@ -161,9 +160,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 
                     @Override
                     public void onVideoComplete() {
-//                        if(fileWriter!=null){
-//                            writeM3u8End();
-//                        }
+//
                     }
 
                     @Override
@@ -180,6 +177,7 @@ public class VideoPlayActivity extends AppCompatActivity {
             }
 
             initM3u8();
+
             if(finished){
                 PlayerView playerView = findViewById(R.id.player_view);
                 player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
@@ -196,45 +194,13 @@ public class VideoPlayActivity extends AppCompatActivity {
                 TrackSelection.Factory trackSelectionFactory=new AdaptiveTrackSelection.Factory(bandwidthMeter);
                 TrackSelector trackSelector = new DefaultTrackSelector(trackSelectionFactory);
                 LoadControl loadControl = new DefaultLoadControl();
-                player=ExoPlayerFactory.newSimpleInstance(this,trackSelector,loadControl);
+//                player=ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
+                player=ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this,trackSelector,loadControl);
+                player.seekTo(0);
                 PlayerView playerView = findViewById(R.id.player_view);
                 playerView.setPlayer(player);
 
             }
-
-//            if(DownloadComplete(videoid)){
-//                finished = true;
-//
-//                //读取m3u8文件
-//                m3u8file=new File(dir+"/chunks/playlist.m3u8");
-////                writeCompleteM3u8();
-//
-//                PlayerView playerView = findViewById(R.id.player_view);
-//                player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
-//                playerView.setPlayer(player);
-//                dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
-//                hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
-//                player.setPlayWhenReady(true);
-//                player.prepare(hlsMediaSource);
-//            }else{ //没有完全下载下来
-//                initM3u8();
-//                finished=false;
-//
-//                videorHelper.downloadVideo();
-//
-//                //初始化播放器
-//                mProgressBar=findViewById(R.id.my_progress_bar);
-//                BandwidthMeter bandwidthMeter=new DefaultBandwidthMeter();
-//                TrackSelection.Factory trackSelectionFactory=new AdaptiveTrackSelection.Factory(bandwidthMeter);
-//                TrackSelector trackSelector = new DefaultTrackSelector(trackSelectionFactory);
-//                LoadControl loadControl = new DefaultLoadControl();
-//                player=ExoPlayerFactory.newSimpleInstance(this,trackSelector,loadControl);
-//                PlayerView playerView = findViewById(R.id.player_view);
-//                playerView.setPlayer(player);
-//
-////                getChunkThread.start(); //如果没有下载完，就去并发下载播放就行了。
-//
-//            }
         }
     }
 
@@ -299,6 +265,13 @@ public class VideoPlayActivity extends AppCompatActivity {
             switch(msg.what){
                 case 1:
                     playVideo();
+                    break;
+//                case 2:
+//                    Model.VideoChunk v=(Model.VideoChunk) msg.getData().getSerializable("vchunk");
+//                    long index=msg.getData().getLong("index");
+//                    writeM3u8(v);
+//                    NextChunk = index+1;
+//                    break;
             }
         }
     };
@@ -326,6 +299,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                     break;
                 case ExoPlayer.STATE_READY: //3
                     mProgressBar.setVisibility(View.GONE);
+                    player.setPlayWhenReady(true);
                     setProgress(0);
                     break;
                 case ExoPlayer.STATE_BUFFERING: //2
@@ -401,28 +375,6 @@ public class VideoPlayActivity extends AppCompatActivity {
         }
     }
 
-    public void writeCompleteM3u8(){
-        int i=0;
-        while(true){
-            String chunkName="out"+String.format("%04d", i)+".ts";
-            try {
-//                Thread.sleep(10000);
-                Model.VideoChunk v=Textile.instance().videos.getVideoChunk(videoid, chunkName);
-                if ( v!=null ){ //本地有了，就写m3u8文件
-                    Log.d(TAG, "writeCompleteM3u8: 从数据库读出来："+v.getChunk());
-                    writeM3u8(v);
-                }
-                else {
-                    break;
-                }
-                i++; //处理下一个视频
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        writeM3u8End();
-    }
-
     public void initM3u8(){
         String head="#EXTM3U\n" +
                 "#EXT-X-VERSION:3\n" +
@@ -433,25 +385,20 @@ public class VideoPlayActivity extends AppCompatActivity {
 
         m3u8file=new File(dir+"/chunks/playlist.m3u8");
         try{
-//            if(!m3u8file.exists()){ //从dir中找到文件复制到chunks里面
-//                m3u8file.createNewFile();
-//                fileWriter = new FileWriter(m3u8file);
-//                fileWriter.write(head);
-//                fileWriter.flush();
-//            }else{
-//                fileWriter = new FileWriter(m3u8file,true);
-//            }
-
             fileWriter = new FileWriter(m3u8file);
             fileWriter.write(head);
+            fileWriter.flush();
+            fileWriter.close();
+
+            //补充已经下载过的
             while(true){
                 try {
                     Model.VideoChunk v=Textile.instance().videos.getVideoChunk(videoid, NextChunk);
                     if ( v!=null ){ //本地有了，就写m3u8文件
                         Log.d(TAG, "writeCompleteM3u8: 从数据库读出来："+v.getChunk());
                         writeM3u8(v);
-                    }
-                    else {
+                    } else {
+                        Log.d(TAG, "initM3u8：补充结束");
                         break;
                     }
                     NextChunk++; //处理下一个视频
@@ -464,7 +411,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         }catch (Exception e){
             e.printStackTrace();
         }
-        System.out.println("===========m3u8文件初始化");
+        System.out.println("===========m3u8文件初始化完毕");
     }
 
     public void writeM3u8(Model.VideoChunk v){
@@ -473,18 +420,17 @@ public class VideoPlayActivity extends AppCompatActivity {
             finished = true;
             return;
         }
-//        m3u8file=new File(dir+"/chunks/playlist.m3u8");
         try {
             long duration0=v.getEndTime()-v.getStartTime(); //微秒
             double size = (double)duration0/1000000;
             DecimalFormat df = new DecimalFormat("0.000000");//格式化小数，不足的补0
             String duration = df.format(size);//返回的是String类型的
-//            FileWriter fileWriter = new FileWriter(m3u8file,true);
+            FileWriter fileWriter = new FileWriter(m3u8file,true);
             String append = "#EXTINF:"+duration+",\n"+
                     v.getChunk()+"\n";
             fileWriter.write(append);
             fileWriter.flush();
-//            fileWriter.close();
+            fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -495,9 +441,11 @@ public class VideoPlayActivity extends AppCompatActivity {
     public void writeM3u8End(){
         Log.d(TAG, "writeM3u8End: ");
         try {
+            FileWriter fileWriter = new FileWriter(m3u8file,true);
             String append = "#EXT-X-ENDLIST";
             fileWriter.write(append);
             fileWriter.flush();
+            fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -557,13 +505,13 @@ public class VideoPlayActivity extends AppCompatActivity {
         finished=true;
         finishGetHash=true;
 
-        if(fileWriter!=null){
-            try {
-                fileWriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        if(fileWriter!=null){
+//            try {
+//                fileWriter.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         if(videorHelper!=null){
             videorHelper.stopReceiver();
@@ -575,5 +523,4 @@ public class VideoPlayActivity extends AppCompatActivity {
             player.release(); //释放播放器
         }
     }
-
 }
