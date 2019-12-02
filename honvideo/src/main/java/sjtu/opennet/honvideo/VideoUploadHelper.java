@@ -29,6 +29,7 @@ import sjtu.opennet.textilepb.Model;
 public class VideoUploadHelper {
     private static final String TAG = "HONVIDEO.VideoUploadHelper";
     final Object POSTERLOCK = new Object();
+    static final Object SEGLOCK = new Object();
     //final Object SEGLOCK = new Object();
     M3u8Listener listObserver;
     private VideoMeta vMeta;
@@ -95,6 +96,8 @@ public class VideoUploadHelper {
         public void onFinish() {
             listObserver.stopWatching();
             exitUploader.start();
+            Log.d(TAG, "FFmpeg segment finish.");
+            SEGLOCK.notify();
         }
     };
 
@@ -212,10 +215,40 @@ public class VideoUploadHelper {
             videoUploader.start();
             chunkpublisher.start(); //It was ended by upload task.
             listObserver.startWatching();
-            Segmenter.segment(context, 1, filePath, m3u8Path, chunkPath, segHandler);
-
+            //Segmenter.segment(context, 1, filePath, m3u8Path, chunkPath, segHandler);
+            new segmentThread().start();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+    }
+
+    class segmentThread extends Thread {
+//        private Context context;
+//        int segTime;
+//        String filePath;
+//        String m3u8Path;
+//        String chunkPath;
+//        ExecuteBinaryResponseHandler segHandler;
+//        segmentThread(Context context, int segTime, String m3u8Path, String chunkPath, ExecuteBinaryResponseHandler segHandler){
+//            this.context = context;
+//            this.segTime = segTime;
+//            this.m3u8Path = m3u8Path;
+//            this.chunkPath = chunkPath;
+//            this.segHandler = segHandler;
+//        }
+
+        @Override
+        public void run(){
+            synchronized (SEGLOCK) {
+                try {
+                    Segmenter.segment(context, 1, filePath, m3u8Path, chunkPath, segHandler);
+                    SEGLOCK.wait();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error occur when segment video.");
+                    e.printStackTrace();
+                }
+            }
         }
 
     }

@@ -17,6 +17,7 @@ import com.sjtuopennetwork.shareit.R;
 
 import java.util.List;
 
+import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.honvideo.ModuleTest;
 import sjtu.opennet.honvideo.Segmenter;
@@ -56,6 +57,34 @@ public class VideoActivity extends AppCompatActivity {
         initUI();
     }
 
+    public void testCafe(){
+        try {
+            Model.CafeSessionList sessionList = Textile.instance().cafes.sessions();
+            for (int i = 0; i < sessionList.getItemsCount(); i++) {
+                Model.CafeSession tmpSession = sessionList.getItems(i);
+                //Textile.instance().cafes.
+                //tmpSession.getId();
+                Log.d(TAG, tmpSession.toString());
+                Textile.instance().cafes.publishPeerToCafe(tmpSession.getId(), new Handlers.ErrorHandler(){
+                    @Override
+                    public void onComplete(){
+                        Log.d(TAG, String.format("Connection with %s is ok.", tmpSession.getId()));
+                        return;
+                    }
+                    @Override
+                    public void onError(Exception e){
+                        Log.d(TAG, String.format("Connection with %s broken.", tmpSession.getId()));
+                        e.printStackTrace();
+                        return;
+                    }
+                });
+                Log.d(TAG, "Command finish");
+            }
+        }catch(Exception e){
+            Log.e(TAG, "Error occur when get cafe session info.");
+            e.printStackTrace();
+        }
+    }
     public void initUI(){
         video_sync=findViewById(R.id.video_sync);
         video_add=findViewById(R.id.video_add);
@@ -63,9 +92,11 @@ public class VideoActivity extends AppCompatActivity {
         //Listener for video sync
         video_sync.setOnClickListener(view -> {
 
-            String testpath = FileUtil.getAppExternalPath(this,"");
-            Log.i(TAG, String.format("External storage path %s", testpath));
+            //String testpath = FileUtil.getAppExternalPath(this,"");
+            //Log.i(TAG, String.format("External storage path %s", testpath));
             //Segmenter.segment("aaa", "aaa");
+            testCafe();
+
         });
 
         //Listener for video add
