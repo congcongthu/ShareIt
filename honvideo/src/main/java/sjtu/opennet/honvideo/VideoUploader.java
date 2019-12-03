@@ -27,19 +27,19 @@ public class VideoUploader extends Thread{
     }
 
     public void shutDown(){
-        Log.w(TAG, "Video Uploader Shut Down!!");
+//        Log.w(TAG, "Video Uploader Shut Down!!");
         interrupt();
     }
 
     private void safelyExitPublisher(int delay){
-        Log.d(TAG, String.format("VIDEOPIPELINE: Chunk publisher end tag will be added in %s millsecends.",delay));
+//        Log.d(TAG, String.format("VIDEOPIPELINE: Chunk publisher end tag will be added in %s millsecends.",delay));
         try {
             Thread.sleep(delay);
         }catch(InterruptedException ie){
-            Log.e(TAG, "Unexpected thread interruption happened when uploader sleeping to end publisher.");
+//            Log.e(TAG, "Unexpected thread interruption happened when uploader sleeping to end publisher.");
             ie.printStackTrace();
         }finally {
-            Log.d(TAG, String.format("VIDEOPIPELINE: index %d: Add end task to Chunk Publish Task Queue", currentIndex));
+//            Log.d(TAG, String.format("VIDEOPIPELINE: index %d: Add end task to Chunk Publish Task Queue", currentIndex));
             chunkQueue.add(ChunkPublishTask.getEndTask(videoId, currentIndex));
         }
     }
@@ -47,7 +47,7 @@ public class VideoUploader extends Thread{
 
     @Override
     public void run(){
-        Log.d(TAG, "VIDEOPIPELINE: Uploader start to run.");
+//        Log.d(TAG, "VIDEOPIPELINE: Uploader start to run.");
         VideoUploadTask vTask;
         while(!complete) {
             try {
@@ -62,7 +62,7 @@ public class VideoUploader extends Thread{
                     //Log.d(TAG, String.format("Task at %d upload return.", currentDuration));
                     //Log.d(TAG, String.format("Task at %d add to chunk task queue.", currentDuration));
                     chunkQueue.add(new ChunkPublishTask(videoChunk, false));
-                    Log.d(TAG, String.format("VIDEOPIPELINE: index %d, chunk %s, Chunk built and add to chunk queue.", videoChunk.getIndex(), videoChunk.getChunk()));
+//                    Log.d(TAG, String.format("VIDEOPIPELINE: index %d, chunk %s, Chunk built and add to chunk queue.", videoChunk.getIndex(), videoChunk.getChunk()));
                     currentDuration = videoChunk.getEndTime();
                     currentIndex++;
                 }

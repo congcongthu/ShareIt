@@ -20,5 +20,9 @@ public class VideoHandlers {
         void onError(final Exception e);
     }
 
+    public interface UploadHandler {
+        void onPublishComplete();
+    }
+
     public final static String chunkEndTag = "VIRTUAL";
 }

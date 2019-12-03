@@ -99,6 +99,20 @@ public class Cafes extends NodeDependent {
         });
     }
 
+
+    public void publishPeerToCafe(final String Id, final Handlers.ErrorHandler handler){
+        node.publishPeerToCafe(Id, (e)->{
+            if(e!=null){
+                handler.onError(e);
+                return;
+            }
+            try {
+                handler.onComplete();
+            } catch (final Exception exception) {
+                handler.onError(exception);
+            }
+        });
+    }
     /**
      * Checks messages from all registered cafes
      * @param handler An object that will get called with the operation is complete

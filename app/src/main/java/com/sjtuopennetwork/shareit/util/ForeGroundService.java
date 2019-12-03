@@ -153,7 +153,7 @@ public class ForeGroundService extends Service {
 
         //启动Textile
         try {
-            Textile.launch(ForeGroundService.this, repoPath, false);
+            Textile.launch(ForeGroundService.this, repoPath, true);
             Textile.instance().addEventListener(new MyTextileListener());
         } catch (Exception e) {
             e.printStackTrace();
@@ -558,7 +558,7 @@ public class ForeGroundService extends Service {
                 Model.Video video=feedItemData.feedVideo.getVideo();
 
                 //每得到一个视频就在后台启动预加载线程
-//                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
+                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
 
                 TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,

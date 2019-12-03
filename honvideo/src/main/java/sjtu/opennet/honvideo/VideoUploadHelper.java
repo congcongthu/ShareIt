@@ -29,6 +29,8 @@ import sjtu.opennet.textilepb.Model;
 public class VideoUploadHelper {
     private static final String TAG = "HONVIDEO.VideoUploadHelper";
     final Object POSTERLOCK = new Object();
+    static final Object SEGTHREADLOCK = new Object();
+    final Object SEGLOCK = new Object();
     //final Object SEGLOCK = new Object();
     M3u8Listener listObserver;
     private VideoMeta vMeta;
@@ -93,10 +95,18 @@ public class VideoUploadHelper {
 
         @Override
         public void onFinish() {
-            listObserver.stopWatching();
-            exitUploader.start();
+            synchronized (SEGLOCK) {
+                listObserver.stopWatching();
+                exitUploader.start();
+                Log.d(TAG, "FFmpeg segment finish.");
+                Log.d(TAG, "SEGLOCK NOTIFY");
+                SEGLOCK.notify();
+
+            }
         }
     };
+
+    private VideoHandlers.UploadHandler uploadHandler;
 
     public VideoUploadHelper(Context context, String filePath) {
         this.context = context;
@@ -152,6 +162,9 @@ public class VideoUploadHelper {
         try {
             Textile.instance().videos.addVideo(videoPb);
             Textile.instance().videos.publishVideo(videoPb);
+
+            Log.d(TAG, "publishMeta: publish successly");
+            uploadHandler.onPublishComplete();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -202,7 +215,9 @@ public class VideoUploadHelper {
      *
      * @return
      */
-    public void upload() {
+    public void upload(VideoHandlers.UploadHandler uploadHandler) {
+        this.uploadHandler=uploadHandler;
+
         //Publish video meta.
         getVideoPb();
         new Thread(new metaPublisher()).start();
@@ -212,10 +227,44 @@ public class VideoUploadHelper {
             videoUploader.start();
             chunkpublisher.start(); //It was ended by upload task.
             listObserver.startWatching();
-            Segmenter.segment(context, 1, filePath, m3u8Path, chunkPath, segHandler);
-
+            //Segmenter.segment(context, 1, filePath, m3u8Path, chunkPath, segHandler);
+            new segmentThread().start();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+    }
+
+    class segmentThread extends Thread {
+//        private Context context;
+//        int segTime;
+//        String filePath;
+//        String m3u8Path;
+//        String chunkPath;
+//        ExecuteBinaryResponseHandler segHandler;
+//        segmentThread(Context context, int segTime, String m3u8Path, String chunkPath, ExecuteBinaryResponseHandler segHandler){
+//            this.context = context;
+//            this.segTime = segTime;
+//            this.m3u8Path = m3u8Path;
+//            this.chunkPath = chunkPath;
+//            this.segHandler = segHandler;
+//        }
+
+        @Override
+        public void run(){
+            synchronized (SEGTHREADLOCK) {
+                synchronized (SEGLOCK) {
+                    try {
+                        Segmenter.segment(context, 1, filePath, m3u8Path, chunkPath, segHandler);
+//                        Log.d(TAG, "SEGLOCK WAIT");
+                        SEGLOCK.wait();
+//                        Log.d(TAG, "SEGLOCK NOTIFUED");
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error occur when segment video.");
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
 
     }
@@ -244,9 +293,9 @@ public class VideoUploadHelper {
     class metaPublisher implements Runnable {
         @Override
         public void run() {
-            Log.d(TAG, "VIDEOPIPELINE: Meta publish thread start.");
+//            Log.d(TAG, "VIDEOPIPELINE: Meta publish thread start.");
             publishMeta();
-            Log.d(TAG, "VIDEOPIPELINE: Meta publish thread end.");
+//            Log.d(TAG, "VIDEOPIPELINE: Meta publish thread end.");
         }
     }
 
