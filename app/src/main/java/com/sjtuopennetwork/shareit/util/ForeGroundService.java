@@ -153,7 +153,7 @@ public class ForeGroundService extends Service {
 
         //启动Textile
         try {
-            Textile.launch(ForeGroundService.this, repoPath, false);
+            Textile.launch(ForeGroundService.this, repoPath, true);
             Textile.instance().addEventListener(new MyTextileListener());
         } catch (Exception e) {
             e.printStackTrace();
@@ -246,23 +246,52 @@ public class ForeGroundService extends Service {
 
             tryConnectCafe(new Double(2.34));
 
-//            new Thread(){
-//                @Override
-//                public void run() {
-//
-//                    while(true){
-//                        try {
-//                            Thread.sleep(5000);
-//
-//                            //发送心跳，接口回调来处理，如果成功就不做事情，如果不成功就进行操作
-//                            //
-//
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            }.start();
+            new Thread(){
+                @Override
+                public void run() {
+                    while(true){
+                        try {
+                            Thread.sleep(5000);
+                            //发送心跳
+                            if(Textile.instance().online()){
+                                Model.CafeSessionList sessionList = Textile.instance().cafes.sessions();
+                                for (int i = 0; i < sessionList.getItemsCount(); i++) {
+                                    final Model.CafeSession tmpSession = sessionList.getItems(i);
+                                    Log.d(TAG, "run: tmpSession: "+tmpSession.getId());
+                                    Textile.instance().cafes.publishPeerToCafe(tmpSession.getId(), new Handlers.ErrorHandler(){
+                                        @Override
+                                        public void onComplete(){
+                                            Log.d(TAG, "onComplete: 连接正常");
+                                            return;
+                                        }
+                                        @Override
+                                        public void onError(Exception e){
+                                            Log.d(TAG, "onError: 连接断开，尝试重连");
+
+                                            Textile.instance().cafes.deregister(tmpSession.getId(), new Handlers.ErrorHandler() {
+                                                @Override
+                                                public void onComplete() {
+                                                    tryConnectCafe(new Double(2.34));
+                                                }
+
+                                                @Override
+                                                public void onError(Exception e) {
+
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }else{
+                                Log.d(TAG, "run: 节点下线了");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            }.start();
 
             createDeviceThread();
 
@@ -558,7 +587,6 @@ public class ForeGroundService extends Service {
                 Model.Video video=feedItemData.feedVideo.getVideo();
 
                 //每得到一个视频就在后台启动预加载线程
-                //TODO: change it to
 //                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
 
                 TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);

@@ -1,5 +1,6 @@
 package com.sjtuopennetwork.shareit.share;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -48,6 +49,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import sjtu.opennet.honvideo.VideoHandlers;
 import sjtu.opennet.honvideo.VideoMeta;
 import sjtu.opennet.honvideo.VideoReceiveHelper;
 import sjtu.opennet.honvideo.VideoUploadHelper;
@@ -92,11 +94,13 @@ public class ChatActivity extends AppCompatActivity {
     public static final String REMOVE_DIALOG="you get out";
     FinishActivityRecevier finishActivityRecevier;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         preloadVideoThreadList=new LinkedList<>();
+
 
         initUI();
 
@@ -279,15 +283,18 @@ public class ChatActivity extends AppCompatActivity {
 
             Log.d(TAG, "onActivityResult: 选择了视频："+filePath);
 
-            VideoUploadHelper videoHelper=new VideoUploadHelper(this,filePath);
+            VideoUploadHelper videoHelper=new VideoUploadHelper(this, filePath);
             Model.Video videoPb=videoHelper.getVideoPb();
 
-            videoHelper.upload();
-            try {
-                Textile.instance().videos.threadAddVideo(threadid,videoPb.getId()); //向thread中添加
-            }catch(Exception e){
-                e.printStackTrace();
-            }
+            videoHelper.upload(() -> {
+                try {
+                    Log.d(TAG, "onActivityResult: 向thread添加video "+videoPb.getVideoLength()/1000000);
+                    Textile.instance().videos.threadAddVideo(threadid,videoPb.getId()); //向thread中添加
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            });
+
 
             Bitmap tmpBmap = videoHelper.getPoster(); //拿到缩略图
             String tmpdir = FileUtil.getAppExternalPath(this, "temp");

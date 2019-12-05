@@ -138,8 +138,8 @@ public class VideoSearcher extends Thread {
                     Log.d(TAG, String.format("VIDEOPIPELINE: %s, preload thread start.", videoId));
                 }
                 Long currentIndex = new Long(0);
-
-                while ((toIndex < 0 || currentIndex <= toIndex) && !stopThread && !isInterrupted()){
+                Log.d(TAG, String.format("VIDEOPIPELINE: toIndex: %d", toIndex));
+                while ((toIndex < 0 || currentIndex <= toIndex) && !stopThread && !isInterrupted()){ //??????????
                     Log.d(TAG, String.format("VIDEOPIPELINE: %d, try search this index", currentIndex));
                     Model.VideoChunk v = Textile.instance().videos.getVideoChunk(videoId, currentIndex);
 

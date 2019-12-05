@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
 
+        Log.d(TAG, "onCreate: MainActivity调用onCreate");
+
         getPermission();
 
         //查SharedPreference中"isLogin"判断登录状态，如果未登录则进入登录界面。如果已登录则跳转到HomeActivity

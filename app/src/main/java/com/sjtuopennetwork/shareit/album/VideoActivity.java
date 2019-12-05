@@ -21,6 +21,7 @@ import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.honvideo.ModuleTest;
 import sjtu.opennet.honvideo.Segmenter;
+import sjtu.opennet.honvideo.VideoHandlers;
 import sjtu.opennet.honvideo.VideoMeta;
 import sjtu.opennet.honvideo.VideoUploadHelper;
 import sjtu.opennet.textilepb.Model;
@@ -136,7 +137,12 @@ public class VideoActivity extends AppCompatActivity {
             //vMeta.logCatPrint();
               //VideoHelper vHelper = new VideoHelper(this, filePath);
               VideoUploadHelper vHelper = new VideoUploadHelper(this, filePath);
-              vHelper.upload();
+              vHelper.upload(new VideoHandlers.UploadHandler() {
+                  @Override
+                  public void onPublishComplete() {
+
+                  }
+              });
 //            long endTime = System.currentTimeMillis();
 //            Log.d(TAG, "Meta get end");
 //            Log.d(TAG, String.format("Meta get time %d ms", endTime - startTime));

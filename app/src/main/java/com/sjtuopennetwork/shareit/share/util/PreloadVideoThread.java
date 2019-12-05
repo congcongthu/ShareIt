@@ -113,7 +113,7 @@ public class PreloadVideoThread extends Thread{
     @Override
     public void run() {
 
-        videoReceiveHelper.preloadVideo(4);
+        videoReceiveHelper.preloadVideo(2);
 //        int i=0;
 //        long videoLength=video.getVideoLength();
 //        Model.VideoChunk v=null;
