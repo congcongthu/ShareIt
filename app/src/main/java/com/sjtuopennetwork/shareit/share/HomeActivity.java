@@ -1,5 +1,7 @@
 package com.sjtuopennetwork.shareit.share;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -34,6 +37,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,6 +72,11 @@ public class HomeActivity extends AppCompatActivity {
     private BottomNavigationView.OnNavigationItemSelectedListener navSeLis=new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            if(isServiceRunning("com.sjtuopennetwork.shareit.util.ForeGroundService")){
+                Log.d(TAG, "onCreate: 服务正在运行");
+            }else{
+                Log.d(TAG, "onCreate: 服务没有运行");
+            }
             switch(menuItem.getItemId()){
                 case R.id.share:
                     replaceFragment(shareFragment);
@@ -94,7 +103,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
     }
 
     @Override
@@ -102,27 +110,49 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        Log.d(TAG, "onCreate: 调用了HomeActivity的OnCreate");
-
         login=getIntent().getIntExtra("login",5);
-        Log.d(TAG, "onStart: 跳转到HomeActivity："+login);
+        Log.d(TAG, "onStart: 跳转到HomeActivity，login："+login);
         if(login==0 || login==1 || login==2 || login==3){ //如果等于5，就不是登录页面跳转过来的
             initUI();
 
-            Log.d(TAG, "onCreate: 即将启动等待圆环，当前nodeOnline值为："+nodeOnline);
-            circleProgressDialog=new CircleProgressDialog(this);
-            circleProgressDialog.setText("节点启动中");
-            circleProgressDialog.showDialog();
 
             if(!EventBus.getDefault().isRegistered(this)){
                 EventBus.getDefault().register(this);
             }
 
-            Log.d(TAG, "onCreate: 即将启动前台服务");
-            Intent intent=new Intent(this,ForeGroundService.class);
-            intent.putExtra("login",login);
-            startForegroundService(intent);
+            if(isServiceRunning("com.sjtuopennetwork.shareit.util.ForeGroundService")){
+                Log.d(TAG, "onCreate: 服务正在运行");
+                replaceFragment(shareFragment);
+            }else{
+                Log.d(TAG, "onCreate: 即将启动等待圆环，当前nodeOnline值为："+nodeOnline);
+                circleProgressDialog=new CircleProgressDialog(this);
+                circleProgressDialog.setText("节点启动中");
+                circleProgressDialog.showDialog();
+
+                Log.d(TAG, "onCreate: 服务没有运行");
+                Log.d(TAG, "onCreate: 即将启动前台服务");
+                Intent intent=new Intent(this,ForeGroundService.class);
+                intent.putExtra("login",login);
+                startForegroundService(intent);
+            }
+
         }
+    }
+
+    public boolean isServiceRunning(String ServiceName) {
+        ActivityManager myManager = (ActivityManager) getApplicationContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        ArrayList<ActivityManager.RunningServiceInfo> runningService = (ArrayList<ActivityManager.RunningServiceInfo>) myManager
+                .getRunningServices(30);
+        Log.d(TAG, "isServiceRunning: 服务数量："+runningService.size());
+        for (int i = 0; i < runningService.size(); i++) {
+            Log.d(TAG, "isServiceRunning: "+runningService.get(i).service.getClassName());
+            if (runningService.get(i).service.getClassName()
+                    .equals(ServiceName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void initUI(){
@@ -136,6 +166,7 @@ public class HomeActivity extends AppCompatActivity {
         nav.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         nav.setOnNavigationItemSelectedListener(navSeLis);
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void knowOnline(Integer integer){
         if(integer.intValue()==0){

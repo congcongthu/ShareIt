@@ -257,7 +257,7 @@ public class ForeGroundService extends Service {
 //                            //发送心跳，接口回调来处理，如果成功就不做事情，如果不成功就进行操作
 //                            //
 //
-//                        } catch (InterruptedException e) {
+//     monitor                   } catch (InterrumoptedException e) {
 //                            e.printStackTrace();
 //                        }
 //                    }
@@ -558,7 +558,7 @@ public class ForeGroundService extends Service {
                 Model.Video video=feedItemData.feedVideo.getVideo();
 
                 //每得到一个视频就在后台启动预加载线程
-                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
+//                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
 
                 TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,

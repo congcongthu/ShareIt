@@ -1,5 +1,6 @@
 package com.sjtuopennetwork.shareit.share;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -93,11 +94,13 @@ public class ChatActivity extends AppCompatActivity {
     public static final String REMOVE_DIALOG="you get out";
     FinishActivityRecevier finishActivityRecevier;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         preloadVideoThreadList=new LinkedList<>();
+
 
         initUI();
 
