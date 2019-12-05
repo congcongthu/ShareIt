@@ -1,6 +1,8 @@
 package sjtu.opennet.honvideo;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
@@ -92,6 +94,12 @@ public class VideoMeta {
                     thumbnail = extractFrameFFmpeg(duration_long / 10);
                 }
             }
+
+            if(thumbnail == null){
+                Log.e(TAG, "Extract thumbnail fail!!!! Set it to a black image.");
+                thumbnail = createEmptyBitmap(Integer.parseInt(width), Integer.parseInt(height), 0);
+            }
+
             thumbnail_byte = Bitmap2Bytes(thumbnail);
             thumbnail_small = getSmallThumbnail(100, thumbnail);
             thumbnail_small_byte = Bitmap2Bytes(thumbnail_small);
@@ -131,6 +139,15 @@ public class VideoMeta {
      */
     public void logCatPrint(){
         Log.i(TAG, stringInfo() + String.format("\nVideo Hash: %s", videoHash));
+    }
+
+    public static Bitmap createEmptyBitmap(int width, int height, int color) {
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
+        paint.setColor(color);
+        canvas.drawRect(0F, 0F, (float) width, (float) height, paint);
+        return bitmap;
     }
 
     public static Bitmap getSmallThumbnail(int dstWidth, Bitmap sourceBitmap){
@@ -184,14 +201,19 @@ public class VideoMeta {
     private Bitmap extractFrameFFmpeg(long timeMs){
         Bitmap bitmap = null;
         // Try to get 1 sec further if get frame failed.
-        for(long i = timeMs; i<duration_long; i += 1000){
-            bitmap = fmdataReceiver.getFrameAtTime(i*1000, FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC);
-            if(bitmap != null){
-                break;
+        try {
+            for (long i = timeMs; i < duration_long; i += 1000) {
+                bitmap = fmdataReceiver.getFrameAtTime(i * 1000, FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+                if (bitmap != null) {
+                    break;
+                }
+                Log.w(TAG, "Get frame fail. try to get one sec further");
             }
-            Log.w(TAG, "Get frame fail. try to get one sec further");
+            return bitmap;
+        }catch(Exception e) {
+            e.printStackTrace();
+            return null;
         }
-        return bitmap;
     }
 
 
@@ -199,7 +221,7 @@ public class VideoMeta {
         try {
             File img = new File(dirPath, "thumbnail.png");
             OutputStream fout = new FileOutputStream(img);
-            thumbnail.compress(Bitmap.CompressFormat.PNG, 100, fout);
+            thumbnail_small.compress(Bitmap.CompressFormat.PNG, 100, fout);
             fout.flush();
             fout.close();
             return img.getAbsolutePath();

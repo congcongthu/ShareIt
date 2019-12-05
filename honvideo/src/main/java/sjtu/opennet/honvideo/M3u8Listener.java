@@ -13,6 +13,7 @@ public class M3u8Listener extends FileObserver {
     private BlockingQueue<VideoUploadTask> videoQueue;      //required bu VideoUploader
     private BlockingQueue<ChunkPublishTask> chunkQueue;     //VideoUploadTask will use this to add publish task
     private String observeredDir;
+    private long currentIndex = 0;
 
     static class chunkInfo{
         public String filename;
@@ -49,12 +50,12 @@ public class M3u8Listener extends FileObserver {
         switch(event){
 
             case FileObserver.MOVED_TO:
-                Log.d(TAG, String.format("%s, MOVED_TO", path));
+                //Log.d(TAG, String.format("%s, MOVED_TO", path));
 
                 m3u8Content = FileUtil.readAllString(String.format("%s/%s" ,observeredDir, path));
-                Log.d(TAG, String.format("Whole list content:\n%s", m3u8Content));
+                //Log.d(TAG, String.format("Whole list content:\n%s", m3u8Content));
                 chunkInfo info = parseM3u8Content(m3u8Content);
-                Log.d(TAG, String.format("File: %s, Duration: %d", info.filename, info.duration));
+                Log.d(TAG, String.format("Listener: File: %s, Duration: %d", info.filename, info.duration));
                 String tsAbsolutePath = String.format("%s/chunks/%s", observeredDir, info.filename);
                 VideoUploadTask currentTask = new VideoUploadTask(videoId, info.filename, tsAbsolutePath, info.duration, false);
                 try {

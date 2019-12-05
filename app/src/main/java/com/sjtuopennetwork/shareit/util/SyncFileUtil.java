@@ -114,7 +114,7 @@ public class SyncFileUtil {
         }
     }
 
-    public static Model.SyncFileList sFileList(String address, SyncFile.Type sType){
+    public static Model.SyncFileList listSyncFile(String address, SyncFile.Type sType){
         try {
             return Textile.instance().files.listSyncFile(address, sType);
         }catch(Exception e){

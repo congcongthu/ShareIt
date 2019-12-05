@@ -246,7 +246,6 @@ public class MsgAdapter extends BaseAdapter {
             public void handleMessage(Message msg) {
                 switch(msg.what){
                     case 1:
-
                         String newPath=msg.getData().getString("newPath");
                         Log.d(TAG, "handleMessage: 拿到头像："+newPath);
                         Glide.with(context).load(newPath).thumbnail(0.3f).into(imageView);

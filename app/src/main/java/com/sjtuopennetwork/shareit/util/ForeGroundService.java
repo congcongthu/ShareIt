@@ -60,6 +60,10 @@ public class ForeGroundService extends Service {
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
         repoPath=intent.getStringExtra("repopath");
 
+        SharedPreferences.Editor editor=pref.edit();
+        editor.putBoolean("131ok",false);
+        editor.commit();
+
         new Thread(){
             @Override
             public void run() {
@@ -176,14 +180,14 @@ public class ForeGroundService extends Service {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void tryConnectCafe(Double register){
-        Log.d(TAG, "tryConnectCafe: 尝试连接cafe");
         if(register.equals(2.34)){
+            Log.d(TAG, "tryConnectCafe: 尝试连接cafe");
             Textile.instance().cafes.register(
 //                    "http://159.138.58.61:40601",
                     "http://202.120.38.131:40601",
 //                    "http://192.168.1.109:40601",
-//                    "http://202.120.40.60:40601",
-                    "WwqhHzab1oRqXPs3KnDL2oX1S9h2D7KYotMo2eNUg2MFPJPENWgB1Q2H6m3b", //131
+//                    "http://202.120.40.60:40601"
+                    "aqWLNkfatxbqNjwUGLaLZFiz6n85Ze7w8ptUx5QzKbex4h53tELTPgsf7FzL", //131
 //                    "NhYrQb1XfpCFC7WBhX7UHPkax1o4YvAxxzXhZfLg6qJ5cbbfZakmPQZVer7x",//HW159.138.58.61
 //                    "29TkBsmjFfEnR1Sack63qWK5WkPGjJtA2kXFHvTijmSE1KYMvVopBRWagHLbE",
 //                    "WwqhHzab1oRqXPs3KnDL2oX1S9h2D7KYotMo2eNUg2MFPJPENWgB1Q2H6m3b",
@@ -191,6 +195,9 @@ public class ForeGroundService extends Service {
                         @Override
                         public void onComplete() {
                             Log.d(TAG, "onComplete: 131cafe连接成功");
+                            SharedPreferences.Editor editor=pref.edit();
+                            editor.putBoolean("131ok",true);
+                            editor.commit();
                             QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
                             try {
                                 Textile.instance().account.sync(options);
@@ -237,26 +244,54 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-//            tryConnectCafe(new Double(2.34));
-//
-//            new Thread(){
-//                @Override
-//                public void run() {
-//
-//                    while(true){
-//                        try {
-//                            Thread.sleep(5000);
-//
-//                            //发送心跳，接口回调来处理，如果成功就不做事情，如果不成功就进行操作
-//                            //
-//
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            }.start();
+            tryConnectCafe(new Double(2.34));
 
+            new Thread(){
+                @Override
+                public void run() {
+                    while(true){
+                        try {
+                            Thread.sleep(5000);
+                            //发送心跳
+                            if(Textile.instance().online()){
+                                Model.CafeSessionList sessionList = Textile.instance().cafes.sessions();
+                                for (int i = 0; i < sessionList.getItemsCount(); i++) {
+                                    final Model.CafeSession tmpSession = sessionList.getItems(i);
+                                    Log.d(TAG, "run: tmpSession: "+tmpSession.getId());
+                                    Textile.instance().cafes.publishPeerToCafe(tmpSession.getId(), new Handlers.ErrorHandler(){
+                                        @Override
+                                        public void onComplete(){
+                                            Log.d(TAG, "onComplete: 连接正常");
+                                            return;
+                                        }
+                                        @Override
+                                        public void onError(Exception e){
+                                            Log.d(TAG, "onError: 连接断开，尝试重连");
+
+                                            Textile.instance().cafes.deregister(tmpSession.getId(), new Handlers.ErrorHandler() {
+                                                @Override
+                                                public void onComplete() {
+                                                    tryConnectCafe(new Double(2.34));
+                                                }
+
+                                                @Override
+                                                public void onError(Exception e) {
+
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }else{
+                                Log.d(TAG, "run: 节点下线了");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            }.start();
 
             createDeviceThread();
 
@@ -368,6 +403,7 @@ public class ForeGroundService extends Service {
 
         @Override
         public void videoChunkQueryResult(String queryId, Model.VideoChunk vchunk) {
+            Log.d(TAG, "videoChunkQueryResult: VIDEOCHUNK得到结果："+vchunk.getIndex());
             EventBus.getDefault().post(vchunk);
         }
 

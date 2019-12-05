@@ -25,8 +25,16 @@ public class ChunkPublishTask implements Comparable<ChunkPublishTask> {
         }
     }
 
-    public static ChunkPublishTask getEndTask(){
-        return new ChunkPublishTask(null, true);
+    public static ChunkPublishTask getEndTask(String videoId, long currentIndex){
+        Model.VideoChunk virtualChunk = Model.VideoChunk.newBuilder()
+                .setId(videoId)
+                .setChunk(VideoHandlers.chunkEndTag)
+                .setAddress(VideoHandlers.chunkEndTag)
+                .setStartTime(-2)
+                .setEndTime(-2)
+                .setIndex(currentIndex)
+                .build();
+        return new ChunkPublishTask(virtualChunk, true);
     }
 
     public boolean isEnd(){
@@ -35,6 +43,7 @@ public class ChunkPublishTask implements Comparable<ChunkPublishTask> {
     public long getChunkStartTime(){
         return chunkStartTime;
     }
+    public Model.VideoChunk getChunk(){return videoChunk;}
 
     @Override
     public int compareTo(ChunkPublishTask another){
@@ -54,9 +63,11 @@ public class ChunkPublishTask implements Comparable<ChunkPublishTask> {
      */
     public boolean process(){
         try {
+            //Log.d(TAG, String.format("VIDEOPIPELINE: %s publish task start", videoChunk.getChunk()));
             Textile.instance().videos.addVideoChunk(videoChunk);
+            //Log.d(TAG, String.format("VIDEOPIPELINE: %s chunk added to local database", videoChunk.getChunk()));
             Textile.instance().videos.publishVideoChunk(videoChunk);
-            Log.d(TAG, String.format("Chunk at time %d published.", chunkStartTime));
+            //Log.d(TAG, String.format("VIDEOPIPELINE: %s chunk published to cafe", videoChunk.getChunk()));
             return true;
         }catch(Exception e){
             Log.e(TAG, "Unexpected error when publish video chunk");

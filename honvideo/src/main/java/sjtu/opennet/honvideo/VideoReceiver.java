@@ -30,6 +30,22 @@ public class VideoReceiver extends Thread{
 
     //private String controlLock;
     //private HashSet<int> chunk
+    private VideoHandlers.ReceiveHandler handler = new VideoHandlers.ReceiveHandler(){
+        @Override
+        public void onChunkComplete(Model.VideoChunk vChunk){
+            return;
+        }
+
+        @Override
+        public void onVideoComplete() {
+            return;
+        }
+
+        @Override
+        public void onError(Exception e){
+            e.printStackTrace();
+        }
+    };
 
     public VideoReceiver(BlockingQueue<VideoReceiveTask> vQueue, String videoId, String videoPath, String chunkPath){
         this.vQueue = vQueue;
@@ -42,7 +58,14 @@ public class VideoReceiver extends Thread{
         //lockQueue = new LinkedBlockingQueue<>();
     }
 
+    public VideoReceiver(BlockingQueue<VideoReceiveTask> vQueue, String videoId, String videoPath, String chunkPath, VideoHandlers.ReceiveHandler handler){
+        this(vQueue, videoId, videoPath, chunkPath);
+        this.handler = handler;
+    }
 
+    public void setHandler( VideoHandlers.ReceiveHandler handler){
+        this.handler = handler;
+    }
     public void shutDown(){
         Log.w(TAG, "Video Receiver Shut Down!!\nNote that this is not the normal exit method.");
         interrupt();
@@ -67,11 +90,17 @@ public class VideoReceiver extends Thread{
         while(!complete) {
             try {
                 vTask = vQueue.take();
-
-                if(vTask.isEnd()||vTask.isDestroy()){
-                    Log.d(TAG, "End or destroy Task received. End the thread.");
+                if(vTask.isEnd()){
+                    Log.d(TAG, "VIDEOPIPELINE: End task received. End the thread.");
+                    Log.d(TAG, String.format("Add chunk %s to local DB.", vTask.getChunk().getChunk()));
+                    Textile.instance().videos.addVideoChunk(vTask.getChunk());
+                    handler.onChunkComplete(vTask.getChunk());
+                    handler.onVideoComplete();
                     complete = true;
-                }else{
+                }else if(vTask.isDestroy()){
+                    Log.d(TAG, "VIDEOPIPELINE: Destroy task received. End the thread.");
+                    complete = true;
+                }else {
 
 
                     String fileName = vTask.getFileName();
@@ -99,6 +128,7 @@ public class VideoReceiver extends Thread{
                             Log.e(TAG, String.format("Add the failed task %s back to queue", fileName));
                         }else if(returnStat == 1){
                             Log.d(TAG, "Task success.");
+                            handler.onChunkComplete(vTask.getChunk());
                         } else if(returnStat == 0){
                             Log.e(TAG, "That should not happen.");
                         }
@@ -116,6 +146,7 @@ public class VideoReceiver extends Thread{
             }
 
         }
+
         Log.d(TAG, "Receiver end safely.");
     }
 }

@@ -27,12 +27,13 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
     private Handlers.DataHandler handler = new Handlers.DataHandler() {
         @Override
         public void onComplete(byte[] data, String media) {
-            Log.d(TAG, String.format("Task %s IPFS dataAtPath complete", fileName));
+            Log.d(TAG, String.format("VIDEOPIPELINE: %s IPFS dataAtPath complete", fileName));
             String savePath = String.format("%s/%s", chunkDir, fileName);
             FileUtil.writeByteArrayToFile(savePath, data);
-            Log.d(TAG, String.format("Save chunk to %s", savePath));
+            Log.d(TAG, String.format("VIDEOPIPELINE: %s saved %s", fileName, savePath));
             try {
                 Textile.instance().videos.addVideoChunk(vChunk);
+                Log.d(TAG, String.format("VIDEOPIPELINE: %s added to local DB", fileName));
                 lockQueue.add(1);
             }catch(Exception e){
                 Log.e(TAG, "Write Database Fail!!!!");
@@ -66,8 +67,8 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
         return fileName;
     }
 
-    public static VideoReceiveTask endTask(){
-        return new VideoReceiveTask(null, "", true, false);
+    public static VideoReceiveTask endTask(Model.VideoChunk vchunk){
+        return new VideoReceiveTask(vchunk, "", true, false);
     }
     public static VideoReceiveTask destroyTask(){
         return new VideoReceiveTask(null, "", false, true);
@@ -113,7 +114,7 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
         }
         try {
             String chunkHash = vChunk.getAddress();
-            Log.d(TAG, String.format("IPFS get %s from %s", fileName, chunkHash));
+            Log.d(TAG, String.format("VIDEOPIPELINE: %s , Do ipfs data at path from %s", fileName, chunkHash));
             Textile.instance().ipfs.dataAtPath(chunkHash, handler);
             //Log.d(TAG, String.format("Task with file %s completes.", fileName));
             return true;
@@ -123,5 +124,9 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
             return false;
         }
         //return fileName;
+    }
+
+    Model.VideoChunk getChunk(){
+        return vChunk;
     }
 }

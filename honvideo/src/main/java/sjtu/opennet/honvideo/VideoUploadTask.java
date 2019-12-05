@@ -37,6 +37,7 @@ public class VideoUploadTask {
     //Variables assigned during running
     private long currentDuration = 0;
     private long duration_long = 0;
+    private long currentIndex = 0;
 
     //Returned chunk proto
     private VideoChunk videoChunk;
@@ -73,16 +74,17 @@ public class VideoUploadTask {
         @Override
         public void onComplete(String path) {
             synchronized (LOCK) {
-                Log.d(TAG, String.format("IPFS add complete for file %s with ipfs path: %s", tsPath, path));
+                //Log.d(TAG, String.format("IPFS add complete for file %s with ipfs path: %s", tsPath, path));
                 videoChunk = VideoChunk.newBuilder()
                         .setId(videoId)
                         .setChunk(tsPath)
                         .setAddress(path)
                         .setStartTime(currentDuration)
                         .setEndTime(currentDuration + duration_long)
+                        .setIndex(currentIndex)
                         .build();
 
-                Log.d(TAG, "Chunk proto built.");
+                //Log.d(TAG, "Chunk proto built.");
                 LOCK.notify();
             }
         }
@@ -135,8 +137,9 @@ public class VideoUploadTask {
      * @param currentDuration The duration now. Used as startTime;
      * @return endTime. Used to update duration in video Uploader.
      */
-    public VideoChunk upload(long currentDuration) throws VideoExceptions.UnexpectedEndException{
+    public VideoChunk upload(long currentDuration, long currentIndex) throws VideoExceptions.UnexpectedEndException{
         this.currentDuration = currentDuration;
+        this.currentIndex = currentIndex;
         //duration_int = readDurationFromReceiver();
         if(endTag){
             Log.d(TAG, "End task received. Return -1 to end the task thread.");
@@ -144,16 +147,16 @@ public class VideoUploadTask {
         }
 
         try {
-            Log.d(TAG, String.format("Add task %s to ipfs.", tsPath));
-            timeLog.begin();
+            //Log.d(TAG, String.format("VIDEOPIPELINE: %s task added to ipfs.", tsPath));
+            //timeLog.begin();
             byte[] fileContent = Files.readAllBytes(Paths.get(tsAbsolutePath));
             synchronized (LOCK) {
                 Textile.instance().ipfs.ipfsAddData(fileContent, true, false, tsHandler);
-                Log.d(TAG, "Task wait for ipfs complete");
+                //Log.d(TAG, "Task wait for ipfs complete");
                 LOCK.wait();
-                Log.d(TAG, "Task notified");
+                //Log.d(TAG, "Task notified");
             }
-            Log.d(TAG, String.format("IPFS add complete. Use time %d ms", timeLog.stopGetTime()));
+            //Log.d(TAG, String.format("VIDEOPIPELINE: %s ipfs add complete. Use time %d ms", tsPath, timeLog.stopGetTime()));
         }catch(IOException ie){
             Log.e(TAG, "Unexpected io exception when read ts contents.");
             ie.printStackTrace();

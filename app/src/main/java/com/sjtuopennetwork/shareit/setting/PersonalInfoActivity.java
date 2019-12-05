@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -35,6 +37,8 @@ import static android.os.Build.VERSION_CODES.O;
 
 public class PersonalInfoActivity extends AppCompatActivity {
 
+    private static final String TAG = "=========================";
+
     //UI控件
     private TextView info_name; //昵称
     private TextView info_addr; //公钥
@@ -48,6 +52,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private LinearLayout info_phrase_layout;    //助记词板块
     private LinearLayout info_swarm_layout;   //swarm地址板块
     private LinearLayout info_swarm_peer_layout; //swarmPeer列表板块
+    private TextView cafeCaption;
+    private TextView cafeUrl;
 
     private ExpandableListView swarm_peer_listView;
     //持久化
@@ -93,6 +99,15 @@ public class PersonalInfoActivity extends AppCompatActivity {
     }
     private void initData() {
         pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
+
+        boolean cafe131=pref.getBoolean("131ok",false);
+        if(cafe131){
+            cafeCaption.setText("cafe连接成功");
+            cafeUrl.setText("http://202.120.38.131:40601");
+        }else{
+            cafeCaption.setText("未连接cafe");
+            cafeUrl.setVisibility(View.GONE);
+        }
 
         myname=pref.getString("myname","null");
         phrase=pref.getString("phrase","null");
@@ -146,6 +161,18 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
         swarm_peer_listView.collapseGroup(0);
         //swarm_peer_listView.expandGroup(0);
+        swarm_peer_listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
+                String swarm_url=iData.get(0).get(i1).swarmAddress+"/ipfs/"+iData.get(0).get(i1).peerId;
+                Log.d(TAG, "onChildClick: swarmAddress："+swarm_url);
+                Toast.makeText(PersonalInfoActivity.this,"已将swarm地址复制到剪贴板："+swarm_url,Toast.LENGTH_LONG).show();
+                ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                // 将文本内容放到系统剪贴板里。
+                cm.setText(swarm_url);
+                return false;
+            }
+        });
     }
 
     private void initUI() {
@@ -162,6 +189,10 @@ public class PersonalInfoActivity extends AppCompatActivity {
         swarm_peer_listView=findViewById(R.id.swarm_peer_list);
         info_swarm_peer_layout=findViewById(R.id.setting_personal_info_swarm_peer_list);
         delay_time=findViewById(R.id.noti_time);
+
+        cafeCaption=findViewById(R.id.cafe_caption);
+        cafeUrl=findViewById(R.id.personal_cafe_url);
+
 
         info_avatar_layout.setOnClickListener(v -> {
             PictureSelector.create(this, PictureSelector.SELECT_REQUEST_CODE)

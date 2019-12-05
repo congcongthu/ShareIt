@@ -243,7 +243,7 @@ public class Textile implements LifecycleObserver {
      * @param seed The account seed
      * @param debug Sets the log level to debug or not
      * @param logToDisk Whether or not to write Textile logs to disk
-     * @param isPriavte Whether or not to use private network
+     * @param isPrivate Whether or not to use private network
      * @throws Exception The exception that occurred
      */
     public static void initialize(final String repoPath, final String seed, final boolean debug, final boolean logToDisk, final boolean isPrivate) throws Exception {
