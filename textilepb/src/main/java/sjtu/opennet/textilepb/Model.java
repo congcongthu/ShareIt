@@ -43032,6 +43032,21 @@ public final class Model {
      */
     com.google.protobuf.ByteString
         getPosterBytes();
+
+    /**
+     * <code>int32 width = 5;</code>
+     */
+    int getWidth();
+
+    /**
+     * <code>int32 height = 6;</code>
+     */
+    int getHeight();
+
+    /**
+     * <code>int32 rotation = 7;</code>
+     */
+    int getRotation();
   }
   /**
    * Protobuf type {@code Video}
@@ -43050,6 +43065,9 @@ public final class Model {
       caption_ = "";
       videoLength_ = 0L;
       poster_ = "";
+      width_ = 0;
+      height_ = 0;
+      rotation_ = 0;
     }
 
     @java.lang.Override
@@ -43097,6 +43115,21 @@ public final class Model {
               java.lang.String s = input.readStringRequireUtf8();
 
               poster_ = s;
+              break;
+            }
+            case 40: {
+
+              width_ = input.readInt32();
+              break;
+            }
+            case 48: {
+
+              height_ = input.readInt32();
+              break;
+            }
+            case 56: {
+
+              rotation_ = input.readInt32();
               break;
             }
             default: {
@@ -43242,6 +43275,33 @@ public final class Model {
       }
     }
 
+    public static final int WIDTH_FIELD_NUMBER = 5;
+    private int width_;
+    /**
+     * <code>int32 width = 5;</code>
+     */
+    public int getWidth() {
+      return width_;
+    }
+
+    public static final int HEIGHT_FIELD_NUMBER = 6;
+    private int height_;
+    /**
+     * <code>int32 height = 6;</code>
+     */
+    public int getHeight() {
+      return height_;
+    }
+
+    public static final int ROTATION_FIELD_NUMBER = 7;
+    private int rotation_;
+    /**
+     * <code>int32 rotation = 7;</code>
+     */
+    public int getRotation() {
+      return rotation_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -43268,6 +43328,15 @@ public final class Model {
       if (!getPosterBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 4, poster_);
       }
+      if (width_ != 0) {
+        output.writeInt32(5, width_);
+      }
+      if (height_ != 0) {
+        output.writeInt32(6, height_);
+      }
+      if (rotation_ != 0) {
+        output.writeInt32(7, rotation_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -43289,6 +43358,18 @@ public final class Model {
       }
       if (!getPosterBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, poster_);
+      }
+      if (width_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, width_);
+      }
+      if (height_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(6, height_);
+      }
+      if (rotation_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(7, rotation_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -43314,6 +43395,12 @@ public final class Model {
           == other.getVideoLength());
       result = result && getPoster()
           .equals(other.getPoster());
+      result = result && (getWidth()
+          == other.getWidth());
+      result = result && (getHeight()
+          == other.getHeight());
+      result = result && (getRotation()
+          == other.getRotation());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -43334,6 +43421,12 @@ public final class Model {
           getVideoLength());
       hash = (37 * hash) + POSTER_FIELD_NUMBER;
       hash = (53 * hash) + getPoster().hashCode();
+      hash = (37 * hash) + WIDTH_FIELD_NUMBER;
+      hash = (53 * hash) + getWidth();
+      hash = (37 * hash) + HEIGHT_FIELD_NUMBER;
+      hash = (53 * hash) + getHeight();
+      hash = (37 * hash) + ROTATION_FIELD_NUMBER;
+      hash = (53 * hash) + getRotation();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -43475,6 +43568,12 @@ public final class Model {
 
         poster_ = "";
 
+        width_ = 0;
+
+        height_ = 0;
+
+        rotation_ = 0;
+
         return this;
       }
 
@@ -43505,6 +43604,9 @@ public final class Model {
         result.caption_ = caption_;
         result.videoLength_ = videoLength_;
         result.poster_ = poster_;
+        result.width_ = width_;
+        result.height_ = height_;
+        result.rotation_ = rotation_;
         onBuilt();
         return result;
       }
@@ -43567,6 +43669,15 @@ public final class Model {
         if (!other.getPoster().isEmpty()) {
           poster_ = other.poster_;
           onChanged();
+        }
+        if (other.getWidth() != 0) {
+          setWidth(other.getWidth());
+        }
+        if (other.getHeight() != 0) {
+          setHeight(other.getHeight());
+        }
+        if (other.getRotation() != 0) {
+          setRotation(other.getRotation());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -43826,6 +43937,84 @@ public final class Model {
   checkByteStringIsUtf8(value);
         
         poster_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int width_ ;
+      /**
+       * <code>int32 width = 5;</code>
+       */
+      public int getWidth() {
+        return width_;
+      }
+      /**
+       * <code>int32 width = 5;</code>
+       */
+      public Builder setWidth(int value) {
+        
+        width_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 width = 5;</code>
+       */
+      public Builder clearWidth() {
+        
+        width_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int height_ ;
+      /**
+       * <code>int32 height = 6;</code>
+       */
+      public int getHeight() {
+        return height_;
+      }
+      /**
+       * <code>int32 height = 6;</code>
+       */
+      public Builder setHeight(int value) {
+        
+        height_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 height = 6;</code>
+       */
+      public Builder clearHeight() {
+        
+        height_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int rotation_ ;
+      /**
+       * <code>int32 rotation = 7;</code>
+       */
+      public int getRotation() {
+        return rotation_;
+      }
+      /**
+       * <code>int32 rotation = 7;</code>
+       */
+      public Builder setRotation(int value) {
+        
+        rotation_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 rotation = 7;</code>
+       */
+      public Builder clearRotation() {
+        
+        rotation_ = 0;
         onChanged();
         return this;
       }
@@ -48073,19 +48262,21 @@ public final class Model {
       "\022\n\n\002id\030\001 \001(\t\022\r\n\005value\030\002 \001(\014\022(\n\004date\030\003 \001(" +
       "\0132\032.google.protobuf.Timestamp\"B\n\020CafeCli" +
       "entThread\022\n\n\002id\030\001 \001(\t\022\016\n\006client\030\002 \001(\t\022\022\n" +
-      "\nciphertext\030\003 \001(\014\"I\n\005Video\022\n\n\002id\030\001 \001(\t\022\017" +
+      "\nciphertext\030\003 \001(\014\"z\n\005Video\022\n\n\002id\030\001 \001(\t\022\017" +
       "\n\007caption\030\002 \001(\t\022\023\n\013videoLength\030\003 \001(\003\022\016\n\006" +
-      "poster\030\004 \001(\t\"k\n\nVideoChunk\022\n\n\002id\030\001 \001(\t\022\r" +
-      "\n\005chunk\030\002 \001(\t\022\017\n\007address\030\003 \001(\t\022\021\n\tstartT" +
-      "ime\030\004 \001(\003\022\017\n\007endTime\030\005 \001(\003\022\r\n\005index\030\006 \001(" +
-      "\003\",\n\016VideoChunkList\022\032\n\005items\030\001 \003(\0132\013.Vid" +
-      "eoChunk\"g\n\021CafeClientMessage\022\n\n\002id\030\001 \001(\t" +
-      "\022\014\n\004peer\030\002 \001(\t\022\016\n\006client\030\003 \001(\t\022(\n\004date\030\004" +
-      " \001(\0132\032.google.protobuf.Timestamp\"}\n\005BotK" +
-      "V\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\014\022+\n\007created" +
-      "\030\003 \001(\0132\032.google.protobuf.Timestamp\022+\n\007up" +
-      "dated\030\004 \001(\0132\032.google.protobuf.TimestampB" +
-      "\034\n\026sjtu.opennet.textilepbZ\002pbb\006proto3"
+      "poster\030\004 \001(\t\022\r\n\005width\030\005 \001(\005\022\016\n\006height\030\006 " +
+      "\001(\005\022\020\n\010rotation\030\007 \001(\005\"k\n\nVideoChunk\022\n\n\002i" +
+      "d\030\001 \001(\t\022\r\n\005chunk\030\002 \001(\t\022\017\n\007address\030\003 \001(\t\022" +
+      "\021\n\tstartTime\030\004 \001(\003\022\017\n\007endTime\030\005 \001(\003\022\r\n\005i" +
+      "ndex\030\006 \001(\003\",\n\016VideoChunkList\022\032\n\005items\030\001 " +
+      "\003(\0132\013.VideoChunk\"g\n\021CafeClientMessage\022\n\n" +
+      "\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022\016\n\006client\030\003 \001(\t\022" +
+      "(\n\004date\030\004 \001(\0132\032.google.protobuf.Timestam" +
+      "p\"}\n\005BotKV\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\014\022+" +
+      "\n\007created\030\003 \001(\0132\032.google.protobuf.Timest" +
+      "amp\022+\n\007updated\030\004 \001(\0132\032.google.protobuf.T" +
+      "imestampB\034\n\026sjtu.opennet.textilepbZ\002pbb\006" +
+      "proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -48341,7 +48532,7 @@ public final class Model {
     internal_static_Video_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Video_descriptor,
-        new java.lang.String[] { "Id", "Caption", "VideoLength", "Poster", });
+        new java.lang.String[] { "Id", "Caption", "VideoLength", "Poster", "Width", "Height", "Rotation", });
     internal_static_VideoChunk_descriptor =
       getDescriptor().getMessageTypes().get(36);
     internal_static_VideoChunk_fieldAccessorTable = new
