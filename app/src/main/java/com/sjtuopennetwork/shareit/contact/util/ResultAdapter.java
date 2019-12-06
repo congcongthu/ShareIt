@@ -88,7 +88,6 @@ public class ResultAdapter extends ArrayAdapter {
                 switch (msg.what) {
                     case 1:
                         String newPath = msg.getData().getString("newPath");
-                        Log.d(TAG, "handleMessage: 拿到头像：" + newPath);
                         imageView.setImageBitmap(BitmapFactory.decodeFile(newPath));
                 }
             }

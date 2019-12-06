@@ -45,13 +45,11 @@ public class DiscoverAdapter extends BaseAdapter {
     }
 
     public void selectAll(boolean all){
-        if(all){ //全选
-            Log.d(TAG, "selectAll: 设置全选");
+        if(all){
             for(int i=0;i<mChecked.size();i++){
                 mChecked.set(i,true);
             }
         }else{
-            Log.d(TAG, "selectAll: 设置全不选");
             for(int i=0;i<mChecked.size();i++){
                 mChecked.set(i,false);
             }
@@ -84,13 +82,11 @@ public class DiscoverAdapter extends BaseAdapter {
             vh = (ViewHolder) view.getTag();
         }
 
-        //昵称、address
         vh.name.setText(datas.get(position).name);
         vh.addr.setText(datas.get(position).address.substring(0,10)+"...");
-        //头像
         if(datas.get(position).avatarhash.equals("")){ //如果没有设置头像
             vh.avatar.setImageResource(R.drawable.ic_default_avatar);
-        }else{ //设置过头像
+        }else{
             img=datas.get(position).avatar;
             if(img==null){
                 setAvatar(vh.avatar,datas.get(position).avatarhash);
@@ -113,8 +109,6 @@ public class DiscoverAdapter extends BaseAdapter {
 
         return view;
     }
-
-
 
 
     class ViewHolder{

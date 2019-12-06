@@ -1,6 +1,8 @@
 package com.sjtuopennetwork.shareit.login;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
@@ -34,6 +36,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -68,6 +71,13 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: MainActivity调用onCreate");
 
         getPermission();
+
+        boolean serviceRunning=isServiceRunning("com.sjtuopennetwork.shareit.util.ForeGroundService");
+        if(serviceRunning){
+            Log.d(TAG, "onCreate: 后台服务正在运行");
+        }else{
+            Log.d(TAG, "onCreate: 后台服务未运行");
+        }
 
         //查SharedPreference中"isLogin"判断登录状态，如果未登录则进入登录界面。如果已登录则跳转到HomeActivity
         isLogin=pref.getBoolean("isLogin",false); //如果没有这个字段就是首次打开
@@ -190,6 +200,23 @@ public class MainActivity extends AppCompatActivity {
                             "android.permission.READ_EXTERNAL_STORAGE",
                             "android.permission.CAMERA"},100);
         }
+    }
+
+
+    public boolean isServiceRunning(String ServiceName) {
+        ActivityManager myManager = (ActivityManager) getApplicationContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        ArrayList<ActivityManager.RunningServiceInfo> runningService = (ArrayList<ActivityManager.RunningServiceInfo>) myManager
+                .getRunningServices(30);
+
+        for (int i = 0; i < runningService.size(); i++) {
+            Log.d(TAG, "isServiceRunning: "+runningService.get(i).service.getClassName());
+            if (runningService.get(i).service.getClassName()
+                    .equals(ServiceName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

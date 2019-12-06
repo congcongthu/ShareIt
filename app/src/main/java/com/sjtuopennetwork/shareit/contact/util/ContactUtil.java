@@ -51,7 +51,11 @@ public class ContactUtil {
         return result;
     }
 
-    public static void ignoreOtherApplies(String address){
+    /**
+     * Ignore all of the peer's applications
+     * @param address the address of the target peer
+     */
+    public static void ignoreOtherApplications(String address){
         try {
             List<View.InviteView> invites = Textile.instance().invites.list().getItemsList();
             for (View.InviteView inviteView : invites) {
@@ -69,7 +73,7 @@ public class ContactUtil {
 
     /**
      * Get friend application and the corresponding applier.
-     * If the name of an invite is "FriendThread1219", the invite is an friend application.
+     * If the name of an invite is "FriendThread1219", the invite is a friend application.
      * @return
      */
     public static Pair<List<View.InviteView>,List<ResultContact>> getApplication(){
@@ -129,7 +133,6 @@ public class ContactUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema=
                 sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()

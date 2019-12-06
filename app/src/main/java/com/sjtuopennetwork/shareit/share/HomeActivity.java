@@ -111,26 +111,22 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         login=getIntent().getIntExtra("login",5);
-        Log.d(TAG, "onStart: 跳转到HomeActivity，login："+login);
+        Log.d(TAG, "跳转到HomeActivity，login："+login);
         if(login==0 || login==1 || login==2 || login==3){ //如果等于5，就不是登录页面跳转过来的
             initUI();
-
 
             if(!EventBus.getDefault().isRegistered(this)){
                 EventBus.getDefault().register(this);
             }
-
-            if(isServiceRunning("com.sjtuopennetwork.shareit.util.ForeGroundService")){
-                Log.d(TAG, "onCreate: 服务正在运行");
+            boolean serviceRunning=isServiceRunning("com.sjtuopennetwork.shareit.util.ForeGroundService");
+            Log.d(TAG, "onCreate, service running :"+serviceRunning);
+            if(serviceRunning){
                 replaceFragment(shareFragment);
             }else{
-                Log.d(TAG, "onCreate: 即将启动等待圆环，当前nodeOnline值为："+nodeOnline);
                 circleProgressDialog=new CircleProgressDialog(this);
                 circleProgressDialog.setText("节点启动中");
                 circleProgressDialog.showDialog();
 
-                Log.d(TAG, "onCreate: 服务没有运行");
-                Log.d(TAG, "onCreate: 即将启动前台服务");
                 Intent intent=new Intent(this,ForeGroundService.class);
                 intent.putExtra("login",login);
                 startForegroundService(intent);
@@ -144,7 +140,7 @@ public class HomeActivity extends AppCompatActivity {
                 .getSystemService(Context.ACTIVITY_SERVICE);
         ArrayList<ActivityManager.RunningServiceInfo> runningService = (ArrayList<ActivityManager.RunningServiceInfo>) myManager
                 .getRunningServices(30);
-        Log.d(TAG, "isServiceRunning: 服务数量："+runningService.size());
+
         for (int i = 0; i < runningService.size(); i++) {
             Log.d(TAG, "isServiceRunning: "+runningService.get(i).service.getClassName());
             if (runningService.get(i).service.getClassName()

@@ -220,14 +220,15 @@ public class ForeGroundService extends Service {
         if(stop==943){
             Log.d(TAG, "shutDown: 服务stop");
             Textile.instance().destroy();
-            onDestroy();
+            stopForeground(true);
+            stopSelf();
         }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopForeground(true);
+
         if(EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().unregister(this);
         }
@@ -244,61 +245,55 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-//            tryConnectCafe(new Double(2.34));
-//            new Thread(){
-//                @Override
-//                public void run() {
-//                    while(true){
-//                        try {
-//                            Thread.sleep(300000);
-//                            //发送心跳
-//                            if(Textile.instance().online()){
-//                                Model.CafeSessionList sessionList = Textile.instance().cafes.sessions();
-//                                for (int i = 0; i < sessionList.getItemsCount(); i++) {
-//                                    final Model.CafeSession tmpSession = sessionList.getItems(i);
-//                                    Log.d(TAG, "run: tmpSession: "+tmpSession.getId());
-//                                    Textile.instance().cafes.publishPeerToCafe(tmpSession.getId(), new Handlers.ErrorHandler(){
-//                                        @Override
-//                                        public void onComplete(){
-//                                            Log.d(TAG, "onComplete: 连接正常");
-//                                            return;
-//                                        }
-//                                        @Override
-//                                        public void onError(Exception e){
-//                                            Log.d(TAG, "onError: 连接断开，尝试重连");
-//
-//                                            Textile.instance().cafes.deregister(tmpSession.getId(), new Handlers.ErrorHandler() {
-//                                                @Override
-//                                                public void onComplete() {
-//                                                    tryConnectCafe(new Double(2.34));
-//                                                }
-//
-//                                                @Override
-//                                                public void onError(Exception e) {
-//
-//                                                }
-//                                            });
-//                                        }
-//                                    });
-//                                }
-//                            }else{
-//                                Log.d(TAG, "run: 节点下线了");
-//                            }
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                    }
-//                }
-//            }.start();
+            tryConnectCafe(new Double(2.34));
+            new Thread(){
+                @Override
+                public void run() {
+                    while(true){
+                        try {
+                            Thread.sleep(300000);
+                            //发送心跳
+                            if(Textile.instance().online()){
+                                Model.CafeSessionList sessionList = Textile.instance().cafes.sessions();
+                                for (int i = 0; i < sessionList.getItemsCount(); i++) {
+                                    final Model.CafeSession tmpSession = sessionList.getItems(i);
+                                    Log.d(TAG, "run: tmpSession: "+tmpSession.getId());
+                                    Textile.instance().cafes.publishPeerToCafe(tmpSession.getId(), new Handlers.ErrorHandler(){
+                                        @Override
+                                        public void onComplete(){
+                                            Log.d(TAG, "onComplete: 连接正常");
+                                            return;
+                                        }
+                                        @Override
+                                        public void onError(Exception e){
+                                            Log.d(TAG, "onError: 连接断开，尝试重连");
+
+                                            Textile.instance().cafes.deregister(tmpSession.getId(), new Handlers.ErrorHandler() {
+                                                @Override
+                                                public void onComplete() {
+                                                    tryConnectCafe(new Double(2.34));
+                                                }
+
+                                                @Override
+                                                public void onError(Exception e) {
+
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }else{
+                                Log.d(TAG, "run: 节点下线了");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            }.start();
 
             createDeviceThread();
-
-//            try {
-//                Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.131/tcp/23524/ipfs/12D3KooWERhx7JQhFfXA3a7WGSPCH5Zd1EuQnY6eeQM3VrVUBg67");
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
 
 //            根据登录方式，设置name和头像
             Log.d(TAG, "nodeOnline: login的值："+login);
@@ -640,10 +635,6 @@ public class ForeGroundService extends Service {
                 });
             }
 
-            if(feedItemData.type.equals(FeedItemType.ADDADMIN)){
-
-            }
-
             if(feedItemData.type.equals(FeedItemType.REMOVEPEER)){
                 //收到自己被移出群组的消息，就要手动删除这个群组
                 String removeThreadId=thread.getId();
@@ -665,6 +656,8 @@ public class ForeGroundService extends Service {
                     DBoperator.deleteDialogByThreadID(appdb,removeThreadId);
                 }
             }
+
+
         }
 
         private void createDeviceThread() {

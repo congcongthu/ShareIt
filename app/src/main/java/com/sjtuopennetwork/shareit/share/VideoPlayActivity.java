@@ -1,5 +1,6 @@
 package com.sjtuopennetwork.shareit.share;
 
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -30,6 +31,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
@@ -93,8 +95,10 @@ public class VideoPlayActivity extends AppCompatActivity {
     boolean notplayed;
     boolean finishGetHash=false;
     private long NextChunk = 0;
+    int rotation;
+    int videoWidth;
+    int videoHeight;
 
-//    GetChunkThread getChunkThread=new GetChunkThread();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,10 +109,30 @@ public class VideoPlayActivity extends AppCompatActivity {
 
         boolean isMine=getIntent().getBooleanExtra("ismine",false);
         videoid = getIntent().getStringExtra("videoid");
+        try {
+            video = Textile.instance().videos.getVideo(videoid);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        dir = VideoUploadHelper.getVideoPathFromID(this, videoid);
+        videoLength = video.getVideoLength();
+        notplayed=true;
+        rotation=video.getRotation();
+        videoWidth=video.getWidth();
+        videoHeight=video.getHeight();
+        m3u8WriteCount=0;
 
-        if(isMine){ //如果是我自己的
+        Log.d(TAG, "onCreate: rotation: "+rotation);
+
+        if(isMine){
             String videoPath=getIntent().getStringExtra("videopath");
-            Log.d(TAG, "onCreate: 播放自己发的视频："+videoPath);
+
+            Log.d(TAG, "initPlayer: rotation width height:"+rotation+" "+videoWidth+" "+videoHeight);
+            if(rotation==0){
+                Log.d(TAG, "initPlayer: 即将横屏播放");
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            }
+
             //直接播放本地视频文件
             PlayerView playerView = findViewById(R.id.player_view);
             player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
@@ -119,59 +143,9 @@ public class VideoPlayActivity extends AppCompatActivity {
                     .createMediaSource(Uri.parse(videoPath));
             player.prepare(videoSource);
 
-//            dir = VideoUploadHelper.getVideoPathFromID(this, videoid);
-//            Log.d(TAG, "onCreate: dir:"+dir);
-//            initM3u8();
-//
-//            PlayerView playerView = findViewById(R.id.player_view);
-//            player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
-//            playerView.setPlayer(player);
-//            dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
-//            hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
-//            player.setPlayWhenReady(true);
-//            player.prepare(hlsMediaSource);
-//
-//
-//            new Thread(){
-//                @Override
-//                public void run() {
-//                    super.run();
-//                    while(true){
-//                        try {
-//                            Model.VideoChunk v=Textile.instance().videos.getVideoChunk(videoid, NextChunk);
-//                            Log.d(TAG, "run: "+NextChunk);
-//                            if ( v!=null ){ //本地有了，就写m3u8文件
-//                                Log.d(TAG, "writeCompleteM3u8: 从数据库读出来："+v.getChunk());
-//                                writeM3u8(v);
-//                                if(v.getChunk().equals(VideoHandlers.chunkEndTag))
-//                                    break;
-//                                NextChunk++; //处理下一个视频
-//                            }
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                            break;
-//                        }
-//                    }
-//
-//                }
-//            }.start();
-//
-//            playVideo();
-
         }else{
 
-            m3u8WriteCount=0;
-            addressMap = new HashMap<>();
-//            if(!EventBus.getDefault().isRegistered(this)){
-//                EventBus.getDefault().register(this);
-//            }
-
-            try {
-                video = Textile.instance().videos.getVideo(videoid);
-//                videorHelper = new VideoReceiveHelper(this, video);
-
-                notplayed=true;
-                videorHelper=new VideoReceiveHelper(this, video, new VideoHandlers.ReceiveHandler() {
+            videorHelper=new VideoReceiveHelper(this, video, new VideoHandlers.ReceiveHandler() {
                     @Override
                     public void onChunkComplete(Model.VideoChunk vChunk) {
                         Log.d(TAG, "onChunkComplete: 写m3u8 "+m3u8WriteCount+" "+vChunk.getChunk());
@@ -209,95 +183,16 @@ public class VideoPlayActivity extends AppCompatActivity {
                     }
                 });
 
-                dir = VideoUploadHelper.getVideoPathFromID(this, videoid);
-                videoLength = video.getVideoLength();
-                Log.d(TAG, "onCreate: 视频长度："+videoLength);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
             initM3u8();
 
             if(finished){
-                PlayerView playerView = findViewById(R.id.player_view);
-                player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
-                playerView.setPlayer(player);
-                dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
-                hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
-                player.setPlayWhenReady(true);
-                player.prepare(hlsMediaSource);
+                initPlayer();
+                playVideo();
             } else{
-
                 videorHelper.downloadVideo();
-
-                mProgressBar=findViewById(R.id.my_progress_bar);
-                BandwidthMeter bandwidthMeter=new DefaultBandwidthMeter();
-                TrackSelection.Factory trackSelectionFactory=new AdaptiveTrackSelection.Factory(bandwidthMeter);
-                TrackSelector trackSelector = new DefaultTrackSelector(trackSelectionFactory);
-                LoadControl loadControl = new DefaultLoadControl();
-//                player=ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
-                player=ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this,trackSelector,loadControl);
-                player.seekTo(0);
-                PlayerView playerView = findViewById(R.id.player_view);
-                playerView.setPlayer(player);
-
+                initPlayer();
             }
         }
-    }
-
-    public static boolean DownloadComplete(String vid){
-//        List<Model.VideoChunk> tmp;
-//        try {
-//            tmp = Textile.instance().videos.chunksByVideoId(vid).getItemsList();
-//        } catch (Exception e) {
-//            tmp = new ArrayList<>();
-//        }
-//        if(tmp.size() == 0) {
-//            System.out.println("no local chunks");
-//            return false;
-//        }
-//        long maxEndtime = 0;
-//        String lastChunk = "";
-//        for (Model.VideoChunk c : tmp){
-//            if (c.getEndTime() > maxEndtime) {
-//                maxEndtime = c.getEndTime();
-//                lastChunk = c.getChunk();
-//            }
-//        }
-//        System.out.println("max end time: "+ maxEndtime);
-//
-//        try {
-//            Model.Video tmpVideo = Textile.instance().videos.getVideo(vid);
-//            if (tmpVideo == null) {
-//                System.out.println("no local video");
-//                return false;
-//            }
-//            int id = Segmenter.getIndFromPath(lastChunk);
-//            System.out.println("video length:"+tmpVideo.getVideoLength());
-//            System.out.println(tmp.size());
-//            if (maxEndtime >= tmpVideo.getVideoLength()- gap && id == tmp.size()-1){
-//                System.out.println("download complete!=================");
-//                return true;
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return false;
-
-        Model.VideoChunk v=null;
-        try {
-            v=Textile.instance().videos.getVideoChunk(vid,VideoHandlers.chunkEndTag);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-
-        if(v==null){
-            Log.d(TAG, "DownloadComplete: not completed");
-            return false;
-        }
-        Log.d(TAG, "DownloadComplete: already completed");
-        return true;
     }
 
     Handler handler=new Handler(){
@@ -307,15 +202,28 @@ public class VideoPlayActivity extends AppCompatActivity {
                 case 1:
                     playVideo();
                     break;
-//                case 2:
-//                    Model.VideoChunk v=(Model.VideoChunk) msg.getData().getSerializable("vchunk");
-//                    long index=msg.getData().getLong("index");
-//                    writeM3u8(v);
-//                    NextChunk = index+1;
-//                    break;
             }
         }
     };
+
+    public void initPlayer(){
+
+        mProgressBar=findViewById(R.id.my_progress_bar); //环形进度条
+        BandwidthMeter bandwidthMeter=new DefaultBandwidthMeter();
+        TrackSelection.Factory trackSelectionFactory=new AdaptiveTrackSelection.Factory(bandwidthMeter);
+        TrackSelector trackSelector = new DefaultTrackSelector(trackSelectionFactory);
+        LoadControl loadControl = new DefaultLoadControl();
+        player=ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this,trackSelector,loadControl);
+        player.seekTo(0);
+        PlayerView playerView = findViewById(R.id.player_view);
+        Log.d(TAG, "initPlayer: rotation width height:"+rotation+" "+videoWidth+" "+videoHeight);
+//        if(rotation==0){
+        if(videoWidth>videoHeight){
+            Log.d(TAG, "initPlayer: 即将横屏播放");
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+        playerView.setPlayer(player);
+    }
 
     public void playVideo(){
         notplayed=false;
@@ -328,7 +236,6 @@ public class VideoPlayActivity extends AppCompatActivity {
         player.prepare(hlsMediaSource);
         player.addListener(new MyEventListener());
         player.seekTo(0);
-
     }
 
     public class MyEventListener implements Player.EventListener {
@@ -340,79 +247,15 @@ public class VideoPlayActivity extends AppCompatActivity {
                     player.seekTo(0);
                     break;
                 case ExoPlayer.STATE_READY: //3
-//                    mProgressBar.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
                     player.setPlayWhenReady(true);
                     setProgress(0);
                     break;
                 case ExoPlayer.STATE_BUFFERING: //2
-//                    mProgressBar.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.VISIBLE);
                     break;
                 case ExoPlayer.STATE_IDLE: //1
                     break;
-            }
-        }
-    }
-
-    public class SearchChunk extends Thread{
-        public String chunkName;
-        public boolean searchFinish;
-
-        public SearchChunk(String chunkName){
-            this.chunkName=chunkName;
-            searchFinish=false;
-        }
-
-        @Override
-        public void run() {
-            while (!searchFinish){
-
-                searchTheChunk(chunkName);
-                try {
-                    sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    public class GetChunkThread extends Thread{
-        @Override
-        public void run() {
-            int i=0;
-            Model.VideoChunk v=null;
-            while(!finished){
-                String chunkName="out"+String.format("%04d", i)+".ts";
-                try {
-                    v=Textile.instance().videos.getVideoChunk(videoid, chunkName);
-                    if (v == null) {
-                        SearchChunk searchChunk=new SearchChunk(chunkName);
-                        searchChunk.start();
-                        while(!finishGetHash){ //本地没有就一直去找，直到找到为止
-                            v = Textile.instance().videos.getVideoChunk(videoid, chunkName);
-                            if (v != null) { //如果已经获取到了ts文件
-                                searchChunk.searchFinish = true;
-                                break;
-                            }
-                            if(addressMap.containsKey(chunkName)) { //如果还没有ts的hash就去找hash
-                                searchChunk.searchFinish=true;
-                            }
-                        }
-                    }
-                    writeM3u8(v);
-                    if(v.getEndTime()>=videoLength - gap){ //如果是最后一个就终止,videolength是微秒，
-                        finished=true;
-                        writeM3u8End();
-                    }
-                    if((m3u8WriteCount > 2 || finished) && notplayed){
-                        Message msg=new Message();
-                        msg.what=1;
-                        handler.sendMessage(msg);
-                    }
-                    i++; //处理下一个视频
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
         }
     }
@@ -433,7 +276,8 @@ public class VideoPlayActivity extends AppCompatActivity {
             fileWriter.close();
 
             //补充已经下载过的
-            while(true){
+            boolean finishComplement=false;
+            while(!finishComplement){
                 try {
                     Model.VideoChunk v=Textile.instance().videos.getVideoChunk(videoid, NextChunk);
                     if ( v!=null ){ //本地有了，就写m3u8文件
@@ -442,7 +286,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                         NextChunk++; //处理下一个视频
                     } else {
                         Log.d(TAG, "initM3u8：补充结束");
-                        break;
+                        finishComplement=true;
                     }
 
                 } catch (Exception e) {
@@ -494,67 +338,13 @@ public class VideoPlayActivity extends AppCompatActivity {
         }
     }
 
-    public void searchTheChunk(String chunkName){
-        QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder()
-                .setWait(1)
-                .setLimit(1)
-                .build();
-        QueryOuterClass.VideoChunkQuery query=QueryOuterClass.VideoChunkQuery.newBuilder()
-                .setStartTime(-1)
-                .setEndTime(-1)
-                .setChunk(chunkName)
-                .setId(videoid).build();
-        try {
-            Textile.instance().videos.searchVideoChunks(query,options);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public  void searchVideoChunks(){
-        QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder()
-                .setWait(1)
-                .setLimit(1000)
-                .build();
-        QueryOuterClass.VideoChunkQuery query=QueryOuterClass.VideoChunkQuery.newBuilder()
-                .setStartTime(-1)
-                .setEndTime(-1)
-                .setId(videoid).build();
-        try {
-            Textile.instance().videos.searchVideoChunks(query,options);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void getAnResult(Model.VideoChunk videoChunk){
-//        Log.d(TAG, "getAnResult: 得到videoChunk结果");
-//        if(videoChunk.getId().equals(videoid)){
-//            addressMap.put(videoChunk.getChunk(),videoChunk.getAddress()); //拿到一个结果就放进来一个，可能会相同
-//            videorHelper.receiveChunk(videoChunk); //将对应的视频保存到本地
-//        }
-//    }
-
     @Override
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop: VideoPlayActivity调用stop");
 
-//        if(EventBus.getDefault().isRegistered(this)){
-//            EventBus.getDefault().unregister(this);
-//        }
-
         finished=true;
         finishGetHash=true;
-
-//        if(fileWriter!=null){
-//            try {
-//                fileWriter.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
 
         if(videorHelper!=null){
             videorHelper.stopReceiver();
