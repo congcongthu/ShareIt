@@ -104,6 +104,8 @@ public class VideoPlayActivity extends AppCompatActivity {
         NextChunk = 0;
 
         boolean isMine=getIntent().getBooleanExtra("ismine",false);
+        videoid = getIntent().getStringExtra("videoid");
+
         if(isMine){ //如果是我自己的
             String videoPath=getIntent().getStringExtra("videopath");
             Log.d(TAG, "onCreate: 播放自己发的视频："+videoPath);
@@ -117,6 +119,45 @@ public class VideoPlayActivity extends AppCompatActivity {
                     .createMediaSource(Uri.parse(videoPath));
             player.prepare(videoSource);
 
+//            dir = VideoUploadHelper.getVideoPathFromID(this, videoid);
+//            Log.d(TAG, "onCreate: dir:"+dir);
+//            initM3u8();
+//
+//            PlayerView playerView = findViewById(R.id.player_view);
+//            player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
+//            playerView.setPlayer(player);
+//            dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
+//            hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(m3u8file));
+//            player.setPlayWhenReady(true);
+//            player.prepare(hlsMediaSource);
+//
+//
+//            new Thread(){
+//                @Override
+//                public void run() {
+//                    super.run();
+//                    while(true){
+//                        try {
+//                            Model.VideoChunk v=Textile.instance().videos.getVideoChunk(videoid, NextChunk);
+//                            Log.d(TAG, "run: "+NextChunk);
+//                            if ( v!=null ){ //本地有了，就写m3u8文件
+//                                Log.d(TAG, "writeCompleteM3u8: 从数据库读出来："+v.getChunk());
+//                                writeM3u8(v);
+//                                if(v.getChunk().equals(VideoHandlers.chunkEndTag))
+//                                    break;
+//                                NextChunk++; //处理下一个视频
+//                            }
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                            break;
+//                        }
+//                    }
+//
+//                }
+//            }.start();
+//
+//            playVideo();
+
         }else{
 
             m3u8WriteCount=0;
@@ -124,7 +165,6 @@ public class VideoPlayActivity extends AppCompatActivity {
 //            if(!EventBus.getDefault().isRegistered(this)){
 //                EventBus.getDefault().register(this);
 //            }
-            videoid = getIntent().getStringExtra("videoid");
 
             try {
                 video = Textile.instance().videos.getVideo(videoid);
@@ -150,7 +190,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 
                         writeM3u8(vChunk);
                         NextChunk = index+1;
-                        if((notplayed && (m3u8WriteCount > 2 || finished)) ){ //写了3次就可以播放
+                        if((notplayed && (m3u8WriteCount > 0 || finished)) ){ //写了3次就可以播放
                             Log.d(TAG, "onChunkComplete: 开始播放");
                             Message msg=new Message();
                             msg.what=1;
@@ -187,6 +227,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                 player.setPlayWhenReady(true);
                 player.prepare(hlsMediaSource);
             } else{
+
                 videorHelper.downloadVideo();
 
                 mProgressBar=findViewById(R.id.my_progress_bar);
@@ -286,6 +327,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         player.setPlayWhenReady(true);
         player.prepare(hlsMediaSource);
         player.addListener(new MyEventListener());
+        player.seekTo(0);
 
     }
 
@@ -298,12 +340,12 @@ public class VideoPlayActivity extends AppCompatActivity {
                     player.seekTo(0);
                     break;
                 case ExoPlayer.STATE_READY: //3
-                    mProgressBar.setVisibility(View.GONE);
+//                    mProgressBar.setVisibility(View.GONE);
                     player.setPlayWhenReady(true);
                     setProgress(0);
                     break;
                 case ExoPlayer.STATE_BUFFERING: //2
-                    mProgressBar.setVisibility(View.VISIBLE);
+//                    mProgressBar.setVisibility(View.VISIBLE);
                     break;
                 case ExoPlayer.STATE_IDLE: //1
                     break;
@@ -395,13 +437,14 @@ public class VideoPlayActivity extends AppCompatActivity {
                 try {
                     Model.VideoChunk v=Textile.instance().videos.getVideoChunk(videoid, NextChunk);
                     if ( v!=null ){ //本地有了，就写m3u8文件
-                        Log.d(TAG, "writeCompleteM3u8: 从数据库读出来："+v.getChunk());
+                        Log.d(TAG, "从数据库读出来："+v.getChunk());
                         writeM3u8(v);
+                        NextChunk++; //处理下一个视频
                     } else {
                         Log.d(TAG, "initM3u8：补充结束");
                         break;
                     }
-                    NextChunk++; //处理下一个视频
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     break;
