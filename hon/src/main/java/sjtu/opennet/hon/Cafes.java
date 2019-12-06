@@ -99,6 +99,9 @@ public class Cafes extends NodeDependent {
         });
     }
 
+    public void publishPeer(final Handlers.ErrorHandler handler){
+        //node.publishPeer()
+    }
 
     public void publishPeerToCafe(final String Id, final Handlers.ErrorHandler handler){
         node.publishPeerToCafe(Id, (e)->{

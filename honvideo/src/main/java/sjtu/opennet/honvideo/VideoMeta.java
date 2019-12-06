@@ -50,6 +50,9 @@ public class VideoMeta {
     private String filesize_fmt;    // Formatted file size in KB/MB/GB/TB
     private long duration_long;     // duration with long type (used for computation)
     private String duration_fmt;    // formatted duration (hour:minute:second.mill)
+    private int width_int;
+    private int height_int;
+    private int rotation_int;
     private byte[] thumbnail_byte;  // thumbnail in byte format
     private Bitmap thumbnail_small;         //small thumbnail with width 100px.
     private byte[] thumbnail_small_byte;    //small thumbnail in byte
@@ -78,7 +81,9 @@ public class VideoMeta {
                 filesize_fmt = formatFilesize(filesize);
             }
             width = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
+            width_int = Integer.parseInt(width);
             height = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
+            height_int = Integer.parseInt(height);
             duration = mdataReceiver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
             if(duration == null){
                 Log.w(TAG, "Can not extract dutation.");
@@ -105,6 +110,7 @@ public class VideoMeta {
             thumbnail_small_byte = Bitmap2Bytes(thumbnail_small);
             creation = fmdataReceiver.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_CREATION_TIME);
             rotation = fmdataReceiver.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+            rotation_int = Integer.parseInt(rotation);
             videoHash = getHashFromMeta();
         }catch(Exception e){
             e.printStackTrace();
@@ -295,6 +301,9 @@ public class VideoMeta {
                 .setCaption(path)
                 .setVideoLength((int)duration_long*1000)
                 .setPoster(posterHash)
+                .setWidth(width_int)
+                .setHeight(height_int)
+                .setRotation(rotation_int)
                 .build();
 
         //videopb.writeTo();
