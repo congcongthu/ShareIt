@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -89,6 +90,7 @@ public class ChatActivity extends AppCompatActivity {
     String avatarpath;
     Map<String,String> videoPaths;
     List<PreloadVideoThread> preloadVideoThreadList;
+    int pageIndex;
 
     //退出群组相关
     public static final String REMOVE_DIALOG="you get out";
@@ -101,6 +103,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         preloadVideoThreadList=new LinkedList<>();
 
+        pageIndex=0;
 
         initUI();
 
@@ -228,16 +231,24 @@ public class ChatActivity extends AppCompatActivity {
             toGroupInfo.putExtra("threadid",threadid);
             startActivity(toGroupInfo);
         });
+
+        msgList= DBoperator.queryMsg(appdb,threadid);
+
     }
 
     public void drawUI(){
-        msgList= DBoperator.queryMsg(appdb,threadid);
 
         MsgAdapter msgAdapter=new MsgAdapter(this,msgList,avatarpath);
         chat_lv.setAdapter(msgAdapter);
         chat_lv.invalidateViews();
         chat_lv.setSelection(msgList.size());
     }
+
+
+    private void getMoreMsg(){
+
+    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateChat(TMsg tMsg){
