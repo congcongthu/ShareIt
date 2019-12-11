@@ -17,17 +17,18 @@
         android:roundIcon="@drawable/ic_share_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".share.VideoPlayActivity"></activity>
+        <activity android:name=".util.QRCodeActivity"></activity>
+        <activity android:name=".share.VideoPlayActivity" />
         <activity android:name=".share.GroupCodeActivity" />
 
         <service
             android:name=".util.ForeGroundService"
             android:enabled="true"
             android:exported="true" />
-        <activity android:name=".album.PhotoShow"/>
-        <activity android:name=".album.FileShow"/>
+
+        <activity android:name=".album.PhotoShow" />
+        <activity android:name=".album.FileShow" />
         <activity android:name=".share.ImageInfoActivity" />
-        <activity android:name=".share.GroupQRCodeActivity" />
         <activity android:name=".login.ShareItLoginActivity" />
         <activity android:name=".share.GroupSetAdminActivity" />
         <activity android:name=".share.GroupDelMemberActivity" />
@@ -50,7 +51,6 @@
         <activity android:name=".contact.NewFriendActivity" />
         <activity android:name=".contact.ContactDiscoverActivity" />
         <activity android:name=".share.HomeActivity" />
-        <activity android:name=".contact.ContactQRCodeAtivity" />
         <activity android:name=".login.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

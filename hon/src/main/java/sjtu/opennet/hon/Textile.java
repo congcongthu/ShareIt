@@ -276,7 +276,6 @@ public class Textile implements LifecycleObserver {
      * @param repoPath The path to the Textile repo
      * @param debug Sets the log level to debug or not
      * @param logToDisk Whether or not to write Textile logs to disk
-     * @param isPriavte Whether or not to use private network
      * @return The wallet recovery phrase
      * @throws Exception The exception that occurred
      */
@@ -427,6 +426,7 @@ public class Textile implements LifecycleObserver {
      * Reset the local Textile node instance so it can be re-initialized
      */
     public void destroy() {
+        applicationContext.unregisterReceiver(broadcastReceiver);
         ProcessLifecycleOwner.get().getLifecycle().removeObserver(this);
         applicationContext.unbindService(connection);
         lifecycleService.stopNodeImmediately();

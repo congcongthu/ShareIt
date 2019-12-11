@@ -161,7 +161,8 @@ public class VideoUploadHelper {
     public void publishMeta() {
         try {
             Textile.instance().videos.addVideo(videoPb);
-            Textile.instance().videos.publishVideo(videoPb);
+
+            Textile.instance().videos.publishVideo(videoPb, true);
 
             Log.d(TAG, "publishMeta: publish successly");
             uploadHandler.onPublishComplete();
@@ -173,7 +174,7 @@ public class VideoUploadHelper {
     public static void publishMeta(Model.Video videoPb) {
         try {
             Textile.instance().videos.addVideo(videoPb);
-            Textile.instance().videos.publishVideo(videoPb);
+            Textile.instance().videos.publishVideo(videoPb, true);
         } catch (Exception e) {
             e.printStackTrace();
         }

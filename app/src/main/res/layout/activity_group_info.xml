@@ -155,17 +155,17 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/leave_group"
-                android:background="@drawable/back_manage_bar"
-                android:textColor="@color/black"
-                android:layout_marginTop="8dp"
-                android:textSize="18sp"
-                android:gravity="center"
-                android:text="退出该群"
-                android:padding="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="50dp" />
+<!--            <TextView-->
+<!--                android:id="@+id/leave_group"-->
+<!--                android:background="@drawable/back_manage_bar"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:textSize="18sp"-->
+<!--                android:gravity="center"-->
+<!--                android:text="退出该群"-->
+<!--                android:padding="10dp"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="50dp" />-->
 
         </LinearLayout>
     </ScrollView>

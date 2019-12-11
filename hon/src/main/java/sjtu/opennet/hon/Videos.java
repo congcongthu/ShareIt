@@ -57,8 +57,8 @@ public class Videos extends NodeDependent {
         node.threadAddVideo(threadId, videoId);
     }
 
-    public void publishVideo(final Video video) throws Exception {
-        node.publishVideo(video.toByteArray());
+    public void publishVideo(final Video video, final boolean store) throws Exception {
+        node.publishVideo(video.toByteArray(), store);
     }
 
     public void publishVideoChunk(final VideoChunk vchunk) throws Exception {

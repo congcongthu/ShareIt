@@ -25,6 +25,7 @@ import com.sjtuopennetwork.shareit.share.util.TDialog;
 import com.sjtuopennetwork.shareit.share.util.TMsg;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
+import com.sjtuopennetwork.shareit.util.QRCodeActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -100,9 +101,9 @@ public class ShareFragment extends Fragment {
 
         qrcodeJoinGroup=getActivity().findViewById(R.id.bt_share_scan);
         qrcodeJoinGroup.setOnClickListener(v -> {
-
             PermissionUtils.getInstance().requestPermission(getActivity());
-            Intent it=new Intent(getActivity(),GroupQRCodeActivity.class);
+
+            Intent it=new Intent(getActivity(), QRCodeActivity.class);
             startActivity(it);
         });
     }

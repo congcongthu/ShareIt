@@ -245,53 +245,53 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-            tryConnectCafe(new Double(2.34));
-            new Thread(){
-                @Override
-                public void run() {
-                    while(true){
-                        try {
-                            Thread.sleep(300000);
-                            //发送心跳
-                            if(Textile.instance().online()){
-                                Model.CafeSessionList sessionList = Textile.instance().cafes.sessions();
-                                for (int i = 0; i < sessionList.getItemsCount(); i++) {
-                                    final Model.CafeSession tmpSession = sessionList.getItems(i);
-                                    Log.d(TAG, "run: tmpSession: "+tmpSession.getId());
-                                    Textile.instance().cafes.publishPeerToCafe(tmpSession.getId(), new Handlers.ErrorHandler(){
-                                        @Override
-                                        public void onComplete(){
-                                            Log.d(TAG, "onComplete: 连接正常");
-                                            return;
-                                        }
-                                        @Override
-                                        public void onError(Exception e){
-                                            Log.d(TAG, "onError: 连接断开，尝试重连");
-
-                                            Textile.instance().cafes.deregister(tmpSession.getId(), new Handlers.ErrorHandler() {
-                                                @Override
-                                                public void onComplete() {
-                                                    tryConnectCafe(new Double(2.34));
-                                                }
-
-                                                @Override
-                                                public void onError(Exception e) {
-
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            }else{
-                                Log.d(TAG, "run: 节点下线了");
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }
-            }.start();
+//            tryConnectCafe(new Double(2.34));
+//            new Thread(){
+//                @Override
+//                public void run() {
+//                    while(true){
+//                        try {
+//                            Thread.sleep(300000);
+//                            //发送心跳
+//                            if(Textile.instance().online()){
+//                                Model.CafeSessionList sessionList = Textile.instance().cafes.sessions();
+//                                for (int i = 0; i < sessionList.getItemsCount(); i++) {
+//                                    final Model.CafeSession tmpSession = sessionList.getItems(i);
+//                                    Log.d(TAG, "run: tmpSession: "+tmpSession.getId());
+//                                    Textile.instance().cafes.publishPeerToCafe(tmpSession.getId(), new Handlers.ErrorHandler(){
+//                                        @Override
+//                                        public void onComplete(){
+//                                            Log.d(TAG, "onComplete: 连接正常");
+//                                            return;
+//                                        }
+//                                        @Override
+//                                        public void onError(Exception e){
+//                                            Log.d(TAG, "onError: 连接断开，尝试重连");
+//
+//                                            Textile.instance().cafes.deregister(tmpSession.getId(), new Handlers.ErrorHandler() {
+//                                                @Override
+//                                                public void onComplete() {
+//                                                    tryConnectCafe(new Double(2.34));
+//                                                }
+//
+//                                                @Override
+//                                                public void onError(Exception e) {
+//
+//                                                }
+//                                            });
+//                                        }
+//                                    });
+//                                }
+//                            }else{
+//                                Log.d(TAG, "run: 节点下线了");
+//                            }
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                    }
+//                }
+//            }.start();
 
             createDeviceThread();
 

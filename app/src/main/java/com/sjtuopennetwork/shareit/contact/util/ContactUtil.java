@@ -20,6 +20,18 @@ public class ContactUtil {
 
     private static final String TAG = "==============";
 
+
+    public static boolean isMyFriend(String address){
+        List<Model.Peer> friends=getFriendList();
+        boolean isFriend=false;
+        for(Model.Peer p:friends){
+            if(p.getAddress().equals(address)){
+                isFriend=true;
+            }
+        }
+        return isFriend;
+    }
+
     /**
      * Get the list of all friends.
      * If both the whitelist count and the peer count are 2, the peer is a friend.
@@ -97,7 +109,8 @@ public class ContactUtil {
 
                     if(oldindex==-1){
                         Log.d(TAG, "getApplication: 这个申请是第一次："+inviteView.getId());
-                        ResultContact resultContact=new ResultContact(inviteView.getInviter().getAddress(),inviteView.getInviter().getName(),inviteView.getInviter().getAvatar(),null,false);
+                        String resultAddr=inviteView.getInviter().getAddress().substring(0,10);
+                        ResultContact resultContact=new ResultContact(resultAddr,inviteView.getInviter().getName(),inviteView.getInviter().getAvatar(),null,false);
                         applications.add(resultContact);
                         friendApplications.add(inviteView);
                     }else{

@@ -107,36 +107,36 @@
         android:layout_width="match_parent"
         android:layout_height="1dp" />
 
-    <LinearLayout
-        android:id="@+id/album_file_layout"
-        android:paddingLeft="10dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?selectableItemBackground"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_width="match_parent"
-        android:layout_height="45dp">
-        <ImageView
-            android:padding="10dp"
-            android:src="@drawable/ic_album_file"
-            android:layout_width="45dp"
-            android:layout_height="45dp" />
-        <TextView
-            android:textSize="18sp"
-            android:layout_weight="1"
-            android:textColor="@color/black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="文件"/>
-        <ImageView
-            android:padding="10dp"
-            android:src="@drawable/ic_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+<!--    <LinearLayout-->
+<!--        android:id="@+id/album_file_layout"-->
+<!--        android:paddingLeft="10dp"-->
+<!--        android:clickable="true"-->
+<!--        android:focusable="true"-->
+<!--        android:background="?selectableItemBackground"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:layout_marginBottom="10dp"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:gravity="center_vertical"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="45dp">-->
+<!--        <ImageView-->
+<!--            android:padding="10dp"-->
+<!--            android:src="@drawable/ic_album_file"-->
+<!--            android:layout_width="45dp"-->
+<!--            android:layout_height="45dp" />-->
+<!--        <TextView-->
+<!--            android:textSize="18sp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="文件"/>-->
+<!--        <ImageView-->
+<!--            android:padding="10dp"-->
+<!--            android:src="@drawable/ic_right"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content" />-->
+<!--    </LinearLayout>-->
 
     <View
         android:background="@color/lightgray"
