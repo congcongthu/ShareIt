@@ -30,6 +30,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
 import com.sjtuopennetwork.shareit.share.util.MsgAdapter;
 import com.sjtuopennetwork.shareit.share.util.PreloadVideoThread;
 import com.sjtuopennetwork.shareit.share.util.TMsg;
@@ -294,7 +295,11 @@ public class ChatActivity extends AppCompatActivity {
 
             Log.d(TAG, "onActivityResult: 选择了视频："+filePath);
 
-            VideoUploadHelper videoHelper=new VideoUploadHelper(this, filePath);
+            // check if there is any peer not connected
+            boolean cafeStore= !ContactUtil.allPeerConnected(threadid);
+            Log.d(TAG, "onActivityResult: cafeStore: "+cafeStore);
+
+            VideoUploadHelper videoHelper=new VideoUploadHelper(this, filePath, cafeStore);
             Model.Video videoPb=videoHelper.getVideoPb();
 
             videoHelper.upload(() -> {

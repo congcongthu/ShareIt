@@ -136,7 +136,7 @@ public class VideoActivity extends AppCompatActivity {
             //VideoMeta vMeta = new VideoMeta(filePath);
             //vMeta.logCatPrint();
               //VideoHelper vHelper = new VideoHelper(this, filePath);
-              VideoUploadHelper vHelper = new VideoUploadHelper(this, filePath);
+              VideoUploadHelper vHelper = new VideoUploadHelper(this, filePath,false);
               vHelper.upload(new VideoHandlers.UploadHandler() {
                   @Override
                   public void onPublishComplete() {

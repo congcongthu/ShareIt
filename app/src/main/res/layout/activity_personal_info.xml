@@ -175,7 +175,7 @@
             android:textColor="@color/black"
             android:textSize="20sp" />
         <TextView
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             android:paddingLeft="10dp"
             android:id="@+id/personal_cafe_url"
             android:layout_width="match_parent"

@@ -53,12 +53,19 @@ public class ForeGroundService extends Service {
     String repoPath;
     SharedPreferences pref;
     SQLiteDatabase appdb;
+    boolean connectCafe;
+    HeartBeat heartBeat;
+    boolean startBeat;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         login=intent.getIntExtra("login",0);
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
         repoPath=intent.getStringExtra("repopath");
+
+
+
+        connectCafe= pref.getBoolean("connectCafe",true);
 
         SharedPreferences.Editor editor=pref.edit();
         editor.putBoolean("131ok",false);
@@ -179,8 +186,8 @@ public class ForeGroundService extends Service {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void tryConnectCafe(Double register){
-        if(register.equals(2.34)){
+    public void tryConnectCafe(Integer register){
+        if(register==953){
             Log.d(TAG, "tryConnectCafe: 尝试连接cafe");
             Textile.instance().cafes.register(
 //                    "http://159.138.58.61:40601",
@@ -197,7 +204,10 @@ public class ForeGroundService extends Service {
                             Log.d(TAG, "onComplete: 131cafe连接成功");
                             SharedPreferences.Editor editor=pref.edit();
                             editor.putBoolean("131ok",true);
+                            editor.putBoolean("connectCafe",true);
                             editor.commit();
+                            EventBus.getDefault().post(new Integer(903));
+
                             QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
                             try {
                                 Textile.instance().account.sync(options);
@@ -225,6 +235,72 @@ public class ForeGroundService extends Service {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void stopHeartBeat(Integer stopHeart){
+        if(stopHeart==933){
+            Log.d(TAG, "stopHeartBeat: 停止心跳");
+            startBeat=false;
+            heartBeat=null;
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void startHeartBeat(Integer stopHeart){
+        if(stopHeart==923){
+            Log.d(TAG, "stopHeartBeat: 停止心跳");
+            heartBeat=new HeartBeat();
+            startBeat=true;
+            heartBeat.start();
+        }
+    }
+
+    class HeartBeat extends Thread{
+        @Override
+        public void run() {
+            startBeat=true;
+            while(startBeat){
+                try {
+                    Thread.sleep(300000);
+                    //发送心跳
+                    if(Textile.instance().online()){
+                        Model.CafeSessionList sessionList = Textile.instance().cafes.sessions();
+                        for (int i = 0; i < sessionList.getItemsCount(); i++) {
+                            final Model.CafeSession tmpSession = sessionList.getItems(i);
+                            Log.d(TAG, "run: tmpSession: "+tmpSession.getId());
+                            Textile.instance().cafes.publishPeerToCafe(tmpSession.getId(), new Handlers.ErrorHandler(){
+                                @Override
+                                public void onComplete(){
+                                    Log.d(TAG, "onComplete: 连接正常");
+                                    return;
+                                }
+                                @Override
+                                public void onError(Exception e){
+                                    Log.d(TAG, "onError: 连接断开，尝试重连");
+
+                                    Textile.instance().cafes.deregister(tmpSession.getId(), new Handlers.ErrorHandler() {
+                                        @Override
+                                        public void onComplete() {
+                                            tryConnectCafe(new Integer(953));
+                                        }
+
+                                        @Override
+                                        public void onError(Exception e) {
+
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }else{
+                        Log.d(TAG, "run: 节点下线了");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -245,53 +321,11 @@ public class ForeGroundService extends Service {
                 e.printStackTrace();
             }
 
-//            tryConnectCafe(new Double(2.34));
-//            new Thread(){
-//                @Override
-//                public void run() {
-//                    while(true){
-//                        try {
-//                            Thread.sleep(300000);
-//                            //发送心跳
-//                            if(Textile.instance().online()){
-//                                Model.CafeSessionList sessionList = Textile.instance().cafes.sessions();
-//                                for (int i = 0; i < sessionList.getItemsCount(); i++) {
-//                                    final Model.CafeSession tmpSession = sessionList.getItems(i);
-//                                    Log.d(TAG, "run: tmpSession: "+tmpSession.getId());
-//                                    Textile.instance().cafes.publishPeerToCafe(tmpSession.getId(), new Handlers.ErrorHandler(){
-//                                        @Override
-//                                        public void onComplete(){
-//                                            Log.d(TAG, "onComplete: 连接正常");
-//                                            return;
-//                                        }
-//                                        @Override
-//                                        public void onError(Exception e){
-//                                            Log.d(TAG, "onError: 连接断开，尝试重连");
-//
-//                                            Textile.instance().cafes.deregister(tmpSession.getId(), new Handlers.ErrorHandler() {
-//                                                @Override
-//                                                public void onComplete() {
-//                                                    tryConnectCafe(new Double(2.34));
-//                                                }
-//
-//                                                @Override
-//                                                public void onError(Exception e) {
-//
-//                                                }
-//                                            });
-//                                        }
-//                                    });
-//                                }
-//                            }else{
-//                                Log.d(TAG, "run: 节点下线了");
-//                            }
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                    }
-//                }
-//            }.start();
+            if(connectCafe){
+                tryConnectCafe(new Integer(953));
+
+                startHeartBeat(new Integer(923));
+            }
 
             createDeviceThread();
 
@@ -581,7 +615,7 @@ public class ForeGroundService extends Service {
                 Model.Video video=feedItemData.feedVideo.getVideo();
 
                 //每得到一个视频就在后台启动预加载线程
-//                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
+                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
 
                 TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,

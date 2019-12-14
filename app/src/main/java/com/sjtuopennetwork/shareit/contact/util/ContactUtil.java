@@ -21,6 +21,35 @@ public class ContactUtil {
     private static final String TAG = "==============";
 
 
+    public static boolean allPeerConnected(String threadId){
+        boolean allConnected=true;
+        try {
+            List<Model.Peer> threadPeers=Textile.instance().threads.peers(threadId).getItemsList();
+            List<Model.SwarmPeer> swarmPeers=Textile.instance().ipfs.connectedAddresses().getItemsList();
+
+            //查找threadPeers中的peer是不是都在swarmpeers里面
+            for (Model.Peer p:threadPeers){
+                boolean pConnected=false;
+                for(Model.SwarmPeer s:swarmPeers){
+                    Log.d(TAG, "allPeerConnected: threadPeer: "+p.getId()+"  swarmPeer: "+s.getId());
+                    if(p.getId().equals(s.getId())){
+                        pConnected=true;
+                        break; //找到了就跳出
+                    }
+                }
+                if(!pConnected){
+                    allConnected=false;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return allConnected;
+    }
+
+
     public static boolean isMyFriend(String address){
         List<Model.Peer> friends=getFriendList();
         boolean isFriend=false;
