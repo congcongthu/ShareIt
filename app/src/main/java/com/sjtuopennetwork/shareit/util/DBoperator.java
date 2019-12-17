@@ -18,7 +18,7 @@ public class DBoperator {
 
     public static List<TMsg> queryMsg(SQLiteDatabase appdb,String threadId){
         List<TMsg> msgs=new LinkedList<>();
-        Cursor cursor=appdb.rawQuery("select * from msgs where threadid = ? order by sendtime desc limit 100 offset 0",new String[]{threadId});
+        Cursor cursor=appdb.rawQuery("select * from msgs where threadid = ? order by sendtime desc limit 1000 offset 0",new String[]{threadId});
         if(cursor.moveToFirst()){
             do{
                 int id=cursor.getInt(cursor.getColumnIndex("id"));

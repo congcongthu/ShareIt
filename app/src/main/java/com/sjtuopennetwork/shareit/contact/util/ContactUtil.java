@@ -20,6 +20,47 @@ public class ContactUtil {
 
     private static final String TAG = "==============";
 
+
+    public static boolean allPeerConnected(String threadId){
+        boolean allConnected=true;
+        try {
+            List<Model.Peer> threadPeers=Textile.instance().threads.peers(threadId).getItemsList();
+            List<Model.SwarmPeer> swarmPeers=Textile.instance().ipfs.connectedAddresses().getItemsList();
+
+            //查找threadPeers中的peer是不是都在swarmpeers里面
+            for (Model.Peer p:threadPeers){
+                boolean pConnected=false;
+                for(Model.SwarmPeer s:swarmPeers){
+                    Log.d(TAG, "allPeerConnected: threadPeer: "+p.getId()+"  swarmPeer: "+s.getId());
+                    if(p.getId().equals(s.getId())){
+                        pConnected=true;
+                        break; //找到了就跳出
+                    }
+                }
+                if(!pConnected){
+                    allConnected=false;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return allConnected;
+    }
+
+
+    public static boolean isMyFriend(String address){
+        List<Model.Peer> friends=getFriendList();
+        boolean isFriend=false;
+        for(Model.Peer p:friends){
+            if(p.getAddress().equals(address)){
+                isFriend=true;
+            }
+        }
+        return isFriend;
+    }
+
     /**
      * Get the list of all friends.
      * If both the whitelist count and the peer count are 2, the peer is a friend.
@@ -51,7 +92,11 @@ public class ContactUtil {
         return result;
     }
 
-    public static void ignoreOtherApplies(String address){
+    /**
+     * Ignore all of the peer's applications
+     * @param address the address of the target peer
+     */
+    public static void ignoreOtherApplications(String address){
         try {
             List<View.InviteView> invites = Textile.instance().invites.list().getItemsList();
             for (View.InviteView inviteView : invites) {
@@ -69,7 +114,7 @@ public class ContactUtil {
 
     /**
      * Get friend application and the corresponding applier.
-     * If the name of an invite is "FriendThread1219", the invite is an friend application.
+     * If the name of an invite is "FriendThread1219", the invite is a friend application.
      * @return
      */
     public static Pair<List<View.InviteView>,List<ResultContact>> getApplication(){
@@ -93,7 +138,8 @@ public class ContactUtil {
 
                     if(oldindex==-1){
                         Log.d(TAG, "getApplication: 这个申请是第一次："+inviteView.getId());
-                        ResultContact resultContact=new ResultContact(inviteView.getInviter().getAddress(),inviteView.getInviter().getName(),inviteView.getInviter().getAvatar(),null,false);
+                        String resultAddr=inviteView.getInviter().getAddress().substring(0,10);
+                        ResultContact resultContact=new ResultContact(resultAddr,inviteView.getInviter().getName(),inviteView.getInviter().getAvatar(),null,false);
                         applications.add(resultContact);
                         friendApplications.add(inviteView);
                     }else{
@@ -129,7 +175,6 @@ public class ContactUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema=
                 sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()

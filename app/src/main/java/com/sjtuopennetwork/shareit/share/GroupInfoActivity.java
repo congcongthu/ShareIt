@@ -34,7 +34,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     LinearLayout del_members;
     LinearLayout set_admin;
     LinearLayout group_qrcode;
-    TextView leave_group;
+//    TextView leave_group;
     RecyclerView group_members;
 
 
@@ -99,7 +99,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         add_members=findViewById(R.id.group_add_members);
         del_members=findViewById(R.id.group_del_members);
         set_admin=findViewById(R.id.group_set_admin);
-        leave_group=findViewById(R.id.leave_group);
+//        leave_group=findViewById(R.id.leave_group);
         group_members=findViewById(R.id.group_members);
         group_qrcode=findViewById(R.id.group_qrcode);
     }
@@ -127,29 +127,29 @@ public class GroupInfoActivity extends AppCompatActivity {
             it.putExtra("threadid",threadid);
             startActivity(it);
         });
-        leave_group.setOnClickListener(v -> {
-            //还是先弹出对话框吧，防止误触
-            AlertDialog.Builder leave=new AlertDialog.Builder(GroupInfoActivity.this);
-            leave.setTitle("退出群组");
-            leave.setMessage("确定退出群组吗？");
-            leave.setPositiveButton("确定", (dialog, which) -> {
-                //自己退出群组,removeThread，自己removeThread
-                try {
-                    Textile.instance().threads.remove(threadid);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                DBoperator.deleteDialogByThreadID(appdb,threadid);
-
-                //广播ChatActivity清除
-                Intent intent=new Intent(ChatActivity.REMOVE_DIALOG);
-                sendBroadcast(intent);
-
-                finish();
-            });
-            leave.setNegativeButton("取消", (dialog, which) -> Toast.makeText(GroupInfoActivity.this,"已取消",Toast.LENGTH_SHORT).show());
-            leave.show();
-        });
+//        leave_group.setOnClickListener(v -> {
+//            //还是先弹出对话框吧，防止误触
+//            AlertDialog.Builder leave=new AlertDialog.Builder(GroupInfoActivity.this);
+//            leave.setTitle("退出群组");
+//            leave.setMessage("确定退出群组吗？");
+//            leave.setPositiveButton("确定", (dialog, which) -> {
+//                //自己退出群组,removeThread，自己removeThread
+//                try {
+//                    Textile.instance().threads.remove(threadid);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                DBoperator.deleteDialogByThreadID(appdb,threadid);
+//
+//                //广播ChatActivity清除
+//                Intent intent=new Intent(ChatActivity.REMOVE_DIALOG);
+//                sendBroadcast(intent);
+//
+//                finish();
+//            });
+//            leave.setNegativeButton("取消", (dialog, which) -> Toast.makeText(GroupInfoActivity.this,"已取消",Toast.LENGTH_SHORT).show());
+//            leave.show();
+//        });
 
         group_qrcode.setOnClickListener(v -> {
             Intent it=new Intent(GroupInfoActivity.this,GroupCodeActivity.class);

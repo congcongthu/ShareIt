@@ -120,15 +120,15 @@
             android:layout_width="50dp"
             android:layout_height="50dp" />
 
-        <TextView
-            android:layout_margin="10dp"
-            android:background="@drawable/rect_search_contact"
-            android:gravity="center"
-            android:text="文件"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            android:layout_width="50dp"
-            android:layout_height="50dp" />
+<!--        <TextView-->
+<!--            android:layout_margin="10dp"-->
+<!--            android:background="@drawable/rect_search_contact"-->
+<!--            android:gravity="center"-->
+<!--            android:text="文件"-->
+<!--            android:textSize="16sp"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:layout_width="50dp"-->
+<!--            android:layout_height="50dp" />-->
 
     </LinearLayout>
 </LinearLayout>

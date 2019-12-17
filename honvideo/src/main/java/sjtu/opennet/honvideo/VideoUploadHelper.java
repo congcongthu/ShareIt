@@ -49,6 +49,8 @@ public class VideoUploadHelper {
     private Model.Video videoPb = null;
     private String posterHash;
 
+    private boolean cafeStore;
+
     /**
      * Handler of ipfsAddData.
      */
@@ -108,9 +110,10 @@ public class VideoUploadHelper {
 
     private VideoHandlers.UploadHandler uploadHandler;
 
-    public VideoUploadHelper(Context context, String filePath) {
+    public VideoUploadHelper(Context context, String filePath, boolean cafeStore) {
         this.context = context;
         this.filePath = filePath;
+        this.cafeStore=cafeStore;
 
         vMeta = new VideoMeta(filePath);
         rootPath = FileUtil.getAppExternalPath(context, "video");
@@ -164,7 +167,8 @@ public class VideoUploadHelper {
     public void publishMeta() {
         try {
             Textile.instance().videos.addVideo(videoPb);
-            Textile.instance().videos.publishVideo(videoPb);
+
+            Textile.instance().videos.publishVideo(videoPb, cafeStore);
 
             Log.d(TAG, "publishMeta: publish successly");
             uploadHandler.onPublishComplete();
@@ -176,7 +180,7 @@ public class VideoUploadHelper {
     public static void publishMeta(Model.Video videoPb) {
         try {
             Textile.instance().videos.addVideo(videoPb);
-            Textile.instance().videos.publishVideo(videoPb);
+            Textile.instance().videos.publishVideo(videoPb, true);
         } catch (Exception e) {
             e.printStackTrace();
         }

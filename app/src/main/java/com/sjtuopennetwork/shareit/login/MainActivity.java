@@ -1,6 +1,8 @@
 package com.sjtuopennetwork.shareit.login;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
@@ -34,6 +36,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -67,7 +70,14 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: MainActivity调用onCreate");
 
-        getPermission();
+//        getPermission();
+
+        boolean serviceRunning=isServiceRunning("com.sjtuopennetwork.shareit.util.ForeGroundService");
+        if(serviceRunning){
+            Log.d(TAG, "onCreate: 后台服务正在运行");
+        }else{
+            Log.d(TAG, "onCreate: 后台服务未运行");
+        }
 
         //查SharedPreference中"isLogin"判断登录状态，如果未登录则进入登录界面。如果已登录则跳转到HomeActivity
         isLogin=pref.getBoolean("isLogin",false); //如果没有这个字段就是首次打开
@@ -77,6 +87,19 @@ public class MainActivity extends AppCompatActivity {
             startActivity(toHomeActivity);
             finish();
         }else{ //如果未登录
+            //测试时自动进入登录界面，创建新的ShareIt账号
+            SharedPreferences.Editor editortest=pref.edit();
+            String mynametest=String.valueOf(System.currentTimeMillis());
+            editortest.putString("myname",mynametest);
+            Log.d(TAG, "onCreate: 登录时选择头像："+avatarpath);
+            editortest.putString("avatarpath",avatarpath); //如果没选则为""
+            editortest.commit();
+            Intent toHomeActivitytest=new Intent(this, HomeActivity.class);
+            toHomeActivitytest.putExtra("login",1); //shareit注册新账号，1
+            startActivity(toHomeActivitytest);
+            finish();
+
+            //非测试
             setContentView(R.layout.activity_main); //进入登录界面
             huaweiLogin=findViewById(R.id.huaweiLogin);
             shareItLogin=findViewById(R.id.shareItLogin);
@@ -84,17 +107,11 @@ public class MainActivity extends AppCompatActivity {
             registerAvatar=findViewById(R.id.register_avatar);
             editText=findViewById(R.id.edt_name);
 
-            //去掉状态栏
-//            View decorView = getWindow().getDecorView();
-//            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
-//            decorView.setSystemUiVisibility(uiOptions);
-
             registerAvatar.setOnClickListener(v -> {
                 PictureSelector.create(this, PictureSelector.SELECT_REQUEST_CODE).selectPicture();
             });
 
             shareItRegister.setOnClickListener(v -> {
-                //注册shareIt新账号,新建wallet
                 SharedPreferences.Editor editor=pref.edit();
                 String myname=editText.getText().toString();
                 editor.putString("myname",myname);
@@ -186,10 +203,29 @@ public class MainActivity extends AppCompatActivity {
     private void getPermission() {
         if(PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)==PermissionChecker.PERMISSION_DENIED){
             ActivityCompat.requestPermissions(this,
-                    new String[]{"android.permission.WRITE_EXTERNAL_STORAGE",
+                    new String[]{
+                            "android.permission.WRITE_EXTERNAL_STORAGE",
                             "android.permission.READ_EXTERNAL_STORAGE",
-                            "android.permission.CAMERA"},100);
+//                            "android.permission.CAMERA"
+                    },100);
         }
+    }
+
+
+    public boolean isServiceRunning(String ServiceName) {
+        ActivityManager myManager = (ActivityManager) getApplicationContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        ArrayList<ActivityManager.RunningServiceInfo> runningService = (ArrayList<ActivityManager.RunningServiceInfo>) myManager
+                .getRunningServices(30);
+
+        for (int i = 0; i < runningService.size(); i++) {
+            Log.d(TAG, "isServiceRunning: "+runningService.get(i).service.getClassName());
+            if (runningService.get(i).service.getClassName()
+                    .equals(ServiceName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

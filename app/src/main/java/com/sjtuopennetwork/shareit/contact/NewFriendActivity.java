@@ -61,7 +61,7 @@ public class NewFriendActivity extends AppCompatActivity {
                     Textile.instance().invites.accept(inviteView.getId());
 
                     //忽略所有其他的同一个人来的申请
-                    ContactUtil.ignoreOtherApplies(inviteView.getInviter().getAddress());
+                    ContactUtil.ignoreOtherApplications(inviteView.getInviter().getAddress());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -70,7 +70,7 @@ public class NewFriendActivity extends AppCompatActivity {
                 Toast.makeText(NewFriendActivity.this, "已取消", Toast.LENGTH_SHORT).show();
                 try {
                     //忽略当前所有这个人的申请
-                    ContactUtil.ignoreOtherApplies(inviteView.getInviter().getAddress());
+                    ContactUtil.ignoreOtherApplications(inviteView.getInviter().getAddress());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
