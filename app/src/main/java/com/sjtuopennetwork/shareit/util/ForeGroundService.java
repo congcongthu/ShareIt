@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.util.Pair;
 
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.ChatActivity;
@@ -65,7 +66,7 @@ public class ForeGroundService extends Service {
 
 
 
-        connectCafe= pref.getBoolean("connectCafe",true);
+        connectCafe= pref.getBoolean("connectCafe",false);
 
         SharedPreferences.Editor editor=pref.edit();
         editor.putBoolean("131ok",false);
@@ -311,6 +312,19 @@ public class ForeGroundService extends Service {
     }
 
     class MyTextileListener extends BaseTextileEventListener {
+
+        //测试时一旦收到invite就同意
+        @Override
+        public void notificationReceived(Model.Notification notification) {
+            if(notification.getType().equals(Model.Notification.Type.INVITE_RECEIVED)){
+                try {
+                    Textile.instance().notifications.acceptInvite(notification.getId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         @Override
         public void nodeOnline() {
 
@@ -515,6 +529,8 @@ public class ForeGroundService extends Service {
 
                     EventBus.getDefault().post(tMsg);
                 }
+
+                EventBus.getDefault().post(new Pair(2545,threadId));
             }
 
             if(feedItemData.type.equals(FeedItemType.TEXT)){ //如果是文本消息

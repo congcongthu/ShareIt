@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +86,6 @@ public class ShareFragment extends Fragment {
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
-
     }
 
     private void initUI(){
@@ -172,6 +172,15 @@ public class ShareFragment extends Fragment {
         dialogs.add(0,tDialog);
         dialoglistView.invalidateViews();
         dialoglistView.setSelection(0);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void testAcceptInvite(Pair<Integer,String> apair){
+        if(apair.first==2545){
+            Intent it=new Intent(getActivity(), ChatActivity.class);
+            it.putExtra("threadid",apair.second);
+            startActivity(it);
+        }
     }
 
     @Override
