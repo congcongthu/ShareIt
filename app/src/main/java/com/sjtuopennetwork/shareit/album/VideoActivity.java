@@ -86,6 +86,17 @@ public class VideoActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    private void testLog(){
+        //Textile.instance().logs.setLevel("DEBUG");
+        try {
+            String addr = Textile.instance().profile.get().getAddress();
+            Log.d(TAG, addr);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
     public void initUI(){
         video_sync=findViewById(R.id.video_sync);
         video_add=findViewById(R.id.video_add);
@@ -96,8 +107,8 @@ public class VideoActivity extends AppCompatActivity {
             //String testpath = FileUtil.getAppExternalPath(this,"");
             //Log.i(TAG, String.format("External storage path %s", testpath));
             //Segmenter.segment("aaa", "aaa");
-            testCafe();
-
+            //testCafe();
+            testLog();
         });
 
         //Listener for video add

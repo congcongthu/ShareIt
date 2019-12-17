@@ -100,13 +100,14 @@ public class ForeGroundService extends Service {
 
     public void initTextile(int login){
         String phrase="";
-        final File filesDir = this.getFilesDir();
+        //final File filesDir = this.getFilesDir();
+        final File repoDir = new File(FileUtil.getAppExternalPath(this, "repo"));
 
         switch (login){
             case 0: //已经登录，找到repo，初始化textile
                 loginAccount=pref.getString("loginAccount","null"); //当前登录的account，就是address
                 Log.d(TAG, "initTextile: 已经登录过："+loginAccount);
-                final File repo0 = new File(filesDir, loginAccount);
+                final File repo0 = new File(repoDir, loginAccount);
                 repoPath = repo0.getAbsolutePath();
                 Log.d(TAG, "initTextile: repo的路径："+repoPath);
 
@@ -126,7 +127,7 @@ public class ForeGroundService extends Service {
                     phrase= Textile.newWallet(12);
                     Mobile.MobileWalletAccount m=Textile.walletAccountAt(phrase,Textile.WALLET_ACCOUNT_INDEX,Textile.WALLET_PASSPHRASE);
                     loginAccount=m.getAddress();
-                    final File repo1 = new File(filesDir, loginAccount);
+                    final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
                     Textile.initialize(repoPath,m.getSeed() , true, true, true);
 
@@ -156,7 +157,7 @@ public class ForeGroundService extends Service {
                     phrase=Textile.newWalletFromHuaweiOpenId(openid);
                     Mobile.MobileWalletAccount m=Textile.walletAccountAt(phrase,Textile.WALLET_ACCOUNT_INDEX,Textile.WALLET_PASSPHRASE);
                     loginAccount=m.getAddress();
-                    final File repo1 = new File(filesDir, loginAccount);
+                    final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
                     if(!Textile.isInitialized(repoPath)){
                         Textile.initialize(repoPath,m.getSeed() , true, true,true);
