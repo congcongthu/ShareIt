@@ -22,11 +22,19 @@ import com.sjtuopennetwork.shareit.login.MainActivity;
 import com.sjtuopennetwork.shareit.setting.util.GetIpAddress;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
+import com.sjtuopennetwork.shareit.util.FileUtil;
 import com.sjtuopennetwork.shareit.util.ForeGroundService;
 import com.sjtuopennetwork.shareit.util.RoundImageView;
 
+import org.apache.commons.io.FileUtils;
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStream;
 import java.util.List;
 
 import sjtu.opennet.textilepb.Model;

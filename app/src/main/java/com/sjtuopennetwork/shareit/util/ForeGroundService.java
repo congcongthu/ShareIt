@@ -108,6 +108,17 @@ public class ForeGroundService extends Service {
                 Log.d(TAG, "initTextile: 已经登录过："+loginAccount);
                 final File repo0 = new File(filesDir, loginAccount);
                 repoPath = repo0.getAbsolutePath();
+                Log.d(TAG, "initTextile: repo的路径："+repoPath);
+
+                File filerepo=new File(repoPath);
+                if(filerepo.isDirectory()){
+                    for(File f:filerepo.listFiles()){
+                        Log.d(TAG, "initTextile: repoFile:"+f.getAbsolutePath());
+                    }
+                }else{
+                    Log.d(TAG, "initTextile: repo not a directory");
+                }
+
                 break;
             case 1: //shareit注册，新建repo，初始化textile
                 Log.d(TAG, "initTextile: 注册shareit账号");
@@ -117,7 +128,10 @@ public class ForeGroundService extends Service {
                     loginAccount=m.getAddress();
                     final File repo1 = new File(filesDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
-                    Textile.initialize(repoPath,m.getSeed() , true, false, true);
+                    Textile.initialize(repoPath,m.getSeed() , true, true, true);
+
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -145,7 +159,7 @@ public class ForeGroundService extends Service {
                     final File repo1 = new File(filesDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
                     if(!Textile.isInitialized(repoPath)){
-                        Textile.initialize(repoPath,m.getSeed() , true, false,true);
+                        Textile.initialize(repoPath,m.getSeed() , true, true,true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -195,7 +209,7 @@ public class ForeGroundService extends Service {
                     "http://202.120.38.131:40601",
 //                    "http://192.168.1.109:40601",
 //                    "http://202.120.40.60:40601"
-                    "aqWLNkfatxbqNjwUGLaLZFiz6n85Ze7w8ptUx5QzKbex4h53tELTPgsf7FzL", //131
+                    "29UxcENKEZaNnr3zjtcqsSdBaPGep2VqeF98HAGvYaGLjU5SNoXwc9yEkF8Nx", //131
 //                    "NhYrQb1XfpCFC7WBhX7UHPkax1o4YvAxxzXhZfLg6qJ5cbbfZakmPQZVer7x",//HW159.138.58.61
 //                    "29TkBsmjFfEnR1Sack63qWK5WkPGjJtA2kXFHvTijmSE1KYMvVopBRWagHLbE",
 //                    "WwqhHzab1oRqXPs3KnDL2oX1S9h2D7KYotMo2eNUg2MFPJPENWgB1Q2H6m3b",
