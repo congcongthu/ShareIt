@@ -111,6 +111,7 @@ public class VideoMeta {
             creation = fmdataReceiver.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_CREATION_TIME);
             rotation = fmdataReceiver.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
             rotation_int = Integer.parseInt(rotation);
+            //Log.d(TAG, String.format(""));
             videoHash = getHashFromMeta();
         }catch(Exception e){
             e.printStackTrace();

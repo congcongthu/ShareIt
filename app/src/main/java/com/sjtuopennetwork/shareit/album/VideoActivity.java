@@ -137,12 +137,15 @@ public class VideoActivity extends AppCompatActivity {
             //vMeta.logCatPrint();
               //VideoHelper vHelper = new VideoHelper(this, filePath);
               VideoUploadHelper vHelper = new VideoUploadHelper(this, filePath);
-              vHelper.upload(new VideoHandlers.UploadHandler() {
-                  @Override
-                  public void onPublishComplete() {
-
-                  }
-              });
+              vHelper.logCatVideoMeta();
+              //Model.Video tmpvideoPb = vHelper.getVideoPb();
+              //vHelper
+//              vHelper.upload(new VideoHandlers.UploadHandler() {
+//                  @Override
+//                  public void onPublishComplete() {
+//
+//                  }
+//              });
 //            long endTime = System.currentTimeMillis();
 //            Log.d(TAG, "Meta get end");
 //            Log.d(TAG, String.format("Meta get time %d ms", endTime - startTime));

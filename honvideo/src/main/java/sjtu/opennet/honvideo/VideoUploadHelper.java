@@ -132,6 +132,9 @@ public class VideoUploadHelper {
         Log.d(TAG, String.format("Uploader initialize complete for video ID %s.", vMeta.getHash()));
     }
 
+    public void logCatVideoMeta(){
+        vMeta.logCatPrint();
+    }
 
     /**
      * Clean the whole upload folder.
