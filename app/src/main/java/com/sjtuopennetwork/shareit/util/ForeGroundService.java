@@ -100,7 +100,7 @@ public class ForeGroundService extends Service {
 
     public void initTextile(int login){
         String phrase="";
-        //final File filesDir = this.getFilesDir();
+//        final File repoDir= this.getFilesDir();
         final File repoDir = new File(FileUtil.getAppExternalPath(this, "repo"));
 
         switch (login){
@@ -110,16 +110,6 @@ public class ForeGroundService extends Service {
                 final File repo0 = new File(repoDir, loginAccount);
                 repoPath = repo0.getAbsolutePath();
                 Log.d(TAG, "initTextile: repo的路径："+repoPath);
-
-                File filerepo=new File(repoPath);
-                if(filerepo.isDirectory()){
-                    for(File f:filerepo.listFiles()){
-                        Log.d(TAG, "initTextile: repoFile:"+f.getAbsolutePath());
-                    }
-                }else{
-                    Log.d(TAG, "initTextile: repo not a directory");
-                }
-
                 break;
             case 1: //shareit注册，新建repo，初始化textile
                 Log.d(TAG, "initTextile: 注册shareit账号");
@@ -130,8 +120,6 @@ public class ForeGroundService extends Service {
                     final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
                     Textile.initialize(repoPath,m.getSeed() , true, true, true);
-
-
 
                 } catch (Exception e) {
                     e.printStackTrace();

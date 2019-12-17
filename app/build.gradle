@@ -85,6 +85,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
+    // commons-net
+    implementation 'commons-net:commons-net:3.6'
+
     //华为id
     implementation('com.huawei.hms:base:3.0.0.301')
     implementation('com.huawei.hms:iap:3.0.0.301')
@@ -107,9 +110,6 @@ dependencies {
 
     //Video Support
     implementation project(path: ':honvideo')
-
-    //Log observer used to observe the video chunk list file
-    implementation "commons-io:commons-io:+"
 
     //nanohttpd
     implementation 'org.nanohttpd:nanohttpd:2.2.0'

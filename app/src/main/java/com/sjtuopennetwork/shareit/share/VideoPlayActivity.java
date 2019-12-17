@@ -39,7 +39,6 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.util.FileUtil;
 //import com.sjtuopennetwork.shareit.util.VideoHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -62,6 +61,7 @@ import java.util.Map;
 //import fi.iki.elonen.NanoHTTPD;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
+import sjtu.opennet.honvideo.FileUtil;
 import sjtu.opennet.honvideo.Segmenter;
 import sjtu.opennet.honvideo.VideoHandlers;
 import sjtu.opennet.honvideo.VideoReceiveHelper;
@@ -98,12 +98,21 @@ public class VideoPlayActivity extends AppCompatActivity {
     int rotation;
     int videoWidth;
     int videoHeight;
+    String logPath;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_play);
+
+        try {
+            logPath= FileUtil.getAppExternalPath(this,"repo")+Textile.instance().profile.get().getId()+"/logs/textile.log";
+            Log.d(TAG, "onCreate: logPath:"+logPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         finished =false;
         NextChunk = 0;
 
