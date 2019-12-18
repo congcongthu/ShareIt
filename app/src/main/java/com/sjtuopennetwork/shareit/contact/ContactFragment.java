@@ -22,6 +22,7 @@ import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.FileUtil;
+import com.sjtuopennetwork.shareit.util.QRCodeActivity;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -123,7 +124,8 @@ public class ContactFragment extends Fragment {
         });
         bt_contact_scan.setOnClickListener(v -> {
             PermissionUtils.getInstance().requestPermission(getActivity());
-            Intent it=new Intent(getActivity(),ContactQRCodeAtivity.class);
+
+            Intent it=new Intent(getActivity(), QRCodeActivity.class);
             startActivity(it);
         });
 

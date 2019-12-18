@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.sjtuopennetwork.shareit.share.util.TDialog;
 import com.sjtuopennetwork.shareit.share.util.TMsg;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
+import com.sjtuopennetwork.shareit.util.QRCodeActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -84,7 +86,6 @@ public class ShareFragment extends Fragment {
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
-
     }
 
     private void initUI(){
@@ -100,9 +101,9 @@ public class ShareFragment extends Fragment {
 
         qrcodeJoinGroup=getActivity().findViewById(R.id.bt_share_scan);
         qrcodeJoinGroup.setOnClickListener(v -> {
-
             PermissionUtils.getInstance().requestPermission(getActivity());
-            Intent it=new Intent(getActivity(),GroupQRCodeActivity.class);
+
+            Intent it=new Intent(getActivity(), QRCodeActivity.class);
             startActivity(it);
         });
     }
@@ -171,6 +172,15 @@ public class ShareFragment extends Fragment {
         dialogs.add(0,tDialog);
         dialoglistView.invalidateViews();
         dialoglistView.setSelection(0);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void testAcceptInvite(Pair<Integer,String> apair){
+        if(apair.first==2545){
+            Intent it=new Intent(getActivity(), ChatActivity.class);
+            it.putExtra("threadid",apair.second);
+            startActivity(it);
+        }
     }
 
     @Override

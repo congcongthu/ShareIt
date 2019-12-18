@@ -1,5 +1,6 @@
 package com.sjtuopennetwork.shareit.share;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -9,9 +10,11 @@ import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.bottomnavigation.LabelVisibilityMode;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -110,27 +113,25 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        getPermission();
+
         login=getIntent().getIntExtra("login",5);
-        Log.d(TAG, "onStart: 跳转到HomeActivity，login："+login);
+        Log.d(TAG, "跳转到HomeActivity，login："+login);
         if(login==0 || login==1 || login==2 || login==3){ //如果等于5，就不是登录页面跳转过来的
             initUI();
-
 
             if(!EventBus.getDefault().isRegistered(this)){
                 EventBus.getDefault().register(this);
             }
-
-            if(isServiceRunning("com.sjtuopennetwork.shareit.util.ForeGroundService")){
-                Log.d(TAG, "onCreate: 服务正在运行");
+            boolean serviceRunning=isServiceRunning("com.sjtuopennetwork.shareit.util.ForeGroundService");
+            Log.d(TAG, "onCreate, service running :"+serviceRunning);
+            if(serviceRunning){
                 replaceFragment(shareFragment);
             }else{
-                Log.d(TAG, "onCreate: 即将启动等待圆环，当前nodeOnline值为："+nodeOnline);
                 circleProgressDialog=new CircleProgressDialog(this);
                 circleProgressDialog.setText("节点启动中");
                 circleProgressDialog.showDialog();
 
-                Log.d(TAG, "onCreate: 服务没有运行");
-                Log.d(TAG, "onCreate: 即将启动前台服务");
                 Intent intent=new Intent(this,ForeGroundService.class);
                 intent.putExtra("login",login);
                 startForegroundService(intent);
@@ -144,7 +145,7 @@ public class HomeActivity extends AppCompatActivity {
                 .getSystemService(Context.ACTIVITY_SERVICE);
         ArrayList<ActivityManager.RunningServiceInfo> runningService = (ArrayList<ActivityManager.RunningServiceInfo>) myManager
                 .getRunningServices(30);
-        Log.d(TAG, "isServiceRunning: 服务数量："+runningService.size());
+
         for (int i = 0; i < runningService.size(); i++) {
             Log.d(TAG, "isServiceRunning: "+runningService.get(i).service.getClassName());
             if (runningService.get(i).service.getClassName()
@@ -185,6 +186,18 @@ public class HomeActivity extends AppCompatActivity {
         transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.rep_layout, fragment);
         transaction.commitAllowingStateLoss();
+    }
+
+
+    private void getPermission() {
+        if(PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)==PermissionChecker.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
+                            "android.permission.WRITE_EXTERNAL_STORAGE",
+                            "android.permission.READ_EXTERNAL_STORAGE",
+//                            "android.permission.CAMERA"
+                    },101);
+        }
     }
 
     @Override

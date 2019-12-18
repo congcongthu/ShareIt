@@ -1,12 +1,14 @@
 package com.sjtuopennetwork.shareit.setting;
 
+import android.app.AlertDialog;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
-import android.support.v7.app.AlertDialog;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,12 +21,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
+import com.sjtuopennetwork.shareit.login.MainActivity;
 import com.sjtuopennetwork.shareit.setting.util.NotificationGroup;
 import com.sjtuopennetwork.shareit.setting.util.NotificationItem;
 import com.sjtuopennetwork.shareit.setting.util.SwarmPeerListAdapter;
+import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.RoundImageView;
+import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 import com.wildma.pictureselector.PictureSelector;
 import com.sjtuopennetwork.shareit.R;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +61,10 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private LinearLayout info_phrase_layout;    //助记词板块
     private LinearLayout info_swarm_layout;   //swarm地址板块
     private LinearLayout info_swarm_peer_layout; //swarmPeer列表板块
+    private LinearLayout info_cafe;
     private TextView cafeCaption;
     private TextView cafeUrl;
+    CircleProgressDialog circleProgressDialog;
 
     private ExpandableListView swarm_peer_listView;
     //持久化
@@ -73,11 +84,19 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private List<Model.SwarmPeer> swarmPeers;
     private SwarmPeerListAdapter swarmPeerListAdapter=null;
     private Context mContext;
+    private boolean connectCafe;
+    boolean cafe131;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_info);
+
+
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
+
         initUI();
         initData();
         drawUI();
@@ -97,17 +116,110 @@ public class PersonalInfoActivity extends AppCompatActivity {
         }
         info_swarm_address.setText(swarm_address);
     }
+
+    Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what==1){
+                circleProgressDialog.dismiss();
+                drawCafeInfo();
+            }
+        }
+    };
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void connectSuccessfully(Integer success){
+        if(success==903){
+            SharedPreferences.Editor editor=pref.edit();
+            editor.putBoolean("131ok",true);
+            editor.putBoolean("connectCafe",true);
+            editor.commit();
+            circleProgressDialog.dismiss();
+            drawCafeInfo();
+        }
+    }
+
+    public void drawCafeInfo(){
+        Log.d(TAG, "drawCafeInfo: 打印cafe状态");
+        cafe131=pref.getBoolean("131ok",false);
+        connectCafe=pref.getBoolean("connectCafe",true);
+        if(cafe131){
+            cafeUrl.setVisibility(View.VISIBLE);
+            cafeCaption.setText("cafe连接成功（点击停止）");
+            cafeUrl.setText("http://202.120.38.131:40601");
+        }else{
+            cafeCaption.setText("未连接cafe（点击开始连接）");
+            cafeUrl.setVisibility(View.GONE);
+        }
+    }
+
     private void initData() {
         pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
 
-        boolean cafe131=pref.getBoolean("131ok",false);
-        if(cafe131){
-            cafeCaption.setText("cafe连接成功");
-            cafeUrl.setText("http://202.120.38.131:40601");
-        }else{
-            cafeCaption.setText("未连接cafe");
-            cafeUrl.setVisibility(View.GONE);
-        }
+        drawCafeInfo();
+
+        info_cafe.setOnClickListener(view -> {
+            final android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(PersonalInfoActivity.this);
+            dialog.setTitle("Cafe连接");
+            dialog.setPositiveButton("连接Cafe", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    if(cafe131==true){
+                        Toast.makeText(PersonalInfoActivity.this, "已经连接了cafe", Toast.LENGTH_SHORT).show();
+                    }else{
+                        EventBus.getDefault().post(new Integer(953));
+
+                        EventBus.getDefault().post(new Integer(923));
+
+                        circleProgressDialog=new CircleProgressDialog(PersonalInfoActivity.this);
+                        circleProgressDialog.setText("连接cafe...");
+                        circleProgressDialog.showDialog();
+                    }
+                }
+            });
+            dialog.setNegativeButton("停止连接", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    if(cafe131==false){
+                        Toast.makeText(PersonalInfoActivity.this, "已经停止", Toast.LENGTH_SHORT).show();
+                    }else{
+                        try {
+                            circleProgressDialog=new CircleProgressDialog(PersonalInfoActivity.this);
+                            circleProgressDialog.setText("连接cafe...");
+                            circleProgressDialog.showDialog();
+
+                            Model.CafeSessionList cafeSessionList=Textile.instance().cafes.sessions();
+                            for(Model.CafeSession c:cafeSessionList.getItemsList()){
+                                Textile.instance().cafes.deregister(c.getId(), new Handlers.ErrorHandler() {
+                                    @Override
+                                    public void onComplete() {
+                                        Log.d(TAG, "onComplete: 停止cafe连接");
+                                        connectCafe=false;
+                                        cafe131=false;
+                                        SharedPreferences.Editor editor=pref.edit();
+                                        editor.putBoolean("131ok",cafe131);
+                                        editor.putBoolean("connectCafe",connectCafe);
+                                        editor.commit();
+
+                                        Message msg=new Message(); msg.what=1; handler.sendMessage(msg);
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+
+                                    }
+                                });
+                            }
+                            EventBus.getDefault().post(new Integer(933));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+            AlertDialog d = dialog.create();
+            d.show();
+        });
 
         myname=pref.getString("myname","null");
         phrase=pref.getString("phrase","null");
@@ -192,6 +304,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
         cafeCaption=findViewById(R.id.cafe_caption);
         cafeUrl=findViewById(R.id.personal_cafe_url);
+        info_cafe=findViewById(R.id.personal_info_cafe);
 
 
         info_avatar_layout.setOnClickListener(v -> {
@@ -260,4 +373,11 @@ public class PersonalInfoActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
+    }
 }

@@ -11873,6 +11873,11 @@ public final class CafeService {
      * <code>.Video video = 2;</code>
      */
     sjtu.opennet.textilepb.Model.VideoOrBuilder getVideoOrBuilder();
+
+    /**
+     * <code>bool store = 3;</code>
+     */
+    boolean getStore();
   }
   /**
    * Protobuf type {@code CafePublishVideo}
@@ -11888,6 +11893,7 @@ public final class CafeService {
     }
     private CafePublishVideo() {
       token_ = "";
+      store_ = false;
     }
 
     @java.lang.Override
@@ -11931,6 +11937,11 @@ public final class CafeService {
                 video_ = subBuilder.buildPartial();
               }
 
+              break;
+            }
+            case 24: {
+
+              store_ = input.readBool();
               break;
             }
             default: {
@@ -12020,6 +12031,15 @@ public final class CafeService {
       return getVideo();
     }
 
+    public static final int STORE_FIELD_NUMBER = 3;
+    private boolean store_;
+    /**
+     * <code>bool store = 3;</code>
+     */
+    public boolean getStore() {
+      return store_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -12040,6 +12060,9 @@ public final class CafeService {
       if (video_ != null) {
         output.writeMessage(2, getVideo());
       }
+      if (store_ != false) {
+        output.writeBool(3, store_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -12055,6 +12078,10 @@ public final class CafeService {
       if (video_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, getVideo());
+      }
+      if (store_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, store_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -12079,6 +12106,8 @@ public final class CafeService {
         result = result && getVideo()
             .equals(other.getVideo());
       }
+      result = result && (getStore()
+          == other.getStore());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -12096,6 +12125,9 @@ public final class CafeService {
         hash = (37 * hash) + VIDEO_FIELD_NUMBER;
         hash = (53 * hash) + getVideo().hashCode();
       }
+      hash = (37 * hash) + STORE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getStore());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -12237,6 +12269,8 @@ public final class CafeService {
           video_ = null;
           videoBuilder_ = null;
         }
+        store_ = false;
+
         return this;
       }
 
@@ -12269,6 +12303,7 @@ public final class CafeService {
         } else {
           result.video_ = videoBuilder_.build();
         }
+        result.store_ = store_;
         onBuilt();
         return result;
       }
@@ -12323,6 +12358,9 @@ public final class CafeService {
         }
         if (other.hasVideo()) {
           mergeVideo(other.getVideo());
+        }
+        if (other.getStore() != false) {
+          setStore(other.getStore());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -12537,6 +12575,32 @@ public final class CafeService {
           video_ = null;
         }
         return videoBuilder_;
+      }
+
+      private boolean store_ ;
+      /**
+       * <code>bool store = 3;</code>
+       */
+      public boolean getStore() {
+        return store_;
+      }
+      /**
+       * <code>bool store = 3;</code>
+       */
+      public Builder setStore(boolean value) {
+        
+        store_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool store = 3;</code>
+       */
+      public Builder clearStore() {
+        
+        store_ = false;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -21529,27 +21593,27 @@ public final class CafeService {
       "iphertext\030\003 \001(\014\" \n\022CafeStoreThreadAck\022\n\n" +
       "\002id\030\001 \001(\t\".\n\021CafeUnstoreThread\022\r\n\005token\030" +
       "\001 \001(\t\022\n\n\002id\030\002 \001(\t\"\"\n\024CafeUnstoreThreadAc" +
-      "k\022\n\n\002id\030\001 \001(\t\"8\n\020CafePublishVideo\022\r\n\005tok" +
-      "en\030\001 \001(\t\022\025\n\005video\030\002 \001(\0132\006.Video\"!\n\023CafeP" +
-      "ublishVideoAck\022\n\n\002id\030\001 \001(\t\"8\n\014CafeSendFi" +
-      "le\022\014\n\004name\030\001 \001(\t\022\014\n\004size\030\002 \001(\005\022\014\n\004data\030\003" +
-      " \001(\014\"_\n\025CafePublishVideoChunk\022\r\n\005token\030\001" +
-      " \001(\t\022\032\n\005chunk\030\002 \001(\0132\013.VideoChunk\022\033\n\004file" +
-      "\030\003 \001(\0132\r.CafeSendFile\"5\n\030CafePublishVide" +
-      "oChunkAck\022\n\n\002id\030\001 \001(\t\022\r\n\005chunk\030\002 \001(\t\"6\n\014" +
-      "CafeSyncFile\022\r\n\005token\030\001 \001(\t\022\027\n\004file\030\002 \001(" +
-      "\0132\t.SyncFile\"4\n\017CafeSyncFileAck\022\023\n\013peerA" +
-      "ddress\030\001 \001(\t\022\014\n\004file\030\002 \001(\t\"<\n\020CafeFindIp" +
-      "fsAddr\022\r\n\005token\030\001 \001(\t\022\031\n\005query\030\002 \001(\0132\n.I" +
-      "pfsQuery\"7\n\023CafeFindIpfsAddrAck\022 \n\006resul" +
-      "t\030\001 \001(\0132\020.IpfsQueryResult\"=\n\022CafeDeliver" +
-      "Message\022\n\n\002id\030\001 \001(\t\022\016\n\006client\030\002 \001(\t\022\013\n\003e" +
-      "nv\030\003 \001(\014\"\"\n\021CafeCheckMessages\022\r\n\005token\030\001" +
-      " \001(\t\".\n\014CafeMessages\022\036\n\010messages\030\001 \003(\0132\014" +
-      ".CafeMessage\"#\n\022CafeDeleteMessages\022\r\n\005to" +
-      "ken\030\001 \001(\t\"%\n\025CafeDeleteMessagesAck\022\014\n\004mo" +
-      "re\030\001 \001(\010B\034\n\026sjtu.opennet.textilepbZ\002pbb\006" +
-      "proto3"
+      "k\022\n\n\002id\030\001 \001(\t\"G\n\020CafePublishVideo\022\r\n\005tok" +
+      "en\030\001 \001(\t\022\025\n\005video\030\002 \001(\0132\006.Video\022\r\n\005store" +
+      "\030\003 \001(\010\"!\n\023CafePublishVideoAck\022\n\n\002id\030\001 \001(" +
+      "\t\"8\n\014CafeSendFile\022\014\n\004name\030\001 \001(\t\022\014\n\004size\030" +
+      "\002 \001(\005\022\014\n\004data\030\003 \001(\014\"_\n\025CafePublishVideoC" +
+      "hunk\022\r\n\005token\030\001 \001(\t\022\032\n\005chunk\030\002 \001(\0132\013.Vid" +
+      "eoChunk\022\033\n\004file\030\003 \001(\0132\r.CafeSendFile\"5\n\030" +
+      "CafePublishVideoChunkAck\022\n\n\002id\030\001 \001(\t\022\r\n\005" +
+      "chunk\030\002 \001(\t\"6\n\014CafeSyncFile\022\r\n\005token\030\001 \001" +
+      "(\t\022\027\n\004file\030\002 \001(\0132\t.SyncFile\"4\n\017CafeSyncF" +
+      "ileAck\022\023\n\013peerAddress\030\001 \001(\t\022\014\n\004file\030\002 \001(" +
+      "\t\"<\n\020CafeFindIpfsAddr\022\r\n\005token\030\001 \001(\t\022\031\n\005" +
+      "query\030\002 \001(\0132\n.IpfsQuery\"7\n\023CafeFindIpfsA" +
+      "ddrAck\022 \n\006result\030\001 \001(\0132\020.IpfsQueryResult" +
+      "\"=\n\022CafeDeliverMessage\022\n\n\002id\030\001 \001(\t\022\016\n\006cl" +
+      "ient\030\002 \001(\t\022\013\n\003env\030\003 \001(\014\"\"\n\021CafeCheckMess" +
+      "ages\022\r\n\005token\030\001 \001(\t\".\n\014CafeMessages\022\036\n\010m" +
+      "essages\030\001 \003(\0132\014.CafeMessage\"#\n\022CafeDelet" +
+      "eMessages\022\r\n\005token\030\001 \001(\t\"%\n\025CafeDeleteMe" +
+      "ssagesAck\022\014\n\004more\030\001 \001(\010B\034\n\026sjtu.opennet." +
+      "textilepbZ\002pbb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -21678,7 +21742,7 @@ public final class CafeService {
     internal_static_CafePublishVideo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafePublishVideo_descriptor,
-        new java.lang.String[] { "Token", "Video", });
+        new java.lang.String[] { "Token", "Video", "Store", });
     internal_static_CafePublishVideoAck_descriptor =
       getDescriptor().getMessageTypes().get(19);
     internal_static_CafePublishVideoAck_fieldAccessorTable = new

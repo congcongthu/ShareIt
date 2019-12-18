@@ -29,7 +29,7 @@ public class AlbumFragment extends Fragment {
     //UI控件
     LinearLayout album_photo_layout;
     LinearLayout album_video_layout;
-    LinearLayout album_file_layout;
+//    LinearLayout album_file_layout;
 
     //
     private String thread_photo_name="2019-11-3119:09:17.16929628-29692";
@@ -119,7 +119,7 @@ public class AlbumFragment extends Fragment {
     private void initUI() {
         album_photo_layout=getActivity().findViewById(R.id.album_photo_layout);
         album_video_layout=getActivity().findViewById(R.id.album_video_layout);
-        album_file_layout=getActivity().findViewById(R.id.album_file_layout);
+//        album_file_layout=getActivity().findViewById(R.id.album_file_layout);
 
         album_photo_layout.setOnClickListener(v -> {
             Intent it=new Intent(getActivity(),PhotoActivity.class);
@@ -129,10 +129,10 @@ public class AlbumFragment extends Fragment {
             Intent it=new Intent(getActivity(),VideoActivity.class);
             startActivity(it);
         });
-        album_file_layout.setOnClickListener(v -> {
-            Intent it=new Intent(getActivity(),FileActivity.class);
-            startActivity(it);
-        });
+//        album_file_layout.setOnClickListener(v -> {
+//            Intent it=new Intent(getActivity(),FileActivity.class);
+//            startActivity(it);
+//        });
     }
 
     //创建新的thread

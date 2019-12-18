@@ -86,6 +86,17 @@ public class VideoActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    private void testLog(){
+        //Textile.instance().logs.setLevel("DEBUG");
+        try {
+            String addr = Textile.instance().profile.get().getAddress();
+            Log.d(TAG, addr);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
     public void initUI(){
         video_sync=findViewById(R.id.video_sync);
         video_add=findViewById(R.id.video_add);
@@ -96,8 +107,8 @@ public class VideoActivity extends AppCompatActivity {
             //String testpath = FileUtil.getAppExternalPath(this,"");
             //Log.i(TAG, String.format("External storage path %s", testpath));
             //Segmenter.segment("aaa", "aaa");
-            testCafe();
-
+            //testCafe();
+            testLog();
         });
 
         //Listener for video add
@@ -136,13 +147,16 @@ public class VideoActivity extends AppCompatActivity {
             //VideoMeta vMeta = new VideoMeta(filePath);
             //vMeta.logCatPrint();
               //VideoHelper vHelper = new VideoHelper(this, filePath);
-              VideoUploadHelper vHelper = new VideoUploadHelper(this, filePath);
-              vHelper.upload(new VideoHandlers.UploadHandler() {
-                  @Override
-                  public void onPublishComplete() {
-
-                  }
-              });
+              //VideoUploadHelper vHelper = new VideoUploadHelper(this, filePath);
+              //vHelper.logCatVideoMeta();
+              //Model.Video tmpvideoPb = vHelper.getVideoPb();
+              //vHelper
+//              vHelper.upload(new VideoHandlers.UploadHandler() {
+//                  @Override
+//                  public void onPublishComplete() {
+//
+//                  }
+//              });
 //            long endTime = System.currentTimeMillis();
 //            Log.d(TAG, "Meta get end");
 //            Log.d(TAG, String.format("Meta get time %d ms", endTime - startTime));

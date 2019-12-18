@@ -91,7 +91,7 @@ public class SyncFileUtil {
                 .build();
         try {
             Textile.instance().files.addSyncFile(sFile);
-            Textile.instance().files.publicSuynFile(sFile);
+            Textile.instance().files.publishSuynFile(sFile);
         }catch(Exception e){
             Log.e(TAG, "Error occur when publish syncfile");
             e.printStackTrace();

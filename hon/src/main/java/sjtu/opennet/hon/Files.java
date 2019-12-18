@@ -135,7 +135,7 @@ public class Files extends NodeDependent {
         node.addSyncFile(sFile.toByteArray());
     }
 
-    public void publicSuynFile(final Model.SyncFile sFile) throws Exception {
+    public void publishSuynFile(final Model.SyncFile sFile) throws Exception {
         node.publishSyncFile(sFile.toByteArray());
     }
     public SearchHandle searchSyncFiles(final QueryOuterClass.SyncFileQuery query, final QueryOuterClass.QueryOptions options) throws Exception {
