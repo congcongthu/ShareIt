@@ -10,10 +10,10 @@ public class LogToFTP {
 
     static FTPClient client =new FTPClient();
 
-    static final String host="";
-    static final int port=0;
-    static final String uname="";
-    static final String password="";
+    private static final String host="";
+    private static final int port=0;
+    private static final String uname="";
+    private static final String password="";
 
     public static boolean uploadLogToFTP(String filePath){
         //建立连接

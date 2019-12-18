@@ -13,6 +13,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.util.Pair;
 
+import com.huawei.hms.support.log.LogLevel;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.ChatActivity;
 import com.sjtuopennetwork.shareit.share.HomeActivity;
@@ -26,12 +27,14 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import sjtu.opennet.hon.BaseTextileEventListener;
 import sjtu.opennet.hon.FeedItemData;
 import sjtu.opennet.hon.FeedItemType;
 import sjtu.opennet.hon.Handlers;
+import sjtu.opennet.hon.Logs;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Mobile;
 import sjtu.opennet.textilepb.Model;
@@ -57,6 +60,7 @@ public class ForeGroundService extends Service {
     boolean connectCafe;
     HeartBeat heartBeat;
     boolean startBeat;
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -99,6 +103,7 @@ public class ForeGroundService extends Service {
     }
 
     public void initTextile(int login){
+
         String phrase="";
 //        final File repoDir= this.getFilesDir();
         final File repoDir = new File(FileUtil.getAppExternalPath(this, "repo"));
@@ -163,9 +168,21 @@ public class ForeGroundService extends Service {
         }
 
         //启动Textile
+
+
         try {
             Textile.launch(ForeGroundService.this, repoPath, true);
             Textile.instance().addEventListener(new MyTextileListener());
+            sjtu.opennet.textilepb.View.LogLevel logLevel= sjtu.opennet.textilepb.View.LogLevel.newBuilder()
+                    .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+//                .putSystems("hon.linkedTicketStorage", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+//                .putSystems("tex-core", View.LogLevel.Level.DEBUG)
+//                .putSystems("hon.bitswap", View.LogLevel.Level.DEBUG)
+//                .putSystems("bitswap", View.LogLevel.Level.DEBUG)
+                    .build();
+            Textile.instance().logs.setLevel(logLevel);
+            Log.d(TAG, "initTextile: after set log level");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -634,13 +651,13 @@ public class ForeGroundService extends Service {
                 Model.Video video=feedItemData.feedVideo.getVideo();
 
                 //每得到一个视频就在后台启动预加载线程
-                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
+//                new PreloadVideoThread(getApplicationContext(),video.getId()).start();
 
                 TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId);
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
                         feedItemData.feedVideo.getUser().getName()+"分享了视频", feedItemData.feedVideo.getDate().getSeconds(),
                         tDialog.imgpath);
-                EventBus.getDefault().post(updateDialog);
+//                EventBus.getDefault().post(updateDialog);
 
                 String posterHash=video.getPoster();
                 String videoPath=video.getCaption();
@@ -663,7 +680,8 @@ public class ForeGroundService extends Service {
                                 msgBody, //poster和id的hash值
                                 feedItemData.feedVideo.getDate().getSeconds(), ismine);
                         if(ismine==0){  //不是我的视频才广播出去，因为我自己的消息直接显示了
-                            EventBus.getDefault().post(tMsg);
+//                            EventBus.getDefault().post(tMsg);
+                            EventBus.getDefault().post(new Pair(2546,videoID));
                         }
                     }
 
@@ -682,7 +700,7 @@ public class ForeGroundService extends Service {
                                 msgBody, //poster和id的hash值
                                 feedItemData.feedVideo.getDate().getSeconds(), ismine);
                         if(ismine==0){  //不是我的视频才广播出去，因为我自己的消息直接显示了
-                            EventBus.getDefault().post(tMsg);
+//                            EventBus.getDefault().post(tMsg);
                         }
                     }
                 });

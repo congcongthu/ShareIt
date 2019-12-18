@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -185,6 +186,7 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         send_msg.setOnClickListener(view -> {
+
             final String msg=chat_text_edt.getText().toString();
 
             if(!msg.equals("")){
@@ -257,6 +259,17 @@ public class ChatActivity extends AppCompatActivity {
             msgList.add(tMsg);
             chat_lv.invalidateViews(); //强制刷新
             chat_lv.setSelection(msgList.size()); //图片有时候不立即显示，因为Item大小完全相同。
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void testVideo(Pair<Integer,String> apair){
+        if(apair.first==2546){
+            Intent it=new Intent(ChatActivity.this, VideoPlayActivity.class);
+            it.putExtra("ismine",false);
+            it.putExtra("videoid",apair.second);
+//            it.putExtra("videopath",posterAndId_r[2]);
+            startActivity(it);
         }
     }
 
