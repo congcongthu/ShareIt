@@ -28,6 +28,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 import sjtu.opennet.hon.BaseTextileEventListener;
@@ -60,6 +62,7 @@ public class ForeGroundService extends Service {
     boolean connectCafe;
     HeartBeat heartBeat;
     boolean startBeat;
+    int uploadLogCount=0;
 
 
     @Override
@@ -182,7 +185,7 @@ public class ForeGroundService extends Service {
 //                .putSystems("bitswap", View.LogLevel.Level.DEBUG)
                     .build();
             Textile.instance().logs.setLevel(logLevel);
-            Log.d(TAG, "initTextile: after set log level");
+            Log.d(TAG, "initTextile: after set log level ");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -265,14 +268,30 @@ public class ForeGroundService extends Service {
         }
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void startHeartBeat(Integer stopHeart){
-        if(stopHeart==923){
-            Log.d(TAG, "stopHeartBeat: 停止心跳");
+    public void startHeartBeat(Integer startHeart){
+        if(startHeart==923){
+            Log.d(TAG, "startHeartBeat: 开始心跳");
             heartBeat=new HeartBeat();
             startBeat=true;
             heartBeat.start();
         }
     }
+
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    private void uploadLogFile(Pair<Integer, String> logMsg) {
+//        if(logMsg.first==2378){
+//            Log.d(TAG, "uploadLogFile: receive 2378，uploadLogFile被调用");
+//            Timer timer=new Timer(true);
+//            TimerTask timerTask=new TimerTask() {
+//                @Override
+//                public void run() {
+//                    LogToFTP.uploadLogToFTP(logMsg.second);
+//                }
+//            };
+//            timer.schedule(timerTask,2000);
+//            uploadLogCount++;
+//        }
+//    }
 
     class HeartBeat extends Thread{
         @Override
@@ -347,6 +366,7 @@ public class ForeGroundService extends Service {
 
         @Override
         public void nodeOnline() {
+
 
             QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
             try {
@@ -443,6 +463,7 @@ public class ForeGroundService extends Service {
 
             //测试name
             try {
+                Log.d(TAG, "nodeOnline: peerID: "+Textile.instance().profile.get().getId());
                 Log.d(TAG, "nodeOnline: 账户name："+Textile.instance().profile.name());
             } catch (Exception e) {
                 e.printStackTrace();

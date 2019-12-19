@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
@@ -39,6 +40,8 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.share.util.TMsg;
+import com.sjtuopennetwork.shareit.util.LogToFTP;
 //import com.sjtuopennetwork.shareit.util.VideoHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -57,6 +60,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 //import fi.iki.elonen.NanoHTTPD;
 import sjtu.opennet.hon.Handlers;
@@ -100,14 +105,34 @@ public class VideoPlayActivity extends AppCompatActivity {
     int videoHeight;
     String logPath;
 
+    Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch(msg.what){
+                case 1:
+                    playVideo();
+                    break;
+                case 2:
+                    break;
+            }
+        }
+    };
+
+    private static boolean DEBUG=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_play);
 
+        Log.d(TAG, "onCreate: onCreate被调用");
+
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
+
         try {
-            logPath= FileUtil.getAppExternalPath(this,"repo")+Textile.instance().profile.get().getId()+"/logs/textile.log";
+            logPath= FileUtil.getAppExternalPath(this,"repo")+"/"+Textile.instance().profile.get().getAddress()+"/logs/textile.log";
             Log.d(TAG, "onCreate: logPath:"+logPath);
         } catch (Exception e) {
             e.printStackTrace();
@@ -131,15 +156,13 @@ public class VideoPlayActivity extends AppCompatActivity {
         videoHeight=video.getHeight();
         m3u8WriteCount=0;
 
-        Log.d(TAG, "onCreate: rotation: "+rotation);
-
         if(isMine){
             String videoPath=getIntent().getStringExtra("videopath");
 
             Log.d(TAG, "initPlayer: rotation width height:"+rotation+" "+videoWidth+" "+videoHeight);
             if(rotation==0){
                 Log.d(TAG, "initPlayer: 即将横屏播放");
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
 
             //直接播放本地视频文件
@@ -157,27 +180,29 @@ public class VideoPlayActivity extends AppCompatActivity {
             videorHelper=new VideoReceiveHelper(this, video, new VideoHandlers.ReceiveHandler() {
                     @Override
                     public void onChunkComplete(Model.VideoChunk vChunk) {
-                        Log.d(TAG, "onChunkComplete: 写m3u8 "+m3u8WriteCount+" "+vChunk.getChunk());
+                        Log.d(TAG, "onChunkComplete: 得到VChunk： "+" "+vChunk.getChunk());
 
-                        //把可能的补充起来
-                        long index = vChunk.getIndex();
-                        Log.d(TAG, "onChunkComplete: intdex nextChunk "+index+" "+NextChunk);
-                        for (long cur = NextChunk; cur < index; cur++){
-                            try {
-                                Model.VideoChunk v = Textile.instance().videos.getVideoChunk(videoid, cur);
-                                writeM3u8(v);
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                        if(!DEBUG){
+                            //把可能的补充起来
+                            long index = vChunk.getIndex();
+                            Log.d(TAG, "onChunkComplete: intdex nextChunk "+index+" "+NextChunk);
+                            for (long cur = NextChunk; cur < index; cur++){
+                                try {
+                                    Model.VideoChunk v = Textile.instance().videos.getVideoChunk(videoid, cur);
+                                    writeM3u8(v);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }
 
-                        writeM3u8(vChunk);
-                        NextChunk = index+1;
-                        if((notplayed && (m3u8WriteCount > 0 || finished)) ){ //写了3次就可以播放
-                            Log.d(TAG, "onChunkComplete: 开始播放");
-                            Message msg=new Message();
-                            msg.what=1;
-                            handler.sendMessage(msg);
+                            writeM3u8(vChunk);
+                            NextChunk = index+1;
+                            if((notplayed && (m3u8WriteCount > 0 || finished)) ){ //写了3次就可以播放
+                                Log.d(TAG, "onChunkComplete: 开始播放");
+                                Message msg=new Message();
+                                msg.what=1;
+                                handler.sendMessage(msg);
+                            }
                         }
                     }
 
@@ -192,28 +217,34 @@ public class VideoPlayActivity extends AppCompatActivity {
                     }
                 });
 
-            initM3u8();
+            if(!DEBUG){
+                initM3u8();
+            }
 
             if(finished){
                 initPlayer();
                 playVideo();
             } else{
                 videorHelper.downloadVideo();
-                initPlayer();
+                if(!DEBUG){
+                    initPlayer();
+                }
             }
         }
     }
 
-    Handler handler=new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            switch(msg.what){
-                case 1:
-                    playVideo();
-                    break;
+    private void uploadLogFile(String logFIlePath) {
+
+        Log.d(TAG, "uploadLogFile: receive 2378，uploadLogFile被调用");
+        Timer timer=new Timer(true);
+        TimerTask timerTask=new TimerTask() {
+            @Override
+            public void run() {
+                LogToFTP.uploadLogToFTP(logFIlePath);
             }
-        }
-    };
+        };
+        timer.schedule(timerTask,2000);
+    }
 
     public void initPlayer(){
 
@@ -229,7 +260,8 @@ public class VideoPlayActivity extends AppCompatActivity {
 //        if(rotation==0){
         if(videoWidth>videoHeight){
             Log.d(TAG, "initPlayer: 即将横屏播放");
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
         }
         playerView.setPlayer(player);
     }
@@ -347,10 +379,22 @@ public class VideoPlayActivity extends AppCompatActivity {
         }
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateChat(TMsg tMsg){
+        finish();
+    }
+
     @Override
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop: VideoPlayActivity调用stop");
+
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
+
+        uploadLogFile(logPath);
 
         finished=true;
         finishGetHash=true;
