@@ -127,9 +127,12 @@ public class VideoPlayActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: onCreate被调用");
 
-        if(!EventBus.getDefault().isRegistered(this)){
-            EventBus.getDefault().register(this);
+        if(!DEBUG){
+            if(!EventBus.getDefault().isRegistered(this)){
+                EventBus.getDefault().register(this);
+            }
         }
+
 
         try {
             logPath= FileUtil.getAppExternalPath(this,"repo")+"/"+Textile.instance().profile.get().getAddress()+"/logs/textile.log";
@@ -390,8 +393,10 @@ public class VideoPlayActivity extends AppCompatActivity {
         super.onStop();
         Log.d(TAG, "onStop: VideoPlayActivity调用stop");
 
-        if(EventBus.getDefault().isRegistered(this)){
-            EventBus.getDefault().unregister(this);
+        if(!DEBUG){
+            if(EventBus.getDefault().isRegistered(this)){
+                EventBus.getDefault().unregister(this);
+            }
         }
 
         uploadLogFile(logPath);
