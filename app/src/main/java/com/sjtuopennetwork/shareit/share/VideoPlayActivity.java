@@ -42,6 +42,7 @@ import com.google.android.exoplayer2.util.Util;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.util.TMsg;
 import com.sjtuopennetwork.shareit.util.LogToFTP;
+import com.sjtuopennetwork.shareit.util.LogToHTTP;
 //import com.sjtuopennetwork.shareit.util.VideoHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -64,6 +65,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 //import fi.iki.elonen.NanoHTTPD;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.honvideo.FileUtil;
@@ -236,18 +239,6 @@ public class VideoPlayActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadLogFile(String logFIlePath) {
-
-        Log.d(TAG, "uploadLogFile: receive 2378，uploadLogFile被调用");
-        Timer timer=new Timer(true);
-        TimerTask timerTask=new TimerTask() {
-            @Override
-            public void run() {
-                LogToFTP.uploadLogToFTP(logFIlePath);
-            }
-        };
-        timer.schedule(timerTask,2000);
-    }
 
     public void initPlayer(){
 
@@ -399,7 +390,7 @@ public class VideoPlayActivity extends AppCompatActivity {
             }
         }
 
-        uploadLogFile(logPath);
+        LogToHTTP.uploadLog(logPath);
 
         finished=true;
         finishGetHash=true;
