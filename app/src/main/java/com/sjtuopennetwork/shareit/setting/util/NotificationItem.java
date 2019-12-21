@@ -18,6 +18,7 @@ public class NotificationItem {
     public String peerId;
     public String swarmAddress;
     public String delay_time;
+    public int direction;
 
     public NotificationItem() {
 
@@ -27,12 +28,13 @@ public class NotificationItem {
         this.iId = iId;
         this.iName = iName;
     }
-    public NotificationItem(String peerId,String delay_time,String avatarPath,String actor,String swarmAddress) {
+    public NotificationItem(String peerId,String delay_time,String avatarPath,String actor,String swarmAddress,int direction) {
         this.peerId = peerId;
         this.avatarPath=avatarPath;
         this.actor = actor;
         this.swarmAddress=swarmAddress;
         this.delay_time=delay_time;
+        this.direction=direction;
     }
     public NotificationItem(String notiid,String avatarPath,String actor, String body, long sendTime, boolean isRead) {
         this.notiid=notiid;

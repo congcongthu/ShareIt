@@ -260,7 +260,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
                         name=p.getName();
                     }
                 }
-                swarm_peer_list.add(new NotificationItem(peer.getId(),peer.getLatency(),avatar,name,peer.getAddr()));
+                swarm_peer_list.add(new NotificationItem(peer.getId(),peer.getLatency(),avatar,name,peer.getAddr(),peer.getDirection()));
 
             }
             iData.add(swarm_peer_list);
