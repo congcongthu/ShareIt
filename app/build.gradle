@@ -51,7 +51,7 @@ dependencies {
     implementation project(':hon')
     implementation project(':textilepb')
 
-    implementation "sjtu.opennet:hon-textile-mobile:0.2.2"
+    implementation "sjtu.opennet:hon-textile-mobile:0.2.8"
 
     implementation "com.google.protobuf:protobuf-java:3.9.2"
 
@@ -85,6 +85,12 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
+    // commons-net
+    implementation 'commons-net:commons-net:3.6'
+
+    // 上传到http
+    implementation 'com.squareup.okhttp3:okhttp:3.3.0'
+
     //华为id
     implementation('com.huawei.hms:base:3.0.0.301')
     implementation('com.huawei.hms:iap:3.0.0.301')
@@ -108,11 +114,11 @@ dependencies {
     //Video Support
     implementation project(path: ':honvideo')
 
-    //Log observer used to observe the video chunk list file
-    implementation "commons-io:commons-io:+"
-
     //nanohttpd
     implementation 'org.nanohttpd:nanohttpd:2.2.0'
+
+    //commons-io
+    implementation 'commons-io:commons-io:+'
 
 
     implementation 'com.google.android.exoplayer:exoplayer:2.9.6'

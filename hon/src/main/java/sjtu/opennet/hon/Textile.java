@@ -177,6 +177,11 @@ public class Textile implements LifecycleObserver {
         private static final Textile INSTANCE = new Textile();
     }
 
+
+//    public static void setLogLevel(final String system, final String level) {
+//        Mobile.setLogLevel(system, level);
+//    }
+
     /**
      * Create a new Textile wallet
      * @param wordCount The number of words the wallet recovery phrase should contain
