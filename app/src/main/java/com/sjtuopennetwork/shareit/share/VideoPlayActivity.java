@@ -7,11 +7,13 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -55,8 +57,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,6 +88,8 @@ public class VideoPlayActivity extends AppCompatActivity {
 
     private static final String TAG = "=================";
 
+    TextView testLog;
+
     //内存数据
     String videoid;
     HlsMediaSource hlsMediaSource;
@@ -107,6 +114,7 @@ public class VideoPlayActivity extends AppCompatActivity {
     int videoWidth;
     int videoHeight;
     String logPath;
+    int offset;
 
     Handler handler=new Handler(){
         @Override
@@ -123,6 +131,9 @@ public class VideoPlayActivity extends AppCompatActivity {
 
     private static boolean DEBUG=true;
 
+
+    public static DateFormat DF=new SimpleDateFormat("MM-dd HH:mm:ss");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,10 +141,8 @@ public class VideoPlayActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: onCreate被调用");
 
-        if(!DEBUG){
-            if(!EventBus.getDefault().isRegistered(this)){
-                EventBus.getDefault().register(this);
-            }
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
         }
 
 
@@ -162,6 +171,12 @@ public class VideoPlayActivity extends AppCompatActivity {
         videoHeight=video.getHeight();
         m3u8WriteCount=0;
 
+
+        //debug
+        testLog=findViewById(R.id.testLog);
+        testLog.setMovementMethod(ScrollingMovementMethod.getInstance());
+
+
         if(isMine){
             String videoPath=getIntent().getStringExtra("videopath");
 
@@ -172,14 +187,14 @@ public class VideoPlayActivity extends AppCompatActivity {
             }
 
             //直接播放本地视频文件
-            PlayerView playerView = findViewById(R.id.player_view);
-            player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
-            playerView.setPlayer(player);
-            dataSourceFactory = new DefaultDataSourceFactory(this,
-                    Util.getUserAgent(this, "ShareIt"));
-            videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
-                    .createMediaSource(Uri.parse(videoPath));
-            player.prepare(videoSource);
+//            PlayerView playerView = findViewById(R.id.player_view);
+//            player = ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this);
+//            playerView.setPlayer(player);
+//            dataSourceFactory = new DefaultDataSourceFactory(this,
+//                    Util.getUserAgent(this, "ShareIt"));
+//            videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+//                    .createMediaSource(Uri.parse(videoPath));
+//            player.prepare(videoSource);
 
         }else{
 
@@ -209,6 +224,15 @@ public class VideoPlayActivity extends AppCompatActivity {
                                 msg.what=1;
                                 handler.sendMessage(msg);
                             }
+                        }else{
+                            runOnUiThread(() -> {
+                                testLog.append(DF.format(new Date())+"： 获取到 "+vChunk.getChunk()+"\n");
+                                //自动移动到文字的最低端
+                                offset = testLog.getLineCount() * testLog.getLineHeight();
+                                if (offset > testLog.getHeight()) {
+                                    testLog.scrollTo(0, offset - testLog.getHeight() + testLog.getLineHeight());
+                                }
+                            });
                         }
                     }
 
@@ -231,6 +255,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                 initPlayer();
                 playVideo();
             } else{
+                testLog.append(DF.format(new Date())+"： 开始获取ts\n");
                 videorHelper.downloadVideo();
                 if(!DEBUG){
                     initPlayer();
@@ -242,14 +267,14 @@ public class VideoPlayActivity extends AppCompatActivity {
 
     public void initPlayer(){
 
-        mProgressBar=findViewById(R.id.my_progress_bar); //环形进度条
+//        mProgressBar=findViewById(R.id.my_progress_bar); //环形进度条
         BandwidthMeter bandwidthMeter=new DefaultBandwidthMeter();
         TrackSelection.Factory trackSelectionFactory=new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector = new DefaultTrackSelector(trackSelectionFactory);
         LoadControl loadControl = new DefaultLoadControl();
         player=ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this,trackSelector,loadControl);
         player.seekTo(0);
-        PlayerView playerView = findViewById(R.id.player_view);
+//        PlayerView playerView = findViewById(R.id.player_view);
         Log.d(TAG, "initPlayer: rotation width height:"+rotation+" "+videoWidth+" "+videoHeight);
 //        if(rotation==0){
         if(videoWidth>videoHeight){
@@ -257,7 +282,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 //            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         }
-        playerView.setPlayer(player);
+//        playerView.setPlayer(player);
     }
 
     public void playVideo(){

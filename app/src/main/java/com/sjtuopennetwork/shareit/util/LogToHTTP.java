@@ -2,8 +2,11 @@ package com.sjtuopennetwork.shareit.util;
 
 import android.util.Log;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -18,7 +21,7 @@ public class LogToHTTP {
 
     private static final String TAG = "============";
 
-    private static String url="http://159.138.58.61:9999/uploadfile/";
+    private static String url="http://202.120.38.131:14673/uploadfile/";
 
     public static void uploadLog(String filename)  {
 
@@ -35,9 +38,20 @@ public class LogToHTTP {
             e.printStackTrace();
         }
 
+        //copy到另一个文件
+        File tmp=new File(filename+".tmp");
+        try {
+            if(!tmp.exists()){
+                tmp.createNewFile();
+            }
+            FileUtils.copyFile(logFile,tmp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         RequestBody requestBody=new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("myfile",peerID+".log",RequestBody.create(MediaType.parse("multipart/form-data"), logFile))
+                .addFormDataPart("myfile",peerID+".log",RequestBody.create(MediaType.parse("multipart/form-data"), tmp))
                 .build();
 
         Request request=new Request.Builder()
@@ -49,9 +63,16 @@ public class LogToHTTP {
             @Override
             public void run() {
                 try {
+                    Random r=new Random();
+                    int delay=r.nextInt(10000);
+                    Log.d(TAG, "run: 等待随机秒数："+delay);
+
+
+
+                    Thread.sleep(delay);
                     Response response=client.newCall(request).execute();
                     Log.d(TAG, "run: 上传结果："+response.body().string());
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
