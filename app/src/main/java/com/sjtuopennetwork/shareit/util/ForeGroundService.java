@@ -71,8 +71,6 @@ public class ForeGroundService extends Service {
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
         repoPath=intent.getStringExtra("repopath");
 
-
-
         connectCafe= pref.getBoolean("connectCafe",false);
 
         SharedPreferences.Editor editor=pref.edit();
@@ -171,14 +169,13 @@ public class ForeGroundService extends Service {
         }
 
         //启动Textile
-
-
         try {
             Textile.launch(ForeGroundService.this, repoPath, true);
             Textile.instance().addEventListener(new MyTextileListener());
             sjtu.opennet.textilepb.View.LogLevel logLevel= sjtu.opennet.textilepb.View.LogLevel.newBuilder()
                     .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+//                    .putSystems("tex-core", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
 //                .putSystems("hon.linkedTicketStorage", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
 //                .putSystems("tex-core", View.LogLevel.Level.DEBUG)
 //                .putSystems("hon.bitswap", View.LogLevel.Level.DEBUG)
@@ -202,7 +199,6 @@ public class ForeGroundService extends Service {
             Log.d(TAG, "initTextile: 即将初始化数据库："+loginAccount);
             appdb= AppdbHelper.getInstance(getApplicationContext(),pref.getString("loginAccount","")).getWritableDatabase();
         }catch (Exception e){
-//            finish();
             e.printStackTrace();
         }
 
