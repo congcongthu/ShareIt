@@ -51,7 +51,7 @@ dependencies {
     implementation project(':hon')
     implementation project(':textilepb')
 
-    implementation "sjtu.opennet:hon-textile-mobile:0.2.12"
+    implementation "sjtu.opennet:hon-textile-mobile:0.2.14"
 
     implementation "com.google.protobuf:protobuf-java:3.9.2"
 

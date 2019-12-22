@@ -33,7 +33,8 @@ public class LogToHTTP {
 
         String peerID= "";
         try {
-            peerID=Textile.instance().profile.get().getId();
+//            peerID=Textile.instance().profile.get().getId();
+            peerID=Textile.instance().profile.get().getName();
         } catch (Exception e) {
             e.printStackTrace();
         }

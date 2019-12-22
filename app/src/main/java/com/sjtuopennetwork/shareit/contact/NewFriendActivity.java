@@ -82,6 +82,4 @@ public class NewFriendActivity extends AppCompatActivity {
     private void initUI() {
         new_friend_lv=findViewById(R.id.new_friend_lv);
     }
-
-
 }

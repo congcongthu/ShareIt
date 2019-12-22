@@ -71,7 +71,7 @@ public class ForeGroundService extends Service {
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
         repoPath=intent.getStringExtra("repopath");
 
-        connectCafe= pref.getBoolean("connectCafe",false);
+        connectCafe= pref.getBoolean("connectCafe",true);
 
         SharedPreferences.Editor editor=pref.edit();
         editor.putBoolean("131ok",false);
@@ -125,7 +125,7 @@ public class ForeGroundService extends Service {
                     loginAccount=m.getAddress();
                     final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
-                    Textile.initialize(repoPath,m.getSeed() , true, false, true);
+                    Textile.initialize(repoPath,m.getSeed() , true, true, true);
 
                 } catch (Exception e) {
                     e.printStackTrace();
