@@ -55,7 +55,7 @@ public class ScanResultActivity extends AppCompatActivity {
             peerId=tmp[1];
         }
 
-        trySwarmConnect(peerId);
+//        trySwarmConnect(peerId);
 
         //注册监听器
         if(!EventBus.getDefault().isRegistered(this)){

@@ -168,10 +168,10 @@ public class VideoUploadHelper {
         try {
             Textile.instance().videos.addVideo(videoPb);
 
-            Textile.instance().videos.publishVideo(videoPb, cafeStore);
+//            Textile.instance().videos.publishVideo(videoPb, cafeStore);
 
-            Log.d(TAG, "publishMeta: publish successly");
-            uploadHandler.onPublishComplete();
+//            Log.d(TAG, "publishMeta: publish successly");
+//            uploadHandler.onPublishComplete();
         } catch (Exception e) {
             e.printStackTrace();
         }

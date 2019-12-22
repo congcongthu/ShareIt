@@ -130,6 +130,7 @@ public class SearchContactActivity extends AppCompatActivity {
             }
         }
 
+
         //添加到结果列表
         String addr=c.getAddress();
         String addr_last10="address: "+addr.substring(addr.length()-10);
