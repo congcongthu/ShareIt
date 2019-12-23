@@ -87,9 +87,9 @@ public class HomeActivity extends AppCompatActivity {
                 case R.id.contacts:
                     replaceFragment(contactFragment);
                     return true;
-                case R.id.album:
-                    replaceFragment(albumFragment);
-                    return true;
+//                case R.id.album:
+//                    replaceFragment(albumFragment);
+//                    return true;
                 case R.id.setting:
                     replaceFragment(settingFragment);
                     return true;
@@ -112,8 +112,6 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        getPermission();
 
         login=getIntent().getIntExtra("login",5);
         Log.d(TAG, "跳转到HomeActivity，login："+login);
@@ -188,17 +186,6 @@ public class HomeActivity extends AppCompatActivity {
         transaction.commitAllowingStateLoss();
     }
 
-
-    private void getPermission() {
-        if(PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)==PermissionChecker.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(this,
-                    new String[]{
-                            "android.permission.WRITE_EXTERNAL_STORAGE",
-                            "android.permission.READ_EXTERNAL_STORAGE",
-//                            "android.permission.CAMERA"
-                    },101);
-        }
-    }
 
     @Override
     public void onStop() {

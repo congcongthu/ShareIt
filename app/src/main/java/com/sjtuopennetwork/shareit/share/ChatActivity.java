@@ -248,31 +248,15 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
-    private void getMoreMsg(){
-
-    }
-
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateChat(TMsg tMsg){
         if(tMsg.threadid.equals(threadid)){
+            Log.d(TAG, "updateChat: chatactivity收到消息："+tMsg.msgtype);
             msgList.add(tMsg);
             chat_lv.invalidateViews(); //强制刷新
             chat_lv.setSelection(msgList.size()); //图片有时候不立即显示，因为Item大小完全相同。
         }
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void testVideo(Pair<Integer,String> apair){
-        if(apair.first==2546){
-            Intent it=new Intent(ChatActivity.this, VideoPlayActivity.class);
-            it.putExtra("ismine",false);
-            it.putExtra("videoid",apair.second);
-//            it.putExtra("videopath",posterAndId_r[2]);
-            startActivity(it);
-        }
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

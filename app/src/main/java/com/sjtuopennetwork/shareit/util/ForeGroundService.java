@@ -71,7 +71,7 @@ public class ForeGroundService extends Service {
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
         repoPath=intent.getStringExtra("repopath");
 
-        connectCafe= pref.getBoolean("connectCafe",false);
+        connectCafe= pref.getBoolean("connectCafe",true);
 
         SharedPreferences.Editor editor=pref.edit();
         editor.putBoolean("131ok",false);
@@ -125,7 +125,7 @@ public class ForeGroundService extends Service {
                     loginAccount=m.getAddress();
                     final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
-                    Textile.initialize(repoPath,m.getSeed() , true, false, true);
+                    Textile.initialize(repoPath,m.getSeed() , true, true, true);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -178,7 +178,6 @@ public class ForeGroundService extends Service {
                     .putSystems("tex-core", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
 //                .putSystems("hon.linkedTicketStorage", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
 //                .putSystems("tex-core", View.LogLevel.Level.DEBUG)
-//                .putSystems("hon.bitswap", View.LogLevel.Level.DEBUG)
 //                .putSystems("bitswap", View.LogLevel.Level.DEBUG)
                     .build();
             Textile.instance().logs.setLevel(logLevel);
@@ -263,6 +262,7 @@ public class ForeGroundService extends Service {
             heartBeat=null;
         }
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void startHeartBeat(Integer startHeart){
         if(startHeart==923){
@@ -348,28 +348,15 @@ public class ForeGroundService extends Service {
 
     class MyTextileListener extends BaseTextileEventListener {
 
-        //测试时一旦收到invite就同意
-        @Override
-        public void notificationReceived(Model.Notification notification) {
-            if(notification.getType().equals(Model.Notification.Type.INVITE_RECEIVED)){
-                try {
-                    Textile.instance().notifications.acceptInvite(notification.getId());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
         @Override
         public void nodeOnline() {
 
-
-            QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
-            try {
-                Textile.instance().account.sync(options);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
+//            try {
+//                Textile.instance().account.sync(options);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
             if(connectCafe){
                 tryConnectCafe(new Integer(953));
@@ -674,7 +661,7 @@ public class ForeGroundService extends Service {
                 TDialog updateDialog=DBoperator.dialogGetMsg(appdb,tDialog,threadId,
                         feedItemData.feedVideo.getUser().getName()+"分享了视频", feedItemData.feedVideo.getDate().getSeconds(),
                         tDialog.imgpath);
-//                EventBus.getDefault().post(updateDialog);
+                EventBus.getDefault().post(updateDialog);
 
                 String posterHash=video.getPoster();
                 String videoPath=video.getCaption();
@@ -697,8 +684,7 @@ public class ForeGroundService extends Service {
                                 msgBody, //poster和id的hash值
                                 feedItemData.feedVideo.getDate().getSeconds(), ismine);
                         if(ismine==0){  //不是我的视频才广播出去，因为我自己的消息直接显示了
-//                            EventBus.getDefault().post(tMsg);
-                            EventBus.getDefault().post(new Pair(2546,videoID));
+                            EventBus.getDefault().post(tMsg);
                         }
                     }
 
@@ -717,7 +703,7 @@ public class ForeGroundService extends Service {
                                 msgBody, //poster和id的hash值
                                 feedItemData.feedVideo.getDate().getSeconds(), ismine);
                         if(ismine==0){  //不是我的视频才广播出去，因为我自己的消息直接显示了
-//                            EventBus.getDefault().post(tMsg);
+                            EventBus.getDefault().post(tMsg);
                         }
                     }
                 });

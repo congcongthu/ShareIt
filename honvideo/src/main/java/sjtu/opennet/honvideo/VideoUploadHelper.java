@@ -171,7 +171,7 @@ public class VideoUploadHelper {
 //            Textile.instance().videos.publishVideo(videoPb, cafeStore);
 
 //            Log.d(TAG, "publishMeta: publish successly");
-//            uploadHandler.onPublishComplete();
+            uploadHandler.onPublishComplete();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -67,8 +67,6 @@ public class LogToHTTP {
                     int delay=r.nextInt(10000);
                     Log.d(TAG, "run: 等待随机秒数："+delay);
 
-
-
                     Thread.sleep(delay);
                     Response response=client.newCall(request).execute();
                     Log.d(TAG, "run: 上传结果："+response.body().string());

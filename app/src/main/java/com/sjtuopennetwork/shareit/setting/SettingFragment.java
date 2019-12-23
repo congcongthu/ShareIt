@@ -10,9 +10,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,8 +24,8 @@ import com.sjtuopennetwork.shareit.login.MainActivity;
 import com.sjtuopennetwork.shareit.setting.util.GetIpAddress;
 import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.DBoperator;
-import com.sjtuopennetwork.shareit.util.FileUtil;
 import com.sjtuopennetwork.shareit.util.ForeGroundService;
+import com.sjtuopennetwork.shareit.util.LogToHTTP;
 import com.sjtuopennetwork.shareit.util.RoundImageView;
 
 import org.apache.commons.io.FileUtils;
@@ -37,6 +39,7 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.util.List;
 
+import sjtu.opennet.honvideo.FileUtil;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.QueryOuterClass;
@@ -53,9 +56,10 @@ public class SettingFragment extends Fragment {
     LinearLayout notification_layout;
     LinearLayout devices_layout;
     TextView tv_name;
-//    com.shehuan.niv.NiceImageView avatar_layout;
     RoundImageView avatar_layout;
     TextView logout_layout;
+    Button uploadLog;
+
     //持久化
     private SharedPreferences pref;
     //内存
@@ -97,6 +101,16 @@ public class SettingFragment extends Fragment {
         tv_name = getActivity().findViewById(R.id.myname);
         devices_layout = getActivity().findViewById(R.id.setting_devices_layout);
         logout_layout = getActivity().findViewById(R.id.logout);
+
+        uploadLog=getActivity().findViewById(R.id.uploadlog);
+        uploadLog.setOnClickListener(view -> {
+            try {
+                String logPath= FileUtil.getAppExternalPath(getActivity(),"repo")+"/"+Textile.instance().profile.get().getAddress()+"/logs/textile.log";
+                LogToHTTP.uploadLog(logPath);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
         info_layout.setOnClickListener(v -> {
             Intent it = new Intent(getActivity(), PersonalInfoActivity.class);
