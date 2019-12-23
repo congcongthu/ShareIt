@@ -401,7 +401,9 @@ public class VideoPlayActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateChat(TMsg tMsg){
-        finish();
+        if(tMsg.body.equals("quit-video")){
+            finish();
+        }
     }
 
     @Override
