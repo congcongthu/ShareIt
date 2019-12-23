@@ -88,16 +88,16 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }else{ //如果未登录
             //测试时自动进入登录界面，创建新的ShareIt账号
-//            SharedPreferences.Editor editortest=pref.edit();
-//            String mynametest=String.valueOf(System.currentTimeMillis());
-//            editortest.putString("myname",mynametest);
-//            Log.d(TAG, "onCreate: 登录时选择头像："+avatarpath);
-//            editortest.putString("avatarpath",avatarpath); //如果没选则为""
-//            editortest.commit();
-//            Intent toHomeActivitytest=new Intent(this, HomeActivity.class);
-//            toHomeActivitytest.putExtra("login",1); //shareit注册新账号，1
-//            startActivity(toHomeActivitytest);
-//            finish();
+            SharedPreferences.Editor editortest=pref.edit();
+            String mynametest=String.valueOf(System.currentTimeMillis());
+            editortest.putString("myname",mynametest);
+            Log.d(TAG, "onCreate: 登录时选择头像："+avatarpath);
+            editortest.putString("avatarpath",avatarpath); //如果没选则为""
+            editortest.commit();
+            Intent toHomeActivitytest=new Intent(this, HomeActivity.class);
+            toHomeActivitytest.putExtra("login",1); //shareit注册新账号，1
+            startActivity(toHomeActivitytest);
+            finish();
 
             //非测试
             setContentView(R.layout.activity_main); //进入登录界面
