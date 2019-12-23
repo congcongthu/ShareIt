@@ -49,6 +49,7 @@ import sjtu.opennet.textilepb.QueryOuterClass;
  */
 public class SettingFragment extends Fragment {
 
+    private static final String TAG = "=====================";
     //UI控件
     RelativeLayout info_layout;
     LinearLayout qrcode_layout;
@@ -106,6 +107,7 @@ public class SettingFragment extends Fragment {
         uploadLog.setOnClickListener(view -> {
             try {
                 String logPath= FileUtil.getAppExternalPath(getActivity(),"repo")+"/"+Textile.instance().profile.get().getAddress()+"/logs/textile.log";
+                Log.d(TAG, "initUI: log路径："+logPath);
                 LogToHTTP.uploadLog(logPath);
             } catch (Exception e) {
                 e.printStackTrace();

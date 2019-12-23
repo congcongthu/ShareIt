@@ -71,7 +71,7 @@ public class ForeGroundService extends Service {
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
         repoPath=intent.getStringExtra("repopath");
 
-        connectCafe= pref.getBoolean("connectCafe",true);
+        connectCafe= pref.getBoolean("connectCafe",false);
 
         SharedPreferences.Editor editor=pref.edit();
         editor.putBoolean("131ok",false);

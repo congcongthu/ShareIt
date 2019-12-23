@@ -21,7 +21,8 @@ public class LogToHTTP {
 
     private static final String TAG = "============";
 
-    private static String url="http://202.120.38.131:14673/uploadfile/";
+//    private static String url="http://202.120.38.131:14673/uploadfile/";
+    private static String url="http://192.168.1.161:9999/uploadfile/";
 
     public static void uploadLog(String filename)  {
 

@@ -262,7 +262,7 @@ public class VideoUploadHelper {
             synchronized (SEGTHREADLOCK) {
                 synchronized (SEGLOCK) {
                     try {
-                        Segmenter.segment(context, 1, filePath, m3u8Path, chunkPath, segHandler);
+                        Segmenter.segment(context, 3, filePath, m3u8Path, chunkPath, segHandler);
 //                        Log.d(TAG, "SEGLOCK WAIT");
                         SEGLOCK.wait();
 //                        Log.d(TAG, "SEGLOCK NOTIFUED");
