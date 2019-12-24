@@ -187,6 +187,7 @@ public class ForeGroundService extends Service {
                     .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-core", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("hon.peermanager", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
 //                .putSystems("hon.linkedTicketStorage", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
 //                .putSystems("tex-core", View.LogLevel.Level.DEBUG)
 //                .putSystems("bitswap", View.LogLevel.Level.DEBUG)
@@ -361,7 +362,6 @@ public class ForeGroundService extends Service {
         }
 
         String threadId=tv.threadId;
-        Log.d(TAG, "handleThreadUpdates: 消息的threadID："+threadId);
         FeedItemData feedItemData=tv.feedItemData;
 
         String myAddr=Textile.instance().account.address();
@@ -466,6 +466,7 @@ public class ForeGroundService extends Service {
             try {
                 //图片消息的hash
                 final String large_hash = Textile.instance().files.list(threadId,"",3).getItems(0).getFiles(0).getLinksMap().get("large").getHash();
+                Log.d(TAG, "handleThreadUpdates: 进入FILES处理："+feedItemData.block);
                 Textile.instance().files.content(large_hash, new Handlers.DataHandler() {
                     @Override
                     public void onComplete(byte[] data, String media) { //获得图片成功
@@ -781,6 +782,8 @@ public class ForeGroundService extends Service {
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
 
                 try {
+                    Log.d(TAG, "threadUpdateReceived: 收到消息："+feedItemData.block);
+
                     for(ThreadUpdateEvent t:threadUpdateEvents){
                         if(t.feedItemData.block.equals(feedItemData.block)){
                             Log.d(TAG, "threadUpdateReceived: 收到重复消息："+t.feedItemData.block);
@@ -789,7 +792,7 @@ public class ForeGroundService extends Service {
                     }
 
                     threadUpdateEvents.put(new ThreadUpdateEvent(threadId,feedItemData));
-                    Log.d(TAG, "threadUpdateReceived: 消息添加到队列："+feedItemData.type.name()+" ");
+                    Log.d(TAG, "threadUpdateReceived: 消息添加到队列："+feedItemData.type.name()+" "+feedItemData.block);
 
                     Message msg=new Message();
                     msg.what=1;
