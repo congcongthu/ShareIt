@@ -50,6 +50,9 @@ public class VideoUploadHelper {
     private String posterHash;
 
     private boolean cafeStore;
+    private String command;
+
+    private final int segmentTime = 3;
 
     /**
      * Handler of ipfsAddData.
@@ -115,7 +118,13 @@ public class VideoUploadHelper {
         this.filePath = filePath;
         this.cafeStore=cafeStore;
 
-        vMeta = new VideoMeta(filePath);
+        this.command = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -f segment " +
+                "-segment_time %d " +
+                "-segment_list_size 1 " +
+                "-segment_list %s " +
+                "%s/out%%04d.ts", filePath,segmentTime, m3u8Path, chunkPath);
+        vMeta = new VideoMeta(filePath, command.getBytes());
+
         rootPath = FileUtil.getAppExternalPath(context, "video");
         String tmpPath = String.format("video/%s", vMeta.getHash());
         videoPath = FileUtil.getAppExternalPath(context, tmpPath);
@@ -262,7 +271,11 @@ public class VideoUploadHelper {
             synchronized (SEGTHREADLOCK) {
                 synchronized (SEGLOCK) {
                     try {
-                        Segmenter.segment(context, 3, filePath, m3u8Path, chunkPath, segHandler);
+                        File outDirf = new File(chunkPath);
+                        if(!outDirf.exists()){
+                            outDirf.mkdir();
+                        }
+                        Segmenter.segment(context, command, segHandler);
 //                        Log.d(TAG, "SEGLOCK WAIT");
                         SEGLOCK.wait();
 //                        Log.d(TAG, "SEGLOCK NOTIFUED");

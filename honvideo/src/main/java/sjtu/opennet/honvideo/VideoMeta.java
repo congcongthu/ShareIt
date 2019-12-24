@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 
+import io.ipfs.multibase.Multibase;
 import wseemann.media.FFmpegMediaMetadataRetriever;
 import sjtu.opennet.textilepb.Model.Video;
 
@@ -63,7 +64,7 @@ public class VideoMeta {
      * All the Meta info is either extracted or computed within constructor.
      * @param filePath The absolute path of video. VideoMeta is video specified.
      */
-    public VideoMeta(String filePath){
+    public VideoMeta(String filePath, byte[] segmentCmd){
         path = filePath;
         mdataReceiver = new MediaMetadataRetriever();
         fmdataReceiver = new FFmpegMediaMetadataRetriever();
@@ -112,7 +113,7 @@ public class VideoMeta {
             rotation = fmdataReceiver.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
             rotation_int = Integer.parseInt(rotation);
             //Log.d(TAG, String.format(""));
-            videoHash = getHashFromMeta();
+            videoHash = getHashFromMeta(segmentCmd);
         }catch(Exception e){
             e.printStackTrace();
         }finally{
@@ -272,6 +273,19 @@ public class VideoMeta {
         return bytesToHex(hash);
     }
 
+    public String getHashFromMeta(byte[] cmd) throws Exception {
+        byte[] metaInfo = stringInfo().getBytes();
+        //byte[] metaThumb = Bitmap2Bytes(thumbnail);
+        byte[] meta = new byte[metaInfo.length + thumbnail_byte.length + cmd.length];
+        System.arraycopy(metaInfo, 0, meta, 0, metaInfo.length);
+        System.arraycopy(thumbnail_byte, 0, meta, metaInfo.length, thumbnail_byte.length);
+        System.arraycopy(cmd, 0, meta, metaInfo.length+thumbnail_byte.length, cmd.length);
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(meta);
+//        Log.d(TAG, "getHashFromMeta meta length: " + meta.length);
+//        String encoded = Multibase.encode(Multibase.Base.Base58BTC, meta);
+        return bytesToHex(hash);
+    }
 
 
     private byte[] Bitmap2Bytes(Bitmap bp){
