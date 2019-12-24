@@ -619,6 +619,33 @@ public class ForeGroundService extends Service {
     class MyTextileListener extends BaseTextileEventListener {
 
         @Override
+        public void notificationReceived(Model.Notification notification) {
+            //查出邀请中最近的一个，添加到头部。
+            int gpinvite=0;
+            sjtu.opennet.textilepb.View.InviteView lastInvite=null;
+            try {
+                if(Textile.instance().invites!=null){
+                    List<sjtu.opennet.textilepb.View.InviteView> invites = Textile.instance().invites.list().getItemsList();
+                    for(sjtu.opennet.textilepb.View.InviteView v:invites){ //遍历所有的邀请
+                        if(!v.getName().equals("FriendThread1219")){ //只要群组名不等于这个那就是好友邀请
+                            gpinvite++;
+                            lastInvite=v;
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if(gpinvite>0){ //如果有群组邀请就要显示出来
+                TDialog noti=new TDialog(1,"","通知",lastInvite.getInviter().getName()+" 邀请你",
+                        lastInvite.getDate().getSeconds(),false,"tongzhi",true,true);
+
+                EventBus.getDefault().post(noti);
+            }
+        }
+
+        @Override
         public void nodeOnline() {
 
 //            根据登录方式，设置name和头像

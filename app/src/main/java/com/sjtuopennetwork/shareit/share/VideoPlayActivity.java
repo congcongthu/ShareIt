@@ -113,7 +113,6 @@ public class VideoPlayActivity extends AppCompatActivity {
     int rotation;
     int videoWidth;
     int videoHeight;
-    String logPath;
     int offset;
 
     Handler handler=new Handler(){
@@ -129,7 +128,6 @@ public class VideoPlayActivity extends AppCompatActivity {
         }
     };
 
-    private static boolean DEBUG=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,13 +135,6 @@ public class VideoPlayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_video_play);
 
         Log.d(TAG, "onCreate: onCreate被调用");
-
-        try {
-            logPath= FileUtil.getAppExternalPath(this,"repo")+"/"+Textile.instance().profile.get().getAddress()+"/logs/textile.log";
-            Log.d(TAG, "onCreate: logPath:"+logPath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         finished =false;
         NextChunk = 0;
@@ -222,9 +213,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                     }
                 });
 
-            if(!DEBUG){
-                initM3u8();
-            }
+            initM3u8();
 
             if(finished){
                 initPlayer();
@@ -297,7 +286,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                 "#EXT-X-VERSION:3\n" +
                 "#EXT-X-MEDIA-SEQUENCE:0\n" +
                 "#EXT-X-ALLOW-CACHE:YES\n" +
-                "#EXT-X-TARGETDURATION:2\n" +
+                "#EXT-X-TARGETDURATION:5\n" +
                 "#EXT-X-PLAYLIST-TYPE:EVENT\n";
 
         m3u8file=new File(dir+"/chunks/playlist.m3u8");
