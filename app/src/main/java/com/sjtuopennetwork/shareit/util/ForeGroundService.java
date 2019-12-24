@@ -361,6 +361,7 @@ public class ForeGroundService extends Service {
         }
 
         String threadId=tv.threadId;
+        Log.d(TAG, "handleThreadUpdates: 消息的threadID："+threadId);
         FeedItemData feedItemData=tv.feedItemData;
 
         String myAddr=Textile.instance().account.address();
@@ -368,16 +369,14 @@ public class ForeGroundService extends Service {
         Model.Thread thread=null;
         try {
             thread=Textile.instance().threads.get(threadId);
+            //如果是不共享的thread，包括相册thread，设备thread等，就不对消息进行处理
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        //如果是不共享的thread，包括相册thread，设备thread等，就不对消息进行处理
-        if (thread.getSharing().equals(Model.Thread.Sharing.NOT_SHARED)){
+        if ((thread != null) && thread.getSharing().equals(Model.Thread.Sharing.NOT_SHARED)){
             return ;
         }
 
-        boolean isSingle=thread.getWhitelistCount()==2;
 
         if(feedItemData.type.equals(FeedItemType.JOIN)){ //收到JION类型的消息
             if(DBoperator.queryDialogByThreadID(appdb,threadId)!=null){ //如果已经有了就不要再插入了
@@ -463,6 +462,7 @@ public class ForeGroundService extends Service {
 
         if(feedItemData.type.equals(FeedItemType.FILES)){ //接收到图片
             TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId); //必然能够查出来对话
+            boolean isSingle=thread.getWhitelistCount()==2;
             try {
                 //图片消息的hash
                 final String large_hash = Textile.instance().files.list(threadId,"",3).getItems(0).getFiles(0).getLinksMap().get("large").getHash();
@@ -471,6 +471,7 @@ public class ForeGroundService extends Service {
                     public void onComplete(byte[] data, String media) { //获得图片成功
                         String newPath=FileUtil.storeFile(data,large_hash); //将图片存到本地
                         String dialogimg="";
+
                         if(isSingle){ //单人的thread,图片就是对方的头像，不改
                             dialogimg=tDialog.imgpath;
                         }else{
@@ -751,17 +752,17 @@ public class ForeGroundService extends Service {
 
         @Override
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
-                Log.d(TAG, "threadUpdateReceived: 收到消息，类型为："+feedItemData.type.name());
 
                 try {
                     for(ThreadUpdateEvent t:threadUpdateEvents){
                         if(t.feedItemData.block.equals(feedItemData.block)){
+                            Log.d(TAG, "threadUpdateReceived: 收到重复消息："+t.feedItemData.block);
                             return;
                         }
                     }
 
                     threadUpdateEvents.put(new ThreadUpdateEvent(threadId,feedItemData));
-                    Log.d(TAG, "threadUpdateReceived: 消息添加到队列："+feedItemData.type.name());
+                    Log.d(TAG, "threadUpdateReceived: 消息添加到队列："+feedItemData.type.name()+" ");
 
                     Message msg=new Message();
                     msg.what=1;
