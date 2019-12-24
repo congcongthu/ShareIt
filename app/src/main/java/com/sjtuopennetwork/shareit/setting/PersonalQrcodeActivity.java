@@ -14,6 +14,7 @@ public class PersonalQrcodeActivity extends AppCompatActivity {
 
     private ImageView imageView;
     private String addr;
+    private String peerID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +27,10 @@ public class PersonalQrcodeActivity extends AppCompatActivity {
         imageView=findViewById(R.id.imageView);
         try {
             addr=Textile.instance().profile.get().getAddress();
+            peerID=Textile.instance().profile.get().getId();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        imageView.setImageBitmap(QRCodeUtil.CreateTwoDCode(addr));
+        imageView.setImageBitmap(QRCodeUtil.CreateTwoDCode(addr+"/"+peerID+"/p"));
     }
 }

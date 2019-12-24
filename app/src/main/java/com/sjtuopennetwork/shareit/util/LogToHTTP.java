@@ -21,7 +21,8 @@ public class LogToHTTP {
 
     private static final String TAG = "============";
 
-    private static String url="http://202.120.38.131:14673/uploadfile/";
+//    private static String url="http://202.120.38.131:14673/uploadfile/";
+    private static String url="http://192.168.1.161:9999/uploadfile/";
 
     public static void uploadLog(String filename)  {
 
@@ -66,8 +67,6 @@ public class LogToHTTP {
                     Random r=new Random();
                     int delay=r.nextInt(10000);
                     Log.d(TAG, "run: 等待随机秒数："+delay);
-
-
 
                     Thread.sleep(delay);
                     Response response=client.newCall(request).execute();

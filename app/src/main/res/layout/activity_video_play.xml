@@ -7,33 +7,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/testLog"
-        android:textColor="@color/white"
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/player_view"
+        app:surface_type="texture_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
 
+        <ProgressBar
+            android:id="@+id/my_progress_bar"
+            android:visibility="gone"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
 
-
-<!--    <VideoView-->
-<!--        android:id="@+id/play_my_video"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent" />-->
-
-<!--    <com.google.android.exoplayer2.ui.PlayerView-->
-<!--        android:id="@+id/player_view"-->
-<!--        app:surface_type="texture_view"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent" >-->
-
-<!--        <ProgressBar-->
-<!--            android:id="@+id/my_progress_bar"-->
-<!--            android:visibility="gone"-->
-<!--            style="?android:attr/progressBarStyleLarge"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"/>-->
-
-<!--    </com.google.android.exoplayer2.ui.PlayerView>-->
+    </com.google.android.exoplayer2.ui.PlayerView>
 
 </LinearLayout>

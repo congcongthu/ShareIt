@@ -112,6 +112,20 @@ public class Segmenter {
         }
     }
 
+    public static void segment(Context context, String cmd, ExecuteBinaryResponseHandler handler) throws Exception{
+        if(!isInit){
+            Log.w(TAG, "FFmpeg has not be loaded. Try to load it.");
+            initFfmpeg(context);
+        }
+        FFmpeg ffmpeg = FFmpeg.getInstance(context);
+        Log.d(TAG, String.format("Segment command %s", cmd));
+        if(handler!=null){
+            ffmpeg.execute(cmd.split(" "), handler);
+        }else{
+            ffmpeg.execute(cmd.split(" "), defaultHandler);
+        }
+    }
+
     public static void testM3u8Segment(Context context, int segTime, String filePath, String m3u8Path, String outDir, ExecuteBinaryResponseHandler handler) throws Exception{
         Log.i(TAG, String.format("Segment file %s into %s.", filePath, outDir));
         if(!isInit){

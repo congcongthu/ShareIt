@@ -43,7 +43,7 @@ public class QRCodeActivity extends DefaultQRScanActivity {
 
             System.out.println("==============扫码加群成功");
             finish();
-        }else if(decode.length==1) { //那就是好友
+        }else if(decode.length==3) { //那就是好友
             Bundle bundle=new Bundle();
             bundle.putString("result",recode);
             startActivity(new Intent(QRCodeActivity.this,ScanResultActivity.class).putExtras(bundle));
@@ -67,7 +67,7 @@ public class QRCodeActivity extends DefaultQRScanActivity {
 
             System.out.println("==============扫码加群成功");
             finish();
-        }else if(decode.length==1) { //那就是好友
+        }else if(decode.length==3) { //那就是好友
             bundle.putString("result",rawResult);
             startActivity(new Intent(QRCodeActivity.this,ScanResultActivity.class).putExtras(bundle));
             finish();

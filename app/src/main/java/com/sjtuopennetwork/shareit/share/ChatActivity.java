@@ -86,7 +86,7 @@ public class ChatActivity extends AppCompatActivity {
     String threadid;
     Model.Thread chat_thread;
     List<TMsg> msgList;
-//    MsgAdapter msgAdapter;
+    MsgAdapter msgAdapter;
     List<LocalMedia> choosePic;
     List<LocalMedia> chooseVideo;
     String avatarpath;
@@ -97,7 +97,6 @@ public class ChatActivity extends AppCompatActivity {
     //退出群组相关
     public static final String REMOVE_DIALOG="you get out";
     FinishActivityRecevier finishActivityRecevier;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,21 +191,29 @@ public class ChatActivity extends AppCompatActivity {
             if(!msg.equals("")){
                 chat_text_edt.setText("");
 
-                try {
-                    Textile.instance().messages.add(threadid,msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//                while(true) {
+//                    try {
+//                        Thread.sleep(1500);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
 
-                TMsg tMsg= null;
-                try {
-                    tMsg = new TMsg(1,threadid,0,"",
-                            Textile.instance().profile.name(),Textile.instance().profile.avatar(),msg,System.currentTimeMillis()/1000,true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                msgList.add(tMsg);
-                chat_lv.setSelection(msgList.size());
+                    try {
+                        Textile.instance().messages.add(threadid, msg);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    TMsg tMsg = null;
+                    try {
+                        tMsg = new TMsg(1, threadid, 0, "",
+                                Textile.instance().profile.name(), Textile.instance().profile.avatar(), msg, System.currentTimeMillis() / 1000, true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    msgList.add(tMsg);
+                    chat_lv.setSelection(msgList.size());
+//                }
 
             }else{
                 Toast.makeText(this,"消息不能为空", Toast.LENGTH_SHORT).show();
@@ -240,39 +247,24 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void drawUI(){
-
-        MsgAdapter msgAdapter=new MsgAdapter(this,msgList,avatarpath);
+        msgAdapter=new MsgAdapter(this,msgList,avatarpath);
+        msgAdapter.notifyDataSetChanged();
         chat_lv.setAdapter(msgAdapter);
         chat_lv.invalidateViews();
         chat_lv.setSelection(msgList.size());
     }
 
 
-    private void getMoreMsg(){
-
-    }
-
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateChat(TMsg tMsg){
         if(tMsg.threadid.equals(threadid)){
+            Log.d(TAG, "updateChat: chatactivity收到消息："+tMsg.msgtype);
             msgList.add(tMsg);
-            chat_lv.invalidateViews(); //强制刷新
+            msgAdapter.notifyDataSetChanged();
+//            chat_lv.invalidateViews(); //强制刷新
             chat_lv.setSelection(msgList.size()); //图片有时候不立即显示，因为Item大小完全相同。
         }
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void testVideo(Pair<Integer,String> apair){
-        if(apair.first==2546){
-            Intent it=new Intent(ChatActivity.this, VideoPlayActivity.class);
-            it.putExtra("ismine",false);
-            it.putExtra("videoid",apair.second);
-//            it.putExtra("videopath",posterAndId_r[2]);
-            startActivity(it);
-        }
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -323,6 +315,7 @@ public class ChatActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             });
+
 
 
             Bitmap tmpBmap = videoHelper.getPoster(); //拿到缩略图

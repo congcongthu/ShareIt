@@ -39,16 +39,23 @@ public class ScanResultActivity extends AppCompatActivity {
     String name;
     String avatar;
     private String address;
+    private String peerId;
     private Model.Contact resultContact;
     String threadid;
+    String result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getIntent() != null){
             Bundle bundle = getIntent().getExtras();
-            address = bundle.getString("result");
+            result = bundle.getString("result");
+            String[] tmp=result.split("/");
+            address=tmp[0];
+            peerId=tmp[1];
         }
+
+//        trySwarmConnect(peerId);
 
         //注册监听器
         if(!EventBus.getDefault().isRegistered(this)){
@@ -59,6 +66,15 @@ public class ScanResultActivity extends AppCompatActivity {
         initUI();
 
         sendQuery(); //有可能结果很快找到，UI还未初始化，所以要放在UI初始化后面
+    }
+
+    private void trySwarmConnect(String peerId) {
+        try {
+            Log.d(TAG, "trySwarmConnect: 尝试swarmConnect："+peerId);
+            Textile.instance().ipfs.swarmConnect("/p2p-circuit/ipfs/"+peerId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initUI() {
@@ -79,6 +95,8 @@ public class ScanResultActivity extends AppCompatActivity {
                 .setAddress(address)
 //                .setName("规划局")
                 .build();
+
+
         try {
             Textile.instance().contacts.search(query, options);
         } catch (Exception e) {
