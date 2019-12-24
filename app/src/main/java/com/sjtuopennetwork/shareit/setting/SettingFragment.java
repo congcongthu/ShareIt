@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,6 +20,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.login.MainActivity;
@@ -106,9 +109,36 @@ public class SettingFragment extends Fragment {
         uploadLog=getActivity().findViewById(R.id.uploadlog);
         uploadLog.setOnClickListener(view -> {
             try {
-                String logPath= FileUtil.getAppExternalPath(getActivity(),"repo")+"/"+Textile.instance().profile.get().getAddress()+"/logs/textile.log";
-                Log.d(TAG, "initUI: log路径："+logPath);
-                LogToHTTP.uploadLog(logPath);
+                final String logPath= FileUtil.getAppExternalPath(getActivity(),"repo")+"/"+Textile.instance().profile.get().getAddress()+"/logs/textile.log";
+
+                Handler handler=new Handler(){
+                    @Override
+                    public void handleMessage(Message msg) {
+                        switch (msg.what){
+                            case 0:
+                                Toast.makeText(getActivity(), "上传成功", Toast.LENGTH_SHORT).show(); break;
+                            case 1:
+                                Toast.makeText(getActivity(), "上传失败", Toast.LENGTH_SHORT).show(); break;
+                        }
+                    }
+                };
+
+                new Thread(){
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "initUI: log路径："+logPath);
+                        String response=LogToHTTP.uploadLog(logPath);
+                        Log.d(TAG, "run: 上传结果："+response);
+                        if(response.equals("success")){
+                            Message msg=new Message(); msg.what=0;
+                            handler.sendMessage(msg);
+                        }else{
+                            Message msg=new Message(); msg.what=1;
+                            handler.sendMessage(msg);
+                        }
+                    }
+                }.start();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

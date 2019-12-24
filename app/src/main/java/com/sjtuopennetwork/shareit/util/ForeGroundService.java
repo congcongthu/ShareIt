@@ -78,7 +78,7 @@ public class ForeGroundService extends Service {
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
         repoPath=intent.getStringExtra("repopath");
 
-        connectCafe= pref.getBoolean("connectCafe",false);
+        connectCafe= pref.getBoolean("connectCafe",true);
 
         SharedPreferences.Editor editor=pref.edit();
         editor.putBoolean("131ok",false);
@@ -750,7 +750,6 @@ public class ForeGroundService extends Service {
 
         @Override
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
-
                 Log.d(TAG, "threadUpdateReceived: 收到消息，类型为："+feedItemData.type.name());
 
                 try {
