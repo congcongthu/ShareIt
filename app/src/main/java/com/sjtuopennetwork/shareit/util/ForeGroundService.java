@@ -620,21 +620,6 @@ public class ForeGroundService extends Service {
         @Override
         public void nodeOnline() {
 
-//            QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
-//            try {
-//                Textile.instance().account.sync(options);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-
-            if(connectCafe){
-                tryConnectCafe(new Integer(953));
-
-                startHeartBeat(new Integer(923));
-            }
-
-            createDeviceThread();
-
 //            根据登录方式，设置name和头像
             Log.d(TAG, "nodeOnline: login的值："+login);
             switch(login){
@@ -713,6 +698,22 @@ public class ForeGroundService extends Service {
                     break;
             }
 
+//            QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
+//            try {
+//                Textile.instance().account.sync(options);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+
+            if(connectCafe){
+                tryConnectCafe(new Integer(953));
+
+                startHeartBeat(new Integer(923));
+            }
+
+            createDeviceThread();
+
+
             //测试name
             try {
                 Log.d(TAG, "nodeOnline: peerID: "+Textile.instance().profile.get().getId());
@@ -753,6 +754,12 @@ public class ForeGroundService extends Service {
                 Log.d(TAG, "threadUpdateReceived: 收到消息，类型为："+feedItemData.type.name());
 
                 try {
+                    for(ThreadUpdateEvent t:threadUpdateEvents){
+                        if(t.feedItemData.block.equals(feedItemData.block)){
+                            return;
+                        }
+                    }
+
                     threadUpdateEvents.put(new ThreadUpdateEvent(threadId,feedItemData));
                     Log.d(TAG, "threadUpdateReceived: 消息添加到队列："+feedItemData.type.name());
 
@@ -762,7 +769,6 @@ public class ForeGroundService extends Service {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
         }
 
         private void createDeviceThread() {

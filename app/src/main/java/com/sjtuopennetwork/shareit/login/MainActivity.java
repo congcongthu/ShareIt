@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.huawei.hmf.tasks.Task;
 import com.huawei.hms.auth.api.signin.HuaweiIdSignIn;
@@ -100,16 +101,20 @@ public class MainActivity extends AppCompatActivity {
             shareItRegister.setOnClickListener(v -> {
                 SharedPreferences.Editor editor=pref.edit();
                 String myname=editText.getText().toString();
-                editor.putString("myname",myname);
-                Log.d(TAG, "onCreate: 登录时选择头像："+avatarpath);
-                editor.putString("avatarpath",avatarpath); //如果没选则为""
-                editor.commit();
+                if(myname.equals("")){
+                    Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
+                }else{
+                    editor.putString("myname",myname);
+                    Log.d(TAG, "onCreate: 登录时选择头像："+avatarpath);
+                    editor.putString("avatarpath",avatarpath); //如果没选则为""
+                    editor.commit();
 
-                //跳转到HomeActivity
-                Intent toHomeActivity=new Intent(this, HomeActivity.class);
-                toHomeActivity.putExtra("login",1); //shareit注册新账号，1
-                startActivity(toHomeActivity);
-                finish();
+                    //跳转到HomeActivity
+                    Intent toHomeActivity=new Intent(this, HomeActivity.class);
+                    toHomeActivity.putExtra("login",1); //shareit注册新账号，1
+                    startActivity(toHomeActivity);
+                    finish();
+                }
             });
 
             huaweiLogin.setOnClickListener(v -> {
