@@ -72,8 +72,10 @@ public class ContactUtil {
         List<Model.Thread> threads;
         try {
             threads=Textile.instance().threads.list().getItemsList();
+            Log.d(TAG, "getFriendList: thread的数量："+threads.size());
             for(Model.Thread t:threads){
                 if(t.getWhitelistCount()==2){ //如果是双人thread，并且的确有两个人
+                    Log.d(TAG, "getFriendList: 双人thread："+t.getName());
                     List<Model.Peer> peers=Textile.instance().threads.peers(t.getId()).getItemsList();
                     for(Model.Peer p:peers){
                         if(!p.getAddress().equals(Textile.instance().account.address())){ //不是自己就是好友

@@ -21,7 +21,6 @@ public class DBoperator {
         Cursor cursor=appdb.rawQuery("select * from msgs where threadid = ? order by sendtime desc limit 3000 offset 0",new String[]{threadId});
         if(cursor.moveToFirst()){
             do{
-                int id=cursor.getInt(cursor.getColumnIndex("id"));
                 int msgtype=cursor.getInt(cursor.getColumnIndex("msgtype"));
                 String blockid=cursor.getString(cursor.getColumnIndex("blockid"));
                 String authorname=cursor.getString(cursor.getColumnIndex("authorname"));
@@ -30,7 +29,7 @@ public class DBoperator {
                 long sendtime=cursor.getLong(cursor.getColumnIndex("sendtime"));
                 int ismine=cursor.getInt(cursor.getColumnIndex("ismine"));
 
-                TMsg tMsg=new TMsg(id,threadId,msgtype,blockid,authorname,authoravatar,body,sendtime,ismine==1);
+                TMsg tMsg=new TMsg(blockid,threadId,msgtype,authorname,authoravatar,body,sendtime,ismine==1);
                 msgs.add(0,tMsg); //从数据库是倒着排序搜索出来的，所以插到头部，后面就能够正确顺序显示
             }while (cursor.moveToNext());
         }
@@ -98,6 +97,16 @@ public class DBoperator {
         return tDialog;
     }
 
+
+    public static boolean isMsgExist(SQLiteDatabase appdb, String blockid){
+        Cursor cursor=appdb.query("msgs",null,"blockid=?",new String[]{blockid},null,null,null);
+        if(cursor.moveToFirst()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public static TDialog insertDialog(SQLiteDatabase appdb,String threadid, String threadname, String lastmsg, long lastmsgdate, int isRead, String imgpath, int isSingle, int isVisible){
         ContentValues v=new ContentValues();
         v.put("threadid",threadid);
@@ -128,11 +137,11 @@ public class DBoperator {
         v.put("sendtime",sendtime);
         v.put("ismine",ismine);
         appdb.beginTransaction();
-        appdb.insert("msgs",null,v);
+        appdb.insertOrThrow("msgs",null,v);
         appdb.setTransactionSuccessful();
         appdb.endTransaction();
 
-        TMsg tMsg=new TMsg(1,threadid,msgtype,blockid,authorname,authoravatar,body,sendtime,ismine==1);
+        TMsg tMsg=new TMsg(blockid,threadid,msgtype,authorname,authoravatar,body,sendtime,ismine==1);
 
         return tMsg;
     }

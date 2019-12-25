@@ -206,7 +206,7 @@ public class ChatActivity extends AppCompatActivity {
 
                     TMsg tMsg = null;
                     try {
-                        tMsg = new TMsg(1, threadid, 0, "",
+                        tMsg = new TMsg("",threadid, 0,
                                 Textile.instance().profile.name(), Textile.instance().profile.avatar(), msg, System.currentTimeMillis() / 1000, true);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -285,7 +285,7 @@ public class ChatActivity extends AppCompatActivity {
             });
             TMsg tMsg= null;
             try {
-                tMsg = new TMsg(1,threadid,1,"",
+                tMsg = new TMsg("",threadid,1,
                         Textile.instance().profile.name(),Textile.instance().profile.avatar(),filePath,System.currentTimeMillis()/1000,true);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -326,7 +326,7 @@ public class ChatActivity extends AppCompatActivity {
             String posterAndId=videoHeadPath+"##"+videoPb.getId()+"##"+filePath;
             TMsg tMsg= null;
             try {
-                tMsg = new TMsg(1,threadid,2,"",
+                tMsg = new TMsg("",threadid,2,
                         Textile.instance().profile.name(),Textile.instance().profile.avatar(),posterAndId,System.currentTimeMillis()/1000,true);
             } catch (Exception e) {
                 e.printStackTrace();

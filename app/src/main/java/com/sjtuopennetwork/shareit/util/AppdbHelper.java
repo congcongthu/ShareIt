@@ -36,10 +36,10 @@ public class AppdbHelper extends SQLiteOpenHelper {
 
     //消息表
     private String CREATE_MSGS="create table msgs"+
-            "(id integer primary key autoincrement," +
+//            "(id integer primary key autoincrement," +
+            "(blockid text primary key," +  //评论和点赞是直接对block添加，需要blockid
             "threadid text," +
             "msgtype integer," +  //0文本、1图片、2视频
-            "blockid text," +  //评论和点赞是直接对block添加，需要blockid
             "authorname text,"+ //作者昵称
             "authoravatar text," +  //作者头像
             "body text," + //内容，文本消息就是消息，图片消息是图片的路径，视频消息是视频的缩略图拼视频的VideoID

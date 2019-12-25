@@ -24,6 +24,7 @@ import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 import com.sjtuopennetwork.shareit.util.QRCodeActivity;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -76,6 +77,7 @@ public class ContactFragment extends Fragment {
 
         //显示好友列表
         myFriends= ContactUtil.getFriendList();
+
         contactBeans=new LinkedList<>();
 
         for(Model.Peer p:myFriends){
