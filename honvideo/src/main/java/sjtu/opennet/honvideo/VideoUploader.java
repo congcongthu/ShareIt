@@ -49,7 +49,7 @@ public class VideoUploader extends Thread{
     public void run(){
 //        Log.d(TAG, "VIDEOPIPELINE: Uploader start to run.");
         VideoUploadTask vTask;
-        while(!complete) {
+        while(!complete||isInterrupted()) {
             try {
                 vTask = videoQueue.take();
                 if(vTask.isEnd()){
