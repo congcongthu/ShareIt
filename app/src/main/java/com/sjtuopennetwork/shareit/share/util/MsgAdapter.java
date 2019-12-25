@@ -122,7 +122,6 @@ public class MsgAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        Log.d(TAG, "getView: getView被调用："+i);
         switch (getItemViewType(i)){
             case 0: //是文本
                 return handleTextView(i,view,viewGroup);

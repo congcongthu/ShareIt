@@ -373,7 +373,6 @@ public class ForeGroundService extends Service {
             return ;
         }
 
-
         if(feedItemData.type.equals(FeedItemType.JOIN)){ //收到JION类型的消息
             if(DBoperator.queryDialogByThreadID(appdb,threadId)!=null){ //如果已经有了就不要再插入了
                 return;
@@ -461,8 +460,7 @@ public class ForeGroundService extends Service {
             boolean isSingle=thread.getWhitelistCount()==2;
             try {
                 //图片消息的hash
-                final String large_hash = Textile.instance().files.list(threadId,"",3).getItems(0).getFiles(0).getLinksMap().get("large").getHash();
-                Log.d(TAG, "handleThreadUpdates: 进入FILES处理："+feedItemData.block+" "+large_hash);
+                final String large_hash = feedItemData.files.getFiles(0).getLinksMap().get("small").getHash();
                 Textile.instance().files.content(large_hash, new Handlers.DataHandler() {
                     @Override
                     public void onComplete(byte[] data, String media) { //获得图片成功
@@ -610,7 +608,6 @@ public class ForeGroundService extends Service {
                 DBoperator.deleteDialogByThreadID(appdb,removeThreadId);
             }
         }
-
     }
 
     class MyTextileListener extends BaseTextileEventListener {
@@ -778,7 +775,6 @@ public class ForeGroundService extends Service {
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
 
                 try {
-                    Log.d(TAG, "threadUpdateReceived: 收到消息："+feedItemData.block);
 
                     if(DBoperator.isMsgExist(appdb,feedItemData.block)){
                         Log.d(TAG, "threadUpdateReceived: 已经存在："+feedItemData.block);
