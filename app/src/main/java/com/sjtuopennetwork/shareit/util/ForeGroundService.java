@@ -78,7 +78,7 @@ public class ForeGroundService extends Service {
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
         repoPath=intent.getStringExtra("repopath");
 
-        connectCafe= pref.getBoolean("connectCafe",false);
+        connectCafe= pref.getBoolean("connectCafe",true);
 
         SharedPreferences.Editor editor=pref.edit();
         editor.putBoolean("131ok",false);
@@ -187,6 +187,7 @@ public class ForeGroundService extends Service {
                     .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-core", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("hon.peermanager", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
 //                .putSystems("hon.linkedTicketStorage", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
 //                .putSystems("tex-core", View.LogLevel.Level.DEBUG)
 //                .putSystems("bitswap", View.LogLevel.Level.DEBUG)
@@ -368,16 +369,14 @@ public class ForeGroundService extends Service {
         Model.Thread thread=null;
         try {
             thread=Textile.instance().threads.get(threadId);
+            //如果是不共享的thread，包括相册thread，设备thread等，就不对消息进行处理
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        //如果是不共享的thread，包括相册thread，设备thread等，就不对消息进行处理
-        if (thread.getSharing().equals(Model.Thread.Sharing.NOT_SHARED)){
+        if ((thread != null) && thread.getSharing().equals(Model.Thread.Sharing.NOT_SHARED)){
             return ;
         }
 
-        boolean isSingle=thread.getWhitelistCount()==2;
 
         if(feedItemData.type.equals(FeedItemType.JOIN)){ //收到JION类型的消息
             if(DBoperator.queryDialogByThreadID(appdb,threadId)!=null){ //如果已经有了就不要再插入了
@@ -463,14 +462,17 @@ public class ForeGroundService extends Service {
 
         if(feedItemData.type.equals(FeedItemType.FILES)){ //接收到图片
             TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId); //必然能够查出来对话
+            boolean isSingle=thread.getWhitelistCount()==2;
             try {
                 //图片消息的hash
                 final String large_hash = Textile.instance().files.list(threadId,"",3).getItems(0).getFiles(0).getLinksMap().get("large").getHash();
+                Log.d(TAG, "handleThreadUpdates: 进入FILES处理："+feedItemData.block);
                 Textile.instance().files.content(large_hash, new Handlers.DataHandler() {
                     @Override
                     public void onComplete(byte[] data, String media) { //获得图片成功
                         String newPath=FileUtil.storeFile(data,large_hash); //将图片存到本地
                         String dialogimg="";
+
                         if(isSingle){ //单人的thread,图片就是对方的头像，不改
                             dialogimg=tDialog.imgpath;
                         }else{
@@ -618,22 +620,34 @@ public class ForeGroundService extends Service {
     class MyTextileListener extends BaseTextileEventListener {
 
         @Override
-        public void nodeOnline() {
+        public void notificationReceived(Model.Notification notification) {
+            //查出邀请中最近的一个，添加到头部。
+            int gpinvite=0;
+            sjtu.opennet.textilepb.View.InviteView lastInvite=null;
+            try {
+                if(Textile.instance().invites!=null){
+                    List<sjtu.opennet.textilepb.View.InviteView> invites = Textile.instance().invites.list().getItemsList();
+                    for(sjtu.opennet.textilepb.View.InviteView v:invites){ //遍历所有的邀请
+                        if(!v.getName().equals("FriendThread1219")){ //只要群组名不等于这个那就是好友邀请
+                            gpinvite++;
+                            lastInvite=v;
+                        }
+                    }
+                }
 
-//            QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
-//            try {
-//                Textile.instance().account.sync(options);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-
-            if(connectCafe){
-                tryConnectCafe(new Integer(953));
-
-                startHeartBeat(new Integer(923));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            if(gpinvite>0){ //如果有群组邀请就要显示出来
+                TDialog noti=new TDialog(1,"","通知",lastInvite.getInviter().getName()+" 邀请你",
+                        lastInvite.getDate().getSeconds(),false,"tongzhi",true,true);
 
-            createDeviceThread();
+                EventBus.getDefault().post(noti);
+            }
+        }
+
+        @Override
+        public void nodeOnline() {
 
 //            根据登录方式，设置name和头像
             Log.d(TAG, "nodeOnline: login的值："+login);
@@ -713,6 +727,22 @@ public class ForeGroundService extends Service {
                     break;
             }
 
+//            QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
+//            try {
+//                Textile.instance().account.sync(options);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+
+            if(connectCafe){
+                tryConnectCafe(new Integer(953));
+
+                startHeartBeat(new Integer(923));
+            }
+
+            createDeviceThread();
+
+
             //测试name
             try {
                 Log.d(TAG, "nodeOnline: peerID: "+Textile.instance().profile.get().getId());
@@ -751,11 +781,18 @@ public class ForeGroundService extends Service {
         @Override
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
 
-                Log.d(TAG, "threadUpdateReceived: 收到消息，类型为："+feedItemData.type.name());
-
                 try {
+                    Log.d(TAG, "threadUpdateReceived: 收到消息："+feedItemData.block);
+
+                    for(ThreadUpdateEvent t:threadUpdateEvents){
+                        if(t.feedItemData.block.equals(feedItemData.block)){
+                            Log.d(TAG, "threadUpdateReceived: 收到重复消息："+t.feedItemData.block);
+                            return;
+                        }
+                    }
+
                     threadUpdateEvents.put(new ThreadUpdateEvent(threadId,feedItemData));
-                    Log.d(TAG, "threadUpdateReceived: 消息添加到队列："+feedItemData.type.name());
+                    Log.d(TAG, "threadUpdateReceived: 消息添加到队列："+feedItemData.type.name()+" "+feedItemData.block);
 
                     Message msg=new Message();
                     msg.what=1;
@@ -763,7 +800,6 @@ public class ForeGroundService extends Service {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
         }
 
         private void createDeviceThread() {

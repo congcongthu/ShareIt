@@ -118,12 +118,10 @@ public class VideoUploadHelper {
         this.filePath = filePath;
         this.cafeStore=cafeStore;
 
-        this.command = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -f segment " +
+        String tmpCmd = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -f segment " +
                 "-segment_time %d " +
-                "-segment_list_size 1 " +
-                "-segment_list %s " +
-                "%s/out%%04d.ts", filePath,segmentTime, m3u8Path, chunkPath);
-        vMeta = new VideoMeta(filePath, command.getBytes());
+                "-segment_list_size 1 ", filePath,segmentTime);
+        vMeta = new VideoMeta(filePath, tmpCmd.getBytes());
 
         rootPath = FileUtil.getAppExternalPath(context, "video");
         String tmpPath = String.format("video/%s", vMeta.getHash());
@@ -139,6 +137,12 @@ public class VideoUploadHelper {
         videoUploader = new VideoUploader(vMeta.getHash(), videoQueue, chunkQueue);
         chunkpublisher = new ChunkPublisher(chunkQueue);
         exitUploader = new ExitUploader();
+
+        this.command = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -f segment " +
+                "-segment_time %d " +
+                "-segment_list_size 1 " +
+                "-segment_list %s " +
+                "%s/out%%04d.ts", filePath,segmentTime, m3u8Path, chunkPath);
 
         listObserver = new M3u8Listener(videoPath, vMeta.getHash(), videoQueue, chunkQueue);
         Log.d(TAG, String.format("Uploader initialize complete for video ID %s.", vMeta.getHash()));

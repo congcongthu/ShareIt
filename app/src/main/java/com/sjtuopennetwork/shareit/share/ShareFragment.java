@@ -163,14 +163,18 @@ public class ShareFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getNewMsg(TDialog tDialog){ //获取到新的消息后要更新显示
         Log.d(TAG, "getNewMsg: 对话更新："+tDialog.threadname);
-        //找到对应的那一个，将其删除，并在头部插入，如果没有找到就直接在头部插入。
-        for(int i=0;i<dialogs.size();i++){
-            if(dialogs.get(i).threadid.equals(tDialog.threadid)){
-                dialogs.remove(i);
+
+        if(!tDialog.threadname.equals("通知")){
+            //找到对应的那一个，将其删除，并在头部插入，如果没有找到就直接在头部插入。
+            for(int i=0;i<dialogs.size();i++){
+                if(dialogs.get(i).threadid.equals(tDialog.threadid)){
+                    dialogs.remove(i);
+                }
             }
         }
+
         dialogs.add(0,tDialog);
-        dialoglistView.invalidateViews();
+        dialogAdapter.notifyDataSetChanged();
         dialoglistView.setSelection(0);
     }
 
