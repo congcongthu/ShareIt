@@ -166,6 +166,10 @@ public class ForeGroundService extends Service {
                     final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
                     Textile.initialize(repoPath,m.getSeed() , true, false, true);
+<<<<<<< HEAD
+
+=======
+>>>>>>> 5f37447e7d95809a81381493fa667a3de73baa28
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -193,7 +197,7 @@ public class ForeGroundService extends Service {
                     final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
                     if(!Textile.isInitialized(repoPath)){
-                        Textile.initialize(repoPath,m.getSeed() , true, true,true);
+                        Textile.initialize(repoPath,m.getSeed() , true, false,true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -212,10 +216,11 @@ public class ForeGroundService extends Service {
             Textile.launch(ForeGroundService.this, repoPath, true);
             Textile.instance().addEventListener(new MyTextileListener());
             sjtu.opennet.textilepb.View.LogLevel logLevel= sjtu.opennet.textilepb.View.LogLevel.newBuilder()
-//                    .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-//                    .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("hon.peermanager", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-core", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-//                    .putSystems("hon.peermanager", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("tex-mobile", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
 //                .putSystems("hon.linkedTicketStorage", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .build();
             Textile.instance().logs.setLevel(logLevel);
