@@ -90,8 +90,6 @@ public class ChatActivity extends AppCompatActivity {
     List<LocalMedia> choosePic;
     List<LocalMedia> chooseVideo;
     String avatarpath;
-    Map<String,String> videoPaths;
-    List<PreloadVideoThread> preloadVideoThreadList;
     int pageIndex;
 
     //退出群组相关
@@ -102,7 +100,6 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        preloadVideoThreadList=new LinkedList<>();
 
         pageIndex=0;
 
@@ -120,11 +117,21 @@ public class ChatActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+
         drawUI();
 
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
+    }
+
+    private void drawUI() {
+        msgList= DBoperator.queryMsg(appdb,threadid);
+        msgAdapter=new MsgAdapter(this,msgList,avatarpath);
+        msgAdapter.notifyDataSetChanged();
+        chat_lv.setAdapter(msgAdapter);
+        chat_lv.invalidateViews();
+        chat_lv.setSelection(msgList.size());
     }
 
     private void initUI() {
@@ -242,16 +249,6 @@ public class ChatActivity extends AppCompatActivity {
             startActivity(toGroupInfo);
         });
 
-        msgList= DBoperator.queryMsg(appdb,threadid);
-
-    }
-
-    public void drawUI(){
-        msgAdapter=new MsgAdapter(this,msgList,avatarpath);
-        msgAdapter.notifyDataSetChanged();
-        chat_lv.setAdapter(msgAdapter);
-        chat_lv.invalidateViews();
-        chat_lv.setSelection(msgList.size());
     }
 
 
@@ -261,7 +258,6 @@ public class ChatActivity extends AppCompatActivity {
             Log.d(TAG, "updateChat: chatactivity收到消息："+tMsg.msgtype);
             msgList.add(tMsg);
             msgAdapter.notifyDataSetChanged();
-//            chat_lv.invalidateViews(); //强制刷新
             chat_lv.setSelection(msgList.size()); //图片有时候不立即显示，因为Item大小完全相同。
         }
     }

@@ -226,7 +226,6 @@ public class VideoPlayActivity extends AppCompatActivity {
         }
     }
 
-
     public void initPlayer(){
 
         mProgressBar=findViewById(R.id.my_progress_bar); //环形进度条

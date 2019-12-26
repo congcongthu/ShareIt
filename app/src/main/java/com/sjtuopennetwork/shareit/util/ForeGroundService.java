@@ -509,15 +509,15 @@ public class ForeGroundService extends Service {
                         if(feedItemData.files.getUser().getAddress().equals(myAddr)){
                             ismine=1;
                         }
-                        TMsg tMsg=DBoperator.insertMsg(appdb,threadId,1, feedItemData.files.getBlock(),
-                                feedItemData.files.getUser().getName(),
-                                feedItemData.files.getUser().getAvatar(),
-                                "null",
-                                feedItemData.files.getDate().getSeconds(), ismine);
-                        EventBus.getDefault().post(updateDialog);
-                        if(ismine==0){  //不是我的图片才广播出去
-                            EventBus.getDefault().post(tMsg);
-                        }
+//                        TMsg tMsg=DBoperator.insertMsg(appdb,threadId,1, feedItemData.files.getBlock(),
+//                                feedItemData.files.getUser().getName(),
+//                                feedItemData.files.getUser().getAvatar(),
+//                                "null",
+//                                feedItemData.files.getDate().getSeconds(), ismine);
+//                        EventBus.getDefault().post(updateDialog);
+//                        if(ismine==0){  //不是我的图片才广播出去
+//                            EventBus.getDefault().post(tMsg);
+//                        }
                     }
                 });
 
@@ -720,12 +720,12 @@ public class ForeGroundService extends Service {
                     break;
             }
 
-//            QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
-//            try {
-//                Textile.instance().account.sync(options);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
+            QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
+            try {
+                Textile.instance().account.sync(options);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             if(connectCafe){
                 tryConnectCafe(new Integer(953));
@@ -790,7 +790,7 @@ public class ForeGroundService extends Service {
 
                     threadUpdateEvents.put(new ThreadUpdateEvent(threadId,feedItemData));
                     Log.d(TAG, "threadUpdateReceived: 消息添加到队列："+feedItemData.type.name()+" "+feedItemData.block);
-
+//
                     Message msg=new Message();
                     msg.what=1;
                     handler.sendMessage(msg);
