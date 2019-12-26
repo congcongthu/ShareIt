@@ -136,8 +136,7 @@ public class ForeGroundService extends Service {
                     loginAccount=m.getAddress();
                     final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
-                    Textile.initialize(repoPath,m.getSeed() , true, true, true);
-
+                    Textile.initialize(repoPath,m.getSeed() , true, false, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -184,13 +183,11 @@ public class ForeGroundService extends Service {
             Textile.launch(ForeGroundService.this, repoPath, true);
             Textile.instance().addEventListener(new MyTextileListener());
             sjtu.opennet.textilepb.View.LogLevel logLevel= sjtu.opennet.textilepb.View.LogLevel.newBuilder()
-                    .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-                    .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+//                    .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+//                    .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-core", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-                    .putSystems("hon.peermanager", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+//                    .putSystems("hon.peermanager", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
 //                .putSystems("hon.linkedTicketStorage", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-//                .putSystems("tex-core", View.LogLevel.Level.DEBUG)
-//                .putSystems("bitswap", View.LogLevel.Level.DEBUG)
                     .build();
             Textile.instance().logs.setLevel(logLevel);
             Log.d(TAG, "initTextile: after set log level ");
@@ -347,22 +344,21 @@ public class ForeGroundService extends Service {
         public void handleMessage(Message msg) {
             switch(msg.what){
                 case 1:
-                    handleThreadUpdates(); break;
+                    ThreadUpdateEvent tv= null;
+                    try {
+                        tv = threadUpdateEvents.take();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    String threadId=tv.threadId;
+                    FeedItemData feedItemData=tv.feedItemData;
+                    handleThreadUpdates(threadId,feedItemData); break;
             }
         }
     };
 
-    private void handleThreadUpdates() {
-
-        ThreadUpdateEvent tv= null;
-        try {
-            tv = threadUpdateEvents.take();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        String threadId=tv.threadId;
-        FeedItemData feedItemData=tv.feedItemData;
+    private void handleThreadUpdates(String threadId, FeedItemData feedItemData) {
 
         String myAddr=Textile.instance().account.address();
 
@@ -376,7 +372,6 @@ public class ForeGroundService extends Service {
         if ((thread != null) && thread.getSharing().equals(Model.Thread.Sharing.NOT_SHARED)){
             return ;
         }
-
 
         if(feedItemData.type.equals(FeedItemType.JOIN)){ //收到JION类型的消息
             if(DBoperator.queryDialogByThreadID(appdb,threadId)!=null){ //如果已经有了就不要再插入了
@@ -465,8 +460,7 @@ public class ForeGroundService extends Service {
             boolean isSingle=thread.getWhitelistCount()==2;
             try {
                 //图片消息的hash
-                final String large_hash = Textile.instance().files.list(threadId,"",3).getItems(0).getFiles(0).getLinksMap().get("large").getHash();
-                Log.d(TAG, "handleThreadUpdates: 进入FILES处理："+feedItemData.block);
+                final String large_hash = feedItemData.files.getFiles(0).getLinksMap().get("small").getHash();
                 Textile.instance().files.content(large_hash, new Handlers.DataHandler() {
                     @Override
                     public void onComplete(byte[] data, String media) { //获得图片成功
@@ -515,15 +509,15 @@ public class ForeGroundService extends Service {
                         if(feedItemData.files.getUser().getAddress().equals(myAddr)){
                             ismine=1;
                         }
-                        TMsg tMsg=DBoperator.insertMsg(appdb,threadId,1, feedItemData.files.getBlock(),
-                                feedItemData.files.getUser().getName(),
-                                feedItemData.files.getUser().getAvatar(),
-                                "null",
-                                feedItemData.files.getDate().getSeconds(), ismine);
-                        EventBus.getDefault().post(updateDialog);
-                        if(ismine==0){  //不是我的图片才广播出去
-                            EventBus.getDefault().post(tMsg);
-                        }
+//                        TMsg tMsg=DBoperator.insertMsg(appdb,threadId,1, feedItemData.files.getBlock(),
+//                                feedItemData.files.getUser().getName(),
+//                                feedItemData.files.getUser().getAvatar(),
+//                                "null",
+//                                feedItemData.files.getDate().getSeconds(), ismine);
+//                        EventBus.getDefault().post(updateDialog);
+//                        if(ismine==0){  //不是我的图片才广播出去
+//                            EventBus.getDefault().post(tMsg);
+//                        }
                     }
                 });
 
@@ -614,7 +608,6 @@ public class ForeGroundService extends Service {
                 DBoperator.deleteDialogByThreadID(appdb,removeThreadId);
             }
         }
-
     }
 
     class MyTextileListener extends BaseTextileEventListener {
@@ -727,12 +720,12 @@ public class ForeGroundService extends Service {
                     break;
             }
 
-//            QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
-//            try {
-//                Textile.instance().account.sync(options);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
+            QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
+            try {
+                Textile.instance().account.sync(options);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             if(connectCafe){
                 tryConnectCafe(new Integer(953));
@@ -782,7 +775,11 @@ public class ForeGroundService extends Service {
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
 
                 try {
-                    Log.d(TAG, "threadUpdateReceived: 收到消息："+feedItemData.block);
+
+                    if(DBoperator.isMsgExist(appdb,feedItemData.block)){
+                        Log.d(TAG, "threadUpdateReceived: 已经存在："+feedItemData.block);
+                        return;
+                    }
 
                     for(ThreadUpdateEvent t:threadUpdateEvents){
                         if(t.feedItemData.block.equals(feedItemData.block)){
@@ -793,13 +790,15 @@ public class ForeGroundService extends Service {
 
                     threadUpdateEvents.put(new ThreadUpdateEvent(threadId,feedItemData));
                     Log.d(TAG, "threadUpdateReceived: 消息添加到队列："+feedItemData.type.name()+" "+feedItemData.block);
-
+//
                     Message msg=new Message();
                     msg.what=1;
                     handler.sendMessage(msg);
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+//                handleThreadUpdates(threadId,feedItemData);
         }
 
         private void createDeviceThread() {

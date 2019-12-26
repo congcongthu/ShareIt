@@ -250,7 +250,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
         try {
             swarmPeerList=Textile.instance().ipfs.connectedAddresses();
             swarmPeers=swarmPeerList.getItemsList();
-            gData.add(new NotificationGroup("swarm地址列表"));
+            gData.add(new NotificationGroup("swarm地址列表"+"  total: "+swarmPeers.size()));
             for(Model.SwarmPeer peer:swarmPeers){
                 String avatar="";
                 String name="";

@@ -1,18 +1,16 @@
 package com.sjtuopennetwork.shareit.share.util;
 
 public class TMsg {
-    public int id;
+    public String blockid;
     public String threadid;
     public int msgtype;
-    public String blockid;
     public String authorname;
     public String authoravatar;
     public String body;
     public long sendtime;
     boolean ismine;
 
-    public TMsg(int id, String threadid, int msgtype, String blockid, String authorname, String authoravatar, String body, long sendtime, boolean ismine) {
-        this.id = id;
+    public TMsg(String blockid,String threadid, int msgtype,  String authorname, String authoravatar, String body, long sendtime, boolean ismine) {
         this.threadid = threadid;
         this.msgtype = msgtype;
         this.blockid = blockid;
