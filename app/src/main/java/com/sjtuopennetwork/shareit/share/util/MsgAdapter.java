@@ -122,7 +122,6 @@ public class MsgAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        Log.d(TAG, "getView: getView被调用："+i);
         switch (getItemViewType(i)){
             case 0: //是文本
                 return handleTextView(i,view,viewGroup);
@@ -223,7 +222,6 @@ public class MsgAdapter extends BaseAdapter {
                     });
                 }else{ //是视频就setVideo
                     String[] posterAndId=msgBody.split("##"); //0是poster，1是Id
-                    Log.d(TAG, "handlePhotoView: 收到视频的消息的body："+posterAndId[0]+" "+posterAndId[1]+" "+posterAndId[2]);
                     Glide.with(context).load(posterAndId[0]).thumbnail(0.3f).into(h.chat_photo);
                     h.chat_photo.setOnClickListener(view1 -> {
                         Intent it=new Intent(context, VideoPlayActivity.class);
@@ -247,7 +245,6 @@ public class MsgAdapter extends BaseAdapter {
                 switch(msg.what){
                     case 1:
                         String newPath=msg.getData().getString("newPath");
-                        Log.d(TAG, "handleMessage: 拿到头像："+newPath);
                         Glide.with(context).load(newPath).thumbnail(0.3f).into(imageView);
                 }
             }
