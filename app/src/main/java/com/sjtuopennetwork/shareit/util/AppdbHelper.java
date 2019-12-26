@@ -5,12 +5,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class AppdbHelper extends SQLiteOpenHelper {
-    private static AppdbHelper singleInstance=null;
+    private static AppdbHelper helperInstance=null;
     public synchronized static AppdbHelper getInstance(Context context,String dbname){
-        if(singleInstance==null){
-            singleInstance=new AppdbHelper(context,dbname);
+        if(helperInstance==null){
+            helperInstance=new AppdbHelper(context,dbname);
         }
-        return singleInstance;
+        return helperInstance;
     }
 
     public AppdbHelper(Context context,String dbname){
@@ -18,8 +18,8 @@ public class AppdbHelper extends SQLiteOpenHelper {
     }
 
     public static void setNull(){
-        singleInstance.close();
-        singleInstance=null;
+        helperInstance.close();
+        helperInstance=null;
     }
 
     //对话表

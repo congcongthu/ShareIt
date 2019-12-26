@@ -16,6 +16,8 @@ public class DBoperator {
 
     private static final String TAG = "================";
 
+    DBoperator dBoperatorInstance;
+
     public static List<TMsg> queryMsg(SQLiteDatabase appdb,String threadId){
         List<TMsg> msgs=new LinkedList<>();
         Cursor cursor=appdb.rawQuery("select * from msgs where threadid = ? order by sendtime desc limit 3000 offset 0",new String[]{threadId});
@@ -33,6 +35,7 @@ public class DBoperator {
                 msgs.add(0,tMsg); //从数据库是倒着排序搜索出来的，所以插到头部，后面就能够正确顺序显示
             }while (cursor.moveToNext());
         }
+        cursor.close();
         return msgs;
     }
 
@@ -101,8 +104,10 @@ public class DBoperator {
     public static boolean isMsgExist(SQLiteDatabase appdb, String blockid){
         Cursor cursor=appdb.query("msgs",null,"blockid=?",new String[]{blockid},null,null,null);
         if(cursor.moveToFirst()){
+            cursor.close();
             return true;
         }else{
+            cursor.close();
             return false;
         }
     }
@@ -121,8 +126,7 @@ public class DBoperator {
         appdb.insert("dialogs",null,v);
         appdb.setTransactionSuccessful();
         appdb.endTransaction();
-        TDialog tDialog=new TDialog(1,threadid,threadname,lastmsg,lastmsgdate,isRead==1,imgpath,isSingle==1,isVisible==1);
-        return tDialog;
+        return new TDialog(1,threadid,threadname,lastmsg,lastmsgdate,isRead==1,imgpath,isSingle==1,isVisible==1);
     }
 
     public static TMsg insertMsg(SQLiteDatabase appdb,String threadid, int msgtype, String blockid, String authorname, String authoravatar,
@@ -141,9 +145,7 @@ public class DBoperator {
         appdb.setTransactionSuccessful();
         appdb.endTransaction();
 
-        TMsg tMsg=new TMsg(blockid,threadid,msgtype,authorname,authoravatar,body,sendtime,ismine==1);
-
-        return tMsg;
+        return new TMsg(blockid,threadid,msgtype,authorname,authoravatar,body,sendtime,ismine==1);
     }
 
     public static void changeDialogRead(SQLiteDatabase appdb,String threadid, int isread){

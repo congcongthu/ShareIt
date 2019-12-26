@@ -134,8 +134,6 @@ public class VideoPlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_play);
 
-        Log.d(TAG, "onCreate: onCreate被调用");
-
         finished =false;
         NextChunk = 0;
 
@@ -153,6 +151,8 @@ public class VideoPlayActivity extends AppCompatActivity {
         videoWidth=video.getWidth();
         videoHeight=video.getHeight();
         m3u8WriteCount=0;
+
+        Textile.logDebug("====================start to play video : "+videoid);
 
         if(isMine){
             String videoPath=getIntent().getStringExtra("videopath");
@@ -363,6 +363,8 @@ public class VideoPlayActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop: VideoPlayActivity调用stop");
+
+        Textile.logDebug("====================stop to play video : "+videoid);
 
 //        LogToHTTP.uploadLog(logPath);
 

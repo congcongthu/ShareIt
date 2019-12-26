@@ -137,10 +137,6 @@ public class ForeGroundService extends Service {
                     final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
                     Textile.initialize(repoPath,m.getSeed() , true, false, true);
-<<<<<<< HEAD
-
-=======
->>>>>>> 5f37447e7d95809a81381493fa667a3de73baa28
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
