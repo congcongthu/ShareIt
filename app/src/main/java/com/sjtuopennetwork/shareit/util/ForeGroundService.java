@@ -70,7 +70,34 @@ public class ForeGroundService extends Service {
     boolean startBeat;
     int uploadLogCount=0;
     BlockingQueue<ThreadUpdateEvent> threadUpdateEvents;
+    eventCache eventCache;
 
+    class eventCache {
+        private ThreadUpdateEvent[] arrayCache;
+        private Object LOCK = new Object();
+        private int current;
+        private int arrayLength;
+        eventCache(){
+            arrayLength = 30;
+            arrayCache = new ThreadUpdateEvent[arrayLength];
+            current = 0;
+        }
+
+        public boolean HaveEvent(ThreadUpdateEvent tv) {
+            synchronized (LOCK) {
+                for (int i = current; i < current + arrayLength; i++) {
+                    int ind = i % arrayLength;
+                    if (arrayCache[ind] != null && tv.feedItemData.block.equals(arrayCache[ind].feedItemData.block)) {
+                        return true;
+                    }
+                }
+
+                arrayCache[current] = tv;
+                current = (current + 1) % arrayLength;
+                return false;
+            }
+        }
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -109,7 +136,9 @@ public class ForeGroundService extends Service {
 
         //消息队列
         threadUpdateEvents=new LinkedBlockingQueue<>();  // 消息队列
-
+        //Message cache
+        eventCache = new eventCache();
+        new Thread(new threadUpdater()).start();
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -358,6 +387,30 @@ public class ForeGroundService extends Service {
             }
         }
     };
+
+    class threadUpdater implements Runnable{
+        @Override
+        public void run(){
+            while (true) {
+                ThreadUpdateEvent tv = null;
+                try {
+                    tv = threadUpdateEvents.take();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+
+                if (eventCache.HaveEvent(tv)){
+                    Log.d(TAG, "Duplicated block "+ tv.feedItemData.block);
+                } else {
+                    Log.d(TAG, "New block "+ tv.feedItemData.block);
+                    String threadId = tv.threadId;
+                    FeedItemData feedItemData = tv.feedItemData;
+                    handleThreadUpdates(threadId,feedItemData);
+                }
+            }
+        }
+    }
 
     private void handleThreadUpdates(String threadId, FeedItemData feedItemData) {
 
@@ -777,24 +830,24 @@ public class ForeGroundService extends Service {
 
                 try {
 
-                    if(DBoperator.isMsgExist(appdb,feedItemData.block)){
-                        Log.d(TAG, "threadUpdateReceived: 已经存在："+feedItemData.block);
-                        return;
-                    }
-
-                    for(ThreadUpdateEvent t:threadUpdateEvents){
-                        if(t.feedItemData.block.equals(feedItemData.block)){
-                            Log.d(TAG, "threadUpdateReceived: 收到重复消息："+t.feedItemData.block);
-                            return;
-                        }
-                    }
+//                    if(DBoperator.isMsgExist(appdb,feedItemData.block)){
+//                        Log.d(TAG, "threadUpdateReceived: 已经存在："+feedItemData.block);
+//                        return;
+//                    }
+//
+//                    for(ThreadUpdateEvent t:threadUpdateEvents){
+//                        if(t.feedItemData.block.equals(feedItemData.block)){
+//                            Log.d(TAG, "threadUpdateReceived: 收到重复消息："+t.feedItemData.block);
+//                            return;
+//                        }
+//                    }
 
                     threadUpdateEvents.put(new ThreadUpdateEvent(threadId,feedItemData));
                     Log.d(TAG, "threadUpdateReceived: 消息添加到队列："+feedItemData.type.name()+" "+feedItemData.block);
 //
-                    Message msg=new Message();
-                    msg.what=1;
-                    handler.sendMessage(msg);
+//                    Message msg=new Message();
+//                    msg.what=1;
+//                    handler.sendMessage(msg);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
