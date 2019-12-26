@@ -130,12 +130,12 @@ public class SearchContactActivity extends AppCompatActivity {
             }
         }
 
-
         //添加到结果列表
         String addr=c.getAddress();
         String addr_last10="address: "+addr.substring(addr.length()-10);
         newContacts.add(c);
         resultContacts.add(new ResultContact(addr_last10,c.getName(),c.getAvatar(),null,false));
+        searchResultAdapter.notifyDataSetChanged();
         searchView.clearFocus();
     }
 
