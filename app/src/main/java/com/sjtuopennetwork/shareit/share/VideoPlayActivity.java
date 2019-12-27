@@ -174,7 +174,10 @@ public class VideoPlayActivity extends AppCompatActivity {
             player.prepare(videoSource);
 
         }else{
-
+            if(videoWidth>videoHeight){
+                Log.d(TAG, "initPlayer: 即将横屏播放");
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            }
             videorHelper=new VideoReceiveHelper(this, video, new VideoHandlers.ReceiveHandler() {
                     @Override
                     public void onChunkComplete(Model.VideoChunk vChunk) {
@@ -194,7 +197,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 
                         writeM3u8(vChunk);
                         NextChunk = index+1;
-                        if((notplayed && (m3u8WriteCount > 0 || finished)) ){ //写了3次就可以播放
+                        if((notplayed && (m3u8WriteCount > 1 || finished)) ){ //写了3次就可以播放
                             Log.d(TAG, "onChunkComplete: 开始播放");
                             Message msg=new Message();
                             msg.what=1;
@@ -234,14 +237,10 @@ public class VideoPlayActivity extends AppCompatActivity {
         TrackSelector trackSelector = new DefaultTrackSelector(trackSelectionFactory);
         LoadControl loadControl = new DefaultLoadControl();
         player=ExoPlayerFactory.newSimpleInstance(VideoPlayActivity.this,trackSelector,loadControl);
-        player.seekTo(0);
+//        player.seekTo(0);
         PlayerView playerView = findViewById(R.id.player_view);
         Log.d(TAG, "initPlayer: rotation width height:"+rotation+" "+videoWidth+" "+videoHeight);
-        if(videoWidth>videoHeight){
-            Log.d(TAG, "initPlayer: 即将横屏播放");
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        }
         playerView.setPlayer(player);
     }
 
@@ -252,10 +251,10 @@ public class VideoPlayActivity extends AppCompatActivity {
         dataSourceFactory = new DefaultDataSourceFactory(VideoPlayActivity.this, Util.getUserAgent(VideoPlayActivity.this, "ShareIt"));
         hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory)
                 .setAllowChunklessPreparation(true).createMediaSource(Uri.fromFile(m3u8file));
-        player.setPlayWhenReady(true);
+//        player.setPlayWhenReady(true);
         player.prepare(hlsMediaSource);
         player.addListener(new MyEventListener());
-        player.seekTo(0);
+//        player.seekTo(0);
     }
 
     public class MyEventListener implements Player.EventListener {
@@ -268,11 +267,12 @@ public class VideoPlayActivity extends AppCompatActivity {
                     break;
                 case ExoPlayer.STATE_READY: //3
                     mProgressBar.setVisibility(View.GONE);
-                    player.setPlayWhenReady(true);
+//                    player.setPlayWhenReady(true);
                     setProgress(0);
                     break;
                 case ExoPlayer.STATE_BUFFERING: //2
                     mProgressBar.setVisibility(View.VISIBLE);
+                    player.setPlayWhenReady(true);
                     break;
                 case ExoPlayer.STATE_IDLE: //1
                     break;
