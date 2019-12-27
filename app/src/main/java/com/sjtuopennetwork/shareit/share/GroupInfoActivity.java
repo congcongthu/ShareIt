@@ -36,6 +36,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     LinearLayout group_qrcode;
 //    TextView leave_group;
     RecyclerView group_members;
+    TextView group_mem_num;
 
 
     //内存数据
@@ -83,6 +84,8 @@ public class GroupInfoActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        group_mem_num.setText("群成员 （"+allMembers.size()+" 人）");
+
         //显示成员列表
         GroupMemberAdapter adapter=new GroupMemberAdapter(this,allMembers);
         FlowLayoutManager flowLayoutManager=new FlowLayoutManager();
@@ -102,6 +105,7 @@ public class GroupInfoActivity extends AppCompatActivity {
 //        leave_group=findViewById(R.id.leave_group);
         group_members=findViewById(R.id.group_members);
         group_qrcode=findViewById(R.id.group_qrcode);
+        group_mem_num=findViewById(R.id.group_mem_num);
     }
     private void initData() {
         pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);

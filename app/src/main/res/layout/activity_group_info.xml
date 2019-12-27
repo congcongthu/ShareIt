@@ -31,6 +31,7 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/group_mem_num"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
                 android:background="@color/white"

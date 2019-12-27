@@ -525,6 +525,7 @@ public class ForeGroundService extends Service {
                             dialogimg=tDialog.imgpath;
                         }else{
                             dialogimg=newPath; //多人群组的对话图片就要更新
+                            Log.d(TAG, "onComplete: dialogimg:"+dialogimg);
                         }
                         Log.d(TAG, "onComplete: 获取图片成功"+newPath);
 

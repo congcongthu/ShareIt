@@ -63,7 +63,9 @@ public class DialogAdapter extends ArrayAdapter {
             if (tDialog.isSingle) { //如果是单人的，就设置头像
                 setAvatar(vh.headImg, tDialog.imgpath);
             } else { //如果是多人的就设置图片
-                setPhoto(vh.headImg, tDialog.imgpath);
+                Log.d(TAG, "getView: "+tDialog.threadname+"图片路径："+tDialog.imgpath);
+                Glide.with(context).load(tDialog.imgpath).thumbnail(0.3f).into(vh.headImg);
+//                setPhoto(vh.headImg, tDialog.imgpath);
             }
         }
 
@@ -141,17 +143,21 @@ public class DialogAdapter extends ArrayAdapter {
                 switch (msg.what) {
                     case 1:
                         String newPath = msg.getData().getString("newPath");
+                        Log.d(TAG, "handleMessage: newPath:"+newPath);
                         Glide.with(context).load(newPath).thumbnail(0.3f).into(imageView);
                 }
             }
         };
 
         String filePath = FileUtil.getFilePath(fileHash);
+        Log.d(TAG, "setPhoto: FileUtil.getFilePath:"+filePath);
         if (filePath.equals("null")) { //如果没有存储过图片
+            Log.d(TAG, "setPhoto: 开始下载");
             Textile.instance().files.content(fileHash, new Handlers.DataHandler() {
                 @Override
                 public void onComplete(byte[] data, String media) {
                     String newPath = FileUtil.storeFile(data, fileHash);
+                    Log.d(TAG, "onComplete: 获得了 ："+newPath);
                     Message msg = new Message();
                     msg.what = 1;
                     Bundle b = new Bundle();
@@ -165,6 +171,7 @@ public class DialogAdapter extends ArrayAdapter {
                 }
             });
         } else {
+            Log.d(TAG, "setPhoto: shit~");
             imageView.setImageBitmap(BitmapFactory.decodeFile(filePath));
         }
     }

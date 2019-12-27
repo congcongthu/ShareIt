@@ -78,15 +78,20 @@ public class ContactBean extends IndexBean implements Parcelable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if(name.equals("")){
+            this.name="null";
+        }else {
+            this.name = name;
+        }
         //设置对应的英文字母
-        String upperCase = Pinyin.toPinyin(name.charAt(0)).toUpperCase();
+        String upperCase = Pinyin.toPinyin(this.name.charAt(0)).toUpperCase();
         String value = String.valueOf(upperCase.charAt(0));
         if (!value.matches("[A-Z]")) {
             //如果不是A-Z字母开头
             value = "#";
         }
         setLetter(value);
+
     }
 
     public int getType() {

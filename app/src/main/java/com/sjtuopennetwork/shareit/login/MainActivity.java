@@ -101,9 +101,9 @@ public class MainActivity extends AppCompatActivity {
             shareItRegister.setOnClickListener(v -> {
                 SharedPreferences.Editor editor=pref.edit();
                 String myname=editText.getText().toString();
-                if(myname.equals("")){
-                    Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
-                }else{
+//                if(myname.equals("")){
+//                    Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
+//                }else{
                     editor.putString("myname",myname);
                     Log.d(TAG, "onCreate: 登录时选择头像："+avatarpath);
                     editor.putString("avatarpath",avatarpath); //如果没选则为""
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                     toHomeActivity.putExtra("login",1); //shareit注册新账号，1
                     startActivity(toHomeActivity);
                     finish();
-                }
+//                }
             });
 
             huaweiLogin.setOnClickListener(v -> {
