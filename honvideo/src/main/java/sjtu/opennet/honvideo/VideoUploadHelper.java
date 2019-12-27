@@ -32,7 +32,7 @@ public class VideoUploadHelper {
     static final Object SEGTHREADLOCK = new Object();
     final Object SEGLOCK = new Object();
     //final Object SEGLOCK = new Object();
-    M3u8Listener listObserver;
+    M3u8Listener2 listObserver;
     private VideoMeta vMeta;
     private String rootPath;
     private String videoPath;
@@ -101,7 +101,9 @@ public class VideoUploadHelper {
         @Override
         public void onFinish() {
             synchronized (SEGLOCK) {
+//                Thread.sleep();
                 listObserver.stopWatching();
+                //listObserver.isComplete();
                 exitUploader.start();
                 Log.d(TAG, "FFmpeg segment finish.");
                 Log.d(TAG, "SEGLOCK NOTIFY");
@@ -140,11 +142,11 @@ public class VideoUploadHelper {
 
         this.command = String.format("-i %s -c copy -bsf:v h264_mp4toannexb -map 0 -f segment " +
                 "-segment_time %d " +
-                "-segment_list_size 1 " +
+                "-segment_list_size 10 " +
                 "-segment_list %s " +
                 "%s/out%%04d.ts", filePath,segmentTime, m3u8Path, chunkPath);
 
-        listObserver = new M3u8Listener(videoPath, vMeta.getHash(), videoQueue, chunkQueue);
+        listObserver = new M3u8Listener2(videoPath, vMeta.getHash(), videoQueue);
         Log.d(TAG, String.format("Uploader initialize complete for video ID %s.", vMeta.getHash()));
     }
 
@@ -247,6 +249,7 @@ public class VideoUploadHelper {
             videoUploader.start();
             chunkpublisher.start(); //It was ended by upload task.
             listObserver.startWatching();
+            //listObserver.start();
             //Segmenter.segment(context, 1, filePath, m3u8Path, chunkPath, segHandler);
             new segmentThread().start();
         } catch (Exception e) {
