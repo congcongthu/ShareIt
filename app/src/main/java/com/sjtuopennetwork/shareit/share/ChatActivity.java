@@ -306,6 +306,7 @@ public class ChatActivity extends AppCompatActivity {
             videoHelper.upload(() -> {
                 try {
                     Log.d(TAG, "onActivityResult: 向thread添加video "+videoPb.getVideoLength()/1000000);
+                    Textile.logDebug("===============start to send video: "+videoPb.getId());
                     Textile.instance().videos.threadAddVideo(threadid,videoPb.getId()); //向thread中添加
                 }catch(Exception e){
                     e.printStackTrace();

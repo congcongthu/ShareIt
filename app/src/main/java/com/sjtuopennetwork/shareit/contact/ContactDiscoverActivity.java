@@ -184,15 +184,21 @@ public class ContactDiscoverActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }else{ //如果是创建群组的threadAdd
-            for (Integer integer:listItemID){
-                //逐个发邀请
-                try {
-                    Textile.instance().invites.add(threadId,resultContacts.get(integer).address);
-                } catch (Exception e) {
-                    e.printStackTrace();
+            new Thread(){
+                @Override
+                public void run() {
+                    try {
+                        for (Integer integer:listItemID){
+                            //逐个发邀请
+                            Thread.sleep(80);
+                            Textile.instance().invites.add(threadId,resultContacts.get(integer).address);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-                finish();
-            }
+            }.start();
+
         }
     }
 

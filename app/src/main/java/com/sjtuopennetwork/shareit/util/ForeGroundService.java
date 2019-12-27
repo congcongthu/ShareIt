@@ -165,7 +165,7 @@ public class ForeGroundService extends Service {
                     loginAccount=m.getAddress();
                     final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
-                    Textile.initialize(repoPath,m.getSeed() , true, false, true);
+                    Textile.initialize(repoPath,m.getSeed() , true, true, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -193,7 +193,7 @@ public class ForeGroundService extends Service {
                     final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
                     if(!Textile.isInitialized(repoPath)){
-                        Textile.initialize(repoPath,m.getSeed() , true, false,true);
+                        Textile.initialize(repoPath,m.getSeed() , true, true,true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -277,6 +277,11 @@ public class ForeGroundService extends Service {
                         public void onError(Exception e) {
                             Log.d(TAG, "onError: 131cafe连接失败");
                             //发消息再连接
+                            try {
+                                Thread.sleep(30000);
+                            } catch (InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
                             EventBus.getDefault().post(new Double(2.34));
                         }
                     });
