@@ -160,7 +160,7 @@ public class VideoPlayActivity extends AppCompatActivity {
             Log.d(TAG, "initPlayer: rotation width height:"+rotation+" "+videoWidth+" "+videoHeight);
             if(rotation==0){
                 Log.d(TAG, "initPlayer: 即将横屏播放");
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
 
             //直接播放本地视频文件
@@ -239,7 +239,7 @@ public class VideoPlayActivity extends AppCompatActivity {
         Log.d(TAG, "initPlayer: rotation width height:"+rotation+" "+videoWidth+" "+videoHeight);
         if(videoWidth>videoHeight){
             Log.d(TAG, "initPlayer: 即将横屏播放");
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         }
         playerView.setPlayer(player);

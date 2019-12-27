@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "===============";
 
     //UI控件
-    Button huaweiLogin;
+//    Button huaweiLogin;
     Button shareItLogin;
     Button shareItRegister;
     ImageView registerAvatar;
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }else{ //如果未登录
             setContentView(R.layout.activity_main); //进入登录界面
-            huaweiLogin=findViewById(R.id.huaweiLogin);
+//            huaweiLogin=findViewById(R.id.huaweiLogin);
             shareItLogin=findViewById(R.id.shareItLogin);
             shareItRegister=findViewById(R.id.shareItRegister);
             registerAvatar=findViewById(R.id.register_avatar);
@@ -117,12 +117,12 @@ public class MainActivity extends AppCompatActivity {
 //                }
             });
 
-            huaweiLogin.setOnClickListener(v -> {
-                //使用华为账号登录
-                mSignInOptions = new HuaweiIdSignInOptions.Builder(HuaweiIdSignInOptions.DEFAULT_SIGN_IN).build();
-                mSignInClient= HuaweiIdSignIn.getClient(MainActivity.this,mSignInOptions);
-                startActivityForResult(mSignInClient.getSignInIntent(), 8888);
-            });
+//            huaweiLogin.setOnClickListener(v -> {
+//                //使用华为账号登录
+//                mSignInOptions = new HuaweiIdSignInOptions.Builder(HuaweiIdSignInOptions.DEFAULT_SIGN_IN).build();
+//                mSignInClient= HuaweiIdSignIn.getClient(MainActivity.this,mSignInOptions);
+//                startActivityForResult(mSignInClient.getSignInIntent(), 8888);
+//            });
 
             shareItLogin.setOnClickListener(v -> {
                 //跳转到shareit登录界面
