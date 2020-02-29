@@ -127,6 +127,8 @@ public class Textile implements LifecycleObserver {
      */
     public Videos videos;
 
+    public Stream streams;
+
     /**
      * Provides access to Textile videos related APIs
      */
@@ -515,6 +517,7 @@ public class Textile implements LifecycleObserver {
         schemas = new Schemas(node);
         threads = new Threads(node);
         videos = new Videos(node);
+        streams = new Stream(node);
         peers = new Peers(node);
     }
 

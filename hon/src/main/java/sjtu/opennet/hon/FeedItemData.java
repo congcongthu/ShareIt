@@ -1,5 +1,6 @@
 package sjtu.opennet.hon;
 
+import sjtu.opennet.textilepb.View;
 import sjtu.opennet.textilepb.View.Announce;
 import sjtu.opennet.textilepb.View.Comment;
 import sjtu.opennet.textilepb.View.Ignore;
@@ -26,4 +27,5 @@ public class FeedItemData {
     public AddAdmin addAdmin;
     public RemovePeer removePeer;
     public FeedVideo feedVideo;
+    public View.FeedStreamMeta feedStreamMeta;
 }

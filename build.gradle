@@ -21,10 +21,10 @@ allprojects {
     repositories {
         google()
         jcenter()
-//        maven { url "https://dl.bintray.com/textile/maven" }
-        maven { url 'http://202.120.38.131:9081/repository/SJTU-OpenNetwork/' }
+        //maven { url 'http://202.120.38.131:9081/repository/SJTU-OpenNetwork/' }
         maven { url "https://jitpack.io" }
         maven {url 'http://developer.huawei.com/repo/'}
+        //
     }
 }
 

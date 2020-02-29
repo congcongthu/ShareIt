@@ -15,6 +15,9 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.util.Pair;
 
+import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.googlecode.protobuf.format.JsonFormat;
 import com.huawei.hms.support.log.LogLevel;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.ChatActivity;
@@ -105,7 +108,7 @@ public class ForeGroundService extends Service {
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
         repoPath=intent.getStringExtra("repopath");
 
-        connectCafe= pref.getBoolean("connectCafe",true);
+        connectCafe= pref.getBoolean("connectCafe",false);
 
         SharedPreferences.Editor editor=pref.edit();
         editor.putBoolean("131ok",false);
@@ -647,6 +650,27 @@ public class ForeGroundService extends Service {
             });
         }
 
+        if(feedItemData.type.equals(FeedItemType.STREAMMETA)){ //得到stream
+
+            Log.d(TAG, "handleThreadUpdates: =====收到stream");
+
+            int ismine=0;
+            if(feedItemData.feedStreamMeta.getUser().getAddress().equals(myAddr)){
+                ismine=1;
+            }
+            if(ismine==0){  //不是我的视频才广播出去，因为我自己的消息直接显示了
+                String msgBody=feedItemData.feedStreamMeta.getStreammeta().getId();
+                TMsg tMsg=DBoperator.insertMsg(appdb,threadId,2,feedItemData.feedStreamMeta.getBlock(),
+                        feedItemData.feedStreamMeta.getUser().getName(),
+                        feedItemData.feedStreamMeta.getUser().getAvatar(),
+                        msgBody,
+                        feedItemData.feedStreamMeta.getDate().getSeconds(), ismine);
+
+                Log.d(TAG, "onComplete: postMsg消息");
+                EventBus.getDefault().post(tMsg);
+            }
+        }
+
         if(feedItemData.type.equals(FeedItemType.REMOVEPEER)){
             //收到自己被移出群组的消息，就要手动删除这个群组
             String removeThreadId=thread.getId();
@@ -674,28 +698,43 @@ public class ForeGroundService extends Service {
 
         @Override
         public void notificationReceived(Model.Notification notification) {
-            //查出邀请中最近的一个，添加到头部。
-            int gpinvite=0;
-            sjtu.opennet.textilepb.View.InviteView lastInvite=null;
-            try {
-                if(Textile.instance().invites!=null){
-                    List<sjtu.opennet.textilepb.View.InviteView> invites = Textile.instance().invites.list().getItemsList();
-                    for(sjtu.opennet.textilepb.View.InviteView v:invites){ //遍历所有的邀请
-                        if(!v.getName().equals("FriendThread1219")){ //只要群组名不等于这个那就是好友邀请
-                            gpinvite++;
-                            lastInvite=v;
+
+
+            if(notification.getBody().equals("stream file")){
+                Log.d(TAG, "notificationReceived: 收到streamfile");
+                try {
+                    View.VideoDescription.Builder b=View.VideoDescription.newBuilder();
+                    JsonFormat.merge(notification.getSubjectDesc(),b);
+                    View.VideoDescription videoDescription= b.build();
+                    Log.d(TAG, "notificationReceived: "+ videoDescription);
+                    EventBus.getDefault().post(new Pair<>(notification.getBlock(),videoDescription));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else{
+                //查出邀请中最近的一个，添加到头部。
+                int gpinvite = 0;
+                sjtu.opennet.textilepb.View.InviteView lastInvite = null;
+                try {
+                    if (Textile.instance().invites != null) {
+                        List<sjtu.opennet.textilepb.View.InviteView> invites = Textile.instance().invites.list().getItemsList();
+                        for (sjtu.opennet.textilepb.View.InviteView v : invites) { //遍历所有的邀请
+                            if (!v.getName().equals("FriendThread1219")) { //只要群组名不等于这个那就是好友邀请
+                                gpinvite++;
+                                lastInvite = v;
+                            }
                         }
                     }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                if (gpinvite > 0) { //如果有群组邀请就要显示出来
+                    TDialog noti = new TDialog(1, "", "通知", lastInvite.getInviter().getName() + " 邀请你",
+                            lastInvite.getDate().getSeconds(), false, "tongzhi", true, true);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if(gpinvite>0){ //如果有群组邀请就要显示出来
-                TDialog noti=new TDialog(1,"","通知",lastInvite.getInviter().getName()+" 邀请你",
-                        lastInvite.getDate().getSeconds(),false,"tongzhi",true,true);
-
-                EventBus.getDefault().post(noti);
+                    EventBus.getDefault().post(noti);
+                }
             }
         }
 
@@ -795,6 +834,8 @@ public class ForeGroundService extends Service {
 
             createDeviceThread();
 
+            //QmQJf71bndD1p7i2h2sYvWEkhz8SD1vpLp8LZ6eBeTWSER   21wAacMe62Q1fVKth69GLmwj68yRYbYAVjQ9im2DT72d6BAGpDYpn6nMEMR1W
+//            addIntoWorldThread();
 
             //测试name
             try {
@@ -806,6 +847,14 @@ public class ForeGroundService extends Service {
 
             //连网之后反馈给主界面
             EventBus.getDefault().post(Integer.valueOf(0));
+        }
+
+        private void addIntoWorldThread() {
+            try {
+                Textile.instance().invites.acceptExternal("QmQJf71bndD1p7i2h2sYvWEkhz8SD1vpLp8LZ6eBeTWSER","21wAacMe62Q1fVKth69GLmwj68yRYbYAVjQ9im2DT72d6BAGpDYpn6nMEMR1W");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override

@@ -33,6 +33,7 @@ class MessageHandler implements Messenger {
 
     @Override
     public void notify(final Event event) {
+        System.out.println("=========notifyEvent:"+MobileEventType.forNumber(event.getType()));
         switch (MobileEventType.forNumber(event.getType())) {
             case NODE_START:
                 for (final TextileEventListener listener : listeners) {
@@ -84,6 +85,7 @@ class MessageHandler implements Messenger {
                 try {
                     final FeedItem feedItem = FeedItem.parseFrom(event.getData());
                     final FeedItemData data = Util.feedItemData(feedItem);
+                    System.out.println("=========Thread更新："+data.type);
                     for (final TextileEventListener listener : listeners) {
                         listener.threadUpdateReceived(feedItem.getThread(), data);
                     }
@@ -94,6 +96,7 @@ class MessageHandler implements Messenger {
             case NOTIFICATION:
                 try {
                     final Notification notification = Notification.parseFrom(event.getData());
+                    System.out.println("=============收到通知："+notification.getBody());
                     for (final TextileEventListener listener : listeners) {
                         listener.notificationReceived(notification);
                     }
@@ -123,7 +126,7 @@ class MessageHandler implements Messenger {
                                 for (final TextileEventListener listener : listeners) {
                                     listener.videoChunkQueryResult(queryEvent.getId(), vchunk);
                                 }
-                            } else if (type.equals("SyncFile")) {
+                            } else if (type.equals("/SyncFile")) {
                                 final SyncFile sf = SyncFile.parseFrom(queryEvent.getData().getValue().getValue());
                                 for (final TextileEventListener listener : listeners) {
                                     listener.syncFileQueryResult(queryEvent.getId(), sf);

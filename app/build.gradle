@@ -40,6 +40,12 @@ android {
     }
 }
 
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
@@ -51,9 +57,11 @@ dependencies {
     implementation project(':hon')
     implementation project(':textilepb')
 
-    implementation "sjtu.opennet:hon-textile-mobile:0.2.29-no131-pubsub-lock-oldcafe"
+//    implementation "sjtu.opennet:hon-textile-mobile:0.2.29-no131-pubsub-lock-oldcafe"
+    implementation(name: 'mobile', ext: 'aar')
 
     implementation "com.google.protobuf:protobuf-java:3.9.2"
+    implementation 'com.googlecode.protobuf-java-format:protobuf-java-format:1.2'
 
     //EventBus，用于异步消息通信
     implementation 'org.greenrobot:eventbus:3.1.1'

@@ -91,6 +91,8 @@ public class ChatActivity extends AppCompatActivity {
     List<LocalMedia> chooseVideo;
     String avatarpath;
     int pageIndex;
+    String myName;
+    String myAvatar;
 
     //退出群组相关
     public static final String REMOVE_DIALOG="you get out";
@@ -174,6 +176,8 @@ public class ChatActivity extends AppCompatActivity {
         Intent it=getIntent();
         threadid=it.getStringExtra("threadid");
         try {
+            myName=Textile.instance().profile.name();
+            myAvatar=Textile.instance().profile.avatar();
             chat_thread = Textile.instance().threads.get(threadid);
             if(chat_thread.getWhitelistCount()==2){ //如果是双人thread
                 group_menu.setVisibility(View.GONE);
@@ -219,6 +223,7 @@ public class ChatActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     msgList.add(tMsg);
+//                    msgAdapter.notifyDataSetChanged();
                     chat_lv.setSelection(msgList.size());
 //                }
 
@@ -303,32 +308,38 @@ public class ChatActivity extends AppCompatActivity {
             VideoUploadHelper videoHelper=new VideoUploadHelper(this, filePath, cafeStore);
             Model.Video videoPb=videoHelper.getVideoPb();
 
-            videoHelper.upload(() -> {
+            Model.StreamMeta streamMeta= Model.StreamMeta.newBuilder().setId(videoPb.getId()).setNsubstreams(1).build();
+            try {
+                Textile.instance().streams.startStream(threadid,streamMeta); //开始这个流
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            videoHelper.upload(() -> { //开始切割并streamAddFile
                 try {
                     Log.d(TAG, "onActivityResult: 向thread添加video "+videoPb.getVideoLength()/1000000);
                     Textile.logDebug("===============start to send video: "+videoPb.getId());
-                    Textile.instance().videos.threadAddVideo(threadid,videoPb.getId()); //向thread中添加
+//                    Textile.instance().videos.threadAddVideo(threadid,videoPb.getId()); //向thread中添加
                 }catch(Exception e){
                     e.printStackTrace();
                 }
             });
 
-
-
+            //发送端立马显示发送视频
             Bitmap tmpBmap = videoHelper.getPoster(); //拿到缩略图
             String tmpdir = FileUtil.getAppExternalPath(this, "temp");
             String videoHeadPath=tmpdir+System.currentTimeMillis(); //随机给一个名字
-            //将缩略图临时保存到本地
             FileUtil.saveBitmap(videoHeadPath,tmpBmap);
-            String posterAndId=videoHeadPath+"##"+videoPb.getId()+"##"+filePath;
+            String posterAndId=videoHeadPath+"##"+filePath;
             TMsg tMsg= null;
             try {
-                tMsg = new TMsg("",threadid,2,
-                        Textile.instance().profile.name(),Textile.instance().profile.avatar(),posterAndId,System.currentTimeMillis()/1000,true);
+                long l=System.currentTimeMillis();
+                tMsg=DBoperator.insertMsg(appdb,threadid,2,String.valueOf(l),myName,myAvatar
+                ,posterAndId,l,1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             msgList.add(tMsg);
+//            msgAdapter.notifyDataSetChanged();
             chat_lv.setSelection(msgList.size());
         }
     }

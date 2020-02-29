@@ -4,6 +4,9 @@ package sjtu.opennet.honvideo;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
+import com.google.protobuf.ByteString;
+import com.googlecode.protobuf.format.JsonFormat;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,7 +14,9 @@ import java.util.concurrent.BlockingQueue;
 
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
+import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.Model.VideoChunk;
+import sjtu.opennet.textilepb.View;
 
 /**
  * Video upload task.
@@ -137,7 +142,7 @@ public class VideoUploadTask {
      * @param currentDuration The duration now. Used as startTime;
      * @return endTime. Used to update duration in video Uploader.
      */
-    public VideoChunk upload(long currentDuration, long currentIndex) throws VideoExceptions.UnexpectedEndException{
+    public VideoChunk upload(long currentDuration, long currentIndex) throws Exception{
         this.currentDuration = currentDuration;
         this.currentIndex = currentIndex;
         //duration_int = readDurationFromReceiver();
@@ -151,9 +156,34 @@ public class VideoUploadTask {
             //timeLog.begin();
             byte[] fileContent = Files.readAllBytes(Paths.get(tsAbsolutePath));
             synchronized (LOCK) {
-                Textile.instance().ipfs.ipfsAddData(fileContent, true, false, tsHandler);
+                //Textile.instance().ipfs.ipfsAddData(fileContent, true, false, tsHandler);
                 //Log.d(TAG, "Task wait for ipfs complete");
-                LOCK.wait();
+
+                //stream
+                View.VideoDescription videoDescription= View.VideoDescription.newBuilder()
+                        .setChunk(tsPath)
+                        .setStartTime(currentDuration)
+                        .setEndTime(currentDuration + duration_long)
+                        .setIndex(currentIndex)
+                        .build();
+                String videoDescStr= JsonFormat.printToString(videoDescription);
+                Model.StreamFile streamFile= Model.StreamFile.newBuilder()
+                        .setData(ByteString.copyFrom(fileContent))
+                        .setDescription(ByteString.copyFromUtf8(videoDescStr))
+                        .build();
+                Textile.instance().streams.streamAddFile(videoId,streamFile.toByteArray());
+                System.out.println("================streamAddFile:"+tsPath);
+
+                videoChunk = VideoChunk.newBuilder()
+                        .setId(videoId)
+                        .setChunk(tsPath)
+//                        .setAddress(path)
+                        .setStartTime(currentDuration)
+                        .setEndTime(currentDuration + duration_long)
+                        .setIndex(currentIndex)
+                        .build();
+
+//                LOCK.wait();
                 //Log.d(TAG, "Task notified");
             }
             //Log.d(TAG, String.format("VIDEOPIPELINE: %s ipfs add complete. Use time %d ms", tsPath, timeLog.stopGetTime()));

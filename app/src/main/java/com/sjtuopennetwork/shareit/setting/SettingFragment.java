@@ -63,6 +63,8 @@ public class SettingFragment extends Fragment {
     RoundImageView avatar_layout;
     TextView logout_layout;
     Button uploadLog;
+    Button t_in;
+    Button t_se;
 
     //持久化
     private SharedPreferences pref;
@@ -105,6 +107,10 @@ public class SettingFragment extends Fragment {
         tv_name = getActivity().findViewById(R.id.myname);
         devices_layout = getActivity().findViewById(R.id.setting_devices_layout);
         logout_layout = getActivity().findViewById(R.id.logout);
+
+        t_in=getActivity().findViewById(R.id.test_insert_stream);
+        t_se=getActivity().findViewById(R.id.test_search_stream);
+
 
         uploadLog=getActivity().findViewById(R.id.uploadlog);
         uploadLog.setOnClickListener(view -> {

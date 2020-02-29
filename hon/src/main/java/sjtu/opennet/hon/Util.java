@@ -5,6 +5,7 @@ import com.google.protobuf.Timestamp;
 
 import java.util.Date;
 
+import sjtu.opennet.textilepb.View;
 import sjtu.opennet.textilepb.View.Announce;
 import sjtu.opennet.textilepb.View.Comment;
 import sjtu.opennet.textilepb.View.FeedItem;
@@ -69,6 +70,10 @@ public class Util {
             case "/Video":
                 feedItemData.type = FeedItemType.VIDEO;
                 feedItemData.feedVideo = FeedVideo.parseFrom(bytes);
+                break;
+            case "/Streammeta":
+                feedItemData.type=FeedItemType.STREAMMETA;
+                feedItemData.feedStreamMeta= View.FeedStreamMeta.parseFrom(bytes);
                 break;
             case "/Leave":
                 feedItemData.type = FeedItemType.LEAVE;

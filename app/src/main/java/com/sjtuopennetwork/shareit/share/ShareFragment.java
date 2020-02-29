@@ -160,6 +160,13 @@ public class ShareFragment extends Fragment {
         });
     }
 
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void getApplication(Integer integer){
+//        if(integer==7384){
+//            //直接同意并进入群聊
+//        }
+//    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getNewMsg(TDialog tDialog){ //获取到新的消息后要更新显示
         Log.d(TAG, "getNewMsg: 对话更新："+tDialog.threadname);

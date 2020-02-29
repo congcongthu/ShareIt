@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.ImageInfoActivity;
+import com.sjtuopennetwork.shareit.share.StreamTestActivity;
 import com.sjtuopennetwork.shareit.share.VideoPlayActivity;
 import com.sjtuopennetwork.shareit.util.FileUtil;
 import com.sjtuopennetwork.shareit.util.RoundImageView;
@@ -194,15 +195,30 @@ public class MsgAdapter extends BaseAdapter {
                     });
                 }else{ //是视频就要解出缩略图的hash
                     String[] posterAndId_r=msgBody.split("##"); //0是poster，1是Id，2是视频路径
-                    Log.d(TAG, "handlePhotoView: 自己视频的消息的body："+posterAndId_r[0]+" "+posterAndId_r[1]+" "+posterAndId_r[2]);
                     Glide.with(context).load(posterAndId_r[0]).thumbnail(0.3f).into(h.chat_photo_r);
-                    h.chat_photo_r.setOnClickListener(view1 -> {
-                        Intent it=new Intent(context, VideoPlayActivity.class);
-                        it.putExtra("ismine",true);
-                        it.putExtra("videoid",posterAndId_r[1]);
-                        it.putExtra("videopath",posterAndId_r[2]);
-                        context.startActivity(it);
+                    h.chat_photo_r.setOnClickListener(view1->{
+                        Intent it12=new Intent(context,StreamTestActivity.class);
+                        it12.putExtra("ismine",true);
+                        it12.putExtra("videopath",posterAndId_r[1]);
+                        context.startActivity(it12);
                     });
+//
+//                    if(posterAndId_r.length==3){ //Video
+//                        Log.d(TAG, "handlePhotoView: 自己视频的消息的body："+posterAndId_r[0]+" "+posterAndId_r[1]+" "+posterAndId_r[2]);
+//                        Glide.with(context).load(posterAndId_r[0]).thumbnail(0.3f).into(h.chat_photo_r);
+//                        h.chat_photo_r.setOnClickListener(view1 -> {
+//                            Intent it=new Intent(context, VideoPlayActivity.class);
+//                            it.putExtra("ismine",true);
+//                            it.putExtra("videoid",posterAndId_r[1]);
+//                            it.putExtra("videopath",posterAndId_r[2]);
+//                            context.startActivity(it);
+//                        });
+//                    }else if(posterAndId_r.length==1){//Stream
+//                        Glide.with(context).load(R.drawable.ic_album).thumbnail(0.3f).into(h.chat_photo_r);
+//                        h.chat_photo_r.setOnClickListener(view1 ->{
+//
+//                        });
+//                    }
                 }
             }else{ //不是自己的消息
                 h.send_photo_left.setVisibility(View.VISIBLE); //左边的显示
@@ -222,13 +238,24 @@ public class MsgAdapter extends BaseAdapter {
                     });
                 }else{ //是视频就setVideo
                     String[] posterAndId=msgBody.split("##"); //0是poster，1是Id
-                    Glide.with(context).load(posterAndId[0]).thumbnail(0.3f).into(h.chat_photo);
-                    h.chat_photo.setOnClickListener(view1 -> {
-                        Intent it=new Intent(context, VideoPlayActivity.class);
-                        it.putExtra("ismine",false);
-                        it.putExtra("videoid",posterAndId[1]);
-                        context.startActivity(it);
-                    });
+                    if(posterAndId.length==3){
+                        Glide.with(context).load(posterAndId[0]).thumbnail(0.3f).into(h.chat_photo);
+                        h.chat_photo.setOnClickListener(view1 -> {
+                            Intent it=new Intent(context, VideoPlayActivity.class);
+                            it.putExtra("ismine",false);
+                            it.putExtra("videoid",posterAndId[1]);
+                            context.startActivity(it);
+                        });
+                    }else if(posterAndId.length==1){ //stream
+                        Glide.with(context).load(R.drawable.ic_album).thumbnail(0.3f).into(h.chat_photo);
+                        h.chat_photo.setOnClickListener(view1->{
+                            Intent it11=new Intent(context, StreamTestActivity.class);
+                            it11.putExtra("streamid",posterAndId[0]);
+                            it11.putExtra("ismine",false);
+                            context.startActivity(it11);
+                        });
+                    }
+
                 }
             }
         }

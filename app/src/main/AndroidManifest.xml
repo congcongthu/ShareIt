@@ -20,7 +20,8 @@
         android:roundIcon="@drawable/ic_share_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".util.QRCodeActivity"></activity>
+        <activity android:name=".share.StreamTestActivity"></activity>
+        <activity android:name=".util.QRCodeActivity" />
         <activity android:name=".share.VideoPlayActivity" />
         <activity android:name=".share.GroupCodeActivity" />
 

@@ -11,5 +11,6 @@ public enum FeedItemType {
     ANNOUNCE,
     ADDADMIN,
     REMOVEPEER,
-    VIDEO
+    VIDEO,
+    STREAMMETA,
 }
