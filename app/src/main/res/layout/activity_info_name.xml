@@ -54,4 +54,8 @@
         android:layout_marginTop="10dp"
         android:paddingLeft="15dp"
         android:text="好名字可以让你的朋友更容易记住你。" />
+    <TextView
+        android:id="@+id/peerId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

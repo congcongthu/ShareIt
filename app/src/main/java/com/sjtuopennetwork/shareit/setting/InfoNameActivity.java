@@ -20,6 +20,7 @@ public class InfoNameActivity extends AppCompatActivity {
     private SharedPreferences pref;
 
     private String myname;
+    TextView peerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,5 +49,12 @@ public class InfoNameActivity extends AppCompatActivity {
             }
             finish();
         });
+
+        peerId=findViewById(R.id.peerId);
+        try {
+            peerId.setText(Textile.instance().profile.get().getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
