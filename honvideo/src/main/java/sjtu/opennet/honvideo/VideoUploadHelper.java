@@ -321,7 +321,7 @@ public class VideoUploadHelper {
         @Override
         public void run() {
 //            Log.d(TAG, "VIDEOPIPELINE: Meta publish thread start.");
-            publishMeta();
+//            publishMeta();
 //            Log.d(TAG, "VIDEOPIPELINE: Meta publish thread end.");
         }
     }
