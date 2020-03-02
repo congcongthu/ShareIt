@@ -63,6 +63,7 @@ public class ForeGroundService extends Service {
     HeartBeat heartBeat;
     boolean startBeat;
     int uploadLogCount=0;
+    long beforeTime;
 
 
     @Override
@@ -177,7 +178,6 @@ public class ForeGroundService extends Service {
                     .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-core", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
 //                .putSystems("hon.linkedTicketStorage", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-//                .putSystems("tex-core", View.LogLevel.Level.DEBUG)
 //                .putSystems("hon.bitswap", View.LogLevel.Level.DEBUG)
 //                .putSystems("bitswap", View.LogLevel.Level.DEBUG)
                     .build();
@@ -214,7 +214,7 @@ public class ForeGroundService extends Service {
                     "http://202.120.38.131:40601",
 //                    "http://192.168.1.109:40601",
 //                    "http://202.120.40.60:40601"
-                    "29UxcENKEZaNnr3zjtcqsSdBaPGep2VqeF98HAGvYaGLjU5SNoXwc9yEkF8Nx", //131
+                    "K6ayNanfZcfvGDBbxmf9DHkeyv4osxoGPpMGNP3vX4DQTnraUugY4h51T6DD", //131
 //                    "NhYrQb1XfpCFC7WBhX7UHPkax1o4YvAxxzXhZfLg6qJ5cbbfZakmPQZVer7x",//HW159.138.58.61
 //                    "29TkBsmjFfEnR1Sack63qWK5WkPGjJtA2kXFHvTijmSE1KYMvVopBRWagHLbE",
 //                    "WwqhHzab1oRqXPs3KnDL2oX1S9h2D7KYotMo2eNUg2MFPJPENWgB1Q2H6m3b",
@@ -600,9 +600,15 @@ public class ForeGroundService extends Service {
                 try {
                     //图片消息的hash
                     final String large_hash = Textile.instance().files.list(threadId,"",3).getItems(0).getFiles(0).getLinksMap().get("large").getHash();
+                    beforeTime=System.currentTimeMillis();
                     Textile.instance().files.content(large_hash, new Handlers.DataHandler() {
                         @Override
                         public void onComplete(byte[] data, String media) { //获得图片成功
+
+                            long spendTime=System.currentTimeMillis()-beforeTime;
+                            long bytePerMillis=data.length/spendTime;
+//                            Log.d(TAG, "onComplete: "+"=====pic_cid:"+large_hash+" millis:"+spendTime+" bytes:"+data.length+" bytePerMills:"+bytePerMillis);
+//                            Textile.logDebug("=====pic_cid:"+large_hash+" millis:"+spendTime+" bytes:"+data.length+" bytePerMills:"+bytePerMillis);
                             String newPath=FileUtil.storeFile(data,large_hash); //将图片存到本地
                             String dialogimg="";
                             if(isSingle){ //单人的thread,图片就是对方的头像，不改
