@@ -23,64 +23,63 @@ public class LogToHTTP {
 
     private static String url="http://202.120.38.131:14673/uploadfile/";
 
-    public static void uploadLog(String filename)  {
+    public static String  uploadLog(String filename)  {
+        if(true){
+            OkHttpClient client=new OkHttpClient();
 
-        OkHttpClient client=new OkHttpClient();
+            File logDir=new File(filename);
 
-        File logFile=new File(filename);
-
-        Log.d(TAG, "uploadLog: 上传文件的路径："+logFile.getAbsolutePath());
-
-        String peerID= "";
-        try {
-//            peerID=Textile.instance().profile.get().getId();
-            peerID=Textile.instance().profile.get().getName();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        //copy到另一个文件
-        File tmp=new File(filename+".tmp");
-        try {
-            if(!tmp.exists()){
-                tmp.createNewFile();
+            String peerID= "";
+            try {
+                peerID=Textile.instance().profile.get().getId();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            FileUtils.copyFile(logFile,tmp);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        RequestBody requestBody=new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("myfile",peerID+".log",RequestBody.create(MediaType.parse("multipart/form-data"), tmp))
-                .build();
+            File[] files=logDir.listFiles();
 
-        Request request=new Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .build();
+            //copy到另一个文件
+//            File tmp=new File(filename+".tmp");
+//            try {
+//                if(!tmp.exists()){
+//                    tmp.createNewFile();
+//                }
+//                FileUtils.copyFile(logFile,tmp);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 
-        new Thread(){
-            @Override
-            public void run() {
+            for(int i=0;i<files.length;i++){
+                Log.d(TAG, "uploadLog: 上传文件："+files[i].getName());
+                RequestBody requestBody=new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("myfile",peerID+".log"+i,RequestBody.create(MediaType.parse("multipart/form-data"), files[i]))
+                        .build();
+
+                Request request=new Request.Builder()
+                        .url(url)
+                        .post(requestBody)
+                        .build();
+
                 try {
                     Random r=new Random();
-                    int delay=r.nextInt(10000);
+                    int delay=r.nextInt(1000);
                     Log.d(TAG, "run: 等待随机秒数："+delay);
 
-
-
+                    Response response=null;
                     Thread.sleep(delay);
-                    Response response=client.newCall(request).execute();
+                    response=client.newCall(request).execute();
+//                    responseString=response.body().string();
                     Log.d(TAG, "run: 上传结果："+response.body().string());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }.start();
 
-        Log.d(TAG, "uploadLog: 上传结束");
-
+            return "";
+        }else{
+            return "";
+        }
     }
 
 }
