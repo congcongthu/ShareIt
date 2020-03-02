@@ -417,7 +417,13 @@ public class VideoPlayActivity extends AppCompatActivity {
             }
         }
 
-        LogToHTTP.uploadLog(logPath);
+        new Thread(){
+            @Override
+            public void run() {
+                LogToHTTP.uploadLog(logPath);
+            }
+        }.start();
+
 
         finished=true;
         finishGetHash=true;
