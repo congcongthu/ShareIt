@@ -192,6 +192,10 @@ public class Textile implements LifecycleObserver {
         return Mobile.newWallet(wordCount);
     }
 
+    public static void logDebug(final String msg) {
+        Mobile.logDebug(msg.getBytes());
+    }
+
     /**
      * Create a new Textile wallet
      * @param huaweiOpenId Huawei open id
@@ -557,4 +561,5 @@ public class Textile implements LifecycleObserver {
             Logger.info(TAG, name + " disconnected");
         }
     };
+
 }

@@ -24,31 +24,31 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
     private BlockingQueue<Integer> lockQueue;
     public long chunkStartTime;
 
-    private Handlers.DataHandler handler = new Handlers.DataHandler() {
-        @Override
-        public void onComplete(byte[] data, String media) {
-            Log.d(TAG, String.format("VIDEOPIPELINE: %s IPFS dataAtPath complete", fileName));
-            String savePath = String.format("%s/%s", chunkDir, fileName);
-            FileUtil.writeByteArrayToFile(savePath, data);
-            Log.d(TAG, String.format("VIDEOPIPELINE: %s saved %s", fileName, savePath));
-            try {
-                Textile.instance().videos.addVideoChunk(vChunk);
-                Log.d(TAG, String.format("VIDEOPIPELINE: %s added to local DB", fileName));
-                lockQueue.add(1);
-            }catch(Exception e){
-                Log.e(TAG, "Write Database Fail!!!!");
-                lockQueue.add(-1);
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void onError(Exception e) {
-            lockQueue.add(-1);
-            Log.e(TAG, "ipfs.dataAtPath throws unexpected error when receiving video chunks.");
-            e.printStackTrace();
-        }
-    };
+//    private Handlers.DataHandler handler = new Handlers.DataHandler() {
+//        @Override
+//        public void onComplete(byte[] data, String media) {
+//            Log.d(TAG, String.format("VIDEOPIPELINE: %s IPFS dataAtPath complete", fileName));
+//            String savePath = String.format("%s/%s", chunkDir, fileName);
+//            FileUtil.writeByteArrayToFile(savePath, data);
+//            Log.d(TAG, String.format("VIDEOPIPELINE: %s saved %s", fileName, savePath));
+//            try {
+//                Textile.instance().videos.addVideoChunk(vChunk);
+//                Log.d(TAG, String.format("VIDEOPIPELINE: %s added to local DB", fileName));
+//                lockQueue.add(1);
+//            }catch(Exception e){
+//                Log.e(TAG, "Write Database Fail!!!!");
+//                lockQueue.add(-1);
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        @Override
+//        public void onError(Exception e) {
+//            lockQueue.add(-1);
+//            Log.e(TAG, "ipfs.dataAtPath throws unexpected error when receiving video chunks.");
+//            e.printStackTrace();
+//        }
+//    };
 
     VideoReceiveTask(Model.VideoChunk vChunk, String chunkDir, boolean endTag, boolean destroyTag){
         //this.videoId = videoId;
@@ -115,7 +115,35 @@ public class VideoReceiveTask implements Comparable<VideoReceiveTask>{
         try {
             String chunkHash = vChunk.getAddress();
             Log.d(TAG, String.format("VIDEOPIPELINE: %s , Do ipfs data at path from %s", fileName, chunkHash));
-            Textile.instance().ipfs.dataAtPath(chunkHash, handler);
+            long beforeTime=System.currentTimeMillis();
+            Textile.instance().ipfs.dataAtPath(chunkHash, new Handlers.DataHandler() {
+                @Override
+                public void onComplete(byte[] data, String media) {
+                    long spendTime=System.currentTimeMillis()-beforeTime;
+                    long bytePerMillis=data.length/spendTime;
+                    Textile.logDebug("=====video:"+vChunk.getId()+" chunk_cid:"+vChunk.getAddress()+" millis:"+spendTime+" bytes:"+data.length+" bytePerMills:"+bytePerMillis);
+                    Log.d(TAG, String.format("VIDEOPIPELINE: %s IPFS dataAtPath complete", fileName));
+                    String savePath = String.format("%s/%s", chunkDir, fileName);
+                    FileUtil.writeByteArrayToFile(savePath, data);
+                    Log.d(TAG, String.format("VIDEOPIPELINE: %s saved %s", fileName, savePath));
+                    try {
+                        Textile.instance().videos.addVideoChunk(vChunk);
+                        Log.d(TAG, String.format("VIDEOPIPELINE: %s added to local DB", fileName));
+                        lockQueue.add(1);
+                    }catch(Exception e){
+                        Log.e(TAG, "Write Database Fail!!!!");
+                        lockQueue.add(-1);
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    lockQueue.add(-1);
+                    Log.e(TAG, "ipfs.dataAtPath throws unexpected error when receiving video chunks.");
+                    e.printStackTrace();
+                }
+            });
             //Log.d(TAG, String.format("Task with file %s completes.", fileName));
             return true;
         }catch(Exception e){

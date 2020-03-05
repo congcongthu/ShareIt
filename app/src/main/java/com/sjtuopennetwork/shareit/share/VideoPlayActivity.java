@@ -145,7 +145,6 @@ public class VideoPlayActivity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         }
 
-
         try {
             logPath= FileUtil.getAppExternalPath(this,"repo")+"/"+Textile.instance().profile.get().getAddress()+"/logs";
             Log.d(TAG, "onCreate: logPath:"+logPath);

@@ -176,10 +176,9 @@ public class ForeGroundService extends Service {
             sjtu.opennet.textilepb.View.LogLevel logLevel= sjtu.opennet.textilepb.View.LogLevel.newBuilder()
                     .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("hon.peermanager", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-core", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-//                .putSystems("hon.linkedTicketStorage", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-//                .putSystems("hon.bitswap", View.LogLevel.Level.DEBUG)
-//                .putSystems("bitswap", View.LogLevel.Level.DEBUG)
+                    .putSystems("tex-mobile", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .build();
             Textile.instance().logs.setLevel(logLevel);
             Log.d(TAG, "initTextile: after set log level ");
@@ -608,7 +607,7 @@ public class ForeGroundService extends Service {
                             long spendTime=System.currentTimeMillis()-beforeTime;
                             long bytePerMillis=data.length/spendTime;
 //                            Log.d(TAG, "onComplete: "+"=====pic_cid:"+large_hash+" millis:"+spendTime+" bytes:"+data.length+" bytePerMills:"+bytePerMillis);
-//                            Textile.logDebug("=====pic_cid:"+large_hash+" millis:"+spendTime+" bytes:"+data.length+" bytePerMills:"+bytePerMillis);
+                            Textile.logDebug("=====pic_cid:"+large_hash+" millis:"+spendTime+" bytes:"+data.length+" bytePerMills:"+bytePerMillis);
                             String newPath=FileUtil.storeFile(data,large_hash); //将图片存到本地
                             String dialogimg="";
                             if(isSingle){ //单人的thread,图片就是对方的头像，不改
