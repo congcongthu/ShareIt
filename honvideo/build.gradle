@@ -29,6 +29,12 @@ android {
 
 }
 
+repositories{
+    flatDir {
+        dirs '../app/libs'
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:appcompat-v7:28.0.0"
@@ -52,7 +58,8 @@ dependencies {
     implementation 'com.google.protobuf:protobuf-java:3.5.1'
     implementation project(':textilepb')
     implementation project(':hon')
-    implementation "sjtu.opennet:hon-textile-mobile:0.2.29-no131-pubsub-lock-oldcafe"
+//    implementation "sjtu.opennet:hon-textile-mobile:0.2.29-no131-pubsub-lock-oldcafe"
+    implementation (name:'mobile-no-ticket', ext:'aar')
     compile group: 'com.github.multiformats', name: 'java-multibase', version: 'v1.0.1'
 
 }

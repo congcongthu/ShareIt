@@ -262,6 +262,17 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void testVideo(Pair<Integer,String> apair){
+        if(apair.first==2546){
+            Intent it=new Intent(ChatActivity.this, VideoPlayActivity.class);
+            it.putExtra("ismine",false);
+            it.putExtra("videoid",apair.second);
+//            it.putExtra("videopath",posterAndId_r[2]);
+            startActivity(it);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

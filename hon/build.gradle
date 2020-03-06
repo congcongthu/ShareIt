@@ -27,6 +27,11 @@ android {
     }
 }
 
+repositories{
+    flatDir {
+        dirs '../app/libs'
+    }
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -44,7 +49,9 @@ dependencies {
     // UploadService
     implementation "com.github.textileio:android-upload-service:3.5.4"
 
-    implementation "sjtu.opennet:hon-textile-mobile:0.2.29-no131-pubsub-lock-oldcafe"
+//    implementation "sjtu.opennet:hon-textile-mobile:0.2.29-no131-pubsub-lock-oldcafe"
+    implementation (name:'mobile-no-ticket', ext:'aar')
+
 
     implementation project(':textilepb')
     implementation "com.google.protobuf:protobuf-java:3.9.2"

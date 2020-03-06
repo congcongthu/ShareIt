@@ -134,6 +134,10 @@ public class VideoPlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_play);
 
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
+
         finished =false;
         NextChunk = 0;
 
@@ -358,6 +362,12 @@ public class VideoPlayActivity extends AppCompatActivity {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateChat(TMsg tMsg){
+        if(tMsg.body.equals("quit-video")){
+            finish();
+        }
+    }
 
     @Override
     public void onStop() {
@@ -367,6 +377,10 @@ public class VideoPlayActivity extends AppCompatActivity {
         Textile.logDebug("====================stop to play video : "+videoid);
 
 //        LogToHTTP.uploadLog(logPath);
+
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
 
         finished=true;
         finishGetHash=true;

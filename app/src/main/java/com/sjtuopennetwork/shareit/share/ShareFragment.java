@@ -178,6 +178,15 @@ public class ShareFragment extends Fragment {
         dialoglistView.setSelection(0);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void testAcceptInvite(Pair<Integer,String> apair){
+        if(apair.first==2545){
+            Intent it=new Intent(getActivity(), ChatActivity.class);
+            it.putExtra("threadid",apair.second);
+            startActivity(it);
+        }
+    }
+
     @Override
     public void onStop() {
         super.onStop();
