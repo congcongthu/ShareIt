@@ -59,6 +59,10 @@ public class Ipfs extends NodeDependent {
             }
         });
     }
+
+    public byte[] objectAtPath(String path) throws Exception {
+        return node.objectAtPath(path);
+    }
     
     /**
      * Add raw data to IPFS

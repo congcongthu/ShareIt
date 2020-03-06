@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.os.Environment;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -46,6 +47,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -216,7 +218,7 @@ public class ChatActivity extends AppCompatActivity {
         bt_send_img.setOnClickListener(view -> {
             PictureSelector.create(ChatActivity.this)
                     .openGallery(PictureMimeType.ofImage())
-                    .maxSelectNum(1)
+                    .maxSelectNum(100)
                     .compress(false)
                     .forResult(PictureConfig.TYPE_IMAGE);
         });
@@ -278,29 +280,39 @@ public class ChatActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==PictureConfig.TYPE_IMAGE && resultCode==RESULT_OK){
-            choosePic=PictureSelector.obtainMultipleResult(data);
-            String filePath=choosePic.get(0).getPath();
-            //发送照片
-            Textile.instance().files.addFiles(filePath, threadid, "", new Handlers.BlockHandler() {
+            new Thread(){
                 @Override
-                public void onComplete(Model.Block block) {
+                public void run() {
+                    choosePic=PictureSelector.obtainMultipleResult(data);
+                    for(int i=0;i<choosePic.size();i++){
+                        String filePath=choosePic.get(i).getPath();
+                        File f=new File(filePath);
+                        Log.d(TAG, "onActivityResult: shit:"+f.getName());
+                        //发送照片
+                        Textile.instance().files.addFiles(filePath, threadid, f.getName(), new Handlers.BlockHandler() {
+                            @Override
+                            public void onComplete(Model.Block block) {
+                                Log.d(TAG, "onComplete: sendmsgok:"+filePath);
+                            }
+                            @Override
+                            public void onError(Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                        TMsg tMsg= null;
+                        try {
+                            Thread.sleep(10000);
+//                    tMsg = new TMsg(1,threadid,1,"",
+//                            Textile.instance().profile.name(),Textile.instance().profile.avatar(),filePath,System.currentTimeMillis()/1000,true);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
 
+//            msgList.add(tMsg);
+//            chat_lv.setSelection(msgList.size());
                 }
-                @Override
-                public void onError(Exception e) {
-                    e.printStackTrace();
-                }
-            });
-            TMsg tMsg= null;
-            try {
-                tMsg = new TMsg(1,threadid,1,"",
-                        Textile.instance().profile.name(),Textile.instance().profile.avatar(),filePath,System.currentTimeMillis()/1000,true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            msgList.add(tMsg);
-            chat_lv.setSelection(msgList.size());
-
+            }.start();
 
         }else if(requestCode==PictureConfig.TYPE_VIDEO && resultCode==RESULT_OK){ //如果是选择了视频
             chooseVideo=PictureSelector.obtainMultipleResult(data);

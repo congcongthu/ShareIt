@@ -1,6 +1,5 @@
 *.iml
 .gradle
-*.aar
 /local.properties
 /.idea/caches
 /.idea/libraries
@@ -18,3 +17,4 @@
 /honvideo/maven
 app/debug
 app/release
+app/libs
