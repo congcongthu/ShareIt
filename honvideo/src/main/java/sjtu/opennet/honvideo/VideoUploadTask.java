@@ -150,12 +150,19 @@ public class VideoUploadTask {
             //Log.d(TAG, String.format("VIDEOPIPELINE: %s task added to ipfs.", tsPath));
             //timeLog.begin();
             byte[] fileContent = Files.readAllBytes(Paths.get(tsAbsolutePath));
+            long beforeTime=System.currentTimeMillis();
             synchronized (LOCK) {
                 Textile.instance().ipfs.ipfsAddData(fileContent, true, false, tsHandler);
                 //Log.d(TAG, "Task wait for ipfs complete");
                 LOCK.wait();
                 //Log.d(TAG, "Task notified");
+
             }
+            long spendTime=System.currentTimeMillis()-beforeTime;
+            long bytePerMillis=fileContent.length/spendTime;
+            Log.d(TAG, "[videoid:] "+videoId+" chunkid:"+videoChunk.getAddress()+" millis:"+spendTime+" bytes:"+fileContent.length+" bytePerMills:"+bytePerMillis);
+            Textile.logDebug("[videoid:] "+videoId+" chunkid:"+videoChunk.getAddress()+" millis:"+spendTime+" bytes:"+fileContent.length+" bytePerMills:"+bytePerMillis);
+
             //Log.d(TAG, String.format("VIDEOPIPELINE: %s ipfs add complete. Use time %d ms", tsPath, timeLog.stopGetTime()));
         }catch(IOException ie){
             Log.e(TAG, "Unexpected io exception when read ts contents.");

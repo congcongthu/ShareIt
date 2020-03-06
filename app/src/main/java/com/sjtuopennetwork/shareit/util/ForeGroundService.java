@@ -68,6 +68,7 @@ public class ForeGroundService extends Service {
     boolean connectCafe;
     HeartBeat heartBeat;
     boolean startBeat;
+    long beforeTime;
     int uploadLogCount=0;
     BlockingQueue<ThreadUpdateEvent> threadUpdateEvents;
     eventCache eventCache;
@@ -165,7 +166,7 @@ public class ForeGroundService extends Service {
                     loginAccount=m.getAddress();
                     final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
-                    Textile.initialize(repoPath,m.getSeed() , true, false, true);
+                    Textile.initialize(repoPath,m.getSeed() , true, true, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -520,9 +521,15 @@ public class ForeGroundService extends Service {
             try {
                 //图片消息的hash
                 final String large_hash = feedItemData.files.getFiles(0).getLinksMap().get("small").getHash();
+                beforeTime=System.currentTimeMillis();
                 Textile.instance().files.content(large_hash, new Handlers.DataHandler() {
                     @Override
                     public void onComplete(byte[] data, String media) { //获得图片成功
+                        long spendTime=System.currentTimeMillis()-beforeTime;
+                        long bytePerMillis=data.length/spendTime;
+//                            Log.d(TAG, "onComplete: "+"=====pic_cid:"+large_hash+" millis:"+spendTime+" bytes:"+data.length+" bytePerMills:"+bytePerMillis);
+                        Textile.logDebug("[pic_cid:] "+large_hash+" millis:"+spendTime+" bytes:"+data.length+" bytePerMills:"+bytePerMillis);
+
                         String newPath=FileUtil.storeFile(data,large_hash); //将图片存到本地
                         String dialogimg="";
 
@@ -622,7 +629,8 @@ public class ForeGroundService extends Service {
                             feedItemData.feedVideo.getDate().getSeconds(), ismine);
                     if(ismine==0){  //不是我的视频才广播出去，因为我自己的消息直接显示了
                         Log.d(TAG, "onComplete: postMsg消息");
-                        EventBus.getDefault().post(tMsg);
+//                        EventBus.getDefault().post(tMsg);
+                        EventBus.getDefault().post(new Pair(2546,video.getId()));
                     }
                 }
 

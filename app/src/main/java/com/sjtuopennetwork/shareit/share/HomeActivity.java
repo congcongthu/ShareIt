@@ -113,6 +113,8 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        getPermission();
+
         login=getIntent().getIntExtra("login",5);
         Log.d(TAG, "跳转到HomeActivity，login："+login);
         if(login==0 || login==1 || login==2 || login==3){ //如果等于5，就不是登录页面跳转过来的
@@ -175,6 +177,17 @@ public class HomeActivity extends AppCompatActivity {
                 nodeOnline=true;
                 replaceFragment(shareFragment);
             }
+        }
+    }
+
+    private void getPermission() {
+        if(PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)==PermissionChecker.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
+                            "android.permission.WRITE_EXTERNAL_STORAGE",
+                            "android.permission.READ_EXTERNAL_STORAGE",
+//                            "android.permission.CAMERA"
+                    },100);
         }
     }
 

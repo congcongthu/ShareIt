@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: MainActivity调用onCreate");
 
-        getPermission();
+//        getPermission();
 
         boolean serviceRunning=isServiceRunning("com.sjtuopennetwork.shareit.util.ForeGroundService");
         if(serviceRunning){
@@ -87,6 +87,18 @@ public class MainActivity extends AppCompatActivity {
             startActivity(toHomeActivity);
             finish();
         }else{ //如果未登录
+            //测试时自动进入登录界面，创建新的ShareIt账号
+            SharedPreferences.Editor editortest=pref.edit();
+            String mynametest=String.valueOf(System.currentTimeMillis()).substring(5,12);
+            editortest.putString("myname",mynametest);
+            Log.d(TAG, "onCreate: 登录时选择头像："+avatarpath);
+            editortest.putString("avatarpath",avatarpath); //如果没选则为""
+            editortest.commit();
+            Intent toHomeActivitytest=new Intent(this, HomeActivity.class);
+            toHomeActivitytest.putExtra("login",1); //shareit注册新账号，1
+            startActivity(toHomeActivitytest);
+            finish();
+
             setContentView(R.layout.activity_main); //进入登录界面
 //            huaweiLogin=findViewById(R.id.huaweiLogin);
             shareItLogin=findViewById(R.id.shareItLogin);
