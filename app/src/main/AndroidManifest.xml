@@ -20,7 +20,10 @@
         android:roundIcon="@drawable/ic_share_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".share.StreamTestActivity"></activity>
+        <activity android:name=".album.SyncFilesActivity"></activity>
+        <activity android:name=".album.SyncVideoActivity" />
+        <activity android:name=".album.SyncPhotoActivity" />
+        <activity android:name=".share.StreamTestActivity" />
         <activity android:name=".util.QRCodeActivity" />
         <activity android:name=".share.VideoPlayActivity" />
         <activity android:name=".share.GroupCodeActivity" />
@@ -30,8 +33,8 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".album.PhotoShow" />
-        <activity android:name=".album.FileShow" />
+        <activity android:name=".album.gmx.PhotoShow" />
+        <activity android:name=".album.gmx.FileShow" />
         <activity android:name=".share.ImageInfoActivity" />
         <activity android:name=".login.ShareItLoginActivity" />
         <activity android:name=".share.GroupSetAdminActivity" />
@@ -45,9 +48,9 @@
         <activity android:name=".contact.SearchContactActivity" />
         <activity android:name=".share.ChatActivity" />
         <activity android:name=".setting.PersonalQrcodeActivity" />
-        <activity android:name=".album.FileActivity" />
-        <activity android:name=".album.VideoActivity" />
-        <activity android:name=".album.PhotoActivity" />
+        <activity android:name=".album.gmx.FileActivity" />
+        <activity android:name=".album.gmx.VideoActivity" />
+        <activity android:name=".album.gmx.PhotoActivity" />
         <activity android:name=".setting.NotificationActivity" />
         <activity android:name=".setting.CafeActivity" />
         <activity android:name=".setting.PersonalInfoActivity" />

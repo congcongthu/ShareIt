@@ -1,13 +1,8 @@
-package com.sjtuopennetwork.shareit.album;
+package com.sjtuopennetwork.shareit.album.gmx;
 
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,20 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.luck.picture.lib.photoview.PhotoView;
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.util.FileUtil;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import sjtu.opennet.hon.Handlers;
-import sjtu.opennet.hon.Textile;
-
-import static android.support.v4.content.ContextCompat.startActivity;
 
 //创建Adapter
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {

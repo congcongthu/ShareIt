@@ -45,27 +45,27 @@ public class AppdbHelper extends SQLiteOpenHelper {
             "body text," + //内容，文本消息就是消息，图片消息是图片的路径，视频消息是视频的缩略图拼视频的VideoID
             "sendtime integer," +
             "ismine integer)"; //1表示是我的消息，0为别人消息
-    //文件表
-    private String CREATE_FILES="create table files"+
-            "(id integer primary key autoincrement," +
-            "filename text," +
-            "filetime text," +
-            "filepath text)";
-
-    //图片表
-    private String CREATE_PHOTO="create table photo"+
-            "(id integer primary key autoincrement," +
-            "photoname text,"+
-            "phototime text,"+
-            "photopath text,"+
-            "photodata text,"+
-            "isdele integer)";
+//    //文件表
+//    private String CREATE_FILES="create table files"+
+//            "(id integer primary key autoincrement," +
+//            "filename text," +
+//            "filetime text," +
+//            "filepath text)";
+//
+//    //图片表
+//    private String CREATE_PHOTO="create table photo"+
+//            "(id integer primary key autoincrement," +
+//            "photoname text,"+
+//            "phototime text,"+
+//            "photopath text,"+
+//            "photodata text,"+
+//            "isdele integer)";
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(CREATE_DIALOGS);
         sqLiteDatabase.execSQL(CREATE_MSGS);
-        sqLiteDatabase.execSQL(CREATE_FILES);
-        sqLiteDatabase.execSQL(CREATE_PHOTO);
+//        sqLiteDatabase.execSQL(CREATE_FILES);
+//        sqLiteDatabase.execSQL(CREATE_PHOTO);
     }
 
     @Override

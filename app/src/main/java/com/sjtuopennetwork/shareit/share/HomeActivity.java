@@ -87,9 +87,9 @@ public class HomeActivity extends AppCompatActivity {
                 case R.id.contacts:
                     replaceFragment(contactFragment);
                     return true;
-//                case R.id.album:
-//                    replaceFragment(albumFragment);
-//                    return true;
+                case R.id.album:
+                    replaceFragment(albumFragment);
+                    return true;
                 case R.id.setting:
                     replaceFragment(settingFragment);
                     return true;

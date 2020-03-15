@@ -255,7 +255,7 @@ public class ForeGroundService extends Service {
                     "http://202.120.38.131:40601",
 //                    "http://192.168.1.109:40601",
 //                    "http://202.120.40.60:40601"
-                    "29UxcENKEZaNnr3zjtcqsSdBaPGep2VqeF98HAGvYaGLjU5SNoXwc9yEkF8Nx", //131
+                    "K6ayNanfZcfvGDBbxmf9DHkeyv4osxoGPpMGNP3vX4DQTnraUugY4h51T6DD", //131
 //                    "NhYrQb1XfpCFC7WBhX7UHPkax1o4YvAxxzXhZfLg6qJ5cbbfZakmPQZVer7x",//HW159.138.58.61
 //                    "29TkBsmjFfEnR1Sack63qWK5WkPGjJtA2kXFHvTijmSE1KYMvVopBRWagHLbE",
 //                    "WwqhHzab1oRqXPs3KnDL2oX1S9h2D7KYotMo2eNUg2MFPJPENWgB1Q2H6m3b",
@@ -522,7 +522,7 @@ public class ForeGroundService extends Service {
             boolean isSingle=thread.getWhitelistCount()==2;
             try {
                 //图片消息的hash
-                final String large_hash = feedItemData.files.getFiles(0).getLinksMap().get("small").getHash();
+                final String large_hash = feedItemData.files.getFiles(0).getLinksMap().get("large").getHash();
                 Textile.instance().files.content(large_hash, new Handlers.DataHandler() {
                     @Override
                     public void onComplete(byte[] data, String media) { //获得图片成功

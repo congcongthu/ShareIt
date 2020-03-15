@@ -1,4 +1,4 @@
-package com.sjtuopennetwork.shareit.album;
+package com.sjtuopennetwork.shareit.album.gmx;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;

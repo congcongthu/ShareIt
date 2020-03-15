@@ -157,4 +157,8 @@ public class DBoperator {
         appdb.endTransaction();
         Log.d(TAG, "changeDialogRead: 将对话状态修改为已读");
     }
+
+    public static List<String> getSyncPhotos(SQLiteDatabase appdb) {
+        return null;
+    }
 }

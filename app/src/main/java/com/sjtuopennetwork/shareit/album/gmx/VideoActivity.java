@@ -1,7 +1,6 @@
-package com.sjtuopennetwork.shareit.album;
+package com.sjtuopennetwork.shareit.album.gmx;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,10 +18,7 @@ import java.util.List;
 
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
-import sjtu.opennet.honvideo.ModuleTest;
 import sjtu.opennet.honvideo.Segmenter;
-import sjtu.opennet.honvideo.VideoHandlers;
-import sjtu.opennet.honvideo.VideoMeta;
 import sjtu.opennet.honvideo.VideoUploadHelper;
 import sjtu.opennet.textilepb.Model;
 

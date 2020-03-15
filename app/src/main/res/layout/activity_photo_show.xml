@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".album.PhotoShow">
+    tools:context=".album.gmx.PhotoShow">
     <imageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

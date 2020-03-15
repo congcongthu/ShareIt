@@ -50,7 +50,7 @@ dependencies {
     implementation "com.github.textileio:android-upload-service:3.5.4"
 
 //    implementation "sjtu.opennet:hon-textile-mobile:0.2.29-no131-pubsub-lock-oldcafe"
-    implementation (name:'mobile', ext:'aar')
+    implementation (name:'mobile-ticket', ext:'aar')
 
     implementation project(':textilepb')
     implementation "com.google.protobuf:protobuf-java:3.9.2"

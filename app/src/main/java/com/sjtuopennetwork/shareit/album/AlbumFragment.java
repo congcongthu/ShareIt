@@ -11,13 +11,15 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.album.gmx.FileActivity;
+import com.sjtuopennetwork.shareit.album.gmx.PhotoActivity;
+import com.sjtuopennetwork.shareit.album.gmx.VideoActivity;
 
 import java.util.List;
 import java.util.UUID;
 
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Textile;
-import sjtu.opennet.textilepb.QueryOuterClass;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -29,12 +31,12 @@ public class AlbumFragment extends Fragment {
     //UI控件
     LinearLayout album_photo_layout;
     LinearLayout album_video_layout;
-//    LinearLayout album_file_layout;
+    LinearLayout album_file_layout;
 
     //
-    private String thread_photo_name="2019-11-3119:09:17.16929628-29692";
-    private String thread_file_name= "2019-11-3119:09:17.16929628-29693";
-    private String thread_video_name="2019-11-3119:09:17.16929628-29694";
+    private String thread_photo_name="photo29692";
+    private String thread_file_name= "file29693";
+    private String thread_video_name="video29694";
     private  String thread_photo_id="";
     private  String thread_file_id="";
     private  String thread_video_id="";
@@ -111,7 +113,6 @@ public class AlbumFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -119,20 +120,20 @@ public class AlbumFragment extends Fragment {
     private void initUI() {
         album_photo_layout=getActivity().findViewById(R.id.album_photo_layout);
         album_video_layout=getActivity().findViewById(R.id.album_video_layout);
-//        album_file_layout=getActivity().findViewById(R.id.album_file_layout);
+        album_file_layout=getActivity().findViewById(R.id.album_files_layout);
 
         album_photo_layout.setOnClickListener(v -> {
-            Intent it=new Intent(getActivity(),PhotoActivity.class);
+            Intent it=new Intent(getActivity(), SyncPhotoActivity.class);
             startActivity(it);
         });
         album_video_layout.setOnClickListener(v -> {
-            Intent it=new Intent(getActivity(),VideoActivity.class);
+            Intent it=new Intent(getActivity(), SyncVideoActivity.class);
             startActivity(it);
         });
-//        album_file_layout.setOnClickListener(v -> {
-//            Intent it=new Intent(getActivity(),FileActivity.class);
-//            startActivity(it);
-//        });
+        album_file_layout.setOnClickListener(v -> {
+            Intent it=new Intent(getActivity(), SyncFilesActivity.class);
+            startActivity(it);
+        });
     }
 
     //创建新的thread
