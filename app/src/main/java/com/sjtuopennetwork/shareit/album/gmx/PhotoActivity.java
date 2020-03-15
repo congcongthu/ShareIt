@@ -66,6 +66,7 @@ public class PhotoActivity extends AppCompatActivity {
     List<String> photoPath=new ArrayList<String>();
     List<LocalMedia> choosePic;
     private SyncFileUtil mSyncFile;
+    SharedPreferences pref;
 
     //持久化数据
     private String peerid;
@@ -92,7 +93,10 @@ public class PhotoActivity extends AppCompatActivity {
         //pref =getSharedPreferences("txt1",MODE_PRIVATE);
         //thread_photo_id = pref.getString("thread_photo_id","");
 
-        appdb= AppdbHelper.getInstance(this,"photo_db").getWritableDatabase();
+
+        pref=getSharedPreferences("txtl",MODE_PRIVATE);
+        appdb= AppdbHelper.getInstance(getApplicationContext(),pref.getString("loginAccount","")).getWritableDatabase();
+
         try {
             peerid=Textile.instance().account.address();
         } catch (Exception e) {
@@ -101,7 +105,6 @@ public class PhotoActivity extends AppCompatActivity {
 
 
         //同步所有thread中的照片到手机
-
         initDataset();
         initUI();
         initRecycleView();
@@ -163,10 +166,6 @@ public class PhotoActivity extends AppCompatActivity {
         }
         cursor_path.close();
     }
-
-
-
-
 
 
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

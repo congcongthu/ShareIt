@@ -55,7 +55,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         public TextView getTextView(){return  textView;}
         public ImageView getImageView(){return  imageView;}
 
-
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
