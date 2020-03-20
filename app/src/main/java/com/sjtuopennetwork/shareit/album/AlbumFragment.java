@@ -104,11 +104,7 @@ public class AlbumFragment extends Fragment {
                 System.out.println("==============创建video_thread:   "+thread_video_id);
                 thread_video_flag=true;
             }
-            SharedPreferences.Editor editor = getActivity().getSharedPreferences("txt1",MODE_PRIVATE).edit();
-            editor.putString("thread_photo_id",thread_photo_id);
-            editor.putString("thread_file_id",thread_file_id);
-            editor.putString("thread_video_id",thread_video_id);
-            editor.apply();
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -124,14 +120,17 @@ public class AlbumFragment extends Fragment {
 
         album_photo_layout.setOnClickListener(v -> {
             Intent it=new Intent(getActivity(), SyncPhotoActivity.class);
+            it.putExtra("photo_thread",thread_photo_id);
             startActivity(it);
         });
         album_video_layout.setOnClickListener(v -> {
             Intent it=new Intent(getActivity(), SyncVideoActivity.class);
+            it.putExtra("video_thread",thread_video_id);
             startActivity(it);
         });
         album_file_layout.setOnClickListener(v -> {
             Intent it=new Intent(getActivity(), SyncFilesActivity.class);
+            it.putExtra("file_thread",thread_file_id);
             startActivity(it);
         });
     }

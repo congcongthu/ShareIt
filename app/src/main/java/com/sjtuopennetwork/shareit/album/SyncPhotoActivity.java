@@ -1,12 +1,15 @@
 package com.sjtuopennetwork.shareit.album;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.luck.picture.lib.PictureSelector;
@@ -28,14 +31,16 @@ import sjtu.opennet.textilepb.View;
 
 public class SyncPhotoActivity extends AppCompatActivity {
 
+    private static final String TAG = "==============";
+
     ImageView addPhoto;
     ImageView syncPhoto;
     RecyclerView recyclerView;
     PhotoAdapter photoAdapter;
 
-
+    String threadid;
     List<LocalMedia> choosePic;
-    Model.Thread photoThread;
+//    Model.Thread photoThread;
     ArrayList<byte[]> photoBytes;
     Handler handler=new Handler(){
         @Override
@@ -46,6 +51,7 @@ public class SyncPhotoActivity extends AppCompatActivity {
                     photoBytes.add(photo);
                     //adapter刷新
                     photoAdapter.notifyDataSetChanged();
+                    Log.d(TAG, "handleMessage: "+photoBytes.size());
                 case 2:
                     String newHash=msg.getData().getString("newHash");
                     getNewPhoto(newHash);
@@ -59,14 +65,16 @@ public class SyncPhotoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sync_photo);
 
+        threadid=getIntent().getStringExtra("photo_thread");
+
         photoBytes=new ArrayList<>();
         getAllPhotos();
 
-        try {
-            photoThread=Textile.instance().threads.get("photo29692");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            photoThread=Textile.instance().threads.get(threadid);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         initUI();
     }
@@ -85,13 +93,15 @@ public class SyncPhotoActivity extends AppCompatActivity {
 
         //设置adapter
         recyclerView=findViewById(R.id.sync_photo_rv);
-        photoAdapter=new PhotoAdapter(photoBytes);
+        GridLayoutManager gridLayoutManager=new GridLayoutManager(this,4);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        photoAdapter=new PhotoAdapter(this,photoBytes);
         recyclerView.setAdapter(photoAdapter);
     }
 
     private void getAllPhotos() {
         try {
-            List<View.Files> photos=Textile.instance().files.list("photo29692","",1000).getItemsList();
+            List<View.Files> photos=Textile.instance().files.list(threadid,"",1000).getItemsList();
             for(View.Files fs:photos){
                 String hash=fs.getFiles(0).getLinksMap().get("large").getHash();
                 Textile.instance().files.content(hash, new Handlers.DataHandler() {
@@ -141,11 +151,11 @@ public class SyncPhotoActivity extends AppCompatActivity {
             choosePic = PictureSelector.obtainMultipleResult(data);
             String filePath = choosePic.get(0).getPath();
             //发送照片
-            Textile.instance().files.addFiles(filePath, photoThread.getId(), "", new Handlers.BlockHandler() {
+            Textile.instance().files.addFiles(filePath, threadid, "", new Handlers.BlockHandler() {
                 @Override
                 public void onComplete(Model.Block block) {
                     try {
-                        String hash=Textile.instance().files.list(photoThread.getId(),"",1).getItemsList().get(0).getFiles(0).getLinksMap().get("large").getHash();
+                        String hash=Textile.instance().files.list(threadid,"",1).getItemsList().get(0).getFiles(0).getLinksMap().get("large").getHash();
                         Message msg=new Message();
                         msg.what=2;
                         Bundle b=new Bundle();

@@ -17,26 +17,30 @@ public class ImageInfoActivity extends AppCompatActivity {
 
     //内存数据
     String imgpath;
+    byte[] photoData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_info);
+        photoView=findViewById(R.id.photo_view);
 
         Intent it=getIntent();
-        imgpath=it.getStringExtra("imgpath");
+        Bundle b=it.getExtras();
 
-//        if(imgpath.charAt(0)=='Q'){ //那就是hash值
-//            imgpath= FileUtil.getFilePath(imgpath);
-//        }
 
-        photoView=findViewById(R.id.photo_view);
-        if(imgpath.equals("null")){
-            Toast.makeText(this,"图片获取失败",Toast.LENGTH_SHORT).show();
+        photoData=b.getByteArray("photoData");
+        if(photoData!=null){
+            photoView.setImageBitmap(BitmapFactory.decodeByteArray(photoData,0,photoData.length));
         }else{
-            photoView.setImageBitmap(BitmapFactory.decodeFile(imgpath));
-        }
+            imgpath=it.getStringExtra("imgpath");
 
+            if(imgpath.equals("null")){
+                Toast.makeText(this,"图片获取失败",Toast.LENGTH_SHORT).show();
+            }else{
+                photoView.setImageBitmap(BitmapFactory.decodeFile(imgpath));
+            }
+        }
         photoView.setOnClickListener(view -> finish());
     }
 }
