@@ -61,7 +61,7 @@ dependencies {
     implementation project(':textilepb')
     implementation project(':hon')
 //    implementation "sjtu.opennet:hon-textile-mobile:0.2.29-no131-pubsub-lock-oldcafe"
-    implementation (name:'mobile-ticket', ext:'aar')
+    implementation (name:'mobile', ext:'aar')
     compile group: 'com.github.multiformats', name: 'java-multibase', version: 'v1.0.1'
 
 }

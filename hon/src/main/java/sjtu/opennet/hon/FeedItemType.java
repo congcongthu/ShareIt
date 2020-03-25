@@ -13,4 +13,5 @@ public enum FeedItemType {
     REMOVEPEER,
     VIDEO,
     STREAMMETA,
+    PICTURE,
 }

@@ -256,7 +256,6 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateChat(TMsg tMsg){
         if(tMsg.threadid.equals(threadid)){
@@ -274,10 +273,9 @@ public class ChatActivity extends AppCompatActivity {
             choosePic=PictureSelector.obtainMultipleResult(data);
             String filePath=choosePic.get(0).getPath();
             //发送照片
-            Textile.instance().files.addFiles(filePath, threadid, "", new Handlers.BlockHandler() {
+            Textile.instance().files.addPicture(filePath, threadid, "", new Handlers.BlockHandler() {
                 @Override
                 public void onComplete(Model.Block block) {
-
                 }
                 @Override
                 public void onError(Exception e) {
@@ -293,8 +291,6 @@ public class ChatActivity extends AppCompatActivity {
             }
             msgList.add(tMsg);
             chat_lv.setSelection(msgList.size());
-
-
         }else if(requestCode==PictureConfig.TYPE_VIDEO && resultCode==RESULT_OK){ //如果是选择了视频
             chooseVideo=PictureSelector.obtainMultipleResult(data);
             String filePath=chooseVideo.get(0).getPath();

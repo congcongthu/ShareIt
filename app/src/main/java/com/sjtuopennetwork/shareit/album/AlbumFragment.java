@@ -90,17 +90,17 @@ public class AlbumFragment extends Fragment {
             }
 
             if(!thread_photo_flag){
-                thread_photo_id=addNewThreads(thread_photo_name);
+                thread_photo_id=addNewThreads(thread_photo_name,0);
                 System.out.println("==============创建photo_thread:   "+thread_photo_id);
                 thread_photo_flag=true;
             }
             if(!thread_file_flag){
-                thread_file_id=addNewThreads(thread_file_name);
+                thread_file_id=addNewThreads(thread_file_name,1);
                 System.out.println("==============创建file_thread:   "+thread_file_id);
                 thread_file_flag=true;
             }
             if(!thread_video_flag){
-                thread_video_id=addNewThreads(thread_video_name);
+                thread_video_id=addNewThreads(thread_video_name,0);
                 System.out.println("==============创建video_thread:   "+thread_video_id);
                 thread_video_flag=true;
             }
@@ -136,12 +136,20 @@ public class AlbumFragment extends Fragment {
     }
 
     //创建新的thread
-    private String addNewThreads(String threadName){
+    private String addNewThreads(String threadName, int type){
         Model.Thread thread = null;
         String key= UUID.randomUUID().toString();//随机生成key
-        sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
-                .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.MEDIA)
-                .build();
+        sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema=null;
+        if(type==0){
+            schema = sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
+                    .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.MEDIA)
+                    .build();
+        }else{
+            schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
+                    .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.BLOB)
+                    .build();
+        }
+
 
         sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
                 .setSharing(Model.Thread.Sharing.NOT_SHARED)

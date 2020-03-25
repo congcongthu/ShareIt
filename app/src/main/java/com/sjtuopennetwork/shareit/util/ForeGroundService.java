@@ -165,10 +165,11 @@ public class ForeGroundService extends Service {
                 try {
                     phrase= Textile.newWallet(12);
                     Mobile.MobileWalletAccount m=Textile.walletAccountAt(phrase,Textile.WALLET_ACCOUNT_INDEX,Textile.WALLET_PASSPHRASE);
-                    loginAccount=m.getAddress();
+                    loginAccount=m.getAddress(); //获得公钥
                     final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
-                    Textile.initialize(repoPath,m.getSeed() , true, false, true);
+                    String pk=m.getSeed(); //获得私钥
+                    Textile.initialize(repoPath,pk , true, false, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -517,12 +518,12 @@ public class ForeGroundService extends Service {
             }
         }
 
-        if(feedItemData.type.equals(FeedItemType.FILES)){ //接收到图片
+        if(feedItemData.type.equals(FeedItemType.PICTURE)){
             TDialog tDialog=DBoperator.queryDialogByThreadID(appdb,threadId); //必然能够查出来对话
             boolean isSingle=thread.getWhitelistCount()==2;
             try {
                 //图片消息的hash
-                final String large_hash = feedItemData.files.getFiles(0).getLinksMap().get("large").getHash();
+                final String large_hash=feedItemData.files.getFiles(0).getFile().getHash();
                 Textile.instance().files.content(large_hash, new Handlers.DataHandler() {
                     @Override
                     public void onComplete(byte[] data, String media) { //获得图片成功
@@ -583,10 +584,14 @@ public class ForeGroundService extends Service {
 //                        }
                     }
                 });
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+
+        if(feedItemData.type.equals(FeedItemType.FILES)){ //接收到图片
+            Log.d(TAG, "handleThreadUpdates: 收到files");
         }
 
         if(feedItemData.type.equals(FeedItemType.VIDEO)){

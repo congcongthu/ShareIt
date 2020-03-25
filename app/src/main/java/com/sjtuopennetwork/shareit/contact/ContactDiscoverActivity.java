@@ -3,6 +3,7 @@ package com.sjtuopennetwork.shareit.contact;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -32,6 +33,7 @@ import sjtu.opennet.textilepb.QueryOuterClass;
 
 public class ContactDiscoverActivity extends AppCompatActivity {
 
+    private static final String TAG = "========";
     //UI控件
     ListView discover_lv;
     ResultAdapter searchResultAdapter;  //搜索结果适配器
@@ -60,6 +62,7 @@ public class ContactDiscoverActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 targetAddress=wantToAdd.getAddress();
+                Log.d(TAG, "myOnClick: createTwoPersonThread");
                 ContactUtil.createTwoPersonThread(targetAddress); //创建双人thread,key就是那个人的地址
             });
             addContact.setNegativeButton("取消", (dialog, which) -> Toast.makeText(ContactDiscoverActivity.this,"已取消",Toast.LENGTH_SHORT).show());

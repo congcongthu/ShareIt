@@ -34,6 +34,7 @@ public class Util {
 
         feedItemData = new FeedItemData();
         feedItemData.block = feedItem.getBlock();
+        System.out.println("=========Thread更新1："+typeUrl);
         switch (typeUrl) {
             case "/Text":
                 feedItemData.type = FeedItemType.TEXT;
@@ -82,6 +83,10 @@ public class Util {
             case "/Announce":
                 feedItemData.type = FeedItemType.ANNOUNCE;
                 feedItemData.announce = Announce.parseFrom(bytes);
+                break;
+            case "/Picture":
+                feedItemData.type = FeedItemType.PICTURE;
+                feedItemData.files = Files.parseFrom(bytes);
                 break;
             default:
                 throw new Exception("Unknown feed item typeUrl: " + typeUrl);

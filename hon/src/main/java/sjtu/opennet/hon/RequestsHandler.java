@@ -1,5 +1,7 @@
 package sjtu.opennet.hon;
 
+import android.util.Log;
+
 import net.gotev.uploadservice.BinaryUploadRequest;
 import net.gotev.uploadservice.HttpUploadRequest;
 import net.gotev.uploadservice.Logger;
@@ -32,6 +34,8 @@ class RequestsHandler implements CafeOutboxHandler {
     }
 
     public void flush() {
+        Log.d(TAG, "flush: RequestsHandler(CafeOutboxHandler) start to flush");
+
         Textile.instance().flushLock();
         final Future<Void> future = executor.submit(() -> {
             try {
