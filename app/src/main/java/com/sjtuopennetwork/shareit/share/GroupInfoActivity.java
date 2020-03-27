@@ -3,25 +3,17 @@ package com.sjtuopennetwork.shareit.share;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.library.flowlayout.FlowLayoutManager;
-import com.library.flowlayout.SpaceItemDecoration;
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.contact.SearchContactActivity;
 import com.sjtuopennetwork.shareit.share.util.GroupMemberAdapter;
-import com.sjtuopennetwork.shareit.util.AppdbHelper;
-import com.sjtuopennetwork.shareit.util.DBoperator;
 
 import java.util.List;
 
@@ -47,7 +39,6 @@ public class GroupInfoActivity extends AppCompatActivity {
     List<Model.Peer> admins;
 
     //持久化存储
-    public SQLiteDatabase appdb;
     public SharedPreferences pref;
 
 
@@ -109,7 +100,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     }
     private void initData() {
         pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
-        appdb= AppdbHelper.getInstance(getApplicationContext(),pref.getString("loginAccount","")).getWritableDatabase();
+
 
         //获得管理员、非管理员，管理员才显示设置管理员。
         threadid=getIntent().getStringExtra("threadid");

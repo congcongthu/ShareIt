@@ -18,8 +18,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.util.FileUtil;
-import com.sjtuopennetwork.shareit.util.RoundImageView;
+import com.sjtuopennetwork.shareit.util.ShareUtil;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -27,6 +26,7 @@ import java.util.List;
 
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
+import sjtu.opennet.textilepb.Model;
 
 public class DialogAdapter extends ArrayAdapter {
     private static final String TAG = "==================";
@@ -57,17 +57,25 @@ public class DialogAdapter extends ArrayAdapter {
             vh = (ViewHolder) v.getTag();
         }
 
-        if (tDialog.imgpath.equals("tongzhi")) {
+        String avatarHash="";
+        String dialogname="";
+        if (tDialog.add_or_img.equals("tongzhi")) {
             vh.headImg.setImageResource(R.drawable.ic_notification_img);
-        } else {
-            if (tDialog.isSingle) { //如果是单人的，就设置头像
-                setAvatar(vh.headImg, tDialog.imgpath);
-            } else { //如果是多人的就设置图片
-                Log.d(TAG, "getView: "+tDialog.threadname+"图片路径："+tDialog.imgpath);
-                Glide.with(context).load(tDialog.imgpath).thumbnail(0.3f).into(vh.headImg);
-//                setPhoto(vh.headImg, tDialog.imgpath);
+        } else { //单人根据addr显示头像，多人根据threadid得到threadname
+            try {
+                if(tDialog.isSingle){
+                    avatarHash=Textile.instance().contacts.get(datas.get(position).add_or_img).getAvatar();
+                    dialogname=Textile.instance().contacts.get(datas.get(position).add_or_img).getName();
+                }else{
+                    avatarHash=datas.get(position).add_or_img;
+                    dialogname=Textile.instance().threads.get(datas.get(position).threadid).getName();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            ShareUtil.setImageView(context,vh.headImg,avatarHash,true);
         }
+        vh.threadName.setText(dialogname);
 
         if (tDialog.isRead) {
             vh.isRead.setVisibility(View.GONE);
@@ -78,7 +86,6 @@ public class DialogAdapter extends ArrayAdapter {
 
         vh.lastMsg.setText(tDialog.lastmsg);
         vh.lastMsgDate.setText(df.format(tDialog.lastmsgdate * 1000));
-        vh.threadName.setText(tDialog.threadname);
 
         return v;
     }
@@ -96,83 +103,4 @@ public class DialogAdapter extends ArrayAdapter {
         }
     }
 
-    private void setAvatar(ImageView imageView, String avatarHash) {
-
-        Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case 1:
-                        String newPath = msg.getData().getString("newPath");
-                        Log.d(TAG, "handleMessage: 拿到头像：" + newPath);
-                        Glide.with(context).load(newPath).thumbnail(0.3f).into(imageView);
-                }
-            }
-        };
-
-        String avatarPath = FileUtil.getFilePath(avatarHash);
-        if (avatarPath.equals("null")) { //如果没有存储过这个头像文件
-            System.out.println(avatarPath);
-            Textile.instance().ipfs.dataAtPath("/ipfs/" + avatarHash + "/0/small/content", new Handlers.DataHandler() {
-                @Override
-                public void onComplete(byte[] data, String media) {
-                    String newPath = FileUtil.storeFile(data, avatarHash);
-                    Message msg = new Message();
-                    msg.what = 1;
-                    Bundle b = new Bundle();
-                    b.putString("newPath", newPath);
-                    msg.setData(b);
-                    handler.sendMessage(msg);
-                }
-
-                @Override
-                public void onError(Exception e) {
-
-                }
-            });
-        } else { //如果已经存储过这个头像
-            imageView.setImageBitmap(BitmapFactory.decodeFile(avatarPath));
-        }
-    }
-
-    private void setPhoto(ImageView imageView, String fileHash) {
-
-        Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case 1:
-                        String newPath = msg.getData().getString("newPath");
-                        Log.d(TAG, "handleMessage: newPath:"+newPath);
-                        Glide.with(context).load(newPath).thumbnail(0.3f).into(imageView);
-                }
-            }
-        };
-
-        String filePath = FileUtil.getFilePath(fileHash);
-        Log.d(TAG, "setPhoto: FileUtil.getFilePath:"+filePath);
-        if (filePath.equals("null")) { //如果没有存储过图片
-            Log.d(TAG, "setPhoto: 开始下载");
-            Textile.instance().files.content(fileHash, new Handlers.DataHandler() {
-                @Override
-                public void onComplete(byte[] data, String media) {
-                    String newPath = FileUtil.storeFile(data, fileHash);
-                    Log.d(TAG, "onComplete: 获得了 ："+newPath);
-                    Message msg = new Message();
-                    msg.what = 1;
-                    Bundle b = new Bundle();
-                    b.putString("newPath", newPath);
-                    msg.setData(b);
-                    handler.sendMessage(msg);
-                }
-
-                @Override
-                public void onError(Exception e) {
-                }
-            });
-        } else {
-            Log.d(TAG, "setPhoto: shit~");
-            imageView.setImageBitmap(BitmapFactory.decodeFile(filePath));
-        }
-    }
 }

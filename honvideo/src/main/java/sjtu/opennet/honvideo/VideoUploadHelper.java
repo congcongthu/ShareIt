@@ -255,7 +255,6 @@ public class VideoUploadHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     class segmentThread extends Thread {

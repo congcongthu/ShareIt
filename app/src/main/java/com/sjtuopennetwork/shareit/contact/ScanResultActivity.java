@@ -129,7 +129,7 @@ public class ScanResultActivity extends AppCompatActivity {
             }
             @Override
             public void onError(Exception e) {
-//                        vh.avatar.setImageResource(R.drawable.ic_default_avatar);
+//                        vh.avatar.setImageResource(R.drawable.ic_people);
             }
         });
 

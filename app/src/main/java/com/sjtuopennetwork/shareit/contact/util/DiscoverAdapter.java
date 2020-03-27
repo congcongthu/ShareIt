@@ -15,9 +15,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.util.FileUtil;
+import com.sjtuopennetwork.shareit.util.ShareUtil;
 import com.sjtuopennetwork.shareit.util.RoundImageView;
 
 import java.util.ArrayList;
@@ -35,9 +34,11 @@ public class DiscoverAdapter extends BaseAdapter {
     private MyClickListener mListener;
     byte[] img;
     public List<Boolean> mChecked;
+    Context context;
 
     public DiscoverAdapter(Context context,List<ResultContact> datas, MyClickListener mListener) {
         this.datas = datas;
+        this.context=context;
         this.mInflater = LayoutInflater.from(context);
         this.mListener = mListener;
 
@@ -85,11 +86,11 @@ public class DiscoverAdapter extends BaseAdapter {
         vh.name.setText(datas.get(position).name);
         vh.addr.setText(datas.get(position).address.substring(0,10)+"...");
         if(datas.get(position).avatarhash.equals("")){ //如果没有设置头像
-            vh.avatar.setImageResource(R.drawable.ic_default_avatar);
+            vh.avatar.setImageResource(R.drawable.ic_people);
         }else{
             img=datas.get(position).avatar;
             if(img==null){
-                setAvatar(vh.avatar,datas.get(position).avatarhash);
+                ShareUtil.setImageView(context,vh.avatar,datas.get(position).avatarhash,true);
             }else{
                 vh.avatar.setImageBitmap(BitmapFactory.decodeByteArray(img,0,img.length));
             }
@@ -135,45 +136,6 @@ public class DiscoverAdapter extends BaseAdapter {
         public void onClick(View view) {
             Integer integer=(Integer) view.getTag();
             myOnClick(integer, view);
-        }
-    }
-
-
-    private void setAvatar(ImageView imageView, String avatarHash) {
-
-        Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case 1:
-                        String newPath = msg.getData().getString("newPath");
-                        Log.d(TAG, "handleMessage: 拿到头像：" + newPath);
-                        imageView.setImageBitmap(BitmapFactory.decodeFile(newPath));
-                }
-            }
-        };
-
-        String avatarPath = FileUtil.getFilePath(avatarHash);
-        if (avatarPath.equals("null")) { //如果没有存储过这个头像文件
-            Textile.instance().ipfs.dataAtPath("/ipfs/" + avatarHash + "/0/small/content", new Handlers.DataHandler() {
-                @Override
-                public void onComplete(byte[] data, String media) {
-                    String newPath = FileUtil.storeFile(data, avatarHash);
-                    Message msg = new Message();
-                    msg.what = 1;
-                    Bundle b = new Bundle();
-                    b.putString("newPath", newPath);
-                    msg.setData(b);
-                    handler.sendMessage(msg);
-                }
-
-                @Override
-                public void onError(Exception e) {
-
-                }
-            });
-        } else { //如果已经存储过这个头像
-            imageView.setImageBitmap(BitmapFactory.decodeFile(avatarPath));
         }
     }
 

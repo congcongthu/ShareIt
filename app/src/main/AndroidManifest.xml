@@ -20,7 +20,12 @@
         android:roundIcon="@drawable/ic_share_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".album.SyncFilesActivity"></activity>
+        <service
+            android:name=".util.ShareService"
+            android:enabled="true"
+            android:exported="true"></service>
+
+        <activity android:name=".album.SyncFilesActivity" />
         <activity android:name=".album.SyncVideoActivity" />
         <activity android:name=".album.SyncPhotoActivity" />
         <activity android:name=".share.StreamTestActivity" />

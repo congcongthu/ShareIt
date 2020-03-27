@@ -8,7 +8,7 @@
     android:layout_height="70dp">
 
     <com.sjtuopennetwork.shareit.util.RoundImageView
-        android:src="@drawable/ic_default_avatar"
+        android:src="@drawable/ic_people"
         app:corner_radius="5dp"
         android:layout_margin="10dp"
         android:id="@+id/discover_avatar"

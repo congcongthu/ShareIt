@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import android.widget.TextView;
 
 
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.util.FileUtil;
+import com.sjtuopennetwork.shareit.util.ShareUtil;
 import com.sjtuopennetwork.shareit.util.RoundImageView;
 
 import java.util.List;
@@ -53,11 +52,11 @@ public class ResultAdapter extends ArrayAdapter {
         }
 
         if(resultContacts.get(position).avatarhash.equals("")){ //如果没有设置头像
-            vh.avatar.setImageResource(R.drawable.ic_default_avatar);
+            vh.avatar.setImageResource(R.drawable.ic_people);
         }else{ //设置过头像
             img=resultContacts.get(position).avatar;
             if(img==null){
-                setAvatar(vh.avatar,resultContacts.get(position).avatarhash);
+                ShareUtil.setImageView(context,vh.avatar,resultContacts.get(position).avatarhash,true);
             }else{
                 vh.avatar.setImageBitmap(BitmapFactory.decodeByteArray(img,0,img.length));
             }
@@ -79,41 +78,4 @@ public class ResultAdapter extends ArrayAdapter {
         }
     }
 
-
-    private void setAvatar(ImageView imageView, String avatarHash) {
-
-        Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case 1:
-                        String newPath = msg.getData().getString("newPath");
-                        imageView.setImageBitmap(BitmapFactory.decodeFile(newPath));
-                }
-            }
-        };
-
-        String avatarPath = FileUtil.getFilePath(avatarHash);
-        if (avatarPath.equals("null")) { //如果没有存储过这个头像文件
-            Textile.instance().ipfs.dataAtPath("/ipfs/" + avatarHash + "/0/small/content", new Handlers.DataHandler() {
-                @Override
-                public void onComplete(byte[] data, String media) {
-                    String newPath = FileUtil.storeFile(data, avatarHash);
-                    Message msg = new Message();
-                    msg.what = 1;
-                    Bundle b = new Bundle();
-                    b.putString("newPath", newPath);
-                    msg.setData(b);
-                    handler.sendMessage(msg);
-                }
-
-                @Override
-                public void onError(Exception e) {
-
-                }
-            });
-        } else { //如果已经存储过这个头像
-            imageView.setImageBitmap(BitmapFactory.decodeFile(avatarPath));
-        }
-    }
 }

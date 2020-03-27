@@ -14,17 +14,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.chezi008.libcontacts.bean.ContactBean;
-import com.chezi008.libcontacts.listener.ContactListener;
-import com.chezi008.libcontacts.widget.ContactView;
 import com.example.qrlibrary.qrcode.utils.PermissionUtils;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
-import com.sjtuopennetwork.shareit.util.AppdbHelper;
-import com.sjtuopennetwork.shareit.util.FileUtil;
+import com.sjtuopennetwork.shareit.util.ShareUtil;
 import com.sjtuopennetwork.shareit.util.QRCodeActivity;
+import com.sjtuopennetwork.shareit.util.contactlist.ContactListAdapter;
+import com.sjtuopennetwork.shareit.util.contactlist.MyContactBean;
+import com.sjtuopennetwork.shareit.util.contactlist.MyContactView;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,7 +34,7 @@ import sjtu.opennet.textilepb.Model;
 public class ContactFragment extends Fragment {
 
     //UI控件
-    private ContactView contactView;
+    private MyContactView contactView;
     LinearLayout contact_discover_layout;
     LinearLayout new_friend_layout;
     ImageView bt_contact_search;
@@ -44,11 +42,10 @@ public class ContactFragment extends Fragment {
     TextView application_badge;
 
     //内存数据
-    List<ContactBean> contactBeans;
+    List<MyContactBean> contactBeans;
     List<Model.Peer> myFriends;
 
     //持久化存储
-    public SQLiteDatabase appdb;
     public SharedPreferences pref;
 
     public ContactFragment() {
@@ -73,7 +70,6 @@ public class ContactFragment extends Fragment {
 
     private void initData(){
         pref=getActivity().getSharedPreferences("txtl", Context.MODE_PRIVATE);
-        appdb=AppdbHelper.getInstance(getContext(),pref.getString("loginAccount","")).getWritableDatabase();
 
         //显示好友列表
         myFriends= ContactUtil.getFriendList();
@@ -81,26 +77,15 @@ public class ContactFragment extends Fragment {
         contactBeans=new LinkedList<>();
 
         for(Model.Peer p:myFriends){
-            ContactBean contactBean=new ContactBean();
-            contactBean.setId(p.getAddress());
-            contactBean.setName(p.getName());
-            String avatarPath= FileUtil.getFilePath(p.getAvatar());
-            contactBean.setAvatar(avatarPath);
+            MyContactBean contactBean=new MyContactBean(p.getAddress(),p.getName(),p.getAvatar());
             contactBeans.add(contactBean);
         }
         contactView.setData(contactBeans,false);
 
-        contactView.setContactListener(new ContactListener<ContactBean>() {
-            @Override
-            public void onClick(ContactBean item) {
-                Intent it=new Intent(getActivity(),ContactInfoActivity.class);
-                it.putExtra("address",item.getId());
-                startActivity(it);
-            }
-            @Override
-            public void onLongClick(ContactBean item) { }
-            @Override
-            public void loadAvatar(ImageView imageView, String avatar) { }
+        contactView.setListener(item -> {
+            Intent it=new Intent(getActivity(),ContactInfoActivity.class);
+            it.putExtra("address",item.id);
+            startActivity(it);
         });
     }
 

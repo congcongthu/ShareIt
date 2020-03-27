@@ -180,7 +180,7 @@ public class ContactUtil {
 
         sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema=
                 sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
-                        .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.MEDIA)
+                        .setPreset(View.AddThreadConfig.Schema.Preset.BLOB)
                         .build();
         sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
                 .setSharing(Model.Thread.Sharing.SHARED)
@@ -205,7 +205,7 @@ public class ContactUtil {
     public static void createMultiPersonThread(String threadName){
         String key= UUID.randomUUID().toString();
         sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()
-                .setPreset(sjtu.opennet.textilepb.View.AddThreadConfig.Schema.Preset.MEDIA)
+                .setPreset(View.AddThreadConfig.Schema.Preset.BLOB)
                 .build();
         sjtu.opennet.textilepb.View.AddThreadConfig config=sjtu.opennet.textilepb.View.AddThreadConfig.newBuilder()
                 .setSharing(Model.Thread.Sharing.SHARED)

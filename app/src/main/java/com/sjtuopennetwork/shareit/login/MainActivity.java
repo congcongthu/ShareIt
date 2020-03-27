@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "===============";
 
     //UI控件
-//    Button huaweiLogin;
+    Button huaweiLogin;
     Button shareItLogin;
     Button shareItRegister;
     ImageView registerAvatar;
@@ -61,23 +61,14 @@ public class MainActivity extends AppCompatActivity {
     //华为ID
     private HuaweiIdSignInClient mSignInClient;
     private HuaweiIdSignInOptions mSignInOptions;
-//    String myclientid = "218779032643175488";
+    String myclientid = "218779032643175488";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
 
-        Log.d(TAG, "onCreate: MainActivity调用onCreate");
-
         getPermission();
-
-        boolean serviceRunning=isServiceRunning("com.sjtuopennetwork.shareit.util.ForeGroundService");
-        if(serviceRunning){
-            Log.d(TAG, "onCreate: 后台服务正在运行");
-        }else{
-            Log.d(TAG, "onCreate: 后台服务未运行");
-        }
 
         //查SharedPreference中"isLogin"判断登录状态，如果未登录则进入登录界面。如果已登录则跳转到HomeActivity
         isLogin=pref.getBoolean("isLogin",false); //如果没有这个字段就是首次打开
@@ -88,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }else{ //如果未登录
             setContentView(R.layout.activity_main); //进入登录界面
-//            huaweiLogin=findViewById(R.id.huaweiLogin);
+            huaweiLogin=findViewById(R.id.huaweiLogin);
             shareItLogin=findViewById(R.id.shareItLogin);
             shareItRegister=findViewById(R.id.shareItRegister);
             registerAvatar=findViewById(R.id.register_avatar);
@@ -101,28 +92,25 @@ public class MainActivity extends AppCompatActivity {
             shareItRegister.setOnClickListener(v -> {
                 SharedPreferences.Editor editor=pref.edit();
                 String myname=editText.getText().toString();
-//                if(myname.equals("")){
-//                    Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
-//                }else{
-                    editor.putString("myname",myname);
-                    Log.d(TAG, "onCreate: 登录时选择头像："+avatarpath);
-                    editor.putString("avatarpath",avatarpath); //如果没选则为""
-                    editor.commit();
-
+                if(myname.equals("")){
+                    Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
+                }else{
                     //跳转到HomeActivity
                     Intent toHomeActivity=new Intent(this, HomeActivity.class);
                     toHomeActivity.putExtra("login",1); //shareit注册新账号，1
+                    toHomeActivity.putExtra("myname",myname); //到这里必然不为空
+                    toHomeActivity.putExtra("avatarpath",avatarpath);
                     startActivity(toHomeActivity);
                     finish();
-//                }
+                }
             });
 
-//            huaweiLogin.setOnClickListener(v -> {
-//                //使用华为账号登录
-//                mSignInOptions = new HuaweiIdSignInOptions.Builder(HuaweiIdSignInOptions.DEFAULT_SIGN_IN).build();
-//                mSignInClient= HuaweiIdSignIn.getClient(MainActivity.this,mSignInOptions);
-//                startActivityForResult(mSignInClient.getSignInIntent(), 8888);
-//            });
+            huaweiLogin.setOnClickListener(v -> {
+                //使用华为账号登录
+                mSignInOptions = new HuaweiIdSignInOptions.Builder(HuaweiIdSignInOptions.DEFAULT_SIGN_IN).build();
+                mSignInClient= HuaweiIdSignIn.getClient(MainActivity.this,mSignInOptions);
+                startActivityForResult(mSignInClient.getSignInIntent(), 8888);
+            });
 
             shareItLogin.setOnClickListener(v -> {
                 //跳转到shareit登录界面
@@ -155,13 +143,13 @@ public class MainActivity extends AppCompatActivity {
                 String avatarUri=huaweiAccount.getPhotoUrl().toString();
                 String myname=huaweiAccount.getDisplayName();
                 SharedPreferences.Editor editor=pref.edit();
-                editor.putString("myname",myname);
                 editor.putString("openid",openid);
                 editor.putString("avatarUri",avatarUri);
                 editor.commit();
 
                 Intent toHomeActivity=new Intent(this, HomeActivity.class);
                 toHomeActivity.putExtra("login",2); //华为账号登录，2
+                toHomeActivity.putExtra("myname",myname);
                 startActivity(toHomeActivity);
                 finish();
             } else{ //先不处理登录失败
@@ -202,22 +190,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    public boolean isServiceRunning(String ServiceName) {
-        ActivityManager myManager = (ActivityManager) getApplicationContext()
-                .getSystemService(Context.ACTIVITY_SERVICE);
-        ArrayList<ActivityManager.RunningServiceInfo> runningService = (ArrayList<ActivityManager.RunningServiceInfo>) myManager
-                .getRunningServices(30);
-
-        for (int i = 0; i < runningService.size(); i++) {
-            Log.d(TAG, "isServiceRunning: "+runningService.get(i).service.getClassName());
-            if (runningService.get(i).service.getClassName()
-                    .equals(ServiceName)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * 发送Get请求到服务器

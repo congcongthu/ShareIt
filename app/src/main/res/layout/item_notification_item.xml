@@ -26,7 +26,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:focusable="false"
-            android:src="@drawable/ic_default_avatar" />
+            android:src="@drawable/ic_people" />
 
         <TextView
             android:id="@+id/tv_content"

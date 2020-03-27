@@ -1,24 +1,17 @@
 package com.sjtuopennetwork.shareit.album.util;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.contact.SearchContactActivity;
-import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
-import com.sjtuopennetwork.shareit.share.ImageInfoActivity;
-import com.sjtuopennetwork.shareit.util.FileUtil;
+import com.sjtuopennetwork.shareit.util.ShareUtil;
 
 import java.util.ArrayList;
 
@@ -63,8 +56,7 @@ public class FilesAdapter extends RecyclerView.Adapter {
                 Textile.instance().files.content(fileHashs.get(position), new Handlers.DataHandler() {
                     @Override
                     public void onComplete(byte[] data, String media) {
-//                        Toast.makeText(ctx,"已取消",Toast.LENGTH_SHORT).show();
-                        String res=FileUtil.storeSyncFile(data,fileNames.get(position));
+                        String res= ShareUtil.storeSyncFile(data,fileNames.get(position));
                         System.out.println("======下载成功"+res);
                     }
 

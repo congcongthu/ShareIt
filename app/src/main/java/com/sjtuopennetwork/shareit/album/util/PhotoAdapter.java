@@ -11,19 +11,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.ImageInfoActivity;
+import com.sjtuopennetwork.shareit.util.ShareUtil;
 
 import java.util.ArrayList;
 
 public class PhotoAdapter extends RecyclerView.Adapter {
 
     Context ctx;
-    ArrayList<byte[]> photoBytes;
+    ArrayList<String> photoHashs;
+    String threadid;
 
-    public PhotoAdapter(Context context, ArrayList<byte[]> photoBytes) {
+    public PhotoAdapter(Context context, ArrayList<String> photoHashs, String threadid) {
         this.ctx=context;
-        this.photoBytes = photoBytes;
+        this.photoHashs = photoHashs;
+        this.threadid=threadid;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -44,10 +48,10 @@ public class PhotoAdapter extends RecyclerView.Adapter {
         ViewHolder viewHolder=new ViewHolder(view);
         viewHolder.photoView.setOnClickListener(v -> {
             int position=viewHolder.getAdapterPosition();
-            Bundle b=new Bundle();
-            b.putByteArray("photoData",photoBytes.get(position));
+            String[] hashName=photoHashs.get(position).split("##");
             Intent it=new Intent(ctx, ImageInfoActivity.class);
-            it.putExtras(b);
+            it.putExtra("imghash",hashName[0]);
+            it.putExtra("imgname",hashName[1]);
             ctx.startActivity(it);
         });
         return viewHolder;
@@ -55,13 +59,13 @@ public class PhotoAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        byte[] thePhoto=photoBytes.get(position);
+        String[] hashName=photoHashs.get(position).split("##");
         ViewHolder myViewHolder=(ViewHolder)viewHolder;
-        myViewHolder.photoImage.setImageBitmap(BitmapFactory.decodeByteArray(thePhoto,0,thePhoto.length));
+        ShareUtil.setImageView(ctx,myViewHolder.photoImage,hashName[0],false);
     }
 
     @Override
     public int getItemCount() {
-        return photoBytes.size();
+        return photoHashs.size();
     }
 }

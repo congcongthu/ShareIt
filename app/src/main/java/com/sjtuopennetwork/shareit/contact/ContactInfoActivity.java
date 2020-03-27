@@ -3,19 +3,14 @@ package com.sjtuopennetwork.shareit.contact;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.ChatActivity;
-import com.sjtuopennetwork.shareit.util.AppdbHelper;
-import com.sjtuopennetwork.shareit.util.DBoperator;
-import com.sjtuopennetwork.shareit.util.FileUtil;
+import com.sjtuopennetwork.shareit.util.ShareUtil;
 import com.sjtuopennetwork.shareit.util.RoundImageView;
 
 import java.util.List;
@@ -40,7 +35,6 @@ public class ContactInfoActivity extends AppCompatActivity {
     String threadid;
 
     //持久化存储
-    public SQLiteDatabase appdb;
     public SharedPreferences pref;
 
 
@@ -71,28 +65,11 @@ public class ContactInfoActivity extends AppCompatActivity {
         contact_addr.setText("公钥："+contact.getAddress().substring(0,10)+"...");
 
         contact_avatar=findViewById(R.id.contact_info_avatar);
+        ShareUtil.setImageView(this,contact_avatar,contact.getAvatar(),true);
     }
     private void initData(){
 
         pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
-        appdb=AppdbHelper.getInstance(getApplicationContext(),pref.getString("loginAccount","")).getWritableDatabase();
-
-        //显示头像
-        String avatarPath= FileUtil.getFilePath(contact.getAvatar());
-        if(avatarPath.equals("null")){ //如果没有存储过这个头像文件
-            Textile.instance().ipfs.dataAtPath("/ipfs/" + contact.getAvatar() + "/0/small/content", new Handlers.DataHandler() {
-                @Override
-                public void onComplete(byte[] data, String media) {
-                    String newPath=FileUtil.storeFile(data,contact.getAvatar());
-                    contact_avatar.setImageBitmap(BitmapFactory.decodeFile(newPath));
-                }
-                @Override
-                public void onError(Exception e) {
-                }
-            });
-        }else{ //如果已经存储过这个头像
-            contact_avatar.setImageBitmap(BitmapFactory.decodeFile(avatarPath));
-        }
 
         List<Model.Thread> devicethreads= null;
         try {

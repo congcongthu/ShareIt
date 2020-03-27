@@ -5,12 +5,11 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.chezi008.libcontacts.bean.ContactBean;
-import com.chezi008.libcontacts.listener.ContactListener;
-import com.chezi008.libcontacts.widget.ContactView;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
-import com.sjtuopennetwork.shareit.util.FileUtil;
+import com.sjtuopennetwork.shareit.util.ShareUtil;
+import com.sjtuopennetwork.shareit.util.contactlist.MyContactBean;
+import com.sjtuopennetwork.shareit.util.contactlist.MyContactView;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,11 +21,11 @@ public class GroupAddMemberActivity extends AppCompatActivity {
 
     //UI控件
     Button invite_new_members;
-    ContactView contactView;
+    MyContactView contactView;
 
     //内存数据
     String threadid;
-    List<ContactBean> contactBeans;
+    List<MyContactBean> contactBeans;
     List<Model.Peer> allMembers;
     List<Model.Peer> myFriends;
     List<Model.Peer> new_peers;
@@ -67,28 +66,17 @@ public class GroupAddMemberActivity extends AppCompatActivity {
             }
         }
         for(Model.Peer p:new_peers){
-            ContactBean contactBean=new ContactBean();
-            contactBean.setId(p.getAddress());
-            contactBean.setName(p.getName());
-            String avatarPath= FileUtil.getFilePath(p.getAvatar());
-            contactBean.setAvatar(avatarPath);
+            MyContactBean contactBean=new MyContactBean(p.getAddress(),p.getName(),p.getAvatar());
             contactBeans.add(contactBean);
         }
         contactView.setData(contactBeans,true);
-        contactView.setContactListener(new ContactListener<ContactBean>() {
-            @Override
-            public void onClick(ContactBean item) { }
-            @Override
-            public void onLongClick(ContactBean item) { }
-            @Override
-            public void loadAvatar(ImageView imageView, String avatar) { }
-        });
+        contactView.setListener(item -> { });
 
         invite_new_members.setOnClickListener(v -> {
-            List<ContactBean> selects=contactView.getChoostContacts();
-            for(ContactBean c:selects){ //逐个发送邀请
+            List<MyContactBean> selects=contactView.getChoosedContacts();
+            for(MyContactBean c:selects){ //逐个发送邀请
                 try {
-                    Textile.instance().invites.add(threadid,c.getId());
+                    Textile.instance().invites.add(threadid,c.id);
                     System.out.println("================通知已发送");
                 } catch (Exception e) {
                     e.printStackTrace();

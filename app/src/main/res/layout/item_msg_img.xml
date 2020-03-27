@@ -13,7 +13,7 @@
         android:layout_height="wrap_content" >
 
         <com.sjtuopennetwork.shareit.util.RoundImageView
-            android:src="@drawable/ic_default_avatar"
+            android:src="@drawable/ic_people"
             app:corner_radius="5dp"
             android:id="@+id/photo_avatar"
             android:layout_width="40dp"
@@ -150,7 +150,7 @@
         </LinearLayout>
 
         <com.sjtuopennetwork.shareit.util.RoundImageView
-            android:src="@drawable/ic_default_avatar"
+            android:src="@drawable/ic_people"
             app:corner_radius="5dp"
             android:id="@+id/photo_avatar_r"
             android:layout_width="40dp"

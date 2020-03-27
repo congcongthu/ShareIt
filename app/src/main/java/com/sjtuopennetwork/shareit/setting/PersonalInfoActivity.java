@@ -13,20 +13,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
-import com.sjtuopennetwork.shareit.login.MainActivity;
 import com.sjtuopennetwork.shareit.setting.util.NotificationGroup;
 import com.sjtuopennetwork.shareit.setting.util.NotificationItem;
 import com.sjtuopennetwork.shareit.setting.util.SwarmPeerListAdapter;
-import com.sjtuopennetwork.shareit.util.AppdbHelper;
 import com.sjtuopennetwork.shareit.util.RoundImageView;
+import com.sjtuopennetwork.shareit.util.ShareUtil;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 import com.wildma.pictureselector.PictureSelector;
 import com.sjtuopennetwork.shareit.R;
@@ -41,8 +38,6 @@ import java.util.List;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
-
-import static android.os.Build.VERSION_CODES.O;
 
 public class PersonalInfoActivity extends AppCompatActivity {
 
@@ -71,10 +66,9 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private SharedPreferences pref;
 
     //内存
-    private String myname;
-    private String avatarPath;
+    private String username;
+    private String useravatar;
     private String myaddr;
-    private String avatarHash;
     private String phrase;
     private String swarm_address;
     private ArrayList<NotificationGroup> gData = null;
@@ -92,7 +86,6 @@ public class PersonalInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_info);
 
-
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
@@ -102,18 +95,10 @@ public class PersonalInfoActivity extends AppCompatActivity {
         drawUI();
     }
     private void drawUI() {
-        info_name.setText(myname);
-        if (myname.equals("shareitlogin")){
-            info_name.setText("");
-        }
+        info_name.setText(username);
         info_addr.setText(myaddr);
         info_phrase.setText(phrase);
-        if(!avatarPath.equals("null")){ //头像为空只可能是引导页未设置
-            avatar_img.setImageBitmap(BitmapFactory.decodeFile(avatarPath));
-            avatar_img.setCornerRadius(5);
-        }else{
-            System.out.println("=============头像路径："+avatarPath);
-        }
+        ShareUtil.setImageView(this,avatar_img,useravatar,true);
         info_swarm_address.setText(swarm_address);
     }
 
@@ -221,16 +206,16 @@ public class PersonalInfoActivity extends AppCompatActivity {
             d.show();
         });
 
-        myname=pref.getString("myname","null");
-        phrase=pref.getString("phrase","null");
-//        myaddr=pref.getString("myaddr","null");
+        username= ShareUtil.getMyName();
+        useravatar=ShareUtil.getMyAvatar();
+        Log.d(TAG, "initData: name avatar: "+username+" "+useravatar);
+
+        phrase=pref.getString("phrase","");
         try {
             myaddr=Textile.instance().profile.get().getAddress();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        avatarPath=pref.getString("avatarpath","null");
-        avatarHash=pref.getString("avatarhash","null");
         String peerId;
         try {//获取自己的swarm地址
             peerId = Textile.instance().profile.get().getId();
@@ -240,7 +225,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
         }
         initSwarmPeerList();
     }
-//获取swarm列表
+
+    //获取swarm列表
     private void initSwarmPeerList() {
         swarm_peer_list=new ArrayList<>();
         gData=new ArrayList<>();
@@ -261,7 +247,6 @@ public class PersonalInfoActivity extends AppCompatActivity {
                     }
                 }
                 swarm_peer_list.add(new NotificationItem(peer.getId(),peer.getLatency(),avatar,name,peer.getAddr(),peer.getDirection()));
-
             }
             iData.add(swarm_peer_list);
         } catch (Exception e) {
@@ -272,18 +257,14 @@ public class PersonalInfoActivity extends AppCompatActivity {
         swarm_peer_listView.setAdapter(swarmPeerListAdapter);
 
         swarm_peer_listView.collapseGroup(0);
-        //swarm_peer_listView.expandGroup(0);
-        swarm_peer_listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
-                String swarm_url=iData.get(0).get(i1).swarmAddress+"/ipfs/"+iData.get(0).get(i1).peerId;
-                Log.d(TAG, "onChildClick: swarmAddress："+swarm_url);
-                Toast.makeText(PersonalInfoActivity.this,"已将swarm地址复制到剪贴板："+swarm_url,Toast.LENGTH_LONG).show();
-                ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                // 将文本内容放到系统剪贴板里。
-                cm.setText(swarm_url);
-                return false;
-            }
+        swarm_peer_listView.setOnChildClickListener((expandableListView, view, i, i1, l) -> {
+            String swarm_url=iData.get(0).get(i1).swarmAddress+"/ipfs/"+iData.get(0).get(i1).peerId;
+            Log.d(TAG, "onChildClick: swarmAddress："+swarm_url);
+            Toast.makeText(PersonalInfoActivity.this,"已将swarm地址复制到剪贴板："+swarm_url,Toast.LENGTH_LONG).show();
+            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            // 将文本内容放到系统剪贴板里。
+            cm.setText(swarm_url);
+            return false;
         });
     }
 
@@ -351,10 +332,6 @@ public class PersonalInfoActivity extends AppCompatActivity {
         if (requestCode == PictureSelector.SELECT_REQUEST_CODE) {
             if (data != null) {
                 String picturePath = data.getStringExtra(PictureSelector.PICTURE_PATH);
-                SharedPreferences.Editor editor=pref.edit();
-                editor.putString("avatarpath",picturePath);
-                editor.commit();
-                System.out.println("=====================设置头像："+pref.getString("avatarpath","null"));
                 Textile.instance().profile.setAvatar(picturePath, new Handlers.BlockHandler() {
                     @Override
                     public void onComplete(Model.Block block) {

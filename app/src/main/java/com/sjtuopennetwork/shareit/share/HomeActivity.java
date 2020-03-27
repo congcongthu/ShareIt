@@ -1,57 +1,32 @@
 package com.sjtuopennetwork.shareit.share;
 
-import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.bottomnavigation.LabelVisibilityMode;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.album.AlbumFragment;
 import com.sjtuopennetwork.shareit.contact.ContactFragment;
-import com.sjtuopennetwork.shareit.login.MainActivity;
 import com.sjtuopennetwork.shareit.setting.SettingFragment;
-import com.sjtuopennetwork.shareit.share.util.TDialog;
-import com.sjtuopennetwork.shareit.share.util.TMsg;
-import com.sjtuopennetwork.shareit.util.AppdbHelper;
-import com.sjtuopennetwork.shareit.util.DBoperator;
-import com.sjtuopennetwork.shareit.util.FileUtil;
-import com.sjtuopennetwork.shareit.util.ForeGroundService;
+import com.sjtuopennetwork.shareit.util.ShareService;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import sjtu.opennet.textilepb.Mobile;
-import sjtu.opennet.textilepb.Model;
-import sjtu.opennet.hon.BaseTextileEventListener;
-import sjtu.opennet.hon.FeedItemData;
-import sjtu.opennet.hon.FeedItemType;
-import sjtu.opennet.hon.Handlers;
-import sjtu.opennet.hon.Textile;
-import sjtu.opennet.textilepb.View;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -68,18 +43,13 @@ public class HomeActivity extends AppCompatActivity {
 
     //内存数据
     boolean nodeOnline=false;
-    int login;
+//    int login;
 
 
     //导航栏监听器，每次点击都进行fragment的切换
     private BottomNavigationView.OnNavigationItemSelectedListener navSeLis=new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-            if(isServiceRunning("com.sjtuopennetwork.shareit.util.ForeGroundService")){
-                Log.d(TAG, "onCreate: 服务正在运行");
-            }else{
-                Log.d(TAG, "onCreate: 服务没有运行");
-            }
             switch(menuItem.getItemId()){
                 case R.id.share:
                     replaceFragment(shareFragment);
@@ -113,16 +83,19 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        login=getIntent().getIntExtra("login",5);
-        Log.d(TAG, "跳转到HomeActivity，login："+login);
+        Intent theIntent=getIntent();
+
+        String myname=theIntent.getStringExtra("myname");
+        String avatarpath=theIntent.getStringExtra("avatarpath");
+
+        int login=theIntent.getIntExtra("login",5);
         if(login==0 || login==1 || login==2 || login==3){ //如果等于5，就不是登录页面跳转过来的
             initUI();
 
             if(!EventBus.getDefault().isRegistered(this)){
                 EventBus.getDefault().register(this);
             }
-            boolean serviceRunning=isServiceRunning("com.sjtuopennetwork.shareit.util.ForeGroundService");
-            Log.d(TAG, "onCreate, service running :"+serviceRunning);
+            boolean serviceRunning=isServiceRunning("com.sjtuopennetwork.shareit.util.ShareService");
             if(serviceRunning){
                 replaceFragment(shareFragment);
             }else{
@@ -130,8 +103,12 @@ public class HomeActivity extends AppCompatActivity {
                 circleProgressDialog.setText("节点启动中");
                 circleProgressDialog.showDialog();
 
-                Intent intent=new Intent(this,ForeGroundService.class);
+                Intent intent=new Intent(this, ShareService.class);
                 intent.putExtra("login",login);
+                if(myname != null){
+                    intent.putExtra("myname",myname);
+                    intent.putExtra("avatarpath",avatarpath);
+                }
                 startForegroundService(intent);
             }
 
@@ -155,7 +132,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initUI(){
-        Log.d(TAG, "initUI: 创建新的Fragment");
         shareFragment=new ShareFragment();
         contactFragment=new ContactFragment();
         albumFragment=new AlbumFragment();
@@ -170,7 +146,6 @@ public class HomeActivity extends AppCompatActivity {
     public void knowOnline(Integer integer){
         if(integer.intValue()==0){
             if(!nodeOnline){
-                Log.d(TAG, "knowOnline: 主页得知节点启动了");
                 circleProgressDialog.dismiss();
                 nodeOnline=true;
                 replaceFragment(shareFragment);

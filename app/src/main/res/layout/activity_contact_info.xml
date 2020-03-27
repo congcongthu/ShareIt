@@ -22,7 +22,7 @@
     </android.support.v7.widget.Toolbar>
 
     <com.sjtuopennetwork.shareit.util.RoundImageView
-        android:src="@drawable/ic_default_avatar"
+        android:src="@drawable/ic_people"
         android:layout_gravity="center"
         app:corner_radius="20dp"
         android:layout_margin="10dp"

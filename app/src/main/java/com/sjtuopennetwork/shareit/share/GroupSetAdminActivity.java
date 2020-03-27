@@ -5,11 +5,10 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.chezi008.libcontacts.bean.ContactBean;
-import com.chezi008.libcontacts.listener.ContactListener;
-import com.chezi008.libcontacts.widget.ContactView;
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.util.FileUtil;
+import com.sjtuopennetwork.shareit.util.ShareUtil;
+import com.sjtuopennetwork.shareit.util.contactlist.MyContactBean;
+import com.sjtuopennetwork.shareit.util.contactlist.MyContactView;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,11 +20,11 @@ public class GroupSetAdminActivity extends AppCompatActivity {
 
     //UI控件
     Button change_admin;
-    ContactView contactView;
+    MyContactView contactView;
 
     //内存数据
     String threadid;
-    List<ContactBean> contactBeans;
+    List<MyContactBean> contactBeans;
     List<Model.Peer> nonAdmins;
 
     @Override
@@ -54,29 +53,16 @@ public class GroupSetAdminActivity extends AppCompatActivity {
         }
 
         for(Model.Peer p:nonAdmins){
-            ContactBean contactBean=new ContactBean();
-            contactBean.setId(p.getId());
-            contactBean.setName(p.getName());
-            String avatarPath= FileUtil.getFilePath(p.getAvatar());
-            contactBean.setAvatar(avatarPath);
+            MyContactBean contactBean=new MyContactBean(p.getAddress(),p.getName(),p.getAvatar());
             contactBeans.add(contactBean);
         }
         contactView.setData(contactBeans,true);
-        contactView.setContactListener(new ContactListener<ContactBean>() {
-            @Override
-            public void onClick(ContactBean item) {
-            }
-            @Override
-            public void onLongClick(ContactBean item) { }
-            @Override
-            public void loadAvatar(ImageView imageView, String avatar) { }
-        });
 
         change_admin.setOnClickListener(v -> {
-            List<ContactBean> selects=contactView.getChoostContacts();
-            for(ContactBean c:selects){ //逐个添加管理员
+            List<MyContactBean> selects=contactView.getChoosedContacts();
+            for(MyContactBean c:selects){ //逐个添加管理员
                 try {
-                    Textile.instance().threads.addAdmin(threadid,c.getId());
+                    Textile.instance().threads.addAdmin(threadid,c.id);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="50dp">
+
+        <ImageView
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_file_icon"
+            android:layout_width="25dp"
+            android:layout_height="25dp" />
 
         <TextView
             android:maxLines="1"
             android:ellipsize="end"
-            android:layout_marginTop="3dp"
-            android:background="@color/lightgray"
             android:id="@+id/sync_file_name"
             android:padding="5dp"
             android:gravity="center_vertical"

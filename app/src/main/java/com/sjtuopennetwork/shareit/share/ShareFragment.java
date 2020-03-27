@@ -1,15 +1,12 @@
 package com.sjtuopennetwork.shareit.share;
 
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +15,10 @@ import android.widget.ListView;
 
 import com.example.qrlibrary.qrcode.utils.PermissionUtils;
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
 import com.sjtuopennetwork.shareit.setting.NotificationActivity;
 import com.sjtuopennetwork.shareit.share.util.DialogAdapter;
-import com.sjtuopennetwork.shareit.share.util.PreloadVideoThread;
 import com.sjtuopennetwork.shareit.share.util.TDialog;
-import com.sjtuopennetwork.shareit.share.util.TMsg;
-import com.sjtuopennetwork.shareit.util.AppdbHelper;
-import com.sjtuopennetwork.shareit.util.DBoperator;
+import com.sjtuopennetwork.shareit.util.DBHelper;
 import com.sjtuopennetwork.shareit.util.QRCodeActivity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -35,12 +28,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.LinkedList;
 import java.util.List;
 
-import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Textile;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class ShareFragment extends Fragment {
 
     private static final String TAG = "====================";
@@ -53,10 +43,9 @@ public class ShareFragment extends Fragment {
 
     //内存数据
     List<TDialog> dialogs; //对话列表数据
-    List<PreloadVideoThread> preloadVideoThreadList;
+    String loginAccount; //当前登录的帐户
 
     //持久化存储
-    public SQLiteDatabase appdb;
     public SharedPreferences pref;
 
     public ShareFragment() {
@@ -74,8 +63,6 @@ public class ShareFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-        preloadVideoThreadList=new LinkedList<>();
 
         Log.d(TAG, "onStart: ShareFragment的onSTart方法调用");
 
@@ -110,11 +97,12 @@ public class ShareFragment extends Fragment {
 
     private void initData(){
         pref=getActivity().getSharedPreferences("txtl",Context.MODE_PRIVATE);
-        appdb=AppdbHelper.getInstance(getActivity().getApplicationContext(),pref.getString("loginAccount","")).getWritableDatabase();
+        loginAccount=pref.getString("loginAccount",""); //当前登录的account，就是address
+
         dialogs=new LinkedList<>();
 
         //从数据库中查出对话
-        dialogs= DBoperator.queryAllDIalogs(appdb);
+        dialogs= DBHelper.getInstance(getActivity().getApplicationContext(),loginAccount).queryAllDIalogs();
         Log.d(TAG, "initData: 对话数："+dialogs.size());
 
         //查出邀请中最近的一个，添加到头部。
@@ -135,43 +123,41 @@ public class ShareFragment extends Fragment {
             e.printStackTrace();
         }
         if(gpinvite>0){ //如果有群组邀请就要显示出来
-            TDialog noti=new TDialog(1,"","通知",lastInvite.getInviter().getName()+" 邀请你",
+            TDialog noti=new TDialog("",lastInvite.getInviter().getName()+" 邀请你",
                     lastInvite.getDate().getSeconds(),false,"tongzhi",true,true);
             dialogs.add(0,noti);
         }
 
         dialogAdapter=new DialogAdapter(getContext(),R.layout.item_share_dialog,dialogs);
-        dialogAdapter.notifyDataSetChanged();
         dialoglistView.setAdapter(dialogAdapter);
 
         dialoglistView.setOnItemClickListener((parent, view, position, id) -> {
-            if(dialogs.get(position).imgpath.equals("tongzhi")){ //如果是通知，就跳转到通知
+            if(dialogs.get(position).add_or_img.equals("tongzhi")){ //如果是通知，就跳转到通知
                 Intent intent=new Intent(getActivity(), NotificationActivity.class);
                 startActivity(intent);
             }else{ //如果是对话就进入聊天
                 String threadid=dialogs.get(position).threadid;
                 //数据库中修改为已读
-                DBoperator.changeDialogRead(appdb,threadid,1);
+                DBHelper.getInstance(getActivity().getApplicationContext(),loginAccount).changeDialogRead(threadid,1);
 
                 Intent it=new Intent(getActivity(), ChatActivity.class);
                 it.putExtra("threadid",threadid);
+                if(dialogs.get(position).isSingle){ //如果是单人,就把用户名放进去
+                    try {
+                        it.putExtra("singleName",Textile.instance().contacts.get(dialogs.get(position).add_or_img).getName());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
                 startActivity(it);
             }
         });
     }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void getApplication(Integer integer){
-//        if(integer==7384){
-//            //直接同意并进入群聊
-//        }
-//    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getNewMsg(TDialog tDialog){ //获取到新的消息后要更新显示
-        Log.d(TAG, "getNewMsg: 对话更新："+tDialog.threadname);
 
-        if(!tDialog.threadname.equals("通知")){
+        if(!tDialog.add_or_img.equals("通知")){
             //找到对应的那一个，将其删除，并在头部插入，如果没有找到就直接在头部插入。
             for(int i=0;i<dialogs.size();i++){
                 if(dialogs.get(i).threadid.equals(tDialog.threadid)){

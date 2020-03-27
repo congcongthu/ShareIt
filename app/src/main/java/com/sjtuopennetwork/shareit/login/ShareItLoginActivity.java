@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.HomeActivity;
+import com.sjtuopennetwork.shareit.util.ShareUtil;
 
 import java.io.File;
 
@@ -28,6 +29,9 @@ public class ShareItLoginActivity extends AppCompatActivity {
     //持久化存储
     SharedPreferences pref;
 
+    //内存数据
+    String repoPath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,22 +44,15 @@ public class ShareItLoginActivity extends AppCompatActivity {
 
         logInWithPhrase.setOnClickListener(v -> {
             String phrase=editText.getText().toString();
-            //写入助记词
-            SharedPreferences.Editor editor=pref.edit();
-            editor.putString("phrase",phrase);
-            editor.putString("myname","");
-            editor.putString("avatarpath","null"); //先预设为这个
-            editor.commit();
+            final File repoDir = new File(ShareUtil.getAppExternalPath(this, "repo"));
 
             boolean loginWrong=false;
             String loginAccount="";
-            String repoPath="";
             final File filesDir = this.getFilesDir();
             try {
                 Mobile.MobileWalletAccount m= Textile.walletAccountAt(phrase,Textile.WALLET_ACCOUNT_INDEX,Textile.WALLET_PASSPHRASE);
                 loginAccount=m.getAddress();
-                final File repo1 = new File(filesDir, loginAccount);
-                repoPath = repo1.getAbsolutePath();
+                repoPath = new File(repoDir, loginAccount).getAbsolutePath();
                 if (!Textile.isInitialized(repoPath)){
                     Textile.initialize(repoPath,m.getSeed() , true, false,true);
                 }
@@ -67,8 +64,9 @@ public class ShareItLoginActivity extends AppCompatActivity {
             if(loginWrong){ //如果登录出了问题
                 Toast.makeText(this,"助记词错误",Toast.LENGTH_SHORT).show();
                 editText.setText("");
-            }else {
+            }else { //如果登录成功
                 Log.d(TAG, "onCreate: 登录账户"+loginAccount);
+                SharedPreferences.Editor editor=pref.edit();
                 editor.putString("loginAccount",loginAccount);
                 editor.commit();
 

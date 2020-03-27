@@ -34,7 +34,7 @@
         android:layout_height="wrap_content">
 
         <com.sjtuopennetwork.shareit.util.RoundImageView
-            android:src="@drawable/ic_default_avatar"
+            android:src="@drawable/ic_people"
             android:id="@+id/setting_avatar_photo"
             android:layout_margin="10dp"
             android:layout_width="70dp"
@@ -86,17 +86,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="上传log"/>
-
-    <Button
-        android:id="@+id/test_insert_stream"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="插入stream" />
-    <Button
-        android:id="@+id/test_search_stream"
-        android:text="测试搜索stream"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <View
         android:background="@color/lightgray"

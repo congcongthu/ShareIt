@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp" />
 
-    <com.chezi008.libcontacts.widget.ContactView
+    <com.sjtuopennetwork.shareit.util.contactlist.MyContactView
         android:id="@+id/new_group_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.util.ShareUtil;
 
 import sjtu.opennet.hon.Textile;
 
@@ -16,8 +17,6 @@ public class InfoNameActivity extends AppCompatActivity {
 
     private EditText et_name;//昵称
     private Button bt_confirm;
-    //持久化
-    private SharedPreferences pref;
 
     private String myname;
     TextView peerId;
@@ -32,14 +31,10 @@ public class InfoNameActivity extends AppCompatActivity {
     private void initUI() {
         et_name = findViewById(R.id.name);
         bt_confirm = findViewById(R.id.confirm);
-        pref = getSharedPreferences("txtl", Context.MODE_PRIVATE);
-        myname = pref.getString("myname", "null");
+        myname= ShareUtil.getMyName();
         et_name.setText(myname);
         bt_confirm.setOnClickListener(View -> {
             myname = et_name.getText().toString();
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putString("myname", myname);
-            editor.apply();
             try {
                 System.out.println("=========新昵称：" + myname);
                 Textile.instance().profile.setName(myname);

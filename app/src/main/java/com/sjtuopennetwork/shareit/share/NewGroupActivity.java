@@ -6,12 +6,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.chezi008.libcontacts.bean.ContactBean;
-import com.chezi008.libcontacts.listener.ContactListener;
-import com.chezi008.libcontacts.widget.ContactView;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
-import com.sjtuopennetwork.shareit.util.FileUtil;
+import com.sjtuopennetwork.shareit.util.ShareUtil;
+import com.sjtuopennetwork.shareit.util.contactlist.MyContactBean;
+import com.sjtuopennetwork.shareit.util.contactlist.MyContactView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -27,12 +26,12 @@ import sjtu.opennet.hon.Textile;
 public class NewGroupActivity extends AppCompatActivity {
 
     //UI控件
-    ContactView contactView;
+    MyContactView contactView;
     Button bt_create;
     EditText editText;
 
     //内存数据
-    List<ContactBean> contactBeans;
+    List<MyContactBean> contactBeans;
     List<Model.Peer> myFriends;
 
     @Override
@@ -60,26 +59,14 @@ public class NewGroupActivity extends AppCompatActivity {
         contactBeans=new LinkedList<>();
 
         for(Model.Peer p:myFriends){
-            ContactBean contactBean=new ContactBean();
-            contactBean.setId(p.getAddress());
-            contactBean.setName(p.getName());
-            String avatarPath= FileUtil.getFilePath(p.getAvatar());
-            contactBean.setAvatar(avatarPath);
+            MyContactBean contactBean=new MyContactBean(p.getAddress(),p.getName(),p.getAvatar());
             contactBeans.add(contactBean);
         }
 
         contactView.setData(contactBeans,true);
-        contactView.setContactListener(new ContactListener<ContactBean>() {
-            @Override
-            public void onClick(ContactBean item) { }
-            @Override
-            public void onLongClick(ContactBean item) { }
-            @Override
-            public void loadAvatar(ImageView imageView, String avatar) { }
-        });
 
         bt_create.setOnClickListener(v -> {
-            System.out.println("===============选中的联系人数："+contactView.getChoostContacts().size());
+            System.out.println("===============选中的联系人数："+contactView.getChoosedContacts().size());
             String threadname=editText.getText().toString();
 
             //创建一个多人的群组：
@@ -115,8 +102,8 @@ public class NewGroupActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void sendInvite(String addThreadID){
         try {
-            for(ContactBean c:contactView.getChoostContacts()){
-                Textile.instance().invites.add(addThreadID,c.getId());
+            for(MyContactBean c:contactView.getChoosedContacts()){
+                Textile.instance().invites.add(addThreadID,c.id);
                 System.out.println("===============发送了邀请");
             }
 

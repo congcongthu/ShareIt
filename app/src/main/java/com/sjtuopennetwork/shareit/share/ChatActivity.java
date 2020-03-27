@@ -1,23 +1,16 @@
 package com.sjtuopennetwork.shareit.share;
 
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,40 +19,28 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.leon.lfilepickerlibrary.LFilePicker;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
-import com.sjtuopennetwork.shareit.share.util.MsgAdapter;
-import com.sjtuopennetwork.shareit.share.util.PreloadVideoThread;
 import com.sjtuopennetwork.shareit.share.util.TMsg;
-import com.sjtuopennetwork.shareit.util.AppdbHelper;
-import com.sjtuopennetwork.shareit.util.DBoperator;
-import com.sjtuopennetwork.shareit.util.FileUtil;
-//import com.sjtuopennetwork.shareit.util.VideoHelper;
-//import com.sjtuopennetwork.shareit.util.VideoHelper;
-import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
+import com.sjtuopennetwork.shareit.share.util.TMsgAdapter;
+import com.sjtuopennetwork.shareit.util.DBHelper;
+import com.sjtuopennetwork.shareit.util.ShareUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import sjtu.opennet.honvideo.VideoHandlers;
-import sjtu.opennet.honvideo.VideoMeta;
-import sjtu.opennet.honvideo.VideoReceiveHelper;
 import sjtu.opennet.honvideo.VideoUploadHelper;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
-import sjtu.opennet.textilepb.QueryOuterClass;
+
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -76,23 +57,26 @@ public class ChatActivity extends AppCompatActivity {
     TextView bt_send_img;
     LinearLayout chat_backgroud;
     TextView bt_send_video;
+    TextView bt_send_file;
 
     //持久化数据
-    public SQLiteDatabase appdb;
     public SharedPreferences pref;
 
     //内存数据
+    String loginAccount; //当前登录的帐户
     boolean addingFIle=false;
     String threadid;
     Model.Thread chat_thread;
     List<TMsg> msgList;
-    MsgAdapter msgAdapter;
+    TMsgAdapter msgAdapter;
     List<LocalMedia> choosePic;
     List<LocalMedia> chooseVideo;
     String avatarpath;
     int pageIndex;
     String myName;
     String myAvatar;
+    List<String> chooseFilePath;
+
 
     //退出群组相关
     public static final String REMOVE_DIALOG="you get out";
@@ -119,7 +103,6 @@ public class ChatActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-
         drawUI();
 
         if(!EventBus.getDefault().isRegistered(this)){
@@ -128,11 +111,9 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void drawUI() {
-        msgList= DBoperator.queryMsg(appdb,threadid);
-        msgAdapter=new MsgAdapter(this,msgList,avatarpath);
-        msgAdapter.notifyDataSetChanged();
+        msgList= DBHelper.getInstance(getApplicationContext(),loginAccount).list3000Msg(threadid);
+        msgAdapter=new TMsgAdapter(this,msgList,threadid);
         chat_lv.setAdapter(msgAdapter);
-        chat_lv.invalidateViews();
         chat_lv.setSelection(msgList.size());
     }
 
@@ -140,6 +121,7 @@ public class ChatActivity extends AppCompatActivity {
         chat_lv=findViewById(R.id.chat_lv);
         bt_send_img=findViewById(R.id.bt_send_img);
         bt_send_video=findViewById(R.id.bt_send_video);
+        bt_send_file=findViewById(R.id.bt_send_file);
         chat_name_toolbar=findViewById(R.id.chat_name_toolbar);
         send_msg=findViewById(R.id.chat_send_text);
         bt_add_file=findViewById(R.id.bt_add_file);
@@ -165,12 +147,12 @@ public class ChatActivity extends AppCompatActivity {
                 add_file_layout.setVisibility(View.VISIBLE);
             }
         });
+
     }
 
     private void initData() {
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
-        appdb=AppdbHelper.getInstance(getApplicationContext(),pref.getString("loginAccount","")).getWritableDatabase();
-        avatarpath=pref.getString("avatarpath","null");
+        loginAccount=pref.getString("loginAccount",""); //当前登录的account，就是address
 
         //初始化对话
         Intent it=getIntent();
@@ -180,13 +162,8 @@ public class ChatActivity extends AppCompatActivity {
             myAvatar=Textile.instance().profile.avatar();
             chat_thread = Textile.instance().threads.get(threadid);
             if(chat_thread.getWhitelistCount()==2){ //如果是双人thread
-                group_menu.setVisibility(View.GONE);
-                Model.Peer peer1=Textile.instance().threads.peers(threadid).getItems(0);
-                if(peer1.getName().equals(Textile.instance().profile.name())){ //如果第一个名字是我的，就设置下一个名字
-                    chat_name_toolbar.setText(Textile.instance().threads.peers(threadid).getItems(1).getName());
-                }else{ //第一个名字不是我就直接设置
-                    chat_name_toolbar.setText(peer1.getName());
-                }
+                String chatName=it.getStringExtra("singleName");
+                chat_name_toolbar.setText(chatName);
             }else{
                 chat_name_toolbar.setText(chat_thread.getName());
             }
@@ -196,37 +173,15 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         send_msg.setOnClickListener(view -> {
-
             final String msg=chat_text_edt.getText().toString();
-
             if(!msg.equals("")){
                 chat_text_edt.setText("");
-
-//                while(true) {
-//                    try {
-//                        Thread.sleep(1500);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-
-                    try {
-                        Textile.instance().messages.add(threadid, msg);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    TMsg tMsg = null;
-                    try {
-                        tMsg = new TMsg("",threadid, 0,
-                                Textile.instance().profile.name(), Textile.instance().profile.avatar(), msg, System.currentTimeMillis() / 1000, true);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    msgList.add(tMsg);
-//                    msgAdapter.notifyDataSetChanged();
-                    chat_lv.setSelection(msgList.size());
-//                }
-
+                try {
+                    Log.d(TAG, "initData: get the msg: "+msg);
+                    Textile.instance().messages.add(threadid, msg);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }else{
                 Toast.makeText(this,"消息不能为空", Toast.LENGTH_SHORT).show();
             }
@@ -248,18 +203,27 @@ public class ChatActivity extends AppCompatActivity {
                     .forResult(PictureConfig.TYPE_VIDEO);
         });
 
+        bt_send_file.setOnClickListener(v->{
+            new LFilePicker()
+                    .withActivity(ChatActivity.this)
+                    .withRequestCode(293)
+                    .withMutilyMode(false)//false为单选
+//                    .withFileFilter(new String[]{".txt",".png",".jpeg",".jpg" })//设置可选文件类型
+                    .withTitle("文件选择")//标题
+                    .start();
+        });
+
         group_menu.setOnClickListener(v -> {
             Intent toGroupInfo=new Intent(ChatActivity.this,GroupInfoActivity.class);
             toGroupInfo.putExtra("threadid",threadid);
             startActivity(toGroupInfo);
         });
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateChat(TMsg tMsg){
         if(tMsg.threadid.equals(threadid)){
-            Log.d(TAG, "updateChat: chatactivity收到消息："+tMsg.msgtype);
+            Log.d(TAG, "updateChat: "+tMsg.msgtype+" "+tMsg.body);
             msgList.add(tMsg);
             msgAdapter.notifyDataSetChanged();
             chat_lv.setSelection(msgList.size()); //图片有时候不立即显示，因为Item大小完全相同。
@@ -272,8 +236,10 @@ public class ChatActivity extends AppCompatActivity {
         if(requestCode==PictureConfig.TYPE_IMAGE && resultCode==RESULT_OK){
             choosePic=PictureSelector.obtainMultipleResult(data);
             String filePath=choosePic.get(0).getPath();
+            String fileName=ShareUtil.getFileNameWithSuffix(filePath);
+            Log.d(TAG, "onActivityResult: upload pic: "+fileName);
             //发送照片
-            Textile.instance().files.addPicture(filePath, threadid, "", new Handlers.BlockHandler() {
+            Textile.instance().files.addPicture(filePath, threadid,fileName , new Handlers.BlockHandler() {
                 @Override
                 public void onComplete(Model.Block block) {
                 }
@@ -282,26 +248,14 @@ public class ChatActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             });
-            TMsg tMsg= null;
-            try {
-                tMsg = new TMsg("",threadid,1,
-                        Textile.instance().profile.name(),Textile.instance().profile.avatar(),filePath,System.currentTimeMillis()/1000,true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            msgList.add(tMsg);
-            chat_lv.setSelection(msgList.size());
         }else if(requestCode==PictureConfig.TYPE_VIDEO && resultCode==RESULT_OK){ //如果是选择了视频
             chooseVideo=PictureSelector.obtainMultipleResult(data);
             String filePath=chooseVideo.get(0).getPath();
-
             Log.d(TAG, "onActivityResult: 选择了视频："+filePath);
 
-            // check if there is any peer not connected
-            boolean cafeStore= !ContactUtil.allPeerConnected(threadid);
-            Log.d(TAG, "onActivityResult: cafeStore: "+cafeStore);
+            //StreamSender send=new StreamSender(filePath,StreamType.VIDEO)
 
-            VideoUploadHelper videoHelper=new VideoUploadHelper(this, filePath, cafeStore);
+            VideoUploadHelper videoHelper=new VideoUploadHelper(this, filePath, false);
             Model.Video videoPb=videoHelper.getVideoPb();
 
             Model.StreamMeta streamMeta= Model.StreamMeta.newBuilder().setId(videoPb.getId()).setNsubstreams(1).build();
@@ -322,21 +276,36 @@ public class ChatActivity extends AppCompatActivity {
 
             //发送端立马显示发送视频
             Bitmap tmpBmap = videoHelper.getPoster(); //拿到缩略图
-            String tmpdir = FileUtil.getAppExternalPath(this, "temp");
+            String tmpdir = ShareUtil.getAppExternalPath(this, "temp");
             String videoHeadPath=tmpdir+System.currentTimeMillis(); //随机给一个名字
-            FileUtil.saveBitmap(videoHeadPath,tmpBmap);
+            ShareUtil.saveBitmap(videoHeadPath,tmpBmap);
             String posterAndId=videoHeadPath+"##"+filePath;
             TMsg tMsg= null;
             try {
                 long l=System.currentTimeMillis();
-                tMsg=DBoperator.insertMsg(appdb,threadid,2,String.valueOf(l),myName,myAvatar
-                ,posterAndId,l,1);
+//                tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+//                        threadid,2,String.valueOf(l),myName,myAvatar,posterAndId,l,1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             msgList.add(tMsg);
 //            msgAdapter.notifyDataSetChanged();
             chat_lv.setSelection(msgList.size());
+        }else if(requestCode == 293 &&resultCode == RESULT_OK){
+            chooseFilePath = data.getStringArrayListExtra("paths");
+            String path = chooseFilePath.get(0);
+            String chooseFileName=ShareUtil.getFileNameWithSuffix(path);
+
+            //发送文件
+            Textile.instance().files.addFiles(chooseFilePath.get(0), threadid, chooseFileName, new Handlers.BlockHandler() {
+                @Override
+                public void onComplete(Model.Block block) { }
+
+                @Override
+                public void onError(Exception e) {
+                    e.printStackTrace();
+                }
+            });
         }
     }
 
@@ -345,7 +314,7 @@ public class ChatActivity extends AppCompatActivity {
         super.finish();
 
         //要把相应的Dialog表改为已读
-        DBoperator.changeDialogRead(appdb,threadid,1);
+        DBHelper.getInstance(getApplicationContext(),loginAccount).changeDialogRead(threadid,1);
 
     }
 

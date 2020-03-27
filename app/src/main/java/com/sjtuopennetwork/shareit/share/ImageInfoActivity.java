@@ -2,45 +2,81 @@ package com.sjtuopennetwork.shareit.share;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.luck.picture.lib.photoview.PhotoView;
 import com.sjtuopennetwork.shareit.R;
-import com.sjtuopennetwork.shareit.util.FileUtil;
+import com.sjtuopennetwork.shareit.util.ShareUtil;
+
+import java.util.UUID;
+
+import sjtu.opennet.hon.Handlers;
+import sjtu.opennet.hon.Textile;
 
 public class ImageInfoActivity extends AppCompatActivity {
 
     //UI控件
-    PhotoView photoView;
+//    PhotoView photoView;
+    ImageView showImg;
 
     //内存数据
-    String imgpath;
+    String imghash;
     byte[] photoData;
+    String threadid;
+    String imgName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_info);
-        photoView=findViewById(R.id.photo_view);
+        showImg=findViewById(R.id.show_img);
 
         Intent it=getIntent();
-        Bundle b=it.getExtras();
+        imgName=it.getStringExtra("imgname");
 
+//        Bundle b=it.getExtras();
+//        photoData=b.getByteArray("photoData");
+//        if(photoData!=null){
+//            Glide.with(ImageInfoActivity.this).load(photoData).into(showImg);
+//        }else{
+            Handler handler=new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+                    photoData=msg.getData().getByteArray("img");
+                    Glide.with(ImageInfoActivity.this).load(photoData).into(showImg);
+                }
+            };
 
-        photoData=b.getByteArray("photoData");
-        if(photoData!=null){
-            photoView.setImageBitmap(BitmapFactory.decodeByteArray(photoData,0,photoData.length));
-        }else{
-            imgpath=it.getStringExtra("imgpath");
+            imghash=it.getStringExtra("imghash");
+            Textile.instance().files.content(imghash, new Handlers.DataHandler() {
+                @Override
+                public void onComplete(byte[] data, String media) {
+                    Bundle b=new Bundle(); b.putByteArray("img",data);
+                    Message msg=new Message(); msg.what=1; msg.setData(b);
+                    handler.sendMessage(msg);
+                }
+                @Override
+                public void onError(Exception e) {}
+            });
+//        }
+        showImg.setOnClickListener(view -> finish());
+        showImg.setOnLongClickListener(v -> {//弹出对话框提示是否要保存到本地
+            AlertDialog.Builder storeImg=new AlertDialog.Builder(ImageInfoActivity.this);
+            storeImg.setTitle("保存图片到本地");
+            storeImg.setPositiveButton("保存", (dialog, which) -> {
+                ShareUtil.storeSyncFile(photoData,imgName);
+            });
+            storeImg.setNegativeButton("取消", (dialog, which) -> Toast.makeText(ImageInfoActivity.this,"已取消",Toast.LENGTH_SHORT).show());
+            storeImg.show();
+            return true;
+        });
 
-            if(imgpath.equals("null")){
-                Toast.makeText(this,"图片获取失败",Toast.LENGTH_SHORT).show();
-            }else{
-                photoView.setImageBitmap(BitmapFactory.decodeFile(imgpath));
-            }
-        }
-        photoView.setOnClickListener(view -> finish());
     }
 }
