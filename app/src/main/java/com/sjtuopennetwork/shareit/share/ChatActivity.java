@@ -36,7 +36,8 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
-import sjtu.opennet.honvideo.VideoUploadHelper;
+import sjtu.opennet.stream.video.VideoPusher;
+import sjtu.opennet.stream.video.ticketvideo.VideoSender_tkt;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
@@ -58,6 +59,7 @@ public class ChatActivity extends AppCompatActivity {
     LinearLayout chat_backgroud;
     TextView bt_send_video;
     TextView bt_send_file;
+    TextView bt_send_video_ticket;
 
     //持久化数据
     public SharedPreferences pref;
@@ -130,6 +132,7 @@ public class ChatActivity extends AppCompatActivity {
         add_file_layout=findViewById(R.id.file_layout);
         add_file_layout.setVisibility(View.GONE);
         chat_backgroud=findViewById(R.id.chat_backgroud);
+        bt_send_video_ticket=findViewById(R.id.bt_send_video_ticket);
 
         chat_backgroud.setOnClickListener(view -> {
             if(addingFIle){
@@ -202,6 +205,13 @@ public class ChatActivity extends AppCompatActivity {
                     .compress(false)
                     .forResult(PictureConfig.TYPE_VIDEO);
         });
+        bt_send_video_ticket.setOnClickListener(view -> {
+            PictureSelector.create(ChatActivity.this)
+                    .openGallery(PictureMimeType.ofVideo())
+                    .maxSelectNum(1)
+                    .compress(false)
+                    .forResult(1293);
+        });
 
         bt_send_file.setOnClickListener(v->{
             new LFilePicker()
@@ -253,44 +263,75 @@ public class ChatActivity extends AppCompatActivity {
             String filePath=chooseVideo.get(0).getPath();
             Log.d(TAG, "onActivityResult: 选择了视频："+filePath);
 
-            //StreamSender send=new StreamSender(filePath,StreamType.VIDEO)
+            VideoPusher videoPusher =new VideoPusher(this,threadid,filePath);
 
-            VideoUploadHelper videoHelper=new VideoUploadHelper(this, filePath, false);
-            Model.Video videoPb=videoHelper.getVideoPb();
+            videoPusher.startPush();
 
-            Model.StreamMeta streamMeta= Model.StreamMeta.newBuilder().setId(videoPb.getId()).setNsubstreams(1).build();
-            try {
-                Textile.instance().streams.startStream(threadid,streamMeta); //开始这个流
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            videoHelper.upload(() -> { //开始切割并streamAddFile
-                try {
-                    Log.d(TAG, "onActivityResult: 向thread添加video "+videoPb.getVideoLength()/1000000);
-                    Textile.logDebug("===============start to send video: "+videoPb.getId());
-//                    Textile.instance().videos.threadAddVideo(threadid,videoPb.getId()); //向thread中添加
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-            });
+//            VideoUploadHelper videoUploadHelper=new VideoUploadHelper(this, filePath, false);
+//            Model.Video videoPb=videoUploadHelper.getVideoPb();
+//            Model.StreamMeta streamMeta= Model.StreamMeta.newBuilder().setId(videoPb.getId()).setNsubstreams(1).build();
+//            try {
+//                Textile.instance().streams.startStream(threadid,streamMeta); //开始这个流
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            videoUploadHelper.upload(() -> { //开始切割并streamAddFile
+//                try {
+//                    Log.d(TAG, "onActivityResult: 向thread添加video "+videoPb.getVideoLength()/1000000);
+//                    Textile.logDebug("===============start to send video: "+videoPb.getId());
+////                    Textile.instance().videos.threadAddVideo(threadid,videoPb.getId()); //向thread中添加
+//                }catch(Exception e){
+//                    e.printStackTrace();
+//                }
+//            });
 
+            Log.d(TAG, "onActivityResult: video added");
             //发送端立马显示发送视频
-            Bitmap tmpBmap = videoHelper.getPoster(); //拿到缩略图
+            String videoId= videoPusher.getVideoId();
+            Bitmap tmpBmap = videoPusher.getPosterBitmap(); //拿到缩略图
             String tmpdir = ShareUtil.getAppExternalPath(this, "temp");
-            String videoHeadPath=tmpdir+System.currentTimeMillis(); //随机给一个名字
-            ShareUtil.saveBitmap(videoHeadPath,tmpBmap);
-            String posterAndId=videoHeadPath+"##"+filePath;
+            String posterPath=tmpdir+"/"+videoId; //随机给一个名字
+            ShareUtil.saveBitmap(posterPath,tmpBmap);
+            String posterAndFile=posterPath+"##"+filePath;
             TMsg tMsg= null;
             try {
                 long l=System.currentTimeMillis();
-//                tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
-//                        threadid,2,String.valueOf(l),myName,myAvatar,posterAndId,l,1);
+                tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                        threadid,2,String.valueOf(l),myName,posterAndFile,l,1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             msgList.add(tMsg);
 //            msgAdapter.notifyDataSetChanged();
             chat_lv.setSelection(msgList.size());
+        }else if(requestCode == 1293 &&resultCode == RESULT_OK){
+            chooseVideo=PictureSelector.obtainMultipleResult(data);
+            String filePath=chooseVideo.get(0).getPath();
+            Log.d(TAG, "onActivityResult: 选择了视频："+filePath);
+
+            VideoSender_tkt videoSenderTkt =new VideoSender_tkt(ChatActivity.this,threadid,filePath);
+            videoSenderTkt.startSend();
+
+            Log.d(TAG, "onActivityResult: video added");
+            //发送端立马显示发送视频
+            String videoId= videoSenderTkt.getVideoId();
+            Bitmap tmpBmap = videoSenderTkt.getPosterBitmap(); //拿到缩略图
+            String tmpdir = ShareUtil.getAppExternalPath(this, "temp");
+            String posterPath=tmpdir+"/"+videoId; //随机给一个名字
+            ShareUtil.saveBitmap(posterPath,tmpBmap);
+            String posterAndFile=posterPath+"##"+filePath;
+            TMsg tMsg= null;
+            try {
+                long l=System.currentTimeMillis();
+                tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                        threadid,2,String.valueOf(l),myName,posterAndFile,l,1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            msgList.add(tMsg);
+//            msgAdapter.notifyDataSetChanged();
+            chat_lv.setSelection(msgList.size());
+
         }else if(requestCode == 293 &&resultCode == RESULT_OK){
             chooseFilePath = data.getStringArrayListExtra("paths");
             String path = chooseFilePath.get(0);

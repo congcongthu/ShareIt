@@ -225,7 +225,8 @@ public class ShareUtil {
         return "";
     }
 
-    public static void setImageView(Context context,ImageView imageView,String hash,boolean isAvatar){ //0是图片，1是头像
+    public static void setImageView(Context context,ImageView imageView,String hash,int type){ // 0 avatar, 1 textile picture, 2 ipfs picture
+        Log.d(TAG, "setImageView: try get image: "+hash);
         Handler handler=new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -237,7 +238,7 @@ public class ShareUtil {
         if(hash==""){ //如果为空就用默认
             Glide.with(context).load(R.drawable.ic_album).thumbnail(0.3f).into(imageView);
         }else{
-            if(isAvatar){
+            if(type==0){
                 Textile.instance().ipfs.dataAtPath("/ipfs/" + hash + "/0/small/content", new Handlers.DataHandler() {
                     @Override
                     public void onComplete(byte[] data, String media) {
@@ -247,9 +248,12 @@ public class ShareUtil {
                     }
 
                     @Override
-                    public void onError(Exception e) {}
+                    public void onError(Exception e) {
+                        Log.d(TAG, "onError: get image error: "+hash);
+                        e.printStackTrace();
+                    }
                 });
-            }else{ //文件
+            }else if (type==1){ //文件
                 Textile.instance().files.content(hash, new Handlers.DataHandler() {
                     @Override
                     public void onComplete(byte[] data, String media) {
@@ -258,7 +262,23 @@ public class ShareUtil {
                         handler.sendMessage(msg);
                     }
                     @Override
-                    public void onError(Exception e) {}
+                    public void onError(Exception e) {
+                        Log.d(TAG, "onError: get image error: "+hash);
+                        e.printStackTrace();
+                    }
+                });
+            }else{
+                Textile.instance().ipfs.dataAtPath(hash, new Handlers.DataHandler() {
+                    @Override
+                    public void onComplete(byte[] data, String media) {
+                        Bundle b=new Bundle(); b.putByteArray("img",data);
+                        Message msg=new Message(); msg.what=1; msg.setData(b);
+                        handler.sendMessage(msg);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                    }
                 });
             }
         }

@@ -1,2 +1,2 @@
-include ':app', ':hon', ':textilepb', ':honvideo'
+include ':app', ':hon'
 rootProject.name='ShareIt'

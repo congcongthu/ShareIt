@@ -53,7 +53,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                 }
             }
         });
-        ShareUtil.setImageView(context, contactAdapterHolder.ivAvatar,contactBean.avatar,true);
+        ShareUtil.setImageView(context, contactAdapterHolder.ivAvatar,contactBean.avatar,0);
 
         //checkbox
         contactAdapterHolder.cbCheck.setVisibility(isChoose ? View.VISIBLE : View.GONE);
@@ -65,8 +65,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     public int getItemCount() {
         return mData.size();
     }
-
-
 
     static class ContactAdapterHolder extends RecyclerView.ViewHolder {
         TextView tvName;
@@ -82,7 +80,5 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     }
     public interface MyContactListener<T> {
         void onClick(T item);
-//        void onLongClick(T item);
-//        void loadAvatar(ImageView imageView, String avatar);
     }
 }

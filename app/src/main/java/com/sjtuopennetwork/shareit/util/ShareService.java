@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
+import android.util.Pair;
 
+import com.googlecode.protobuf.format.JsonFormat;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.util.TDialog;
 import com.sjtuopennetwork.shareit.share.util.TMsg;
@@ -18,6 +20,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.List;
 
 import sjtu.opennet.hon.BaseTextileEventListener;
 import sjtu.opennet.hon.FeedItemData;
@@ -27,6 +30,7 @@ import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Mobile;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.QueryOuterClass;
+import sjtu.opennet.textilepb.View;
 
 public class ShareService extends Service {
     public ShareService() {
@@ -200,6 +204,31 @@ public class ShareService extends Service {
         }
 
         @Override
+        public void notificationReceived(Model.Notification notification) {
+            //查出邀请中最近的一个，添加到头部。
+            int gpinvite = 0;
+            sjtu.opennet.textilepb.View.InviteView lastInvite = null;
+            try {
+                if (Textile.instance().invites != null) {
+                    List<View.InviteView> invites = Textile.instance().invites.list().getItemsList();
+                    for (sjtu.opennet.textilepb.View.InviteView v : invites) { //遍历所有的邀请
+                        if (!v.getName().equals("FriendThread1219")) { //只要群组名不等于这个那就是好友邀请
+                            gpinvite++;
+                            lastInvite = v;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (gpinvite > 0) { //如果有群组邀请就要显示出来
+                TDialog noti=new TDialog("",lastInvite.getInviter().getName()+" 邀请你",
+                        lastInvite.getDate().getSeconds(),false,"tongzhi",true,true);
+                EventBus.getDefault().post(noti);
+            }
+        }
+
+        @Override
         public void contactQueryResult(String queryId, Model.Contact contact) {
             EventBus.getDefault().post(contact);
         }
@@ -337,16 +366,39 @@ public class ShareService extends Service {
                 if(feedItemData.feedStreamMeta.getUser().getAddress().equals(myAddr)){
                     ismine=1;
                 }
+                if(ismine==0){ //
+                    String msgBody=feedItemData.feedStreamMeta.getStreammeta().getId();
+                    TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                            threadId,2,feedItemData.feedStreamMeta.getBlock(),
+                            feedItemData.feedStreamMeta.getUser().getAddress(),
+                            msgBody, //流ID存进去
+                            feedItemData.feedStreamMeta.getDate().getSeconds(),ismine);
+                    Log.d(TAG, "onComplete: postMsg消息");
+                    EventBus.getDefault().post(tMsg);
+                }
+            }
 
-                String msgBody=feedItemData.feedStreamMeta.getStreammeta().getId();
-                TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
-                        threadId,2,feedItemData.feedStreamMeta.getBlock(),
-                        feedItemData.feedStreamMeta.getUser().getAddress(),
-                        msgBody, //流ID存进去
-                        feedItemData.feedStreamMeta.getDate().getSeconds(), ismine);
-                Log.d(TAG, "onComplete: postMsg消息");
+            if(feedItemData.type.equals(FeedItemType.VIDEO)){
+                Model.Video video=feedItemData.feedVideo.getVideo();
+                int ismine=0;
+                if(feedItemData.feedVideo.getUser().getAddress().equals(myAddr)){
+                    ismine=1;
+                }
 
-                if(ismine==0){ //是自己的就直接显示，点击是播放本地视频
+                TDialog updateDialog=DBHelper.getInstance(getApplicationContext(),loginAccount).dialogGetMsg(
+                        tDialog,threadId,feedItemData.feedVideo.getUser().getName()+"分享了视频",
+                        feedItemData.feedVideo.getDate().getSeconds(),tDialog.add_or_img);
+                EventBus.getDefault().post(updateDialog);
+
+                if(ismine==0){
+                    String posterHash=video.getPoster();
+                    String videoId=video.getId();
+                    String body=posterHash+"##"+videoId;
+                    Log.d(TAG, "threadUpdateReceived: getVideo: "+videoId+" "+posterHash);
+                    TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                            threadId,4,feedItemData.feedVideo.getBlock(),
+                            feedItemData.feedVideo.getUser().getAddress(),body,
+                            feedItemData.feedVideo.getDate().getSeconds(),ismine);
                     EventBus.getDefault().post(tMsg);
                 }
             }

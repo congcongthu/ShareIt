@@ -2,9 +2,6 @@ package com.sjtuopennetwork.shareit.share.util;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +16,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.ImageInfoActivity;
-import com.sjtuopennetwork.shareit.share.StreamTestActivity;
+import com.sjtuopennetwork.shareit.share.PlayVideoActivity;
 import com.sjtuopennetwork.shareit.util.RoundImageView;
 import com.sjtuopennetwork.shareit.util.ShareUtil;
 
@@ -51,12 +48,13 @@ public class TMsgAdapter extends BaseAdapter {
             case 0: //是文本
                 return handleTextView(i,view,viewGroup);
             case 1: //是照片
-                return handlePhotoView(i,view,viewGroup,false);
+                return handlePhotoView(i,view,viewGroup,0);
             case 2:
-                return handlePhotoView(i,view,viewGroup,true);
+                return handlePhotoView(i,view,viewGroup,1);
             case 3:
-                Log.d(TAG, "getView: getFile");
                 return handleFileView(i,view,viewGroup);
+            case 4:
+                return handlePhotoView(i,view,viewGroup,2);
             default:
                 return null;
         }
@@ -79,7 +77,7 @@ public class TMsgAdapter extends BaseAdapter {
                 h.msg_name_r.setText(username);
                 h.msg_time_r.setText(df.format(msgList.get(i).sendtime*1000));
                 h.chat_words_r.setText(msgList.get(i).body);
-                ShareUtil.setImageView(context,h.msg_avatar_r,useravatar,true);
+                ShareUtil.setImageView(context,h.msg_avatar_r,useravatar,0);
             }else{
                 String addr=msgList.get(i).author;
                 username=ShareUtil.getOtherName(addr);
@@ -89,13 +87,13 @@ public class TMsgAdapter extends BaseAdapter {
                 h.chat_words.setText(msgList.get(i).body);
                 h.msg_name.setText(username);
                 h.msg_time.setText(df.format(msgList.get(i).sendtime*1000));
-                ShareUtil.setImageView(context,h.msg_avatar,useravatar,true);
+                ShareUtil.setImageView(context,h.msg_avatar,useravatar,0);
             }
         }
         return view;
     }
 
-    private View handlePhotoView(int i, View view, ViewGroup viewGroup, boolean isVideo) {
+    private View handlePhotoView(int i, View view, ViewGroup viewGroup, int videoType) {
         Log.d(TAG, "handlePhotoView: pic_hash: "+ msgList.get(i).body);
         if(view==null){
             view=LayoutInflater.from(context).inflate(R.layout.item_msg_img,viewGroup,false);
@@ -112,24 +110,24 @@ public class TMsgAdapter extends BaseAdapter {
                 h.send_photo_left.setVisibility(View.GONE); //左边的隐藏
                 h.photo_name_r.setText(username);
                 h.photo_time_r.setText(df.format(msgList.get(i).sendtime*1000));
-                ShareUtil.setImageView(context,h.photo_avatar_r,useravatar,true);
-                if(!isVideo){ //不是视频就是图片的hash
+                ShareUtil.setImageView(context,h.photo_avatar_r,useravatar,0);
+                if(videoType==0){ //不是视频就是图片的hash
                     String[] hashName=msgList.get(i).body.split("##");
                     h.video_icon_r.setVisibility(View.GONE);
-                    ShareUtil.setImageView(context,h.chat_photo_r,hashName[0],false);
+                    ShareUtil.setImageView(context,h.chat_photo_r,hashName[0],1);
                     h.chat_photo_r.setOnClickListener(v ->{
                         Intent it1=new Intent(context, ImageInfoActivity.class);
                         it1.putExtra("imghash", hashName[0]);
                         it1.putExtra("imgname",hashName[1]);
                         context.startActivity(it1);
                     });
-                }else{ //是自己的视频，直接进入播放
-                    String[] posterAndId_r=msgList.get(i).body.split("##"); //0是poster，1是Id，2是视频路径
-                    Glide.with(context).load(posterAndId_r[0]).thumbnail(0.3f).into(h.chat_photo_r);
+                }else if(videoType==1){
+                    String[] posterAndFile_r=msgList.get(i).body.split("##"); //0是poster，1是Id，2是视频路径
+                    Glide.with(context).load(posterAndFile_r[0]).thumbnail(0.3f).into(h.chat_photo_r);
                     h.chat_photo_r.setOnClickListener(view1->{
-                        Intent it12=new Intent(context, StreamTestActivity.class);
+                        Intent it12=new Intent(context, PlayVideoActivity.class);
                         it12.putExtra("ismine",true);
-                        it12.putExtra("videopath",posterAndId_r[1]);
+                        it12.putExtra("videopath",posterAndFile_r[1]);
                         context.startActivity(it12);
                     });
                 }
@@ -141,22 +139,33 @@ public class TMsgAdapter extends BaseAdapter {
                 h.send_photo_right.setVisibility(View.GONE); //右边的隐藏
                 h.photo_name.setText(username);
                 h.photo_time.setText(df.format(msgList.get(i).sendtime*1000));
-                ShareUtil.setImageView(context,h.photo_avatar,useravatar,true);
-                if(!isVideo){ //别人的图片
+                ShareUtil.setImageView(context,h.photo_avatar,useravatar,0);
+                if(videoType==0){ //别人的图片
                     String[] hashName=msgList.get(i).body.split("##");
                     h.video_icon.setVisibility(View.GONE);
-                    ShareUtil.setImageView(context,h.chat_photo,hashName[0],false);
+                    ShareUtil.setImageView(context,h.chat_photo,hashName[0],1);
                     h.chat_photo.setOnClickListener(v ->{
                         Intent it1=new Intent(context, ImageInfoActivity.class);
                         it1.putExtra("imghash", hashName[0]);
                         it1.putExtra("imgname",hashName[1]);
                         context.startActivity(it1);
                     });
-                }else{ //是别人的视频
+                }else if(videoType==1){
                     Glide.with(context).load(R.drawable.ic_album).thumbnail(0.3f).into(h.chat_photo);
                     h.chat_photo.setOnClickListener(view1->{
-                        Intent it11=new Intent(context, StreamTestActivity.class);
-                        it11.putExtra("streamid",msgList.get(i).body);
+                        Intent it11=new Intent(context, PlayVideoActivity.class);
+                        it11.putExtra("videoid",msgList.get(i).body);
+                        it11.putExtra("ismine",false);
+                        context.startActivity(it11);
+                    });
+                }else{
+                    String[] poster_videoid=msgList.get(i).body.split("##");
+                    Log.d(TAG, "handlePhotoView: show video: "+poster_videoid[1]+" "+poster_videoid[0]);
+                    ShareUtil.setImageView(context,h.chat_photo,poster_videoid[0],2); //缩略图
+                    h.chat_photo.setOnClickListener(view1 ->{
+                        Intent it11=new Intent(context,PlayVideoActivity.class);
+                        it11.putExtra("ticket",true);
+                        it11.putExtra("videoid",poster_videoid[1]);
                         it11.putExtra("ismine",false);
                         context.startActivity(it11);
                     });
@@ -186,7 +195,7 @@ public class TMsgAdapter extends BaseAdapter {
                 h.file_name_r.setText(username);
                 h.file_time_r.setText(df.format(msgList.get(i).sendtime*1000));
                 h.file_name_r.setText(hashName[1]);
-                ShareUtil.setImageView(context,h.file_avatar_r,useravatar,true);
+                ShareUtil.setImageView(context,h.file_avatar_r,useravatar,0);
             }else{
                 String addr=msgList.get(i).author;
                 username=ShareUtil.getOtherName(addr);
@@ -196,7 +205,7 @@ public class TMsgAdapter extends BaseAdapter {
                 h.file_name.setText(username);
                 h.file_time.setText(df.format(msgList.get(i).sendtime*1000));
                 h.file_name.setText(hashName[1]);
-                ShareUtil.setImageView(context,h.file_avatar,useravatar,true);
+                ShareUtil.setImageView(context,h.file_avatar,useravatar,0);
                 h.send_file_left.setOnClickListener(v -> {
                     AlertDialog.Builder downFile=new AlertDialog.Builder(context);
                     downFile.setTitle("下载文件");
@@ -223,7 +232,6 @@ public class TMsgAdapter extends BaseAdapter {
         return view;
     }
 
-
     @Override
     public int getItemViewType(int position) {
         return msgList.get(position).msgtype;
@@ -234,7 +242,7 @@ public class TMsgAdapter extends BaseAdapter {
     }
     @Override
     public int getViewTypeCount() {
-        return 4;
+        return 5;
     }
     @Override
     public Object getItem(int position) {

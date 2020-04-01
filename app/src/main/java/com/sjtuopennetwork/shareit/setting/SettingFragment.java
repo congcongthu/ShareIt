@@ -211,7 +211,7 @@ public class SettingFragment extends Fragment {
 
     private void drawUI() {
         tv_name.setText(username);
-        ShareUtil.setImageView(getContext(),avatar_layout,useravatar,true);
+        ShareUtil.setImageView(getContext(),avatar_layout,useravatar,0);
     }
 
 }

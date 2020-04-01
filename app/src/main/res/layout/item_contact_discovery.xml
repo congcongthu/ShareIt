@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:descendantFocusability="blocksDescendants"
-    android:id="@+id/item_contact_discovery_layout"
     android:layout_width="match_parent"
     android:gravity="center_vertical"
     android:layout_height="70dp">
@@ -16,7 +15,6 @@
         android:layout_height="50dp" />
 
     <LinearLayout
-        android:id="@+id/discover_name_and_addr"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:layout_width="wrap_content"

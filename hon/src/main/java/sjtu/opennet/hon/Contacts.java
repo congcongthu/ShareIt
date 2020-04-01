@@ -78,8 +78,11 @@ public class Contacts extends NodeDependent {
      * @return A handle that can be used to cancel the search
      * @throws Exception The exception that occurred
      */
-    public SearchHandle search(final ContactQuery query, final QueryOptions options) throws Exception {
-        return node.searchContacts(query.toByteArray(), options.toByteArray());
+//    public SearchHandle search(final ContactQuery query, final QueryOptions options) throws Exception {
+//        return node.searchContacts(query.toByteArray(), options.toByteArray());
+//    }
+    public void search(final ContactQuery query, final QueryOptions options) throws Exception {
+        node.searchContacts(query.toByteArray(), options.toByteArray());
     }
 
     /**
@@ -88,7 +91,10 @@ public class Contacts extends NodeDependent {
      * @return A handle that can be used to cancel the search
      * @throws Exception The exception that occurred
      */
-    public SearchHandle discover(final QueryOptions options) throws Exception {
-        return node.discoverContacts(options.toByteArray());
+//    public SearchHandle discover(final QueryOptions options) throws Exception {
+//        return node.discoverContacts(options.toByteArray());
+//    }
+    public void discover(final QueryOptions options) throws Exception {
+        node.discoverContacts(options.toByteArray());
     }
 }

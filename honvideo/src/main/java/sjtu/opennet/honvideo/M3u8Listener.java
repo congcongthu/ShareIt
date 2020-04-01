@@ -6,7 +6,7 @@ import android.util.Log;
 import java.util.concurrent.BlockingQueue;
 
 public class M3u8Listener extends FileObserver {
-    private static final String TAG = "HONVIDEO.M3u8Listener";
+    private static final String TAG = "HONVIDEO.M3u8Listener1";
 
     //private BlockingQueue<String> updateQueue;
     private String videoId;     //required by VideoTask

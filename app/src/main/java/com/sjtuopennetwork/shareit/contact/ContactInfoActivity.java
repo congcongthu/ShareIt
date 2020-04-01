@@ -65,7 +65,7 @@ public class ContactInfoActivity extends AppCompatActivity {
         contact_addr.setText("公钥："+contact.getAddress().substring(0,10)+"...");
 
         contact_avatar=findViewById(R.id.contact_info_avatar);
-        ShareUtil.setImageView(this,contact_avatar,contact.getAvatar(),true);
+        ShareUtil.setImageView(this,contact_avatar,contact.getAvatar(),0);
     }
     private void initData(){
 

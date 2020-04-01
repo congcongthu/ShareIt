@@ -18,14 +18,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.tools.PictureFileUtils;
 import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
+import com.sjtuopennetwork.shareit.login.MainActivity;
 import com.sjtuopennetwork.shareit.setting.util.NotificationGroup;
 import com.sjtuopennetwork.shareit.setting.util.NotificationItem;
 import com.sjtuopennetwork.shareit.setting.util.SwarmPeerListAdapter;
 import com.sjtuopennetwork.shareit.util.RoundImageView;
 import com.sjtuopennetwork.shareit.util.ShareUtil;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
-import com.wildma.pictureselector.PictureSelector;
 import com.sjtuopennetwork.shareit.R;
 
 import org.greenrobot.eventbus.EventBus;
@@ -98,7 +102,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
         info_name.setText(username);
         info_addr.setText(myaddr);
         info_phrase.setText(phrase);
-        ShareUtil.setImageView(this,avatar_img,useravatar,true);
+        ShareUtil.setImageView(this,avatar_img,useravatar,0);
         info_swarm_address.setText(swarm_address);
     }
 
@@ -289,8 +293,12 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
 
         info_avatar_layout.setOnClickListener(v -> {
-            PictureSelector.create(this, PictureSelector.SELECT_REQUEST_CODE)
-                    .selectPicture();
+            com.luck.picture.lib.PictureSelector.create(PersonalInfoActivity.this)
+                .openGallery(PictureMimeType.ofImage())
+                .maxSelectNum(1)
+                .compress(true)
+                .enableCrop(true).withAspectRatio(1,1)
+                .forResult(PictureConfig.TYPE_IMAGE);
         });
 
         info_name_layout.setOnClickListener(view -> {
@@ -329,9 +337,11 @@ public class PersonalInfoActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         /*结果回调*/
-        if (requestCode == PictureSelector.SELECT_REQUEST_CODE) {
+        if (requestCode == PictureConfig.TYPE_IMAGE) {
             if (data != null) {
-                String picturePath = data.getStringExtra(PictureSelector.PICTURE_PATH);
+                List<LocalMedia> choosePic= com.luck.picture.lib.PictureSelector.obtainMultipleResult(data);
+                String picturePath=choosePic.get(0).getCompressPath();
+
                 Textile.instance().profile.setAvatar(picturePath, new Handlers.BlockHandler() {
                     @Override
                     public void onComplete(Model.Block block) {

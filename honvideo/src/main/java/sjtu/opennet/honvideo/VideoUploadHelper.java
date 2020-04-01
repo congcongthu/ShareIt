@@ -61,7 +61,6 @@ public class VideoUploadHelper {
         @Override
         public void onComplete(String path) {
             synchronized (POSTERLOCK) {
-                //Log.d(TAG, String.format("Poster ipfs path: %s", path));
                 posterHash = path;
                 POSTERLOCK.notify();
             }
@@ -108,7 +107,6 @@ public class VideoUploadHelper {
                 Log.d(TAG, "FFmpeg segment finish.");
                 Log.d(TAG, "SEGLOCK NOTIFY");
                 SEGLOCK.notify();
-
             }
         }
     };

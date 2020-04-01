@@ -61,7 +61,7 @@ public class PhotoAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         String[] hashName=photoHashs.get(position).split("##");
         ViewHolder myViewHolder=(ViewHolder)viewHolder;
-        ShareUtil.setImageView(ctx,myViewHolder.photoImage,hashName[0],false);
+        ShareUtil.setImageView(ctx,myViewHolder.photoImage,hashName[0],1);
     }
 
     @Override

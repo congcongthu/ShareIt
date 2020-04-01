@@ -96,7 +96,6 @@ class MessageHandler implements Messenger {
             case NOTIFICATION:
                 try {
                     final Notification notification = Notification.parseFrom(event.getData());
-                    System.out.println("=============收到通知："+notification.getBody());
                     for (final TextileEventListener listener : listeners) {
                         listener.notificationReceived(notification);
                     }

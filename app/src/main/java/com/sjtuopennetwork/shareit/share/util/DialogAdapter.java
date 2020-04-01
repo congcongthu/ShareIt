@@ -58,7 +58,7 @@ public class DialogAdapter extends ArrayAdapter {
         }
 
         String avatarHash="";
-        String dialogname="";
+        String dialogname="通知";
         if (tDialog.add_or_img.equals("tongzhi")) {
             vh.headImg.setImageResource(R.drawable.ic_notification_img);
         } else { //单人根据addr显示头像，多人根据threadid得到threadname
@@ -73,7 +73,7 @@ public class DialogAdapter extends ArrayAdapter {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ShareUtil.setImageView(context,vh.headImg,avatarHash,true);
+            ShareUtil.setImageView(context,vh.headImg,avatarHash,0);
         }
         vh.threadName.setText(dialogname);
 

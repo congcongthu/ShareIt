@@ -25,9 +25,11 @@ import com.huawei.hms.common.ApiException;
 import com.huawei.hms.support.api.hwid.HuaweiIdSignInOptions;
 import com.huawei.hms.support.api.hwid.HuaweiIdStatusCodes;
 import com.huawei.hms.support.api.hwid.SignInHuaweiId;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.HomeActivity;
-import com.wildma.pictureselector.PictureSelector;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,6 +40,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -86,7 +89,12 @@ public class MainActivity extends AppCompatActivity {
             editText=findViewById(R.id.edt_name);
 
             registerAvatar.setOnClickListener(v -> {
-                PictureSelector.create(this, PictureSelector.SELECT_REQUEST_CODE).selectPicture();
+                com.luck.picture.lib.PictureSelector.create(MainActivity.this)
+                        .openGallery(PictureMimeType.ofImage())
+                        .maxSelectNum(1)
+                        .compress(true)
+                        .enableCrop(true).withAspectRatio(1,1)
+                        .forResult(PictureConfig.TYPE_IMAGE);
             });
 
             shareItRegister.setOnClickListener(v -> {
@@ -171,11 +179,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if(requestCode==PictureSelector.SELECT_REQUEST_CODE){
-            if (data != null) {
-                avatarpath = data.getStringExtra(PictureSelector.PICTURE_PATH);
-                registerAvatar.setImageBitmap(BitmapFactory.decodeFile(avatarpath));
-            }
+        if(requestCode==PictureConfig.TYPE_IMAGE){
+            List<LocalMedia> choosePic= com.luck.picture.lib.PictureSelector.obtainMultipleResult(data);
+            avatarpath=choosePic.get(0).getCompressPath();
+            registerAvatar.setImageBitmap(BitmapFactory.decodeFile(avatarpath));
         }
   }
 

@@ -29,7 +29,7 @@ android {
 
 repositories{
     flatDir {
-        dirs '../app/libs'
+        dirs 'libs'
     }
 }
 
@@ -49,10 +49,20 @@ dependencies {
     // UploadService
     implementation "com.github.textileio:android-upload-service:3.5.4"
 
-//  //implementation "sjtu.opennet:hon-textile-mobile:0.2.29-no131-pubsub-lock-oldcafe"
+    // textile-mobile
+//  implementation "sjtu.opennet:hon-textile-mobile:0.2.29-no131-pubsub-lock-oldcafe"
     implementation (name:'mobile', ext:'aar')
 
-    implementation project(':textilepb')
     implementation "com.google.protobuf:protobuf-java:3.9.2"
+
+    implementation 'com.writingminds:FFmpegAndroid:0.3.2'
+
+    //Try to use FFmpegMediaMetadataRetriever to replace android.media.MediaMetadataRetriever
+    implementation 'com.github.wseemann:FFmpegMediaMetadataRetriever:1.0.14'
+    implementation 'com.googlecode.protobuf-java-format:protobuf-java-format:1.2'
+
+    implementation group: 'com.github.multiformats', name: 'java-multibase', version: 'v1.0.1'
+
+    implementation'org.nanohttpd:nanohttpd:2.2.0'
 
 }

@@ -90,7 +90,7 @@ public class DiscoverAdapter extends BaseAdapter {
         }else{
             img=datas.get(position).avatar;
             if(img==null){
-                ShareUtil.setImageView(context,vh.avatar,datas.get(position).avatarhash,true);
+                ShareUtil.setImageView(context,vh.avatar,datas.get(position).avatarhash,0);
             }else{
                 vh.avatar.setImageBitmap(BitmapFactory.decodeByteArray(img,0,img.length));
             }

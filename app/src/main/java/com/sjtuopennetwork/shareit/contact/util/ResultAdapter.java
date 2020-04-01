@@ -56,7 +56,7 @@ public class ResultAdapter extends ArrayAdapter {
         }else{ //设置过头像
             img=resultContacts.get(position).avatar;
             if(img==null){
-                ShareUtil.setImageView(context,vh.avatar,resultContacts.get(position).avatarhash,true);
+                ShareUtil.setImageView(context,vh.avatar,resultContacts.get(position).avatarhash,0);
             }else{
                 vh.avatar.setImageBitmap(BitmapFactory.decodeByteArray(img,0,img.length));
             }

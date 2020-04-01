@@ -64,7 +64,10 @@ public class Account extends NodeDependent {
      * @return A handle that can be used to cancel the account sync
      * @throws Exception The exception that occurred
      */
-    public SearchHandle sync(final QueryOptions options) throws Exception {
-        return node.syncAccount(options.toByteArray());
+//    public SearchHandle sync(final QueryOptions options) throws Exception {
+//        return node.syncAccount(options.toByteArray());
+//    }
+    public void sync(final QueryOptions options) throws Exception {
+        node.syncAccount(options.toByteArray());
     }
 }
