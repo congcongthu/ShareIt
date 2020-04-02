@@ -4,7 +4,6 @@ import android.os.FileObserver;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -51,6 +50,22 @@ public class VideoAddChunk_tkt extends Thread{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        Model.VideoChunk virtualChunk = Model.VideoChunk.newBuilder()
+                .setId(videoId)
+                .setChunk("VIRTUAL")
+                .setAddress("VIRTUAL")
+                .setStartTime(-2)
+                .setEndTime(-2)
+                .setIndex(chunkNames.size()) //index from 0 to size-1, so the index of virtual chunk is size
+                .build();
+        try {
+            Textile.instance().videos.addVideoChunk(virtualChunk);
+            Textile.instance().videos.publishVideoChunk(virtualChunk);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "onComplete: add virtual chunk: " + chunkNames.size());
+
         finishChunkAdd=true;
         return finishChunkAdd;
     }
@@ -59,9 +74,9 @@ public class VideoAddChunk_tkt extends Thread{
         public String chunkName;
         public long chunkStartTime;
         public long chunkEndTime;
-        public int chunkIndex;
+        public long chunkIndex;
 
-        public ChunkPbInfo(String chunkName, long chunkStartTime, long chunkEndTime, int chunkIndex) {
+        public ChunkPbInfo(String chunkName, long chunkStartTime, long chunkEndTime, long chunkIndex) {
             this.chunkName = chunkName;
             this.chunkStartTime = chunkStartTime;
             this.chunkEndTime = chunkEndTime;
@@ -71,7 +86,7 @@ public class VideoAddChunk_tkt extends Thread{
 
     class ChunkListener extends FileObserver {
 
-        int currentIndex = 0;
+        long currentIndex = 0;
         long startTime = 0;
 
         public ChunkListener(String path) {
@@ -125,7 +140,7 @@ public class VideoAddChunk_tkt extends Thread{
             Textile.instance().ipfs.ipfsAddData(tsFileContent, true, false, new Handlers.IpfsAddDataHandler() {
                 @Override
                 public void onComplete(String path) {
-                    Model.VideoChunk videoChunk= Model.VideoChunk.newBuilder()
+                    Model.VideoChunk videoChunk = Model.VideoChunk.newBuilder()
                             .setId(videoId)
                             .setChunk(chunkPbInfo.chunkName)
                             .setAddress(path)
@@ -139,6 +154,8 @@ public class VideoAddChunk_tkt extends Thread{
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
+                    Log.d(TAG, "onComplete: ipfsAddChunk: "+chunkPbInfo.chunkName+" "+chunkPbInfo.chunkIndex+" "+chunkPbInfo.chunkStartTime+" "+chunkPbInfo.chunkEndTime);
                 }
                 @Override
                 public void onError(Exception e) { }

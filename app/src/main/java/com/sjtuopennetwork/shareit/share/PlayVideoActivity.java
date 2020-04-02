@@ -49,7 +49,7 @@ public class PlayVideoActivity extends AppCompatActivity {
             String videoId=getIntent().getStringExtra("videoid");
             boolean ticket=getIntent().getBooleanExtra("ticket",false);
             if(ticket){
-                videoGetterTkt=new VideoGetter_tkt(videoId);
+                videoGetterTkt=new VideoGetter_tkt(this,videoId);
                 videoGetterTkt.startGet();
             }else{ //不是ticket
                 videoGetter =new VideoGetter(this,videoId);
