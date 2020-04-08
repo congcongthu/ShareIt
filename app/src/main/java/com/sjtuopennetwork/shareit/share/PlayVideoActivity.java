@@ -8,6 +8,7 @@ import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
@@ -56,12 +57,11 @@ public class PlayVideoActivity extends AppCompatActivity {
                 videoGetter.startGet();
             }
 
-//            Uri uri=videoGetter.getUri();
-//            dataSourceFactory =
-//                    new DefaultHttpDataSourceFactory(Util.getUserAgent(this, "ShareIt"));
-//            HlsMediaSource hlsMediaSource=
-//                    new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
-//            player.prepare(hlsMediaSource);
+            Uri uri=videoGetterTkt.getUri();
+            dataSourceFactory = new DefaultDataSourceFactory(PlayVideoActivity.this, Util.getUserAgent(PlayVideoActivity.this, "ShareIt"));
+            HlsMediaSource hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory)
+                    .setAllowChunklessPreparation(true).createMediaSource(uri);
+            player.prepare(hlsMediaSource);
         }
     }
 

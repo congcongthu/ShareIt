@@ -63,6 +63,4 @@ dependencies {
 
     implementation group: 'com.github.multiformats', name: 'java-multibase', version: 'v1.0.1'
 
-    implementation'org.nanohttpd:nanohttpd:2.2.0'
-
 }

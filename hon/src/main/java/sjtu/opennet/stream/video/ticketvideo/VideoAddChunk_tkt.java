@@ -46,7 +46,7 @@ public class VideoAddChunk_tkt extends Thread{
 
     public boolean finishAdd(){
         try {
-            Thread.sleep(10000);
+            Thread.sleep(10000); // 10 seconds after segmentation
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -97,15 +97,17 @@ public class VideoAddChunk_tkt extends Thread{
             switch(event){
                 case MOVED_TO:
                     ArrayList<M3U8Util.ChunkInfo> infos=M3U8Util.getInfos(observeredDir+"/"+path);
-                    for(M3U8Util.ChunkInfo chk:infos){
-                        if(!chunkNames.contains(chk.filename)){
-                            chunkNames.add(chk.filename);
+                    synchronized (chunkNames){
+                        for(M3U8Util.ChunkInfo chk:infos){
+                            if(!chunkNames.contains(chk.filename)){
+                                chunkNames.add(chk.filename);
 
-                            // make chunkPbInfo
-                            ChunkPbInfo chunkPbInfo=new ChunkPbInfo(chk.filename,startTime,startTime+chk.duration,currentIndex);
-                            startTime+=chk.duration;
-                            currentIndex++;
-                            chunkQueue.add(chunkPbInfo);
+                                // make chunkPbInfo
+                                ChunkPbInfo chunkPbInfo=new ChunkPbInfo(chk.filename,startTime,startTime+chk.duration,currentIndex);
+                                startTime+=chk.duration;
+                                currentIndex++;
+                                chunkQueue.add(chunkPbInfo);
+                            }
                         }
                     }
                     break;
@@ -119,6 +121,7 @@ public class VideoAddChunk_tkt extends Thread{
             while (!finishChunkAdd) {
                 try {
                     ChunkPbInfo chunkPbInfo = chunkQueue.take(); // if queue is empty, thread will be blocked here
+                    Log.d(TAG, "run: chunkQueue: "+chunkQueue.size());
                     ipfsAddChunk(chunkPbInfo);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

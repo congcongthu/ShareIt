@@ -43,13 +43,14 @@ public class ShareService extends Service {
 
     private static final String TAG = "======ShareService";
 
-    private String loginAccount; //当前登录的账户的address
+    private String loginAccount;
     private int login;
     private String repoPath;
     private SharedPreferences pref;
     private boolean connectCafe;
     private String myname;
     private String avatarpath;
+    private String lastBlock="";
 
 
     @Override
@@ -165,10 +166,6 @@ public class ShareService extends Service {
         editor.commit();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void evbus(Integer startHeart){
-        System.out.println("shit");
-    }
 
     class ShareListener extends BaseTextileEventListener {
 
@@ -197,9 +194,38 @@ public class ShareService extends Service {
                 }
             }
 
+            //connect cafe
+            if(connectCafe){
+                CafeUtil.connectCafe(new Handlers.ErrorHandler() {
+                    @Override
+                    public void onComplete() {
+                        SharedPreferences.Editor editor=pref.edit();
+                        editor.putBoolean("ok131",true);
+                        editor.putBoolean("connectCafe",true);
+                        editor.commit();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        SharedPreferences.Editor editor=pref.edit();
+                        editor.putBoolean("ok131",false);
+                        editor.commit();
+                    }
+                });
+            }
+
             ShareUtil.createDeviceThread();
 
-            //连网之后反馈给主界面
+            // join the default thread after online, the thread is created by cafe
+            if(ShareUtil.getThreadByName("default")==null){
+                try {
+                    Textile.instance().invites.acceptExternal("","");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //
             EventBus.getDefault().post(Integer.valueOf(0));
         }
 
@@ -240,6 +266,11 @@ public class ShareService extends Service {
 
         @Override
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
+            if(lastBlock.equals(feedItemData.block)){
+                return;
+            }else{
+                lastBlock=feedItemData.block;
+            }
             String myAddr=Textile.instance().account.address();
             Model.Thread thread=null;
             try {
@@ -404,6 +435,7 @@ public class ShareService extends Service {
             }
         }
     }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void shutDown(Integer stop){

@@ -1,13 +1,20 @@
 package sjtu.opennet.stream.video.ticketvideo;
 
 import android.content.Context;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
-import java.util.PriorityQueue;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import sjtu.opennet.hon.BaseTextileEventListener;
+import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
+import sjtu.opennet.stream.util.FileUtil;
+import sjtu.opennet.stream.video.M3U8Util;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.QueryOuterClass;
 
@@ -43,9 +50,12 @@ public class VideoGetter_tkt {
     boolean finishSearch=false;
     boolean finishDownload=false;
     Object SEARCHLOCK=new Object();
+    Object DOWNLOADLOCK=new Object();
     long chunkIndex=0;
     SearchThread searchThread;
     DownloadThread downloadThread;
+    String dir;
+    File m3u8file;
 
     public VideoGetter_tkt(Context context, String videoId) {
         this.context=context;
@@ -64,15 +74,25 @@ public class VideoGetter_tkt {
     }
 
     public void startGet(){
-        Textile.instance().addEventListener(chunkSearchListener);
 
-        searchThread.start();
-        downloadThread.start();
+        dir= FileUtil.getAppExternalPath(context, "video/"+videoId);
+        if(!M3U8Util.existOrNot(dir)){
+            Textile.instance().addEventListener(chunkSearchListener);
+            m3u8file= M3U8Util.initM3u8(dir);
+            searchThread.start();
+            downloadThread.start();
+        }else{
+            m3u8file=new File(dir+"/playlist.m3u8");
+        }
     }
 
     public void stopGet(){
         Textile.instance().removeEventListener(chunkSearchListener);
         finishSearch=true;
+    }
+
+    public Uri getUri(){
+        return Uri.fromFile(m3u8file);
     }
 
     // search video chunk
@@ -129,15 +149,40 @@ public class VideoGetter_tkt {
     class DownloadThread extends Thread{
         @Override
         public void run() {
-            while(!finishDownload){
-                try {
-                    ChunkCompare chunkCompare=searchResults.take();
-                    Log.d(TAG, "run: get the compare: "+chunkCompare.chunkCompIndex);
-                    if(chunkCompare.videoChunk.getChunk().equals("VIRTUAL")){
-                        finishDownload=true;
+            synchronized (DOWNLOADLOCK){
+                while(!finishDownload){
+                    try {
+                        ChunkCompare chunkCompare=searchResults.take();
+                        if(chunkCompare.videoChunk.getChunk().equals("VIRTUAL")){
+                            finishDownload=true;
+                            break;
+                        }
+                        Textile.instance().ipfs.dataAtPath(chunkCompare.videoChunk.getAddress(), new Handlers.DataHandler() {
+                            @Override
+                            public void onComplete(byte[] data, String media) {
+                                // store to the chunks directory, and write m3u8
+                                Log.d(TAG, "onComplete: get the ts file: "+chunkCompare.videoChunk.getChunk());
+                                synchronized (DOWNLOADLOCK){
+                                    String tsName=dir + "/" + chunkCompare.videoChunk.getChunk();
+                                    FileUtil.writeByteArrayToFile(tsName,data);
+                                    M3U8Util.writeM3u8(m3u8file,chunkCompare.videoChunk.getEndTime(),chunkCompare.videoChunk.getStartTime(),chunkCompare.videoChunk.getChunk());
+                                    DOWNLOADLOCK.notify();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                synchronized (DOWNLOADLOCK){
+                                    searchResults.add(chunkCompare);
+                                    DOWNLOADLOCK.notify();
+                                }
+                            }
+                        });
+                        DOWNLOADLOCK.wait();
+                        Log.d(TAG, "run: get the compare: "+chunkCompare.chunkCompIndex);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
             Log.d(TAG, "run: finish downloading");
