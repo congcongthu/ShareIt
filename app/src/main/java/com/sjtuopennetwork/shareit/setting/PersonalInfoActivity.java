@@ -106,10 +106,11 @@ public class PersonalInfoActivity extends AppCompatActivity {
     Handler handler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            if(msg.what==1){
+            try{
                 circleProgressDialog.dismiss();
-                drawCafeInfo();
+            }catch (Exception e){
             }
+            drawCafeInfo();
         }
     };
 
