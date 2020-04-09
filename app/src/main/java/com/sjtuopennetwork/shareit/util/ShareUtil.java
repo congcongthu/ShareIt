@@ -61,6 +61,7 @@ public class ShareUtil {
             FileOutputStream out=new FileOutputStream(file);
             out.write(data);
             finalNameWithDir=fileDir+fileName;
+            Log.d(TAG,"file stored"); 
             out.close();
             return finalNameWithDir;
         } catch (Exception e) {
