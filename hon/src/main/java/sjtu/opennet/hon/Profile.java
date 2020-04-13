@@ -84,8 +84,8 @@ public class Profile extends NodeDependent {
      * @return The account thread
      * @throws Exception The exception that occurred
      */
-    public Thread storeThread() throws Exception {
-        final byte[] bytes = node.storeThread();
-        return Thread.parseFrom(bytes);
-    }
+//    public Thread storeThread() throws Exception {
+//        final byte[] bytes = node.storeThread();
+//        return Thread.parseFrom(bytes);
+//    }
 }

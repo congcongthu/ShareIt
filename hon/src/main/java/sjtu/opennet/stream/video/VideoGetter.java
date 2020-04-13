@@ -27,16 +27,19 @@ public class VideoGetter {
     String dir;
 
     File m3u8file;
+    VideoTsGetListener videoTsGetListener;
 
     public VideoGetter(Context context, String videoId){
         this.context=context;
         this.videoId=videoId;
+
+        videoTsGetListener=new VideoTsGetListener();
     }
 
     public void startGet(){
         dir= FileUtil.getAppExternalPath(context, "video/"+videoId);
         m3u8file=M3U8Util.initM3u8(dir);
-        Textile.instance().addEventListener(new VideoTsGetListener());
+        Textile.instance().addEventListener(videoTsGetListener);
         try {
             Textile.instance().streams.subscribeStream(videoId);
         } catch (Exception e) {
@@ -45,13 +48,14 @@ public class VideoGetter {
     }
 
     public Uri getUri(){
-        return Uri.parse("");
+        return Uri.fromFile(m3u8file);
     }
 
     public void stopGet(){
         //close http
 
         //close and delete listener
+        Textile.instance().removeEventListener(videoTsGetListener);
     }
 
     class VideoTsGetListener extends BaseTextileEventListener {

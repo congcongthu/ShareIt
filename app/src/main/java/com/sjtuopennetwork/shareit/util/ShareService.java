@@ -151,6 +151,7 @@ public class ShareService extends Service {
                     .putSystems("hon.peermanager", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-core", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-mobile", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("tex-service",sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .build();
             Textile.instance().logs.setLevel(logLevel);
         } catch (Exception e) {
@@ -193,6 +194,15 @@ public class ShareService extends Service {
                     e.printStackTrace();
                 }
             }
+
+//            try {
+//                boolean s1=Textile.instance().ipfs.swarmConnect("/ip6/2001:da8:8000:6084:1a31:bfff:fecf:e603/tcp/4001/ipfs/12D3KooWFHnbHXpDyW1nQxdjJ6ETauAfunj3g2ZtRU4xV9AkZxCq");
+//                boolean s2=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.131/tcp/4001/ipfs/12D3KooWFHnbHXpDyW1nQxdjJ6ETauAfunj3g2ZtRU4xV9AkZxCq");
+//                boolean s3=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.100/tcp/4001/ipfs/12D3KooWHp3ABxB1E4ebeEpvcViVFUSsaH198QopBQ8pygvF6PzX");
+//                Log.d(TAG, "nodeOnline: swarmConnect: "+s1+" "+s2+" "+s3);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
             //connect cafe
             if(connectCafe){
@@ -435,7 +445,6 @@ public class ShareService extends Service {
             }
         }
     }
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void shutDown(Integer stop){

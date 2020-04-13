@@ -65,6 +65,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private TextView cafeCaption;
     private TextView cafeUrl;
     CircleProgressDialog circleProgressDialog;
+    private TextView shadowPid;
 
     private ExpandableListView swarm_peer_listView;
     //持久化
@@ -283,6 +284,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
         cafeUrl=findViewById(R.id.personal_cafe_url);
         info_cafe=findViewById(R.id.personal_info_cafe);
 
+        shadowPid=findViewById(R.id.shadow_pid);
+        shadowPid.setText(Textile.instance().shadow());
 
         info_avatar_layout.setOnClickListener(v -> {
             com.luck.picture.lib.PictureSelector.create(PersonalInfoActivity.this)

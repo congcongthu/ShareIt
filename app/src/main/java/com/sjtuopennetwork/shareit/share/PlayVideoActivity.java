@@ -49,19 +49,22 @@ public class PlayVideoActivity extends AppCompatActivity {
         }else{ //播放m3u8文件，根据videoid来构建m3u8的地址
             String videoId=getIntent().getStringExtra("videoid");
             boolean ticket=getIntent().getBooleanExtra("ticket",false);
+            Uri uri;
             if(ticket){
                 videoGetterTkt=new VideoGetter_tkt(this,videoId);
                 videoGetterTkt.startGet();
+                uri=videoGetterTkt.getUri();
             }else{ //不是ticket
                 videoGetter =new VideoGetter(this,videoId);
                 videoGetter.startGet();
+                uri=videoGetter.getUri();
             }
 
-            Uri uri=videoGetterTkt.getUri();
             dataSourceFactory = new DefaultDataSourceFactory(PlayVideoActivity.this, Util.getUserAgent(PlayVideoActivity.this, "ShareIt"));
             HlsMediaSource hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory)
                     .setAllowChunklessPreparation(true).createMediaSource(uri);
             player.prepare(hlsMediaSource);
+            player.seekTo(0,0);
         }
     }
 

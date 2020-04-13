@@ -184,6 +184,10 @@ public class Textile implements LifecycleObserver {
 //        Mobile.setLogLevel(system, level);
 //    }
 
+    public String shadow() {
+        return node.shadow();
+    }
+
     /**
      * Create a new Textile wallet
      * @param wordCount The number of words the wallet recovery phrase should contain

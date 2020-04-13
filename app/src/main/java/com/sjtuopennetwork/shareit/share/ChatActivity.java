@@ -57,7 +57,7 @@ public class ChatActivity extends AppCompatActivity {
     LinearLayout add_file_layout;
     TextView bt_send_img;
     LinearLayout chat_backgroud;
-    TextView bt_send_video;
+    TextView bt_send_video_stream;
     TextView bt_send_file;
     TextView bt_send_video_ticket;
 
@@ -122,7 +122,7 @@ public class ChatActivity extends AppCompatActivity {
     private void initUI() {
         chat_lv=findViewById(R.id.chat_lv);
         bt_send_img=findViewById(R.id.bt_send_img);
-        bt_send_video=findViewById(R.id.bt_send_video);
+        bt_send_video_stream=findViewById(R.id.bt_send_video_stream);
         bt_send_file=findViewById(R.id.bt_send_file);
         chat_name_toolbar=findViewById(R.id.chat_name_toolbar);
         send_msg=findViewById(R.id.chat_send_text);
@@ -198,7 +198,7 @@ public class ChatActivity extends AppCompatActivity {
                     .forResult(PictureConfig.TYPE_IMAGE);
         });
 
-        bt_send_video.setOnClickListener(view -> {
+        bt_send_video_stream.setOnClickListener(view -> {
             PictureSelector.create(ChatActivity.this)
                     .openGallery(PictureMimeType.ofVideo())
                     .maxSelectNum(1)
