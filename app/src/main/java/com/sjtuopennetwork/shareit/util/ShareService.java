@@ -106,8 +106,8 @@ public class ShareService extends Service {
                     loginAccount=m.getAddress(); //获得公钥
                     final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
-                    String pk=m.getSeed(); //获得私钥
-                    Textile.initialize(repoPath,pk , true, false, true);
+                    String sk=m.getSeed(); //获得私钥
+                    Textile.initialize(repoPath,sk , true, false, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -408,11 +408,12 @@ public class ShareService extends Service {
                     ismine=1;
                 }
                 if(ismine==0){ //
-                    String msgBody=feedItemData.feedStreamMeta.getStreammeta().getId();
+                    String streamId=feedItemData.feedStreamMeta.getStreammeta().getId();
+                    String posterId=feedItemData.feedStreamMeta.getStreammeta().getPosterid();
+                    String body=posterId+"##"+streamId;
                     TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
                             threadId,2,feedItemData.feedStreamMeta.getBlock(),
-                            feedItemData.feedStreamMeta.getUser().getAddress(),
-                            msgBody, //流ID存进去
+                            feedItemData.feedStreamMeta.getUser().getAddress(),body,
                             feedItemData.feedStreamMeta.getDate().getSeconds(),ismine);
                     Log.d(TAG, "onComplete: postMsg消息");
                     EventBus.getDefault().post(tMsg);

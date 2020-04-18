@@ -180,10 +180,6 @@ public class Textile implements LifecycleObserver {
     }
 
 
-//    public static void setLogLevel(final String system, final String level) {
-//        Mobile.setLogLevel(system, level);
-//    }
-
     public String shadow() {
         return node.shadow();
     }

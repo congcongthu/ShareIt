@@ -26,11 +26,13 @@ public class VideoStreamAddChunk extends Thread{
     HashSet<String> chunkNames;
     LinkedBlockingDeque<M3U8Util.ChunkInfo> chunkQueue;
     private boolean finishChunkAdd;
+    private String threadId;
 
 
-    public VideoStreamAddChunk(String path, String videoId) {
+    public VideoStreamAddChunk(String path, String videoId, String threadId) {
         observeredDir=path;
         this.videoId=videoId;
+        this.threadId=threadId;
 
         chunkNames=new HashSet<>();
         chunkQueue=new LinkedBlockingDeque<>();
@@ -48,10 +50,11 @@ public class VideoStreamAddChunk extends Thread{
     public boolean finishAdd(){
         try {
             Thread.sleep(10000);
-        } catch (InterruptedException e) {
+            finishChunkAdd=true;
+            Textile.instance().streams.closeStream(threadId,videoId);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        finishChunkAdd=true;
         return finishChunkAdd;
     }
 

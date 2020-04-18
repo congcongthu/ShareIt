@@ -8,6 +8,7 @@ import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 
 import java.io.File;
 
+import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.stream.util.FileUtil;
 import sjtu.opennet.stream.util.Segmenter;
@@ -56,25 +57,37 @@ public class VideoPusher {
                 "-segment_list %s " +
                 "%s/out%%04d.ts", videoFilePath,segmentTime, m3u8Path, chunkDir);
 
-        videoStreamAddChunk =new VideoStreamAddChunk(videoCacheDir,videoMeta.getHash());
+        videoStreamAddChunk =new VideoStreamAddChunk(videoCacheDir,videoMeta.getHash(),threadId);
     }
 
     public void startPush(){
 
-        // startStream will sync the video message to thread
-        Model.StreamMeta streamMeta= Model.StreamMeta.newBuilder().setId(videoMeta.getHash()).setNsubstreams(1).build();
-        try {
-            Textile.instance().streams.startStream(threadId,streamMeta);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Textile.instance().ipfs.ipfsAddData(videoMeta.getPosterByte(), true, false, new Handlers.IpfsAddDataHandler() {
+            @Override
+            public void onComplete(String path) {
+                // startStream will sync the video message to thread
+                Model.StreamMeta streamMeta= Model.StreamMeta.newBuilder()
+                        .setId(videoMeta.getHash())
+                        .setNsubstreams(1)
+                        .setPosterid(path)
+                        .build();
+                try {
+                    Textile.instance().streams.startStream(threadId,streamMeta);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+            }
+        });
 
         // start to watch the videoCacheDir
         videoStreamAddChunk.start();
 
         // start to segment video
         new SegmentThread().start();
-
     }
 
     public String getVideoId(){return videoMeta.getHash();}

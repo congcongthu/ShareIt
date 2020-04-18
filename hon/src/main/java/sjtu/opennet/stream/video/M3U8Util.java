@@ -90,6 +90,17 @@ public class M3U8Util {
         }
     }
 
+    public synchronized static void writeM3u8End(File m3u8file){
+        try {
+            FileWriter fileWriter=new FileWriter(m3u8file,true);
+            fileWriter.write("#EXT-X-ENDLIST");
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static boolean existOrNot(String tspath){
         long tsLength=new File(tspath).list().length-1;
         if(tsLength>0){

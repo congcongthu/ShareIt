@@ -52,8 +52,6 @@ public class VideoGetter {
     }
 
     public void stopGet(){
-        //close http
-
         //close and delete listener
         Textile.instance().removeEventListener(videoTsGetListener);
     }
@@ -63,6 +61,11 @@ public class VideoGetter {
         public void notificationReceived(Model.Notification notification) {
             if(notification.getBody().equals("stream file")){
                 Log.d(TAG, "notificationReceived: 收到streamfile");
+                if(notification.getBlock().equals("")){
+                    Log.d(TAG, "notificationReceived: get endflag");
+                    M3U8Util.writeM3u8End(m3u8file);
+                    return;
+                }
                 try {
                     View.VideoDescription.Builder b=View.VideoDescription.newBuilder();
                     JsonFormat.merge(notification.getSubjectDesc(),b);

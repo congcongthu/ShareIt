@@ -151,16 +151,16 @@ public class TMsgAdapter extends BaseAdapter {
                         context.startActivity(it1);
                     });
                 }else if(videoType==1){
-                    Glide.with(context).load(R.drawable.ic_album).thumbnail(0.3f).into(h.chat_photo);
+                    String[] posterId_streamId=msgList.get(i).body.split("##");
+                    ShareUtil.setImageView(context,h.chat_photo,posterId_streamId[0],2);
                     h.chat_photo.setOnClickListener(view1->{
                         Intent it11=new Intent(context, PlayVideoActivity.class);
-                        it11.putExtra("videoid",msgList.get(i).body);
+                        it11.putExtra("videoid",posterId_streamId[1]);
                         it11.putExtra("ismine",false);
                         context.startActivity(it11);
                     });
                 }else{
                     String[] poster_videoid=msgList.get(i).body.split("##");
-                    Log.d(TAG, "handlePhotoView: show video: "+poster_videoid[1]+" "+poster_videoid[0]);
                     ShareUtil.setImageView(context,h.chat_photo,poster_videoid[0],2); //缩略图
                     h.chat_photo.setOnClickListener(view1 ->{
                         Intent it11=new Intent(context,PlayVideoActivity.class);

@@ -13,19 +13,23 @@ public class Stream extends NodeDependent{
         super(node);
     }
 
-    public void startStream(String threadId, Model.StreamMeta streammeta) throws Exception {
-        Log.d(TAG, "startStream,streamid: "+streammeta.getId());
-        node.startStream(threadId,streammeta.toByteArray());
+    public void startStream(String threadId, Model.StreamMeta streamMeta) throws Exception {
+        Log.d(TAG, "startStream,streamid: "+streamMeta.getId());
+        node.startStream(threadId,streamMeta.toByteArray());
     }
 
-    public void subscribeStream(String streamid) throws Exception{
-        Log.d(TAG, "subscribeStream,streamid: "+streamid);
-        node.subscribeStream(streamid); //temp
+    public void subscribeStream(String streamId) throws Exception{
+        Log.d(TAG, "subscribeStream,streamid: "+streamId);
+        node.subscribeStream(streamId); //temp
     }
 
-    public void streamAddFile(String streamid, byte[] streamFile) throws Exception{
-        Log.d(TAG, "streamAddFile,streamid: "+streamid);
-        node.streamAddFile(streamid, streamFile);
+    public void streamAddFile(String streamId, byte[] streamFile) throws Exception{
+        Log.d(TAG, "streamAddFile,streamid: "+streamId);
+        node.streamAddFile(streamId, streamFile);
     }
 
+    public void closeStream(String threadId, String streamId) throws Exception{
+        Log.d(TAG, "closeStream: "+streamId);
+        node.closeStream(threadId, streamId);
+    }
 }
