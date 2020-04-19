@@ -41,7 +41,7 @@ public class ShareService extends Service {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    private static final String TAG = "======ShareService";
+    private static final String TAG = "========ShareService";
 
     private String loginAccount;
     private int login;
