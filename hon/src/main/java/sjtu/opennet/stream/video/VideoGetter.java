@@ -2,17 +2,12 @@ package sjtu.opennet.stream.video;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.Message;
+
 import android.util.Log;
 
 import com.googlecode.protobuf.format.JsonFormat;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.DecimalFormat;
-
 import sjtu.opennet.hon.BaseTextileEventListener;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
