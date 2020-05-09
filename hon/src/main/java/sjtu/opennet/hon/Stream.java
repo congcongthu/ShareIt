@@ -32,4 +32,8 @@ public class Stream extends NodeDependent{
         Log.d(TAG, "closeStream: "+streamId);
         node.closeStream(threadId, streamId);
     }
+
+    public void threadAddStream(String threadId, String streamId) throws Exception{
+
+    }
 }

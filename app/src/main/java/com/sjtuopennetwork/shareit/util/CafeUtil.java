@@ -1,11 +1,13 @@
 package com.sjtuopennetwork.shareit.util;
 
+import android.util.Log;
+
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Model;
 
 public class CafeUtil {
-
+    private static final String TAG = "=====================";
     private static Boolean stopConnect=false;
 
     public static void connectCafe(Handlers.ErrorHandler handler){
@@ -13,12 +15,13 @@ public class CafeUtil {
             @Override
             public void run() {
                 while(!stopConnect){
+                    Log.d(TAG, "run: 开始连接cafe");
                     Textile.instance().cafes.register(
 //                    "http://159.138.58.61:40601",
                             "http://202.120.38.131:40601",
 //                    "http://192.168.1.109:40601",
 //                    "http://202.120.40.60:40601"
-                            "K6ayNanfZcfvGDBbxmf9DHkeyv4osxoGPpMGNP3vX4DQTnraUugY4h51T6DD", //131
+                            "wnUV71bVxugyqDLjHwYt9SSfWd133vb242enJt9hCc12Nb22ET4uZzy3CACa", //131
                             handler);
                     try {
                         Thread.sleep(300000);
@@ -27,7 +30,7 @@ public class CafeUtil {
                     }
                 }
             }
-        };
+        }.start();
     }
 
     public static void stopConnect(Handlers.ErrorHandler handler){
@@ -44,6 +47,6 @@ public class CafeUtil {
                     e.printStackTrace();
                 }
             }
-        };
+        }.start();
     }
 }

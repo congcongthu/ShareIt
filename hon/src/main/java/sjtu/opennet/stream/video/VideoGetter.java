@@ -5,6 +5,8 @@ import android.net.Uri;
 
 import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.googlecode.protobuf.format.JsonFormat;
 
 import java.io.File;
@@ -32,8 +34,8 @@ public class VideoGetter {
     }
 
     public void startGet(){
-        dir= FileUtil.getAppExternalPath(context, "video/"+videoId);
-        m3u8file=M3U8Util.initM3u8(dir);
+        dir= FileUtil.getAppExternalPath(context, "tsFile");
+        m3u8file=M3U8Util.initM3u8(dir,videoId);
         Textile.instance().addEventListener(videoTsGetListener);
         try {
             Textile.instance().streams.subscribeStream(videoId);
@@ -62,17 +64,22 @@ public class VideoGetter {
                     return;
                 }
                 try {
-                    View.VideoDescription.Builder b=View.VideoDescription.newBuilder();
-                    JsonFormat.merge(notification.getSubjectDesc(),b);
-                    View.VideoDescription videoDescription= b.build();
-                    Log.d(TAG, "notificationReceived: "+ videoDescription);
+//                    View.VideoDescription.Builder b=View.VideoDescription.newBuilder();
+//                    JsonFormat.merge(notification.getSubjectDesc(),b);
+                    JSONObject object= JSON.parseObject(notification.getSubjectDesc());
+                    Log.d(TAG, "notificationReceived: "+ notification.getSubjectDesc());
                     Textile.instance().ipfs.dataAtPath(notification.getBlock(), new Handlers.DataHandler() {
                         @Override
                         public void onComplete(byte[] data, String media) {
                             Log.d(TAG, "onComplete: ======成功下载ts文件");
-                            String tsName=dir + "/" + videoDescription.getChunk();
+                            String tsName=dir + "/" + notification.getBlock();
                             FileUtil.writeByteArrayToFile(tsName,data);
-                            M3U8Util.writeM3u8(m3u8file,videoDescription.getEndTime(),videoDescription.getStartTime(),videoDescription.getChunk());
+//                            long starttime=Long.parseLong(object.getString("startTime"));
+//                            long endtime=Long.parseLong(object.getString("endTime"));
+                            long starttime=object.getLongValue("startTime");
+                            long endtime=object.getLongValue("endTime");
+                            Log.d(TAG, "onComplete: starttime endtime: "+starttime+" "+endtime);
+                            M3U8Util.writeM3u8(m3u8file,endtime,starttime,notification.getBlock());
                         }
                         @Override
                         public void onError(Exception e) {

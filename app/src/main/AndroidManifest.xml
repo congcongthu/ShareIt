@@ -20,6 +20,7 @@
         android:roundIcon="@drawable/ic_share_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".share.ForwardActivity"></activity>
         <activity android:name=".share.PlayVideoActivity" />
 
         <service

@@ -47,13 +47,13 @@ public class TMsgAdapter extends BaseAdapter {
         switch (getItemViewType(i)){
             case 0: //是文本
                 return handleTextView(i,view,viewGroup);
-            case 1: //是照片
+            case 1: //是图片
                 return handlePhotoView(i,view,viewGroup,0);
-            case 2:
+            case 2: //stream视频
                 return handlePhotoView(i,view,viewGroup,1);
             case 3:
                 return handleFileView(i,view,viewGroup);
-            case 4:
+            case 4: //ticket视频
                 return handlePhotoView(i,view,viewGroup,2);
             default:
                 return null;
@@ -121,7 +121,7 @@ public class TMsgAdapter extends BaseAdapter {
                         it1.putExtra("imgname",hashName[1]);
                         context.startActivity(it1);
                     });
-                }else if(videoType==1){
+                }else if(videoType==1 || videoType==4){
                     String[] posterAndFile_r=msgList.get(i).body.split("##"); //0是poster，1是Id，2是视频路径
                     Glide.with(context).load(posterAndFile_r[0]).thumbnail(0.3f).into(h.chat_photo_r);
                     h.chat_photo_r.setOnClickListener(view1->{
@@ -150,7 +150,7 @@ public class TMsgAdapter extends BaseAdapter {
                         it1.putExtra("imgname",hashName[1]);
                         context.startActivity(it1);
                     });
-                }else if(videoType==1){
+                }else if(videoType==1){ // stream 视频
                     String[] posterId_streamId=msgList.get(i).body.split("##");
                     ShareUtil.setImageView(context,h.chat_photo,posterId_streamId[0],2);
                     h.chat_photo.setOnClickListener(view1->{
@@ -159,7 +159,7 @@ public class TMsgAdapter extends BaseAdapter {
                         it11.putExtra("ismine",false);
                         context.startActivity(it11);
                     });
-                }else{
+                }else{ // ticket 视频
                     String[] poster_videoid=msgList.get(i).body.split("##");
                     ShareUtil.setImageView(context,h.chat_photo,poster_videoid[0],2); //缩略图
                     h.chat_photo.setOnClickListener(view1 ->{
@@ -189,10 +189,11 @@ public class TMsgAdapter extends BaseAdapter {
             Log.d(TAG, "handleFileView: "+hashName[0]+" "+hashName[1]);
             if(msgList.get(i).ismine){
                 username= ShareUtil.getMyName();
+                Log.d(TAG, "handleFileView: myname "+username);
                 useravatar=ShareUtil.getMyAvatar();
                 h.send_file_right.setVisibility(View.VISIBLE); //右边的显示
                 h.send_file_left.setVisibility(View.GONE); //左边的隐藏
-                h.file_name_r.setText(username);
+                h.file_user_r.setText(username);
                 h.file_time_r.setText(df.format(msgList.get(i).sendtime*1000));
                 h.file_name_r.setText(hashName[1]);
                 ShareUtil.setImageView(context,h.file_avatar_r,useravatar,0);
@@ -202,7 +203,7 @@ public class TMsgAdapter extends BaseAdapter {
                 useravatar=ShareUtil.getOtherAvatar(addr);
                 h.send_file_left.setVisibility(View.VISIBLE); //左边的显示
                 h.send_file_right.setVisibility(View.GONE); //右边的隐藏
-                h.file_name.setText(username);
+                h.file_user.setText(username);
                 h.file_time.setText(df.format(msgList.get(i).sendtime*1000));
                 h.file_name.setText(hashName[1]);
                 ShareUtil.setImageView(context,h.file_avatar,useravatar,0);
@@ -216,6 +217,7 @@ public class TMsgAdapter extends BaseAdapter {
                             public void onComplete(byte[] data, String media) {
                                 String res= ShareUtil.storeSyncFile(data,hashName[1]);
                                 System.out.println("======下载成功"+res);
+                                Toast.makeText(context, "下载成功", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
@@ -252,10 +254,11 @@ public class TMsgAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
-    @Override
-    public boolean isEnabled(int position) {
-        return false;
-    }
+//    @Override
+//    public boolean isEnabled(int position) {
+//        return false;
+//    }
+
     public static class TextVH{
         public TextView msg_name,msg_time,chat_words;
         public TextView msg_name_r,msg_time_r,chat_words_r;

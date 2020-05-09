@@ -228,17 +228,18 @@ public class ShareUtil {
 
     public static void setImageView(Context context,ImageView imageView,String hash,int type){ // 0 avatar, 1 textile picture, 2 ipfs picture
         Log.d(TAG, "setImageView: try get image: "+hash);
-        Handler handler=new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                byte[] img=msg.getData().getByteArray("img");
-                Glide.with(context).load(img).thumbnail(0.3f).into(imageView);
-            }
-        };
 
-        if(hash==""){ //如果为空就用默认
+        if(hash.equals("")){ //如果为空就用默认
             Glide.with(context).load(R.drawable.ic_album).thumbnail(0.3f).into(imageView);
+            Log.d(TAG, "setImageView: image null");
         }else{
+            Handler handler=new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+                    byte[] img=msg.getData().getByteArray("img");
+                    Glide.with(context).load(img).thumbnail(0.3f).into(imageView);
+                }
+            };
             if(type==0){
                 Textile.instance().ipfs.dataAtPath("/ipfs/" + hash + "/0/small/content", new Handlers.DataHandler() {
                     @Override

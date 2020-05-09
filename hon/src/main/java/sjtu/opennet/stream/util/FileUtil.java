@@ -57,10 +57,9 @@ public class FileUtil {
 
     /**
      * Delete the contents inside a directory.
-     * Note that the directory itself would not be removed.
      * @param directory
      */
-    public static void deleteContents(File directory){
+    public static void deleteDirectory(File directory){
         if (!directory.isDirectory()){
             Log.e(TAG, "%s is not a directory.\n" +
                     "This func is used to delete contents inside a directory.");
@@ -68,6 +67,8 @@ public class FileUtil {
             for (File child : directory.listFiles())
                 deleteRecursive(child);
         }
+
+        directory.delete();
     }
 
     public static void writeByteArrayToFile(String path, byte[] byteArray){

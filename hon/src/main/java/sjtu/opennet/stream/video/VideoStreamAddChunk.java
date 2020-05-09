@@ -4,9 +4,12 @@ import android.os.FileObserver;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.google.protobuf.ByteString;
-import com.googlecode.protobuf.format.JsonFormat;
 
+
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -14,6 +17,7 @@ import java.util.HashSet;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import sjtu.opennet.hon.Textile;
+import sjtu.opennet.stream.util.FileUtil;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.View;
 
@@ -55,6 +59,10 @@ public class VideoStreamAddChunk extends Thread{
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // delete file
+        FileUtil.deleteDirectory(new File(observeredDir));
+
         return finishChunkAdd;
     }
 
@@ -101,13 +109,11 @@ public class VideoStreamAddChunk extends Thread{
             String tsAbsolutePath=observeredDir+"/chunks/"+chunk.filename;
             try {
                 byte[] tsFileContent = Files.readAllBytes(Paths.get(tsAbsolutePath));
-                View.VideoDescription videoDescription= View.VideoDescription.newBuilder()
-                        .setChunk(chunk.filename)
-                        .setStartTime(currentDuration)
-                        .setEndTime(currentDuration+chunk.duration)
-                        .setIndex(currentIndex)
-                        .build();
-                String videoDescStr= JsonFormat.printToString(videoDescription);
+                JSONObject object=new JSONObject();
+                object.put("startTime",String.valueOf(currentDuration));
+                object.put("endTime",String.valueOf(currentDuration+chunk.duration));
+                String videoDescStr= JSON.toJSONString(object);
+                Log.d(TAG, "streamAddFile: "+videoDescStr);
                 Model.StreamFile streamFile= Model.StreamFile.newBuilder()
                         .setData(ByteString.copyFrom(tsFileContent))
                         .setDescription(ByteString.copyFromUtf8(videoDescStr))

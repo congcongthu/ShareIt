@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -228,6 +229,37 @@ public class ChatActivity extends AppCompatActivity {
             toGroupInfo.putExtra("threadid",threadid);
             startActivity(toGroupInfo);
         });
+
+        chat_lv.setOnItemLongClickListener((adapterView, view, position, l) -> {
+            TMsg forward=msgList.get(position);
+            Intent toForward =new Intent(ChatActivity.this,ForwardActivity.class);
+            toForward.putExtra("msgType",forward.msgtype);
+            String body="";
+            switch (forward.msgtype){
+                case 0: // 文本消息
+                    toForward.putExtra("textBody",forward.body);
+                    break;
+                case 1: //图片
+                    toForward.putExtra("picHashName",forward.body);
+                    break;
+                case 2: //stream视频
+                    if(forward.ismine){ // msg内容是 posterPath filePath streamId
+                        toForward.putExtra("streamIsMine",true);
+                    }
+                    else{ // msg内容是 posterId streamId
+                    }
+                    toForward.putExtra("streamBody",forward.body);
+                    break;
+                case 3: //file
+                    Toast.makeText(this, "无法转发文件", Toast.LENGTH_SHORT).show();
+                    break;
+                case 4: //ticket视频
+                    Toast.makeText(this, "无法转发ticket视频", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+            startActivity(toForward);
+            return false;
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -292,10 +324,10 @@ public class ChatActivity extends AppCompatActivity {
             String tmpdir = ShareUtil.getAppExternalPath(this, "temp");
             String posterPath=tmpdir+"/"+videoId; //随机给一个名字
             ShareUtil.saveBitmap(posterPath,tmpBmap);
-            String posterAndFile=posterPath+"##"+filePath;
+            String posterAndFile=posterPath+"##"+filePath+"##"+videoId;
             TMsg tMsg= null;
             try {
-                long l=System.currentTimeMillis();
+                long l=System.currentTimeMillis()/1000;
                 tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
                         threadid,2,String.valueOf(l),myName,posterAndFile,l,1);
             } catch (Exception e) {
@@ -322,9 +354,9 @@ public class ChatActivity extends AppCompatActivity {
             String posterAndFile=posterPath+"##"+filePath;
             TMsg tMsg= null;
             try {
-                long l=System.currentTimeMillis();
+                long l=System.currentTimeMillis()/1000;
                 tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
-                        threadid,2,String.valueOf(l),myName,posterAndFile,l,1);
+                        threadid,4,String.valueOf(l),myName,posterAndFile,l,1);
             } catch (Exception e) {
                 e.printStackTrace();
             }

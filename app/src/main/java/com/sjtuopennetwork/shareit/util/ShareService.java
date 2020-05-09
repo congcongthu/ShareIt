@@ -61,7 +61,7 @@ public class ShareService extends Service {
         repoPath=intent.getStringExtra("repopath");
 
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
-        connectCafe= pref.getBoolean("connectCafe",false);
+        connectCafe= pref.getBoolean("connectCafe",true);
 
         new Thread(){
             @Override
@@ -195,20 +195,23 @@ public class ShareService extends Service {
                 }
             }
 
-//            try {
-//                boolean s1=Textile.instance().ipfs.swarmConnect("/ip6/2001:da8:8000:6084:1a31:bfff:fecf:e603/tcp/4001/ipfs/12D3KooWFHnbHXpDyW1nQxdjJ6ETauAfunj3g2ZtRU4xV9AkZxCq");
-//                boolean s2=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.131/tcp/4001/ipfs/12D3KooWFHnbHXpDyW1nQxdjJ6ETauAfunj3g2ZtRU4xV9AkZxCq");
-//                boolean s3=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.100/tcp/4001/ipfs/12D3KooWHp3ABxB1E4ebeEpvcViVFUSsaH198QopBQ8pygvF6PzX");
-//                Log.d(TAG, "nodeOnline: swarmConnect: "+s1+" "+s2+" "+s3);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
+            try {
+                boolean s1=Textile.instance().ipfs.swarmConnect("/ip6/2001:da8:8000:6084:1a31:bfff:fecf:e603/tcp/4001/ipfs/12D3KooWFHnbHXpDyW1nQxdjJ6ETauAfunj3g2ZtRU4xV9AkZxCq");
+                boolean s2=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.131/tcp/4001/ipfs/12D3KooWKAKVbQF5yUGAaE5uDnuEbZAAgeU6cUYME6FhqFvqWmay");
+                boolean s3=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.100/tcp/4001/ipfs/12D3KooWHp3ABxB1E4ebeEpvcViVFUSsaH198QopBQ8pygvF6PzX");
+                Textile.instance().ipfs.swarmConnect("/ip4/192.168.3.1/tcp/37938/ipfs/12D3KooWSTGKiYPvHha81JxhVuZpPBRPdgQTpMXcoQD6c8mNj8wA");
+                Log.d(TAG, "nodeOnline: swarmConnect: "+s1+" "+s2+" "+s3);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             //connect cafe
+            Log.d(TAG, "nodeOnline: connectcafe:"+connectCafe);
             if(connectCafe){
                 CafeUtil.connectCafe(new Handlers.ErrorHandler() {
                     @Override
                     public void onComplete() {
+                        Log.d(TAG, "onComplete: cafe连接成功1");
                         SharedPreferences.Editor editor=pref.edit();
                         editor.putBoolean("ok131",true);
                         editor.putBoolean("connectCafe",true);
@@ -217,6 +220,7 @@ public class ShareService extends Service {
 
                     @Override
                     public void onError(Exception e) {
+                        Log.d(TAG, "onError: cafe连接失败1");
                         SharedPreferences.Editor editor=pref.edit();
                         editor.putBoolean("ok131",false);
                         editor.commit();
@@ -229,11 +233,14 @@ public class ShareService extends Service {
             // join the default thread after online, the thread is created by cafe
             if(ShareUtil.getThreadByName("default")==null){
                 try {
-                    Textile.instance().invites.acceptExternal("","");
+                    Textile.instance().invites.acceptExternal("QmdocmhxFuJ6SdGMT3Arh5wacWnWjZ52VsGXdSp6aXhTVJ","2NfdMrvABwHorxeJxSckSkBKfBJMMF4LqGwdmjY5ZCKw8TDpfHYxELbWnNhed");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+
+            //7AF2DB0C82B29BB82FAC05734B04D944E9A66EA90F797FB9A95D8BCDFF265789
+
 
             //
             EventBus.getDefault().post(Integer.valueOf(0));
@@ -393,7 +400,8 @@ public class ShareService extends Service {
                 TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
                         threadId,3,feedItemData.files.getBlock(),
                         feedItemData.files.getUser().getAddress(),
-                        body,feedItemData.files.getDate().getSeconds(),ismine);
+                        body,
+                        feedItemData.files.getDate().getSeconds(),ismine);
                 TDialog updateDialog=DBHelper.getInstance(getApplicationContext(),loginAccount).dialogGetMsg(
                         tDialog,threadId,feedItemData.files.getUser().getName()+"分享了文件",
                         feedItemData.files.getDate().getSeconds(),tDialog.add_or_img);

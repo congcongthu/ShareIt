@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Model;
 
 public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.ViewHolder> {
-
+    private static final String TAG = "===========================================";
     private List<Model.Peer> members;
     Context context;
 
@@ -41,7 +42,6 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
         }
     }
 
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_group_member, viewGroup, false);
@@ -51,9 +51,10 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
+        Log.d(TAG, "onBindViewHolder: "+i);
         viewHolder.name.setText(members.get(i).getName());
-        ShareUtil.setImageView(context, viewHolder.avatar, members.get(i).getAvatar(), 0);
-
+        Log.d(TAG, "onBindViewHolder: avatar:"+members.get(i).getAvatar());
+//        ShareUtil.setImageView(context, viewHolder.avatar, members.get(i).getAvatar(), 0);
     }
 
     @Override

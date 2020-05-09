@@ -78,7 +78,7 @@ public class VideoGetter_tkt {
         dir= FileUtil.getAppExternalPath(context, "video/"+videoId);
         if(!M3U8Util.existOrNot(dir)){
             Textile.instance().addEventListener(chunkSearchListener);
-            m3u8file= M3U8Util.initM3u8(dir);
+            m3u8file= M3U8Util.initM3u8(dir,videoId);
             searchThread.start();
             downloadThread.start();
         }else{

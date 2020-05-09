@@ -41,6 +41,9 @@ dependencies {
     implementation "com.android.support:appcompat-v7:28.0.0"
     implementation "com.android.support:support-v4:28.0.0"
 
+
+    implementation 'com.alibaba:fastjson:1.1.71.android'
+
     // Lifecycle
     implementation "android.arch.lifecycle:extensions:1.1.1"
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
@@ -50,14 +53,14 @@ dependencies {
     implementation "com.github.textileio:android-upload-service:3.5.4"
 
     // textile-mobile
-//  implementation "sjtu.opennet:hon-textile-mobile:0.2.29-no131-pubsub-lock-oldcafe"
+    // implementation "sjtu.opennet:hon-textile-mobile:0.2.29-no131-pubsub-lock-oldcafe"
     implementation (name:'mobile', ext:'aar')
 
     implementation "com.google.protobuf:protobuf-java:3.9.2"
 
     implementation 'com.writingminds:FFmpegAndroid:0.3.2'
 
-    //Try to use FFmpegMediaMetadataRetriever to replace android.media.MediaMetadataRetriever
+    // Try to use FFmpegMediaMetadataRetriever to replace android.media.MediaMetadataRetriever
     implementation 'com.github.wseemann:FFmpegMediaMetadataRetriever:1.0.14'
     implementation 'com.googlecode.protobuf-java-format:protobuf-java-format:1.2'
 

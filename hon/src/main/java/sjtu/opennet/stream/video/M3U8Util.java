@@ -52,14 +52,14 @@ public class M3U8Util {
         return new ChunkInfo(filename, duration);
     }
 
-    public synchronized static File initM3u8(String dir){
+    public synchronized static File initM3u8(String dir, String videoId){
         String head="#EXTM3U\n" +
                 "#EXT-X-VERSION:3\n" +
                 "#EXT-X-MEDIA-SEQUENCE:0\n" +
                 "#EXT-X-ALLOW-CACHE:YES\n" +
                 "#EXT-X-TARGETDURATION:5\n"; // +
 //                "#EXT-X-PLAYLIST-TYPE:EVENT\n";
-        File m3u8file=new File(dir+"/playlist.m3u8");
+        File m3u8file=new File(dir+"/"+videoId+".m3u8");
 
         try{
             FileWriter fileWriter=new FileWriter(m3u8file,true);

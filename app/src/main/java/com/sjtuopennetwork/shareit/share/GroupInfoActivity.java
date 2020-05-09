@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -21,6 +22,8 @@ import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Model;
 
 public class GroupInfoActivity extends AppCompatActivity {
+    private static final String TAG = "========================================";
+
     //UI控件
     LinearLayout add_members;
     LinearLayout del_members;
@@ -71,6 +74,7 @@ public class GroupInfoActivity extends AppCompatActivity {
             allMembers=Textile.instance().threads.peers(threadid).getItemsList();
             nonAdmins=Textile.instance().threads.nonAdmins(threadid).getItemsList();
             admins=Textile.instance().threads.admins(threadid).getItemsList();
+            Log.d(TAG, "showMembers: "+allMembers.size());
         } catch (Exception e) {
             e.printStackTrace();
         }

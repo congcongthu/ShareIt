@@ -7,7 +7,7 @@ public class TMsg {
     public String author;
     public String body;
     public long sendtime;
-    boolean ismine;
+    public boolean ismine;
 
     public TMsg(String blockid,String threadid, int msgtype,  String author, String body, long sendtime, boolean ismine) {
         this.threadid = threadid;

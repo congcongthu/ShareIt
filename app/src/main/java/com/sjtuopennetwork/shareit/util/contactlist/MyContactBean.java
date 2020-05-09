@@ -20,7 +20,11 @@ public class MyContactBean implements Parcelable {
 
     public MyContactBean(String id, String name, String avatar) {
         this.id = id;
-        this.name = name;
+        if(name.equals("")){
+            this.name="null";
+        }else{
+            this.name = name;
+        }
         this.avatar = avatar;
     }
 

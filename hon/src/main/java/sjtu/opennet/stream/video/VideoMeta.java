@@ -271,13 +271,13 @@ public class VideoMeta {
     public String getHashFromMeta(byte[] cmd) throws Exception {
         //TODO: not good
         byte[] metaInfo = stringInfo().getBytes();
-        byte[] metaThumb = Bitmap2Bytes(thumbnail);
-//        byte[] now = Long.toHexString(System.currentTimeMillis()).getBytes();
-        byte[] meta = new byte[metaInfo.length + thumbnail_byte.length + cmd.length ];
+        //byte[] metaThumb = Bitmap2Bytes(thumbnail);
+        byte[] now = Long.toHexString(System.currentTimeMillis()).getBytes();
+        byte[] meta = new byte[metaInfo.length + thumbnail_byte.length + cmd.length + now.length];
         System.arraycopy(metaInfo, 0, meta, 0, metaInfo.length);
         System.arraycopy(thumbnail_byte, 0, meta, metaInfo.length, thumbnail_byte.length);
         System.arraycopy(cmd, 0, meta, metaInfo.length+thumbnail_byte.length, cmd.length);
-//        System.arraycopy(now, 0, meta, metaInfo.length+thumbnail_byte.length+cmd.length, now.length);
+        System.arraycopy(now, 0, meta, metaInfo.length+thumbnail_byte.length+cmd.length, now.length);
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] hash = digest.digest(meta);
 //        Log.d(TAG, "getHashFromMeta meta length: " + meta.length);
