@@ -159,7 +159,7 @@ public class TMsgAdapter extends BaseAdapter {
                         it11.putExtra("ismine",false);
                         context.startActivity(it11);
                     });
-                }else{ // ticket 视频
+                }else if(videoType==2){ // ticket 视频
                     String[] poster_videoid=msgList.get(i).body.split("##");
                     ShareUtil.setImageView(context,h.chat_photo,poster_videoid[0],2); //缩略图
                     h.chat_photo.setOnClickListener(view1 ->{

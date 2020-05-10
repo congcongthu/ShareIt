@@ -74,8 +74,6 @@ public class ChatActivity extends AppCompatActivity {
     TMsgAdapter msgAdapter;
     List<LocalMedia> choosePic;
     List<LocalMedia> chooseVideo;
-    String avatarpath;
-    int pageIndex;
     String myName;
     String myAvatar;
     List<String> chooseFilePath;
@@ -89,8 +87,6 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-
-        pageIndex=0;
 
         initUI();
 
@@ -167,11 +163,11 @@ public class ChatActivity extends AppCompatActivity {
             chat_thread = Textile.instance().threads.get(threadid);
             if(chat_thread.getWhitelistCount()==2){ //如果是双人thread
                 String chatName=it.getStringExtra("singleName");
+                group_menu.setVisibility(View.GONE);
                 chat_name_toolbar.setText(chatName);
             }else{
                 chat_name_toolbar.setText(chat_thread.getName());
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

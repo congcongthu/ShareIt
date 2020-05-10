@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
@@ -83,9 +84,8 @@ public class GroupInfoActivity extends AppCompatActivity {
 
         //显示成员列表
         GroupMemberAdapter adapter=new GroupMemberAdapter(this,allMembers);
-        FlowLayoutManager flowLayoutManager=new FlowLayoutManager();
-//        group_members.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
-        group_members.setLayoutManager(flowLayoutManager);
+        GridLayoutManager gridLayoutManager=new GridLayoutManager(this,5);
+        group_members.setLayoutManager(gridLayoutManager);
         group_members.setAdapter(adapter);
     }
 

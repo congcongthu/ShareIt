@@ -231,13 +231,13 @@ public class ShareService extends Service {
             ShareUtil.createDeviceThread();
 
             // join the default thread after online, the thread is created by cafe
-            if(ShareUtil.getThreadByName("default")==null){
-                try {
-                    Textile.instance().invites.acceptExternal("QmdocmhxFuJ6SdGMT3Arh5wacWnWjZ52VsGXdSp6aXhTVJ","2NfdMrvABwHorxeJxSckSkBKfBJMMF4LqGwdmjY5ZCKw8TDpfHYxELbWnNhed");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+//            if(ShareUtil.getThreadByName("default")==null){
+//                try {
+//                    Textile.instance().invites.acceptExternal("QmdocmhxFuJ6SdGMT3Arh5wacWnWjZ52VsGXdSp6aXhTVJ","2NfdMrvABwHorxeJxSckSkBKfBJMMF4LqGwdmjY5ZCKw8TDpfHYxELbWnNhed");
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
 
             //7AF2DB0C82B29BB82FAC05734B04D944E9A66EA90F797FB9A95D8BCDFF265789
 
@@ -419,7 +419,7 @@ public class ShareService extends Service {
                     String streamId=feedItemData.feedStreamMeta.getStreammeta().getId();
                     String posterId=feedItemData.feedStreamMeta.getStreammeta().getPosterid();
                     String body=posterId+"##"+streamId;
-                    TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                    TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg( // stream视频就是将缩略图hash和streamid放入消息，并设置消息的类型为2
                             threadId,2,feedItemData.feedStreamMeta.getBlock(),
                             feedItemData.feedStreamMeta.getUser().getAddress(),body,
                             feedItemData.feedStreamMeta.getDate().getSeconds(),ismine);
@@ -445,7 +445,7 @@ public class ShareService extends Service {
                     String videoId=video.getId();
                     String body=posterHash+"##"+videoId;
                     Log.d(TAG, "threadUpdateReceived: getVideo: "+videoId+" "+posterHash);
-                    TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                    TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg( // ticket类型的视频，就将缩略图hash和videoid放入，设置消息类型为4
                             threadId,4,feedItemData.feedVideo.getBlock(),
                             feedItemData.feedVideo.getUser().getAddress(),body,
                             feedItemData.feedVideo.getDate().getSeconds(),ismine);
