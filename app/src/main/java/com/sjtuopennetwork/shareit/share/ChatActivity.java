@@ -234,9 +234,11 @@ public class ChatActivity extends AppCompatActivity {
             switch (forward.msgtype){
                 case 0: // 文本消息
                     toForward.putExtra("textBody",forward.body);
+                    startActivity(toForward);
                     break;
                 case 1: //图片
                     toForward.putExtra("picHashName",forward.body);
+                    startActivity(toForward);
                     break;
                 case 2: //stream视频
                     if(forward.ismine){ // msg内容是 posterPath filePath streamId
@@ -245,15 +247,16 @@ public class ChatActivity extends AppCompatActivity {
                     else{ // msg内容是 posterId streamId
                     }
                     toForward.putExtra("streamBody",forward.body);
+                    startActivity(toForward);
                     break;
                 case 3: //file
-                    Toast.makeText(this, "无法转发文件", Toast.LENGTH_SHORT).show();
+                    toForward.putExtra("fileHashName",forward.body);
+                    startActivity(toForward);
                     break;
                 case 4: //ticket视频
                     Toast.makeText(this, "无法转发ticket视频", Toast.LENGTH_SHORT).show();
                     break;
             }
-            startActivity(toForward);
             return false;
         });
     }
@@ -292,26 +295,7 @@ public class ChatActivity extends AppCompatActivity {
             Log.d(TAG, "onActivityResult: 选择了视频："+filePath);
 
             VideoPusher videoPusher =new VideoPusher(this,threadid,filePath);
-
             videoPusher.startPush();
-
-//            VideoUploadHelper videoUploadHelper=new VideoUploadHelper(this, filePath, false);
-//            Model.Video videoPb=videoUploadHelper.getVideoPb();
-//            Model.StreamMeta streamMeta= Model.StreamMeta.newBuilder().setId(videoPb.getId()).setNsubstreams(1).build();
-//            try {
-//                Textile.instance().streams.startStream(threadid,streamMeta); //开始这个流
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            videoUploadHelper.upload(() -> { //开始切割并streamAddFile
-//                try {
-//                    Log.d(TAG, "onActivityResult: 向thread添加video "+videoPb.getVideoLength()/1000000);
-//                    Textile.logDebug("===============start to send video: "+videoPb.getId());
-////                    Textile.instance().videos.threadAddVideo(threadid,videoPb.getId()); //向thread中添加
-//                }catch(Exception e){
-//                    e.printStackTrace();
-//                }
-//            });
 
             Log.d(TAG, "onActivityResult: video added");
             //发送端立马显示发送视频

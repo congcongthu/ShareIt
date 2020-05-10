@@ -61,7 +61,7 @@ public class ShareService extends Service {
         repoPath=intent.getStringExtra("repopath");
 
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
-        connectCafe= pref.getBoolean("connectCafe",true);
+        connectCafe= pref.getBoolean("connectCafe",false);
 
         new Thread(){
             @Override
@@ -283,11 +283,6 @@ public class ShareService extends Service {
 
         @Override
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
-            if(lastBlock.equals(feedItemData.block)){
-                return;
-            }else{
-                lastBlock=feedItemData.block;
-            }
             String myAddr=Textile.instance().account.address();
             Model.Thread thread=null;
             try {
@@ -297,6 +292,11 @@ public class ShareService extends Service {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+            if(lastBlock.equals(feedItemData.block)){
+                return;
+            }else{
+                lastBlock=feedItemData.block;
             }
             TDialog tDialog=DBHelper.getInstance(getApplicationContext(),loginAccount).queryDialogByThreadID(threadId); //必然能够查出来对话
 

@@ -35,23 +35,32 @@ import sjtu.opennet.textilepb.View;
 public class ShareUtil {
     private static final String TAG = "========================";
     private static String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtlimg/";
+    private static String fileCacheDir=Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtlimgcache/";
+    private static String fileDir=Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtlfile/";
 
     public static String storeSyncFile(byte[] data,String fileName){
+        return saveFile(data,fileDir,fileName);
+    }
 
-        String fileDir=Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtlfile/";
+    public static String isFileExist(String fileName){
+        File judge=new File(fileDir+fileName);
+        if(judge.exists()){
+            return judge.getAbsolutePath();
+        }
+        return null;
+    }
 
+    private static String saveFile(byte[] data, String fileDir, String fileName){
         //创建文件夹
         File f = new File(fileDir);
         if(!f.exists()){
             f.mkdirs();
         }
-
         //获取存储状态，如果状态不是mounted，则无法读写，返回“null”
         String state = Environment.getExternalStorageState();
         if (!state.equals(Environment.MEDIA_MOUNTED)) {
             return "null";
         }
-
         String finalNameWithDir="null"; //最终的完整文件路径
         try {
             File file=new File(fileDir+fileName);
@@ -61,16 +70,13 @@ public class ShareUtil {
             FileOutputStream out=new FileOutputStream(file);
             out.write(data);
             finalNameWithDir=fileDir+fileName;
-            Log.d(TAG,"file stored"); 
             out.close();
             return finalNameWithDir;
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return finalNameWithDir;
     }
-
 
     public static String getHuaweiAvatar(String url){
         //创建文件夹
@@ -226,62 +232,75 @@ public class ShareUtil {
         return "";
     }
 
-    public static void setImageView(Context context,ImageView imageView,String hash,int type){ // 0 avatar, 1 textile picture, 2 ipfs picture
-        Log.d(TAG, "setImageView: try get image: "+hash);
+    private static boolean isImgInCache(String hash){
+        String fileName=fileCacheDir+hash;
+        File file=new File(fileName);
+        return file.exists();
+    }
 
+    private static String cacheImg(byte[] data,String hash){
+        return saveFile(data,fileCacheDir,hash);
+    }
+
+    public static void setImageView(Context context,ImageView imageView,String hash,int type){ // 0 avatar, 1 textile picture, 2 ipfs picture
+        String fileDir=Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtlimgcache/";
+        String fileName=fileDir+hash;
         if(hash.equals("")){ //如果为空就用默认
             Glide.with(context).load(R.drawable.ic_album).thumbnail(0.3f).into(imageView);
-            Log.d(TAG, "setImageView: image null");
         }else{
-            Handler handler=new Handler(){
-                @Override
-                public void handleMessage(Message msg) {
-                    byte[] img=msg.getData().getByteArray("img");
-                    Glide.with(context).load(img).thumbnail(0.3f).into(imageView);
-                }
-            };
-            if(type==0){
-                Textile.instance().ipfs.dataAtPath("/ipfs/" + hash + "/0/small/content", new Handlers.DataHandler() {
-                    @Override
-                    public void onComplete(byte[] data, String media) {
-                        Bundle b=new Bundle(); b.putByteArray("img",data);
-                        Message msg=new Message(); msg.what=1; msg.setData(b);
-                        handler.sendMessage(msg);
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        Log.d(TAG, "onError: get image error: "+hash);
-                        e.printStackTrace();
-                    }
-                });
-            }else if (type==1){ //文件
-                Textile.instance().files.content(hash, new Handlers.DataHandler() {
-                    @Override
-                    public void onComplete(byte[] data, String media) {
-                        Bundle b=new Bundle(); b.putByteArray("img",data);
-                        Message msg=new Message(); msg.what=1; msg.setData(b);
-                        handler.sendMessage(msg);
-                    }
-                    @Override
-                    public void onError(Exception e) {
-                        Log.d(TAG, "onError: get image error: "+hash);
-                        e.printStackTrace();
-                    }
-                });
+            //如果缓存中已有，就直接从缓存加载,否则异步加载
+            if(isImgInCache(hash)){
+                Glide.with(context).load(fileName).thumbnail(0.3f).into(imageView);
             }else{
-                Textile.instance().ipfs.dataAtPath(hash, new Handlers.DataHandler() {
+                Handler handler=new Handler(){
                     @Override
-                    public void onComplete(byte[] data, String media) {
-                        Bundle b=new Bundle(); b.putByteArray("img",data);
-                        Message msg=new Message(); msg.what=1; msg.setData(b);
-                        handler.sendMessage(msg);
+                    public void handleMessage(Message msg) {
+                        Glide.with(context).load(fileName).thumbnail(0.3f).into(imageView);
                     }
+                };
+                if(type==0){
+                    Textile.instance().ipfs.dataAtPath("/ipfs/" + hash + "/0/small/content", new Handlers.DataHandler() {
+                        @Override
+                        public void onComplete(byte[] data, String media) {
+                            cacheImg(data,hash);
+                            Message msg=handler.obtainMessage();
+                            handler.sendMessage(msg);
+                        }
 
-                    @Override
-                    public void onError(Exception e) {
-                    }
-                });
+                        @Override
+                        public void onError(Exception e) {
+                            Log.d(TAG, "onError: get image error: "+hash);
+                            e.printStackTrace();
+                        }
+                    });
+                }else if (type==1){ //文件
+                    Textile.instance().files.content(hash, new Handlers.DataHandler() {
+                        @Override
+                        public void onComplete(byte[] data, String media) {
+                            cacheImg(data,hash);
+                            Message msg=handler.obtainMessage();
+                            handler.sendMessage(msg);
+                        }
+                        @Override
+                        public void onError(Exception e) {
+                            Log.d(TAG, "onError: get image error: "+hash);
+                            e.printStackTrace();
+                        }
+                    });
+                }else{
+                    Textile.instance().ipfs.dataAtPath(hash, new Handlers.DataHandler() {
+                        @Override
+                        public void onComplete(byte[] data, String media) {
+                            cacheImg(data,hash);
+                            Message msg=handler.obtainMessage();
+                            handler.sendMessage(msg);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                        }
+                    });
+                }
             }
         }
     }

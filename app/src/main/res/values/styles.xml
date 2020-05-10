@@ -6,7 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowTranslucentStatus">true</item><item name="android:windowAnimationStyle">@style/AnimationActivity</item>
+<!--        <item name="android:windowTranslucentStatus">true</item><item name="android:windowAnimationStyle">@style/AnimationActivity</item>-->
     </style>
     <!--自定义EditText样式-->
     <style name="MyEditText" parent="Theme.AppCompat.Light">

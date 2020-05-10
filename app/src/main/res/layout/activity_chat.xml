@@ -82,7 +82,7 @@
             android:layout_margin="5dp"
             android:background="@drawable/back_bt_login"
             android:id="@+id/chat_send_text"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:text="发送"
             android:textSize="20sp"
             android:layout_width="70dp"

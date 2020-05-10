@@ -2,6 +2,8 @@ package com.sjtuopennetwork.shareit.share.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -208,26 +210,41 @@ public class TMsgAdapter extends BaseAdapter {
                 h.file_name.setText(hashName[1]);
                 ShareUtil.setImageView(context,h.file_avatar,useravatar,0);
                 h.send_file_left.setOnClickListener(v -> {
-                    AlertDialog.Builder downFile=new AlertDialog.Builder(context);
-                    downFile.setTitle("下载文件");
-                    downFile.setMessage("确定下载 "+ hashName[1] +" 吗？");
-                    downFile.setPositiveButton("下载", (dialog, which) -> {
-                        Textile.instance().files.content(hashName[0], new Handlers.DataHandler() {
+                    String isExist=ShareUtil.isFileExist(hashName[1]);
+                    if(isExist!=null){
+                        Toast.makeText(context, "文件已存在："+isExist, Toast.LENGTH_SHORT).show();
+                    }else{
+                        AlertDialog.Builder downFile=new AlertDialog.Builder(context);
+                        downFile.setTitle("下载文件");
+                        downFile.setMessage("确定下载 "+ hashName[1] +" 吗？");
+                        Handler fileResponse=new Handler(){
                             @Override
-                            public void onComplete(byte[] data, String media) {
-                                String res= ShareUtil.storeSyncFile(data,hashName[1]);
-                                System.out.println("======下载成功"+res);
-                                Toast.makeText(context, "下载成功", Toast.LENGTH_SHORT).show();
+                            public void handleMessage(Message msg) {
+                                if(msg.what==9){
+                                    Toast.makeText(context, (String)msg.obj, Toast.LENGTH_SHORT).show();
+                                }
                             }
+                        };
+                        downFile.setPositiveButton("下载", (dialog, which) -> {
+                            Textile.instance().files.content(hashName[0], new Handlers.DataHandler() {
+                                @Override
+                                public void onComplete(byte[] data, String media) {
+                                    String res= ShareUtil.storeSyncFile(data,hashName[1]);
+                                    String resMeg="下载成功 "+res;
+                                    Message msg=fileResponse.obtainMessage();
+                                    msg.what=9;
+                                    msg.obj=resMeg;
+                                    fileResponse.sendMessage(msg);
+                                }
 
-                            @Override
-                            public void onError(Exception e) {
-
-                            }
+                                @Override
+                                public void onError(Exception e) {
+                                }
+                            });
                         });
-                    });
-                    downFile.setNegativeButton("取消", (dialog, which) -> Toast.makeText(context,"已取消",Toast.LENGTH_SHORT).show());
-                    downFile.show();
+                        downFile.setNegativeButton("取消", (dialog, which) -> Toast.makeText(context,"已取消",Toast.LENGTH_SHORT).show());
+                        downFile.show();
+                    }
                 });
             }
         }

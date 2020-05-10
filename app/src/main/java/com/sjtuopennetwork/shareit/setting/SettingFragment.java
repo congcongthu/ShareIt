@@ -45,7 +45,7 @@ public class SettingFragment extends Fragment {
     TextView tv_name;
     RoundImageView avatar_layout;
     TextView logout_layout;
-    Button uploadLog;
+//    Button uploadLog;
 
     //持久化
     private SharedPreferences pref;
@@ -89,43 +89,43 @@ public class SettingFragment extends Fragment {
         devices_layout = getActivity().findViewById(R.id.setting_devices_layout);
         logout_layout = getActivity().findViewById(R.id.logout);
 
-        uploadLog=getActivity().findViewById(R.id.uploadlog);
-        uploadLog.setOnClickListener(view -> {
-//            try {
-//                final String logPath= FileUtil.getAppExternalPath(getActivity(),"repo")+"/"+Textile.instance().profile.get().getAddress()+"/logs/textile.log";
-//
-//                Handler handler=new Handler(){
-//                    @Override
-//                    public void handleMessage(Message msg) {
-//                        switch (msg.what){
-//                            case 0:
-//                                Toast.makeText(getActivity(), "上传成功", Toast.LENGTH_SHORT).show(); break;
-//                            case 1:
-//                                Toast.makeText(getActivity(), "上传失败", Toast.LENGTH_SHORT).show(); break;
-//                        }
-//                    }
-//                };
-//
-//                new Thread(){
-//                    @Override
-//                    public void run() {
-//                        Log.d(TAG, "initUI: log路径："+logPath);
-//                        String response=LogToHTTP.uploadLog(logPath);
-//                        Log.d(TAG, "run: 上传结果："+response);
-//                        if(response.equals("success")){
-//                            Message msg=new Message(); msg.what=0;
-//                            handler.sendMessage(msg);
-//                        }else{
-//                            Message msg=new Message(); msg.what=1;
-//                            handler.sendMessage(msg);
-//                        }
-//                    }
-//                }.start();
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-        });
+//        uploadLog=getActivity().findViewById(R.id.uploadlog);
+//        uploadLog.setOnClickListener(view -> {
+////            try {
+////                final String logPath= FileUtil.getAppExternalPath(getActivity(),"repo")+"/"+Textile.instance().profile.get().getAddress()+"/logs/textile.log";
+////
+////                Handler handler=new Handler(){
+////                    @Override
+////                    public void handleMessage(Message msg) {
+////                        switch (msg.what){
+////                            case 0:
+////                                Toast.makeText(getActivity(), "上传成功", Toast.LENGTH_SHORT).show(); break;
+////                            case 1:
+////                                Toast.makeText(getActivity(), "上传失败", Toast.LENGTH_SHORT).show(); break;
+////                        }
+////                    }
+////                };
+////
+////                new Thread(){
+////                    @Override
+////                    public void run() {
+////                        Log.d(TAG, "initUI: log路径："+logPath);
+////                        String response=LogToHTTP.uploadLog(logPath);
+////                        Log.d(TAG, "run: 上传结果："+response);
+////                        if(response.equals("success")){
+////                            Message msg=new Message(); msg.what=0;
+////                            handler.sendMessage(msg);
+////                        }else{
+////                            Message msg=new Message(); msg.what=1;
+////                            handler.sendMessage(msg);
+////                        }
+////                    }
+////                }.start();
+////
+////            } catch (Exception e) {
+////                e.printStackTrace();
+////            }
+//        });
 
         info_layout.setOnClickListener(v -> {
             Intent it = new Intent(getActivity(), PersonalInfoActivity.class);

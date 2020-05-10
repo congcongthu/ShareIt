@@ -74,7 +74,7 @@ public class DialogAdapter extends ArrayAdapter {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ShareUtil.setImageView(context,vh.headImg,avatarHash,0);
+            ShareUtil.setImageView(context,vh.headImg,avatarHash,1);
         }
         vh.threadName.setText(dialogname);
 

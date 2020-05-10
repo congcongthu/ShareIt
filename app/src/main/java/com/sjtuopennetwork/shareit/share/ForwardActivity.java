@@ -78,12 +78,28 @@ public class ForwardActivity extends AppCompatActivity {
                         forwardStream(threadId,streamBody,isMine);
                         break;
                     case 3: //file
+                        String fileHashName=it.getStringExtra("fileHashName");
+                        forwardFile(threadId,fileHashName);
                         break;
                     case 4: //ticket视频
                         break;
                 }
             });
             forwardMsg.show();
+        });
+    }
+
+    public void forwardFile(String threadId,String hashName){
+        String[] hashNames=hashName.split("##");
+        //发送文件
+        Textile.instance().files.addFiles(hashNames[0], threadId, hashNames[1], new Handlers.BlockHandler() {
+            @Override
+            public void onComplete(Model.Block block) { finish(); }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+            }
         });
     }
 

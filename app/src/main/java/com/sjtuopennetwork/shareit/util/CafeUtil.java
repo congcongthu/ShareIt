@@ -8,7 +8,11 @@ import sjtu.opennet.textilepb.Model;
 
 public class CafeUtil {
     private static final String TAG = "=====================";
-    private static Boolean stopConnect=false;
+    private static boolean stopConnect=false;
+
+    public static boolean isConnecting(){
+        return !stopConnect;
+    }
 
     public static void connectCafe(Handlers.ErrorHandler handler){
         new Thread(){
@@ -24,7 +28,7 @@ public class CafeUtil {
                             "wnUV71bVxugyqDLjHwYt9SSfWd133vb242enJt9hCc12Nb22ET4uZzy3CACa", //131
                             handler);
                     try {
-                        Thread.sleep(300000);
+                        Thread.sleep(180000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

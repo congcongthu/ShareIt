@@ -81,11 +81,11 @@
 
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/uploadlog"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="上传log"/>
+<!--    <Button-->
+<!--        android:id="@+id/uploadlog"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="上传log"/>-->
 
     <View
         android:background="@color/lightgray"

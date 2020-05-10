@@ -45,14 +45,16 @@ public class ShareItLoginActivity extends AppCompatActivity {
         logInWithPhrase.setOnClickListener(v -> {
             String phrase=editText.getText().toString();
             final File repoDir = new File(ShareUtil.getAppExternalPath(this, "repo"));
+            Log.d(TAG, "onCreate: shareit login: "+repoDir.getAbsolutePath());
 
             boolean loginWrong=false;
             String loginAccount="";
-            final File filesDir = this.getFilesDir();
+//            final File filesDir = this.getFilesDir();
             try {
                 Mobile.MobileWalletAccount m= Textile.walletAccountAt(phrase,Textile.WALLET_ACCOUNT_INDEX,Textile.WALLET_PASSPHRASE);
                 loginAccount=m.getAddress();
                 repoPath = new File(repoDir, loginAccount).getAbsolutePath();
+                Log.d(TAG, "onCreate: shareit repo path: "+repoPath);
                 if (!Textile.isInitialized(repoPath)){
                     Textile.initialize(repoPath,m.getSeed() , true, false,true);
                 }
