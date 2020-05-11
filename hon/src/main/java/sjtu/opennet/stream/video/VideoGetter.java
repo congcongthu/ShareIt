@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.googlecode.protobuf.format.JsonFormat;
 
 import java.io.File;
 import sjtu.opennet.hon.BaseTextileEventListener;
@@ -15,10 +14,9 @@ import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.stream.util.FileUtil;
 import sjtu.opennet.textilepb.Model;
-import sjtu.opennet.textilepb.View;
 
 public class VideoGetter {
-    private static final String TAG = "HONVIDEO.VideoGetter_tkt";
+    private static final String TAG = "==================HONVIDEO.VideoGetter_stream";
     Context context;
     String videoId;
     String dir;
@@ -64,8 +62,6 @@ public class VideoGetter {
                     return;
                 }
                 try {
-//                    View.VideoDescription.Builder b=View.VideoDescription.newBuilder();
-//                    JsonFormat.merge(notification.getSubjectDesc(),b);
                     JSONObject object= JSON.parseObject(notification.getSubjectDesc());
                     Log.d(TAG, "notificationReceived: "+ notification.getSubjectDesc());
                     Textile.instance().ipfs.dataAtPath(notification.getBlock(), new Handlers.DataHandler() {
@@ -74,8 +70,6 @@ public class VideoGetter {
                             Log.d(TAG, "onComplete: ======成功下载ts文件");
                             String tsName=dir + "/" + notification.getBlock();
                             FileUtil.writeByteArrayToFile(tsName,data);
-//                            long starttime=Long.parseLong(object.getString("startTime"));
-//                            long endtime=Long.parseLong(object.getString("endTime"));
                             long starttime=object.getLongValue("startTime");
                             long endtime=object.getLongValue("endTime");
                             Log.d(TAG, "onComplete: starttime endtime: "+starttime+" "+endtime);

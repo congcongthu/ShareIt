@@ -19,17 +19,16 @@ import java.util.concurrent.LinkedBlockingDeque;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.stream.util.FileUtil;
 import sjtu.opennet.textilepb.Model;
-import sjtu.opennet.textilepb.View;
 
 public class VideoStreamAddChunk extends Thread{
-    private static final String TAG = "HONVIDEO.VideoStreamAddChunk";
+    private static final String TAG = "=======================HONVIDEO.VideoStreamAddChunk";
     private String observeredDir;
     private String videoId;
     ChunkListener chunkListener;
     ChunkAdder chunkAdder;
     HashSet<String> chunkNames;
     LinkedBlockingDeque<M3U8Util.ChunkInfo> chunkQueue;
-    private boolean finishChunkAdd;
+//    private boolean finishChunkAdd;
     private String threadId;
 
 
@@ -46,15 +45,12 @@ public class VideoStreamAddChunk extends Thread{
 
     @Override
     public void run() {
-        finishChunkAdd = false;
         chunkAdder.start();
         chunkListener.startWatching();
     }
 
-    public boolean finishAdd(){
+    public void finishAdd(){
         try {
-            Thread.sleep(10000);
-            finishChunkAdd=true;
             Textile.instance().streams.closeStream(threadId,videoId);
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,8 +58,10 @@ public class VideoStreamAddChunk extends Thread{
 
         // delete file
         FileUtil.deleteDirectory(new File(observeredDir));
+    }
 
-        return finishChunkAdd;
+    public void finishSegment(){
+        chunkQueue.add(new M3U8Util.ChunkInfo("VIRTUAL",0));
     }
 
     class ChunkListener extends FileObserver{
@@ -91,9 +89,13 @@ public class VideoStreamAddChunk extends Thread{
         public void run() {
             int currentIndex=0;
             long currentDuration=0;
-            while(!finishChunkAdd){
+            while(true){
                 try {
                     M3U8Util.ChunkInfo chunk=chunkQueue.take();
+                    if(chunk.duration==0){
+                        finishAdd();
+                        break;
+                    }
                     currentDuration+=streamAddFile(chunk,currentIndex,currentDuration);
                     currentIndex++;
                 } catch (InterruptedException e) {

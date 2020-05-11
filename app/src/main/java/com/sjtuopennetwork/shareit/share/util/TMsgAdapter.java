@@ -123,8 +123,9 @@ public class TMsgAdapter extends BaseAdapter {
                         it1.putExtra("imgname",hashName[1]);
                         context.startActivity(it1);
                     });
-                }else if(videoType==1 || videoType==4){
+                }else if(videoType==1 || videoType==2){
                     String[] posterAndFile_r=msgList.get(i).body.split("##"); //0是poster，1是Id，2是视频路径
+                    Log.d(TAG, "handlePhotoView: video posert:"+posterAndFile_r[0]);
                     Glide.with(context).load(posterAndFile_r[0]).thumbnail(0.3f).into(h.chat_photo_r);
                     h.chat_photo_r.setOnClickListener(view1->{
                         Intent it12=new Intent(context, PlayVideoActivity.class);
@@ -154,6 +155,7 @@ public class TMsgAdapter extends BaseAdapter {
                     });
                 }else if(videoType==1){ // stream 视频
                     String[] posterId_streamId=msgList.get(i).body.split("##");
+                    Log.d(TAG, "handlePhotoView: stream video poster: "+posterId_streamId[0]);
                     ShareUtil.setImageView(context,h.chat_photo,posterId_streamId[0],2);
                     h.chat_photo.setOnClickListener(view1->{
                         Intent it11=new Intent(context, PlayVideoActivity.class);
@@ -163,6 +165,7 @@ public class TMsgAdapter extends BaseAdapter {
                     });
                 }else if(videoType==2){ // ticket 视频
                     String[] poster_videoid=msgList.get(i).body.split("##");
+                    Log.d(TAG, "handlePhotoView: tkt video poster: "+poster_videoid[0]);
                     ShareUtil.setImageView(context,h.chat_photo,poster_videoid[0],2); //缩略图
                     h.chat_photo.setOnClickListener(view1 ->{
                         Intent it11=new Intent(context,PlayVideoActivity.class);

@@ -17,7 +17,7 @@ import sjtu.opennet.textilepb.Model;
 
 
 public class VideoAddChunk_tkt extends Thread{
-    private static final String TAG = "HONVIDEO.VideoStreamAddChunk";
+    private static final String TAG = "=============HONVIDEO.VideoTktAddChunk";
     private String observeredDir;
     private String videoId;
     VideoAddChunk_tkt.ChunkListener chunkListener;
@@ -44,12 +44,11 @@ public class VideoAddChunk_tkt extends Thread{
         chunkAdder.start();
     }
 
-    public boolean finishAdd(){
-        try {
-            Thread.sleep(10000); // 10 seconds after segmentation
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    public void finishSegment(){
+        chunkQueue.add(new ChunkPbInfo("VIRTUAL",0,0,0));
+    }
+
+    private void finishAdd(){
         Model.VideoChunk virtualChunk = Model.VideoChunk.newBuilder()
                 .setId(videoId)
                 .setChunk("VIRTUAL")
@@ -65,9 +64,6 @@ public class VideoAddChunk_tkt extends Thread{
             e.printStackTrace();
         }
         Log.d(TAG, "onComplete: add virtual chunk: " + chunkNames.size());
-
-        finishChunkAdd=true;
-        return finishChunkAdd;
     }
 
     class ChunkPbInfo{
@@ -118,11 +114,16 @@ public class VideoAddChunk_tkt extends Thread{
     class ChunkAdder extends Thread {
         @Override
         public void run() {
-            while (!finishChunkAdd) {
+            while (true) {
                 try {
                     ChunkPbInfo chunkPbInfo = chunkQueue.take(); // if queue is empty, thread will be blocked here
                     Log.d(TAG, "run: chunkQueue: "+chunkQueue.size());
+                    if(chunkPbInfo.chunkName.equals("VIRTUAL")){
+                        finishAdd();
+                        break;
+                    }
                     ipfsAddChunk(chunkPbInfo);
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

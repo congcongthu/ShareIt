@@ -305,6 +305,7 @@ public class ChatActivity extends AppCompatActivity {
             String posterPath=tmpdir+"/"+videoId; //随机给一个名字
             ShareUtil.saveBitmap(posterPath,tmpBmap);
             String posterAndFile=posterPath+"##"+filePath+"##"+videoId;
+            Log.d(TAG, "onActivityResult: stream video: "+posterAndFile);
             TMsg tMsg= null;
             try {
                 long l=System.currentTimeMillis()/1000;
@@ -323,7 +324,7 @@ public class ChatActivity extends AppCompatActivity {
 
             VideoSender_tkt videoSenderTkt =new VideoSender_tkt(ChatActivity.this,threadid,filePath);
             videoSenderTkt.startSend();
-
+//
             Log.d(TAG, "onActivityResult: video added");
             //发送端立马显示发送视频
             String videoId= videoSenderTkt.getVideoId();
@@ -332,6 +333,7 @@ public class ChatActivity extends AppCompatActivity {
             String posterPath=tmpdir+"/"+videoId; //随机给一个名字
             ShareUtil.saveBitmap(posterPath,tmpBmap);
             String posterAndFile=posterPath+"##"+filePath;
+            Log.d(TAG, "onActivityResult: poster_file"+posterAndFile);
             TMsg tMsg= null;
             try {
                 long l=System.currentTimeMillis()/1000;
@@ -343,7 +345,6 @@ public class ChatActivity extends AppCompatActivity {
             msgList.add(tMsg);
 //            msgAdapter.notifyDataSetChanged();
             chat_lv.setSelection(msgList.size());
-
         }else if(requestCode == 293 &&resultCode == RESULT_OK){
             chooseFilePath = data.getStringArrayListExtra("paths");
             String path = chooseFilePath.get(0);

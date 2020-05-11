@@ -21,7 +21,7 @@ import sjtu.opennet.textilepb.Model;
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
 public class VideoMeta {
-    private static final String TAG = "HONVIDEO.VideoMeta";
+    private static final String TAG = "==================HONVIDEO.VideoMeta";
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private MediaMetadataRetriever mdataReceiver;
     private FFmpegMediaMetadataRetriever fmdataReceiver;

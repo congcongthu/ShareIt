@@ -19,7 +19,7 @@ import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.QueryOuterClass;
 
 public class VideoGetter_tkt {
-    private static final String TAG = "HONVIDEO.VideoGetter_tkt";
+    private static final String TAG = "=============HONVIDEO.VideoGetter_tkt";
 
     class ChunkCompare implements Comparable<ChunkCompare>{
 
@@ -74,7 +74,6 @@ public class VideoGetter_tkt {
     }
 
     public void startGet(){
-
         dir= FileUtil.getAppExternalPath(context, "video/"+videoId);
         if(!M3U8Util.existOrNot(dir)){
             Textile.instance().addEventListener(chunkSearchListener);
@@ -82,7 +81,8 @@ public class VideoGetter_tkt {
             searchThread.start();
             downloadThread.start();
         }else{
-            m3u8file=new File(dir+"/playlist.m3u8");
+            m3u8file=new File(dir+"/"+videoId+".m3u8");
+            Log.d(TAG, "startGet: m3u8path: "+m3u8file.getAbsolutePath());
         }
     }
 

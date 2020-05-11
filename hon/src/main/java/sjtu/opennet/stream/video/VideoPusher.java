@@ -15,7 +15,7 @@ import sjtu.opennet.stream.util.Segmenter;
 import sjtu.opennet.textilepb.Model;
 
 public class VideoPusher {
-    private static final String TAG = "HONVIDEO.VideoPusher";
+    private static final String TAG = "======================HONVIDEO.VideoPusher";
 
     private String videoFilePath;
     private Context context;
@@ -61,11 +61,12 @@ public class VideoPusher {
     }
 
     public void startPush(){
-
+        Log.d(TAG, "startPush: stream start to push");
         Textile.instance().ipfs.ipfsAddData(videoMeta.getPosterByte(), true, false, new Handlers.IpfsAddDataHandler() {
             @Override
             public void onComplete(String path) {
                 // startStream will sync the video message to thread
+                Log.d(TAG, "onComplete: poster: "+path);
                 Model.StreamMeta streamMeta= Model.StreamMeta.newBuilder()
                         .setId(videoMeta.getHash())
                         .setNsubstreams(1)
@@ -80,6 +81,7 @@ public class VideoPusher {
 
             @Override
             public void onError(Exception e) {
+                e.printStackTrace();
             }
         });
 
@@ -98,7 +100,7 @@ public class VideoPusher {
         @Override
         public void onFinish() {
             Log.d(TAG, "onFinish: finish segmenting "+videoMeta.getHash());
-            videoStreamAddChunk.finishAdd();
+            videoStreamAddChunk.finishSegment();
         }
     };
 

@@ -16,7 +16,7 @@ import sjtu.opennet.stream.video.VideoMeta;
 import sjtu.opennet.textilepb.Model;
 
 public class VideoSender_tkt {
-    private static final String TAG = "HONVIDEO.VideoSender_tkt";
+    private static final String TAG = "=======================HONVIDEO.VideoSender_tkt";
 
     Context context;
     String videoFilePath;
@@ -62,9 +62,11 @@ public class VideoSender_tkt {
     }
 
     public void startSend(){
+        Log.d(TAG, "startSend: tkt start to send");
         Textile.instance().ipfs.ipfsAddData(videoMeta.getPosterByte(), true, false, new Handlers.IpfsAddDataHandler() {
             @Override
             public void onComplete(String path) {
+                Log.d(TAG, "onComplete: tkt poster hash: "+path);
                 Model.Video videoPb=videoMeta.getPb(path);
                 try {
                     Textile.instance().videos.addVideo(videoPb);
@@ -77,6 +79,7 @@ public class VideoSender_tkt {
 
             @Override
             public void onError(Exception e) {
+                e.printStackTrace();
             }
         });
 
@@ -95,7 +98,7 @@ public class VideoSender_tkt {
         @Override
         public void onFinish() {
             Log.d(TAG, "onFinish: finish segmenting " + videoMeta.getHash());
-            videoAddChunk.finishAdd();
+            videoAddChunk.finishSegment();
         }
     };
 

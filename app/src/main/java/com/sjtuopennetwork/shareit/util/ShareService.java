@@ -199,7 +199,6 @@ public class ShareService extends Service {
                 boolean s1=Textile.instance().ipfs.swarmConnect("/ip6/2001:da8:8000:6084:1a31:bfff:fecf:e603/tcp/4001/ipfs/12D3KooWFHnbHXpDyW1nQxdjJ6ETauAfunj3g2ZtRU4xV9AkZxCq");
                 boolean s2=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.131/tcp/4001/ipfs/12D3KooWKAKVbQF5yUGAaE5uDnuEbZAAgeU6cUYME6FhqFvqWmay");
                 boolean s3=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.100/tcp/4001/ipfs/12D3KooWHp3ABxB1E4ebeEpvcViVFUSsaH198QopBQ8pygvF6PzX");
-                Textile.instance().ipfs.swarmConnect("/ip4/192.168.3.1/tcp/37938/ipfs/12D3KooWSTGKiYPvHha81JxhVuZpPBRPdgQTpMXcoQD6c8mNj8wA");
                 Log.d(TAG, "nodeOnline: swarmConnect: "+s1+" "+s2+" "+s3);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -238,9 +237,6 @@ public class ShareService extends Service {
 //                    e.printStackTrace();
 //                }
 //            }
-
-            //7AF2DB0C82B29BB82FAC05734B04D944E9A66EA90F797FB9A95D8BCDFF265789
-
 
             //
             EventBus.getDefault().post(Integer.valueOf(0));

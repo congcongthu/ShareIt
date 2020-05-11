@@ -1,5 +1,7 @@
 package sjtu.opennet.stream.video;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,7 +11,7 @@ import java.util.ArrayList;
 import sjtu.opennet.stream.util.FileUtil;
 
 public class M3U8Util {
-
+    private static final String TAG = "============HONVIDEO.M3U8Util";
     public static class ChunkInfo{
         public String filename;
         public long duration;
@@ -102,7 +104,8 @@ public class M3U8Util {
     }
 
     public static boolean existOrNot(String tspath){
-        long tsLength=new File(tspath).list().length-1;
+        long tsLength=(new File(tspath)).list().length-1;
+        Log.d(TAG, "existOrNot: "+tsLength);
         if(tsLength>0){
             return true;
         }
