@@ -91,6 +91,8 @@ public class ForwardActivity extends AppCompatActivity {
 
     public void forwardFile(String threadId,String hashName){
         String[] hashNames=hashName.split("##");
+        Log.d(TAG, "forwardFile: 转发文件："+hashNames[0]);
+
         //发送文件
         Textile.instance().files.addFiles(hashNames[0], threadId, hashNames[1], new Handlers.BlockHandler() {
             @Override

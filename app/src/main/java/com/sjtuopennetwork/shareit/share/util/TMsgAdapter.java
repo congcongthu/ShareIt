@@ -82,6 +82,7 @@ public class TMsgAdapter extends BaseAdapter {
                 ShareUtil.setImageView(context,h.msg_avatar_r,useravatar,0);
             }else{
                 String addr=msgList.get(i).author;
+                Log.d(TAG, "handleTextView: addr:");
                 username=ShareUtil.getOtherName(addr);
                 useravatar=ShareUtil.getOtherAvatar(addr);
                 h.send_text_left.setVisibility(View.VISIBLE); //左边的显示

@@ -315,7 +315,7 @@ public class ChatActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             msgList.add(tMsg);
-//            msgAdapter.notifyDataSetChanged();
+            msgAdapter.notifyDataSetChanged();
             chat_lv.setSelection(msgList.size());
         }else if(requestCode == 1293 &&resultCode == RESULT_OK){
             chooseVideo=PictureSelector.obtainMultipleResult(data);
@@ -343,7 +343,7 @@ public class ChatActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             msgList.add(tMsg);
-//            msgAdapter.notifyDataSetChanged();
+            msgAdapter.notifyDataSetChanged();
             chat_lv.setSelection(msgList.size());
         }else if(requestCode == 293 &&resultCode == RESULT_OK){
             chooseFilePath = data.getStringArrayListExtra("paths");

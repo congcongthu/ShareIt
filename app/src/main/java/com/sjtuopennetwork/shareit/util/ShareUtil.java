@@ -211,7 +211,7 @@ public class ShareUtil {
         try {
             return Textile.instance().contacts.get(addr).getAvatar();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         return "";
     }
@@ -227,9 +227,9 @@ public class ShareUtil {
         try {
             return Textile.instance().contacts.get(addr).getName();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            return "null";
         }
-        return "";
     }
 
     private static boolean isImgInCache(String hash){

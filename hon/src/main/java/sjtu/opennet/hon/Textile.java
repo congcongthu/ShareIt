@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
 
 import net.gotev.uploadservice.Logger;
 import net.gotev.uploadservice.UploadService;
@@ -30,7 +31,7 @@ import sjtu.opennet.textilepb.View.Summary;
  */
 public class Textile implements LifecycleObserver {
 
-    private static final String TAG = "Textile";
+    private static final String TAG = "==============Textile";
     private static final String WAIT_SRC = "Textile.flush";
 
     enum AppState {
@@ -523,12 +524,14 @@ public class Textile implements LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     void onForeground() {
+        Log.d(TAG, "onForeground: ");
         if (appState.equals(AppState.Foreground)) {
             return;
         }
         if (appState.equals(AppState.BackgroundFromForeground)) {
             lifecycleService.cancelPendingNodeStop();
         } else {
+            Log.d(TAG, "onForeground: startNode");
             lifecycleService.startNode();
         }
         appState = AppState.Foreground;
@@ -536,16 +539,19 @@ public class Textile implements LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     void onBackground() {
+        Log.d(TAG, "onBackground: ");
         if (appState.equals(AppState.Background)) {
             return;
         }
         if (appState.equals(AppState.None)) {
+            Log.d(TAG, "onBackground: app state none");
             appState = AppState.Background;
             lifecycleService.startNode();
             lifecycleService.stopNodeAfterDelay();
         } else if (appState.equals(AppState.Foreground)) {
-            appState = AppState.BackgroundFromForeground;
-            lifecycleService.stopNodeAfterDelay();
+            Log.d(TAG, "onBackground: stopNodeAfterDelay");
+//            appState = AppState.BackgroundFromForeground;
+//            lifecycleService.stopNodeAfterDelay();
         }
     }
 

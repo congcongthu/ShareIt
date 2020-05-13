@@ -130,7 +130,11 @@ public class DBHelper extends SQLiteOpenHelper {
         v.put("sendtime",sendtime);
         v.put("ismine",ismine);
         appdb.beginTransaction();
-        appdb.insertOrThrow("msgs",null,v);
+        try{
+            appdb.insertOrThrow("msgs",null,v);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         appdb.setTransactionSuccessful();
         appdb.endTransaction();
 
@@ -158,7 +162,11 @@ public class DBHelper extends SQLiteOpenHelper {
         v.put("issingle",isSingle);
         v.put("isvisible",isVisible);
         appdb.beginTransaction();
-        appdb.insert("dialogs",null,v);
+        try{
+            appdb.insert("dialogs",null,v);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         appdb.setTransactionSuccessful();
         appdb.endTransaction();
         return new TDialog(threadid,lastmsg,lastmsgdate,isRead==1,add_or_img,isSingle==1,isVisible==1);
