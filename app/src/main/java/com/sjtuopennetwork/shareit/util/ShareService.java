@@ -494,7 +494,7 @@ public class ShareService extends Service {
                         }
                     }
                     l.remove(i);
-                    EventBus.getDefault().post(tRecord);
+                    EventBus.getDefault().postSticky(tRecord);
                 }
                 return;
             }

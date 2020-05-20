@@ -65,7 +65,7 @@ public class FileTransActivity extends AppCompatActivity {
     long rttT=0;
     long getT=0;
     long sendT=0;
-    long filesize=0;
+    int filesize=0;
 
     Handler handler=new Handler(){
         @Override
@@ -95,10 +95,6 @@ public class FileTransActivity extends AppCompatActivity {
         adapter=new RecordAdapter(FileTransActivity.this,R.layout.item_records,records);
         recordsLv.setAdapter(adapter);
 
-        if(!EventBus.getDefault().isRegistered(this)){
-            EventBus.getDefault().register(this);
-        }
-
         //显示文件大小
         trans_size=findViewById(R.id.file_trans_size);
         Textile.instance().files.content(fileSizeCid, new Handlers.DataHandler() {
@@ -107,6 +103,7 @@ public class FileTransActivity extends AppCompatActivity {
                 Message msg=handler.obtainMessage();
                 msg.what=9;
                 msg.obj=data.length;
+                filesize=data.length;
                 Log.d(TAG, "onComplete: 文件大小："+data.length);
                 handler.sendMessage(msg);
             }
@@ -122,16 +119,21 @@ public class FileTransActivity extends AppCompatActivity {
         startAdd=records.get(0).t1; //发送端开始发送的时间
         sendT=records.get(0).t2-records.get(0).t1;
         trans_send.setText("发送时间:"+sendT+" ms");
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
         processData();
 
         //savelog
         saveLog=findViewById(R.id.save_log);
         saveLog.setOnClickListener(view -> {
-            String head="平均rtt:"+rttT+
+            DateFormat dfd=new SimpleDateFormat("MM-dd HH:mm");
+            String head="文件大小:"+filesize+
+                    "\n平均rtt:"+rttT+
                     "\n平均接收时间:"+getT+
                     "\n发送时间:"+sendT+"\n";
             String dir= FileUtil.getAppExternalPath(this,"txtllog");
-            String logDate=df.format(System.currentTimeMillis());
+            String logDate=dfd.format(System.currentTimeMillis());
             try {
                 File logFile=new File(dir+"/"+fileCid+"_"+logDate+".log");
                 if(!logFile.exists()){
@@ -147,10 +149,11 @@ public class FileTransActivity extends AppCompatActivity {
                     String get1Str=df.format(tRecord.t1);
                     String get2Str=df.format(tRecord.t2);
                     long gap=tRecord.t2-tRecord.t1;
+                    long grtt=tRecord.t3-startAdd;
                     if(tRecord.type==0){
-                        writeStr="自身节点,开始发送:"+get1Str+", 发送完毕:"+get2Str+", 耗时:"+gap+"\n";
+                        writeStr="自身节点,开始:"+get1Str+", 发完:"+get2Str+", 耗时:"+gap+"ms\n";
                     }else{
-                        writeStr="接收节点:"+user+", 开始接收:"+get1Str+", 接收完毕:"+get2Str+", 耗时:"+gap+"\n";
+                        writeStr="接收节点:"+user+", 开始:"+get1Str+", 收完:"+get2Str+", 耗时:"+gap+"ms, rtt:"+grtt+"ms\n";
                     }
                     writer.write(writeStr); writer.flush();
                 }
@@ -181,7 +184,7 @@ public class FileTransActivity extends AppCompatActivity {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void getNewMsg(TRecord tRecord){
         Log.d(TAG, "getNewMsg: 拿到通知：");
         if(tRecord.cid.equals(fileCid)){
