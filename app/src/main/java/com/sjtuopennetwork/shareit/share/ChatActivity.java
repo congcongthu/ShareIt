@@ -273,6 +273,7 @@ public class ChatActivity extends AppCompatActivity {
                 String[] hashName=tMsg.body.split("##");
                 Intent itToFileTrans=new Intent(this, FileTransActivity.class);
                 itToFileTrans.putExtra("fileCid",hashName[2]);
+                itToFileTrans.putExtra("fileSizeCid",hashName[0]);
                 startActivity(itToFileTrans);
             }
         }

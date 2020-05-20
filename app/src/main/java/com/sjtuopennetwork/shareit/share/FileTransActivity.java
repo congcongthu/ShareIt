@@ -2,6 +2,8 @@ package com.sjtuopennetwork.shareit.share;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.util.TRecord;
 import com.sjtuopennetwork.shareit.util.DBHelper;
+import com.sjtuopennetwork.shareit.util.ShareUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -33,6 +36,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import sjtu.opennet.hon.Handlers;
+import sjtu.opennet.hon.Textile;
 import sjtu.opennet.stream.util.FileUtil;
 
 public class FileTransActivity extends AppCompatActivity {
@@ -47,6 +52,7 @@ public class FileTransActivity extends AppCompatActivity {
     private Button saveLog;
 
     private String fileCid;
+    private String fileSizeCid;
     private LinkedList<TRecord> records;
     SharedPreferences pref;
     String loginAccount;
@@ -59,6 +65,16 @@ public class FileTransActivity extends AppCompatActivity {
     long rttT=0;
     long getT=0;
     long sendT=0;
+    long filesize=0;
+
+    Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            int fileSizeInt=(int)msg.obj;
+            Log.d(TAG, "handleMessage: handle文件大小："+fileSizeInt);
+            trans_size.setText("文件大小:"+fileSizeInt+" B");
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +82,7 @@ public class FileTransActivity extends AppCompatActivity {
         setContentView(R.layout.activity_file_trans);
 
         fileCid=getIntent().getStringExtra("fileCid");
+        fileSizeCid=getIntent().getStringExtra("fileSizeCid");
         Log.d(TAG, "onCreate: get File: "+fileCid);
 
         pref=getSharedPreferences("txtl",Context.MODE_PRIVATE);
@@ -74,7 +91,6 @@ public class FileTransActivity extends AppCompatActivity {
         //从数据库中查出每个的接收时间
         records=new LinkedList<>();
         records= DBHelper.getInstance(getApplicationContext(),loginAccount).listRecords(fileCid);
-        Log.d(TAG, "onCreate: 查出通知数量："+records.size());
         recordsLv=findViewById(R.id.recordd_lv);
         adapter=new RecordAdapter(FileTransActivity.this,R.layout.item_records,records);
         recordsLv.setAdapter(adapter);
@@ -83,9 +99,23 @@ public class FileTransActivity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         }
 
+        //显示文件大小
         trans_size=findViewById(R.id.file_trans_size);
+        Textile.instance().files.content(fileSizeCid, new Handlers.DataHandler() {
+            @Override
+            public void onComplete(byte[] data, String media) {
+                Message msg=handler.obtainMessage();
+                msg.what=9;
+                msg.obj=data.length;
+                Log.d(TAG, "onComplete: 文件大小："+data.length);
+                handler.sendMessage(msg);
+            }
+            @Override
+            public void onError(Exception e) {
+            }
+        });
 
-//        // 统计时间
+        // 统计时间
         trans_rtt=findViewById(R.id.file_trans_rtt);
         trans_rec=findViewById(R.id.file_trans_rec_t);
         trans_send=findViewById(R.id.file_trans_send_t);

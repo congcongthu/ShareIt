@@ -207,6 +207,7 @@ public class TMsgAdapter extends BaseAdapter {
                 h.send_file_right.setOnClickListener(view1 -> {
                     Intent itToFileTrans=new Intent(context, FileTransActivity.class);
                     itToFileTrans.putExtra("fileCid",hashName[2]);
+                    itToFileTrans.putExtra("fileSizeCid",hashName[0]);
                     context.startActivity(itToFileTrans);
                 });
             }else{
