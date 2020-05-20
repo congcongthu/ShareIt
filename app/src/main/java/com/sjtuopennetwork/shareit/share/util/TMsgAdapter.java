@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.share.FileTransActivity;
 import com.sjtuopennetwork.shareit.share.ImageInfoActivity;
 import com.sjtuopennetwork.shareit.share.PlayVideoActivity;
 import com.sjtuopennetwork.shareit.util.RoundImageView;
@@ -203,6 +204,11 @@ public class TMsgAdapter extends BaseAdapter {
                 h.file_time_r.setText(df.format(msgList.get(i).sendtime*1000));
                 h.file_name_r.setText(hashName[1]);
                 ShareUtil.setImageView(context,h.file_avatar_r,useravatar,0);
+                h.send_file_right.setOnClickListener(view1 -> {
+                    Intent itToFileTrans=new Intent(context, FileTransActivity.class);
+                    itToFileTrans.putExtra("fileCid",hashName[2]);
+                    context.startActivity(itToFileTrans);
+                });
             }else{
                 String addr=msgList.get(i).author;
                 username=ShareUtil.getOtherName(addr);
@@ -216,7 +222,7 @@ public class TMsgAdapter extends BaseAdapter {
                 h.send_file_left.setOnClickListener(v -> {
                     String isExist=ShareUtil.isFileExist(hashName[1]);
                     if(isExist!=null){
-                        Toast.makeText(context, "文件已存在："+isExist, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "文件已下载："+isExist, Toast.LENGTH_SHORT).show();
                     }else{
                         AlertDialog.Builder downFile=new AlertDialog.Builder(context);
                         downFile.setTitle("下载文件");

@@ -67,7 +67,7 @@ public class ChatActivity extends AppCompatActivity {
 
     //内存数据
     String loginAccount; //当前登录的帐户
-    boolean addingFIle=false;
+    boolean addingFile=false;
     String threadid;
     Model.Thread chat_thread;
     List<TMsg> msgList;
@@ -132,18 +132,18 @@ public class ChatActivity extends AppCompatActivity {
         bt_send_video_ticket=findViewById(R.id.bt_send_video_ticket);
 
         chat_backgroud.setOnClickListener(view -> {
-            if(addingFIle){
-                addingFIle=false;
+            if(addingFile){
+                addingFile=false;
                 add_file_layout.setVisibility(View.GONE);
             }
         });
 
         bt_add_file.setOnClickListener(view -> {
-            if(addingFIle){
-                addingFIle=false;
+            if(addingFile){
+                addingFile=false;
                 add_file_layout.setVisibility(View.GONE);
             }else{
-                addingFIle=true;
+                addingFile=true;
                 add_file_layout.setVisibility(View.VISIBLE);
             }
         });
@@ -267,7 +267,14 @@ public class ChatActivity extends AppCompatActivity {
             Log.d(TAG, "updateChat: "+tMsg.msgtype+" "+tMsg.body);
             msgList.add(tMsg);
             msgAdapter.notifyDataSetChanged();
-            chat_lv.setSelection(msgList.size()); //图片有时候不立即显示，因为Item大小完全相同。
+            chat_lv.setSelection(msgList.size());
+
+            if(tMsg.msgtype==3 && tMsg.ismine){
+                String[] hashName=tMsg.body.split("##");
+                Intent itToFileTrans=new Intent(this, FileTransActivity.class);
+                itToFileTrans.putExtra("fileCid",hashName[2]);
+                startActivity(itToFileTrans);
+            }
         }
     }
 
@@ -352,8 +359,18 @@ public class ChatActivity extends AppCompatActivity {
 
             //发送文件
             Textile.instance().files.addFiles(chooseFilePath.get(0), threadid, chooseFileName, new Handlers.BlockHandler() {
+                long addT1=System.currentTimeMillis();
                 @Override
-                public void onComplete(Model.Block block) { }
+                public void onComplete(Model.Block block) {
+                    long addT2=System.currentTimeMillis();
+                    try {
+                        String bbb=Textile.instance().files.list(threadid, "", 1).getItemsList().get(0).getBlock();
+                        Log.d(TAG, "onComplete: bbb: "+bbb);
+                        DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(bbb,addT1,addT2);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
 
                 @Override
                 public void onError(Exception e) {

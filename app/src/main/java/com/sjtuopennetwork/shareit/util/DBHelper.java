@@ -9,11 +9,14 @@ import android.util.Log;
 
 import com.sjtuopennetwork.shareit.share.util.TDialog;
 import com.sjtuopennetwork.shareit.share.util.TMsg;
+import com.sjtuopennetwork.shareit.share.util.TRecord;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
+    private static final String TAG = "=======DBHelper";
 
     private static DBHelper helperInstance=null;
     private static SQLiteDatabase appdb;
@@ -40,7 +43,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //对话表，用来存放thread的补充信息
     private String CREATE_DIALOGS="create table dialogs " +
-            "(threadid text primary key ," + //对话的id，可以先列出所有的thread，然后查数据库获得相应的补充信息
+            "(threadid text primary key," + //对话的id，可以先列出所有的thread，然后查数据库获得相应的补充信息
             "lastmsg text," +
             "lastmsgdate integer," +
             "isread integer," +
@@ -58,15 +61,89 @@ public class DBHelper extends SQLiteOpenHelper {
             "sendtime integer," +
             "ismine integer)"; //1表示是我的消息，0为别人消息，因为前端显示要分左右
 
+    //文件统计信息
+    private String CREATE_RECORD="create table records"+
+            "(id integer primary key autoincrement, " +
+            "cid text," +
+            "recordfrom text," +
+            "t1 integer," +
+            "t2 integer," +
+            "t3 integer," +
+            "type integer)";
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(CREATE_DIALOGS);
         sqLiteDatabase.execSQL(CREATE_MSGS);
+        sqLiteDatabase.execSQL(CREATE_RECORD);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+
+
+    public synchronized LinkedList<TRecord> listRecords(String cid){
+        Log.d(TAG, "listRecords: 查records："+cid);
+        LinkedList<TRecord> records=new LinkedList<>();
+        Cursor cursor=appdb.rawQuery("select * from records where cid = ?",new String[]{cid});
+        if(cursor.moveToFirst()){
+            do{
+                TRecord tRecord=new TRecord(
+                        cursor.getString(cursor.getColumnIndex("cid")),
+                        cursor.getString(cursor.getColumnIndex("recordfrom")),
+                        cursor.getLong(cursor.getColumnIndex("t1")),
+                        cursor.getLong(cursor.getColumnIndex("t2")),
+                        cursor.getLong(cursor.getColumnIndex("t3")),
+                        cursor.getInt(cursor.getColumnIndex("type"))
+                );
+                if(tRecord.type==0){
+                    records.add(0,tRecord);
+                }else{
+                    records.add(tRecord);
+                }
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+        Log.d(TAG, "listRecords: records长度："+records.size());
+        return records;
+    }
+
+    public synchronized void recordGet(String cid, String recordfrom, long get1, long get2, long t3){
+        ContentValues v=new ContentValues();
+        v.put("cid",cid);
+        v.put("recordfrom",recordfrom);
+        v.put("t1",get1);
+        v.put("t2",get2);
+        v.put("t3",t3);
+        v.put("type",1);
+        appdb.beginTransaction();
+        try{
+            appdb.insertOrThrow("records",null,v);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        appdb.setTransactionSuccessful();
+        appdb.endTransaction();
+    }
+
+    public synchronized void recordLocalStartAdd(String cid, long addT1,long addT2){
+        Log.d(TAG, "recordLocalStartAdd: cid: "+cid);
+        ContentValues v=new ContentValues();
+        v.put("cid",cid);
+        v.put("t1",addT1);
+        v.put("t2",addT2);
+        v.put("type",0);
+        appdb.beginTransaction();
+        try{
+            appdb.insertOrThrow("records",null,v);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        appdb.setTransactionSuccessful();
+        appdb.endTransaction();
     }
 
     public synchronized List<TMsg> list3000Msg(String threadId){

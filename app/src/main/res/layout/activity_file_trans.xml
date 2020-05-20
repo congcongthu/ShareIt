@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <android.support.v7.widget.Toolbar
+        android:background="@color/lightgray"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@+id/chat_name_toolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="文件统计"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/save_log"
+            android:layout_margin="5dp"
+            android:layout_gravity="right"
+            android:text="保存log到文件"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:background="@color/lightgray"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:text="平均RTT："
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:id="@+id/rtt"
+            android:textColor="@color/black"
+            android:gravity="center_vertical"
+            android:text="30ms"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="50dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:background="@color/lightgray"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:text="平均接收时间："
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:id="@+id/get_average"
+            android:textColor="@color/black"
+            android:gravity="center_vertical"
+            android:text="30ms"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="50dp" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/lightgray"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:text="发送时间："
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:id="@+id/send_duration"
+            android:textColor="@color/black"
+            android:gravity="center_vertical"
+            android:text="30ms"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="50dp" />
+
+    </LinearLayout>
+
+
+    <View
+        android:layout_marginBottom="5dp"
+        android:background="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <ListView
+        android:id="@+id/recordd_lv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+</LinearLayout>

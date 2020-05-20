@@ -16,12 +16,16 @@ import com.googlecode.protobuf.format.JsonFormat;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.util.TDialog;
 import com.sjtuopennetwork.shareit.share.util.TMsg;
+import com.sjtuopennetwork.shareit.share.util.TRecord;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -34,6 +38,7 @@ import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Mobile;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.QueryOuterClass;
+import sjtu.opennet.textilepb.RecordService;
 import sjtu.opennet.textilepb.View;
 
 public class ShareService extends Service {
@@ -56,6 +61,9 @@ public class ShareService extends Service {
     private String avatarpath;
     private String lastBlock="0";
     private boolean serviceOn=true;
+    private final Object LOCK=new Object();
+
+    private HashMap<String,HashMap<String,Long>> recordTmp=new HashMap<>();
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -65,7 +73,7 @@ public class ShareService extends Service {
         repoPath=intent.getStringExtra("repopath");
 
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
-        connectCafe= pref.getBoolean("connectCafe",false);
+        connectCafe= pref.getBoolean("connectCafe",true);
 
         new Thread(){
             @Override
@@ -287,14 +295,26 @@ public class ShareService extends Service {
         }
 
         if(feedItemData.type.equals(FeedItemType.FILES)){
-            boolean isSingle=thread.getWhitelistCount()==2;
+            String fileHash=feedItemData.files.getFiles(0).getFile().getHash();
+            String fileName=feedItemData.files.getFiles(0).getFile().getName();
+            Log.d(TAG, "handleThreadUpdate: 1:"+feedItemData.block);
+            Log.d(TAG, "handleThreadUpdate: 2: "+feedItemData.files.getBlock());
             int ismine=0;
             if(feedItemData.files.getUser().getAddress().equals(myAddr)){
                 ismine=1;
+            }else{
+                Textile.instance().files.content(fileHash, new Handlers.DataHandler() {
+                    @Override
+                    public void onComplete(byte[] data, String media) {
+                        ShareUtil.storeSyncFile(data,fileName);
+                    }
+                    @Override
+                    public void onError(Exception e) {
+                    }
+                });
             }
-            String fileHash=feedItemData.files.getFiles(0).getFile().getHash();
-            String fileName=feedItemData.files.getFiles(0).getFile().getName();
-            String body=fileHash+"##"+fileName;
+            Log.d(TAG, "handleThreadUpdate: fileHash: "+fileHash);
+            String body=fileHash+"##"+fileName+"##"+feedItemData.block;
             TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
                     threadId,3,feedItemData.files.getBlock(),
                     feedItemData.files.getUser().getAddress(),
@@ -416,7 +436,7 @@ public class ShareService extends Service {
             // join the default thread after online, the thread is created by cafe
             if(ShareUtil.getThreadByName("default")==null){
                 try {
-//                    Textile.instance().invites.acceptExternal("QmdocmhxFuJ6SdGMT3Arh5wacWnWjZ52VsGXdSp6aXhTVJ","2NfdMrvABwHorxeJxSckSkBKfBJMMF4LqGwdmjY5ZCKw8TDpfHYxELbWnNhed");
+                    Textile.instance().invites.acceptExternal("QmdocmhxFuJ6SdGMT3Arh5wacWnWjZ52VsGXdSp6aXhTVJ","2NfdMrvABwHorxeJxSckSkBKfBJMMF4LqGwdmjY5ZCKw8TDpfHYxELbWnNhed");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -428,6 +448,31 @@ public class ShareService extends Service {
 
         @Override
         public void notificationReceived(Model.Notification notification) {
+            Log.d(TAG, "notificationReceived, type: "+notification.getType());
+            if( notification.getType().equals(Model.Notification.Type.RECORD_REPORT)){
+                if(notification.getUser().getAddress().equals(Textile.instance().account.address())){
+                    Log.d(TAG, "notificationReceived: 自己的notification");
+                    return;
+                }
+                if(notification.getSubject().equals("ipfsGet")){
+                    HashMap<String,Long> tmpHash=new HashMap<>();
+                    long gett1=notification.getDate().getSeconds()*1000+(notification.getDate().getNanos()/1000000);
+                    tmpHash.put(notification.getActor(),gett1);
+                    Log.d(TAG, "notificationReceived: ipfsGet,sec,nanosec: "+gett1);
+                    recordTmp.put(notification.getBlock(),tmpHash);
+                }else if(notification.getSubject().equals("ipfsDone")){
+                    HashMap<String,Long> tmp1=recordTmp.get(notification.getBlock());
+                    Long get1=tmp1.get(notification.getActor());
+                    long get2=notification.getDate().getSeconds()*1000+(notification.getDate().getNanos()/1000000);
+                    Log.d(TAG, "notificationReceived: ipfsDone,sec,nanosec: "+get2);
+                    TRecord tRecord=new TRecord(notification.getBlock(),notification.getActor(),get1,get2,System.currentTimeMillis(),1);
+                    DBHelper.getInstance(getApplicationContext(),loginAccount).recordGet(tRecord.cid,tRecord.recordFrom,get1,get2,tRecord.t3);
+                    Log.d(TAG, "notificationReceived: cid, get1, get2: "+tRecord.cid+" "+get1+" "+get2);
+                    EventBus.getDefault().post(tRecord);
+                }
+                return;
+            }
+
             //查出邀请中最近的一个，添加到头部。
             int gpinvite = 0;
             sjtu.opennet.textilepb.View.InviteView lastInvite = null;
@@ -441,6 +486,7 @@ public class ShareService extends Service {
                         }
                     }
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -463,13 +509,10 @@ public class ShareService extends Service {
 
         @Override
         public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
-            Log.d(TAG, "threadUpdateReceived: 得到新消息："+feedItemData.block);
-            synchronized (lastBlock){
+            synchronized (LOCK){
                 if(lastBlock.equals(feedItemData.block)){
-                    Log.d(TAG, "threadUpdateReceived: 新消息与上一个相同："+feedItemData.block+" "+lastBlock);
                     return;
                 }else{
-                    Log.d(TAG, "threadUpdateReceived: 新消息与上一个不同："+feedItemData.block+" "+lastBlock);
                     lastBlock=feedItemData.block;
                 }
             }
@@ -483,7 +526,6 @@ public class ShareService extends Service {
                 e.printStackTrace();
             }
 
-            Log.d(TAG, "threadUpdateReceived: 准备处理新消息："+feedItemData.block);
             Message msg=threadUpdateHandler.obtainMessage();
             msg.obj=new ThreadUpdateWork(thread,feedItemData);
             threadUpdateHandler.sendMessage(msg);
