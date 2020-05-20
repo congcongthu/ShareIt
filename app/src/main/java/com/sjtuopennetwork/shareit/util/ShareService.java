@@ -26,6 +26,7 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -63,7 +64,7 @@ public class ShareService extends Service {
     private boolean serviceOn=true;
     private final Object LOCK=new Object();
 
-    private HashMap<String,HashMap<String,Long>> recordTmp=new HashMap<>();
+    private HashMap<String, LinkedList<FileTransInfo>> recordTmp=new HashMap<>();
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -372,6 +373,15 @@ public class ShareService extends Service {
         }
     }
 
+    class FileTransInfo{
+        public String peerkey;
+        public long gettime;
+        public FileTransInfo(String a, long b){
+            peerkey=a;
+            gettime=b;
+        }
+    }
+
     class ShareListener extends BaseTextileEventListener {
 
         @Override
@@ -455,19 +465,35 @@ public class ShareService extends Service {
                     return;
                 }
                 if(notification.getSubject().equals("ipfsGet")){
-                    HashMap<String,Long> tmpHash=new HashMap<>();
+                    LinkedList<FileTransInfo> l=null;
+                    if(!recordTmp.containsKey(notification.getBlock())){
+                        l=new LinkedList<>();
+                    }else{
+                        l=recordTmp.get(notification.getBlock());
+                    }
                     long gett1=notification.getDate().getSeconds()*1000+(notification.getDate().getNanos()/1000000);
-                    tmpHash.put(notification.getActor(),gett1);
+                    FileTransInfo fileTransInfo=new FileTransInfo(notification.getActor(),gett1);
+                    l.add(fileTransInfo);
                     Log.d(TAG, "notificationReceived: ipfsGet,sec,nanosec: "+gett1);
-                    recordTmp.put(notification.getBlock(),tmpHash);
+                    recordTmp.put(notification.getBlock(),l);
                 }else if(notification.getSubject().equals("ipfsDone")){
-                    HashMap<String,Long> tmp1=recordTmp.get(notification.getBlock());
-                    Long get1=tmp1.get(notification.getActor());
-                    long get2=notification.getDate().getSeconds()*1000+(notification.getDate().getNanos()/1000000);
-                    Log.d(TAG, "notificationReceived: ipfsDone,sec,nanosec: "+get2);
-                    TRecord tRecord=new TRecord(notification.getBlock(),notification.getActor(),get1,get2,System.currentTimeMillis(),1);
-                    DBHelper.getInstance(getApplicationContext(),loginAccount).recordGet(tRecord.cid,tRecord.recordFrom,get1,get2,tRecord.t3);
-                    Log.d(TAG, "notificationReceived: cid, get1, get2: "+tRecord.cid+" "+get1+" "+get2);
+                    LinkedList<FileTransInfo> l=recordTmp.get(notification.getBlock());
+                    Log.d(TAG, "notificationReceived: block: "+notification.getBlock());
+                    int i=0;
+                    TRecord tRecord=null;
+                    for(;i<l.size();i++){
+                        if(l.get(i).peerkey.equals(notification.getActor())){ //找到那个人的get1
+                            long get1=l.get(i).gettime;
+                            Log.d(TAG, "notificationReceived: get1: "+get1);
+                            long get2=notification.getDate().getSeconds()*1000+(notification.getDate().getNanos()/1000000);
+                            Log.d(TAG, "notificationReceived: ipfsDone,sec,nanosec: "+get2);
+                            tRecord=new TRecord(notification.getBlock(),notification.getActor(),get1,get2,System.currentTimeMillis(),1);
+                            DBHelper.getInstance(getApplicationContext(),loginAccount).recordGet(tRecord.cid,tRecord.recordFrom,Long.valueOf(get1),get2,tRecord.t3);
+                            Log.d(TAG, "notificationReceived: cid, get1, get2: "+tRecord.cid+" "+get1+" "+get2);
+                            break;
+                        }
+                    }
+                    l.remove(i);
                     EventBus.getDefault().post(tRecord);
                 }
                 return;

@@ -288,8 +288,17 @@ public class ChatActivity extends AppCompatActivity {
             Log.d(TAG, "onActivityResult: upload pic: "+fileName);
             //发送照片
             Textile.instance().files.addPicture(filePath, threadid,fileName , new Handlers.BlockHandler() {
+                long addT1=System.currentTimeMillis();
                 @Override
                 public void onComplete(Model.Block block) {
+                    long addT2=System.currentTimeMillis();
+                    try {
+                        String bbb=Textile.instance().files.list(threadid, "", 1).getItemsList().get(0).getBlock();
+                        Log.d(TAG, "onComplete: bbb: "+bbb);
+                        DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(bbb,addT1,addT2);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 @Override
                 public void onError(Exception e) {

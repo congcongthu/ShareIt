@@ -39,9 +39,10 @@ public class FileTransActivity extends AppCompatActivity {
 
     private static final String TAG = "===================FileTransActivity";
 
-    private TextView rtt;
-    private TextView getAvr;
-    private TextView sendDuration;
+    private TextView trans_size;
+    private TextView trans_rtt;
+    private TextView trans_rec;
+    private TextView trans_send;
     private ListView recordsLv;
     private Button saveLog;
 
@@ -82,13 +83,15 @@ public class FileTransActivity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         }
 
+        trans_size=findViewById(R.id.file_trans_size);
+
 //        // 统计时间
-        rtt=findViewById(R.id.rtt);
-        getAvr=findViewById(R.id.get_average);
-        sendDuration=findViewById(R.id.send_duration);
+        trans_rtt=findViewById(R.id.file_trans_rtt);
+        trans_rec=findViewById(R.id.file_trans_rec_t);
+        trans_send=findViewById(R.id.file_trans_send_t);
         startAdd=records.get(0).t1; //发送端开始发送的时间
         sendT=records.get(0).t2-records.get(0).t1;
-        sendDuration.setText(sendT+" ms");
+        trans_send.setText("发送时间:"+sendT+" ms");
         processData();
 
         //savelog
@@ -138,13 +141,13 @@ public class FileTransActivity extends AppCompatActivity {
         }
         int recvNum=records.size()-1;
         if(recvNum==0){
-            rtt.setText("未收到返回信息");
-            getAvr.setText("未收到返回信息");
+            trans_rtt.setText("平均RTT:未收到返回");
+            trans_rec.setText("平均接收时间:未收到返回");
         }else{
             rttT=rttSum / recvNum;
-            rtt.setText(rttT +" ms");
+            trans_rtt.setText("平均RTT:"+rttT +" ms");
             getT=getSum / recvNum;
-            getAvr.setText( getT+" ms");
+            trans_rec.setText( "平均接收时间:"+getT+" ms");
         }
     }
 
