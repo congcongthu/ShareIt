@@ -72,6 +72,20 @@ public class Files extends NodeDependent {
         });
     }
 
+    public void addSimpleFile(final String path, final String threadId, final Handlers.BlockHandler handler) {
+        node.addSimpleFile(path, threadId, (data, e) -> {
+            if (e != null) {
+                handler.onError(e);
+                return;
+            }
+            try {
+                handler.onComplete(Block.parseFrom(data));
+            } catch (final Exception exception) {
+                handler.onError(exception);
+            }
+        });
+    }
+
     /**
      * Share files to a Textile thread
      * @param hash The hash of the files graph to share
