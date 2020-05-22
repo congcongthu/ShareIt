@@ -28,4 +28,5 @@ public class FeedItemData {
     public RemovePeer removePeer;
     public FeedVideo feedVideo;
     public View.FeedStreamMeta feedStreamMeta;
+    public View.FeedSimpleFile feedSimpleFile;
 }

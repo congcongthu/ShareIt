@@ -77,6 +77,7 @@ public class ChatActivity extends AppCompatActivity {
     String myName;
     String myAvatar;
     List<String> chooseFilePath;
+    long msgT1;
 
 
     //退出群组相关
@@ -178,6 +179,7 @@ public class ChatActivity extends AppCompatActivity {
                 chat_text_edt.setText("");
                 try {
                     Log.d(TAG, "initData: get the msg: "+msg);
+                    msgT1=System.currentTimeMillis();
                     Textile.instance().messages.add(threadid, msg);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -250,8 +252,8 @@ public class ChatActivity extends AppCompatActivity {
                     startActivity(toForward);
                     break;
                 case 3: //file
-                    toForward.putExtra("fileHashName",forward.body);
-                    startActivity(toForward);
+//                    toForward.putExtra("fileHashName",forward.body);
+//                    startActivity(toForward);
                     break;
                 case 4: //ticket视频
                     Toast.makeText(this, "无法转发ticket视频", Toast.LENGTH_SHORT).show();
@@ -278,6 +280,13 @@ public class ChatActivity extends AppCompatActivity {
             }
         }
     }
+
+
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void testRTT(Long ack){
+//        long rtt=ack-msgT1;
+//        Log.d(TAG, "testRTT: rtt: "+rtt);
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -367,26 +376,38 @@ public class ChatActivity extends AppCompatActivity {
             String path = chooseFilePath.get(0);
             String chooseFileName=ShareUtil.getFileNameWithSuffix(path);
 
-            //发送文件
-            Textile.instance().files.addFiles(chooseFilePath.get(0), threadid, chooseFileName, new Handlers.BlockHandler() {
-                long addT1=System.currentTimeMillis();
+            Textile.instance().files.addSimpleFile(path, threadid, new Handlers.BlockHandler() {
                 @Override
                 public void onComplete(Model.Block block) {
-                    long addT2=System.currentTimeMillis();
-                    try {
-                        String bbb=Textile.instance().files.list(threadid, "", 1).getItemsList().get(0).getBlock();
-                        Log.d(TAG, "onComplete: bbb: "+bbb);
-                        DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(bbb,addT1,addT2);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    Log.d(TAG, "onComplete: 发送文件成功");
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    e.printStackTrace();
+
                 }
             });
+
+            //发送文件
+//            Textile.instance().files.addFiles(chooseFilePath.get(0), threadid, chooseFileName, new Handlers.BlockHandler() {
+//                long addT1=System.currentTimeMillis();
+//                @Override
+//                public void onComplete(Model.Block block) {
+//                    long addT2=System.currentTimeMillis();
+//                    try {
+//                        String bbb=Textile.instance().files.list(threadid, "", 1).getItemsList().get(0).getBlock();
+//                        Log.d(TAG, "onComplete: bbb: "+bbb);
+//                        DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(bbb,addT1,addT2);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//                @Override
+//                public void onError(Exception e) {
+//                    e.printStackTrace();
+//                }
+//            });
         }
     }
 

@@ -14,4 +14,5 @@ public enum FeedItemType {
     VIDEO,
     STREAMMETA,
     PICTURE,
+    SIMPLEFILE
 }

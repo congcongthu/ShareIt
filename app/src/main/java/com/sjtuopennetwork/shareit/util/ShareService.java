@@ -245,8 +245,22 @@ public class ShareService extends Service {
 
         if(feedItemData.type.equals(FeedItemType.TEXT)){ //如果是文本消息
             int ismine=0;
-            if(feedItemData.text.getUser().getAddress().equals(myAddr)){
+            if(feedItemData.text.getUser().getAddress().equals(myAddr)){ // 是我自己的消息
+                if(feedItemData.text.getBody().equals("ack")){ //自己的ack直接忽略
+                    return;
+                }
                 ismine=1;
+            }else{ // 别人的消息
+                if(feedItemData.text.getBody().equals("ack")){
+//                    EventBus.getDefault().post(new Long(System.currentTimeMillis()));
+                    Log.d(TAG, "handleThreadUpdate: get other's ack");
+                    return;
+                } // 回复别人的消息
+                try {
+                    Textile.instance().messages.add(threadId,"ack");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             //插入msgs表
             TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
@@ -371,6 +385,23 @@ public class ShareService extends Service {
                 EventBus.getDefault().post(tMsg);
             }
         }
+
+        if(feedItemData.type.equals(FeedItemType.SIMPLEFILE)){
+            Log.d(TAG, "handleThreadUpdate: 收到simple file");
+            String fileHash=feedItemData.feedSimpleFile.getSimpleFile().getPath();
+            String fileName="wait to add";
+            int ismine=0;
+            if(feedItemData.feedSimpleFile.getUser().getAddress().equals(myAddr)){
+                ismine=1;
+            }
+            String body=fileHash+"##"+fileName+"##0";
+            TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                    threadId,5,feedItemData.feedSimpleFile.getBlock(),
+                    feedItemData.feedSimpleFile.getUser().getAddress(),
+                    body,
+                    feedItemData.feedSimpleFile.getDate().getSeconds(),ismine);
+            EventBus.getDefault().post(tMsg);
+        }
     }
 
     class FileTransInfo{
@@ -446,7 +477,7 @@ public class ShareService extends Service {
             // join the default thread after online, the thread is created by cafe
             if(ShareUtil.getThreadByName("default")==null){
                 try {
-                    Textile.instance().invites.acceptExternal("QmdocmhxFuJ6SdGMT3Arh5wacWnWjZ52VsGXdSp6aXhTVJ","2NfdMrvABwHorxeJxSckSkBKfBJMMF4LqGwdmjY5ZCKw8TDpfHYxELbWnNhed");
+//                    Textile.instance().invites.acceptExternal("QmdocmhxFuJ6SdGMT3Arh5wacWnWjZ52VsGXdSp6aXhTVJ","2NfdMrvABwHorxeJxSckSkBKfBJMMF4LqGwdmjY5ZCKw8TDpfHYxELbWnNhed");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

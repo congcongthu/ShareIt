@@ -88,6 +88,10 @@ public class Util {
                 feedItemData.type = FeedItemType.PICTURE;
                 feedItemData.files = Files.parseFrom(bytes);
                 break;
+            case "/Simple_file":
+                feedItemData.type = FeedItemType.SIMPLEFILE;
+                feedItemData.feedSimpleFile = View.FeedSimpleFile.parseFrom(bytes);
+                break;
             default:
                 throw new Exception("Unknown feed item typeUrl: " + typeUrl);
         }

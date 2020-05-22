@@ -12450,6 +12450,10 @@ public final class Model {
        * <code>PICTURE = 104;</code>
        */
       PICTURE(104),
+      /**
+       * <code>SIMPLE_FILE = 105;</code>
+       */
+      SIMPLE_FILE(105),
       UNRECOGNIZED(-1),
       ;
 
@@ -12525,6 +12529,10 @@ public final class Model {
        * <code>PICTURE = 104;</code>
        */
       public static final int PICTURE_VALUE = 104;
+      /**
+       * <code>SIMPLE_FILE = 105;</code>
+       */
+      public static final int SIMPLE_FILE_VALUE = 105;
 
 
       public final int getNumber() {
@@ -12561,6 +12569,7 @@ public final class Model {
           case 102: return VIDEO;
           case 103: return STREAMMETA;
           case 104: return PICTURE;
+          case 105: return SIMPLE_FILE;
           default: return null;
         }
       }
@@ -26558,6 +26567,10 @@ public final class Model {
        */
       STREAM_ADDED(103),
       /**
+       * <code>SIMPLEFILE_ADDED = 104;</code>
+       */
+      SIMPLEFILE_ADDED(104),
+      /**
        * <code>STREAM_FILE = 500;</code>
        */
       STREAM_FILE(500),
@@ -26621,6 +26634,10 @@ public final class Model {
        */
       public static final int STREAM_ADDED_VALUE = 103;
       /**
+       * <code>SIMPLEFILE_ADDED = 104;</code>
+       */
+      public static final int SIMPLEFILE_ADDED_VALUE = 104;
+      /**
        * <code>STREAM_FILE = 500;</code>
        */
       public static final int STREAM_FILE_VALUE = 500;
@@ -26661,6 +26678,7 @@ public final class Model {
           case 101: return PEER_REMOVED;
           case 102: return VIDEO_ADDED;
           case 103: return STREAM_ADDED;
+          case 104: return SIMPLEFILE_ADDED;
           case 500: return STREAM_FILE;
           case 501: return RECORD_REPORT;
           default: return null;
@@ -50827,6 +50845,757 @@ public final class Model {
 
   }
 
+  public interface SimpleFileOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:SimpleFile)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string name = 1;</code>
+     */
+    java.lang.String getName();
+    /**
+     * <code>string name = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
+
+    /**
+     * <code>string path = 2;</code>
+     */
+    java.lang.String getPath();
+    /**
+     * <code>string path = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getPathBytes();
+
+    /**
+     * <code>int64 size = 3;</code>
+     */
+    long getSize();
+  }
+  /**
+   * Protobuf type {@code SimpleFile}
+   */
+  public  static final class SimpleFile extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:SimpleFile)
+      SimpleFileOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use SimpleFile.newBuilder() to construct.
+    private SimpleFile(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private SimpleFile() {
+      name_ = "";
+      path_ = "";
+      size_ = 0L;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private SimpleFile(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              name_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              path_ = s;
+              break;
+            }
+            case 24: {
+
+              size_ = input.readInt64();
+              break;
+            }
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return sjtu.opennet.textilepb.Model.internal_static_SimpleFile_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return sjtu.opennet.textilepb.Model.internal_static_SimpleFile_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              sjtu.opennet.textilepb.Model.SimpleFile.class, sjtu.opennet.textilepb.Model.SimpleFile.Builder.class);
+    }
+
+    public static final int NAME_FIELD_NUMBER = 1;
+    private volatile java.lang.Object name_;
+    /**
+     * <code>string name = 1;</code>
+     */
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string name = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PATH_FIELD_NUMBER = 2;
+    private volatile java.lang.Object path_;
+    /**
+     * <code>string path = 2;</code>
+     */
+    public java.lang.String getPath() {
+      java.lang.Object ref = path_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        path_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string path = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getPathBytes() {
+      java.lang.Object ref = path_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        path_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SIZE_FIELD_NUMBER = 3;
+    private long size_;
+    /**
+     * <code>int64 size = 3;</code>
+     */
+    public long getSize() {
+      return size_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
+      }
+      if (!getPathBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, path_);
+      }
+      if (size_ != 0L) {
+        output.writeInt64(3, size_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+      }
+      if (!getPathBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, path_);
+      }
+      if (size_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(3, size_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof sjtu.opennet.textilepb.Model.SimpleFile)) {
+        return super.equals(obj);
+      }
+      sjtu.opennet.textilepb.Model.SimpleFile other = (sjtu.opennet.textilepb.Model.SimpleFile) obj;
+
+      boolean result = true;
+      result = result && getName()
+          .equals(other.getName());
+      result = result && getPath()
+          .equals(other.getPath());
+      result = result && (getSize()
+          == other.getSize());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + PATH_FIELD_NUMBER;
+      hash = (53 * hash) + getPath().hashCode();
+      hash = (37 * hash) + SIZE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getSize());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static sjtu.opennet.textilepb.Model.SimpleFile parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.SimpleFile parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.SimpleFile parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.SimpleFile parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.SimpleFile parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static sjtu.opennet.textilepb.Model.SimpleFile parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.SimpleFile parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.SimpleFile parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.SimpleFile parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.SimpleFile parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static sjtu.opennet.textilepb.Model.SimpleFile parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static sjtu.opennet.textilepb.Model.SimpleFile parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(sjtu.opennet.textilepb.Model.SimpleFile prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code SimpleFile}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:SimpleFile)
+        sjtu.opennet.textilepb.Model.SimpleFileOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return sjtu.opennet.textilepb.Model.internal_static_SimpleFile_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return sjtu.opennet.textilepb.Model.internal_static_SimpleFile_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                sjtu.opennet.textilepb.Model.SimpleFile.class, sjtu.opennet.textilepb.Model.SimpleFile.Builder.class);
+      }
+
+      // Construct using sjtu.opennet.textilepb.Model.SimpleFile.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        name_ = "";
+
+        path_ = "";
+
+        size_ = 0L;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return sjtu.opennet.textilepb.Model.internal_static_SimpleFile_descriptor;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.SimpleFile getDefaultInstanceForType() {
+        return sjtu.opennet.textilepb.Model.SimpleFile.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.SimpleFile build() {
+        sjtu.opennet.textilepb.Model.SimpleFile result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public sjtu.opennet.textilepb.Model.SimpleFile buildPartial() {
+        sjtu.opennet.textilepb.Model.SimpleFile result = new sjtu.opennet.textilepb.Model.SimpleFile(this);
+        result.name_ = name_;
+        result.path_ = path_;
+        result.size_ = size_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof sjtu.opennet.textilepb.Model.SimpleFile) {
+          return mergeFrom((sjtu.opennet.textilepb.Model.SimpleFile)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(sjtu.opennet.textilepb.Model.SimpleFile other) {
+        if (other == sjtu.opennet.textilepb.Model.SimpleFile.getDefaultInstance()) return this;
+        if (!other.getName().isEmpty()) {
+          name_ = other.name_;
+          onChanged();
+        }
+        if (!other.getPath().isEmpty()) {
+          path_ = other.path_;
+          onChanged();
+        }
+        if (other.getSize() != 0L) {
+          setSize(other.getSize());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        sjtu.opennet.textilepb.Model.SimpleFile parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (sjtu.opennet.textilepb.Model.SimpleFile) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object name_ = "";
+      /**
+       * <code>string name = 1;</code>
+       */
+      public java.lang.String getName() {
+        java.lang.Object ref = name_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          name_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string name = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        java.lang.Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string name = 1;</code>
+       */
+      public Builder setName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string name = 1;</code>
+       */
+      public Builder clearName() {
+        
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string name = 1;</code>
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object path_ = "";
+      /**
+       * <code>string path = 2;</code>
+       */
+      public java.lang.String getPath() {
+        java.lang.Object ref = path_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          path_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string path = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPathBytes() {
+        java.lang.Object ref = path_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          path_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string path = 2;</code>
+       */
+      public Builder setPath(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        path_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string path = 2;</code>
+       */
+      public Builder clearPath() {
+        
+        path_ = getDefaultInstance().getPath();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string path = 2;</code>
+       */
+      public Builder setPathBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        path_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long size_ ;
+      /**
+       * <code>int64 size = 3;</code>
+       */
+      public long getSize() {
+        return size_;
+      }
+      /**
+       * <code>int64 size = 3;</code>
+       */
+      public Builder setSize(long value) {
+        
+        size_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 size = 3;</code>
+       */
+      public Builder clearSize() {
+        
+        size_ = 0L;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:SimpleFile)
+    }
+
+    // @@protoc_insertion_point(class_scope:SimpleFile)
+    private static final sjtu.opennet.textilepb.Model.SimpleFile DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new sjtu.opennet.textilepb.Model.SimpleFile();
+    }
+
+    public static sjtu.opennet.textilepb.Model.SimpleFile getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SimpleFile>
+        PARSER = new com.google.protobuf.AbstractParser<SimpleFile>() {
+      @java.lang.Override
+      public SimpleFile parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SimpleFile(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<SimpleFile> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SimpleFile> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public sjtu.opennet.textilepb.Model.SimpleFile getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface CafeClientMessageOrBuilder extends
       // @@protoc_insertion_point(interface_extends:CafeClientMessage)
       com.google.protobuf.MessageOrBuilder {
@@ -53098,6 +53867,11 @@ public final class Model {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Stream_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_SimpleFile_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_SimpleFile_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_CafeClientMessage_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -53147,137 +53921,139 @@ public final class Model {
       "TAIL\020\000\022\n\n\006LOADED\020\001\022\020\n\014LOADING_HEAD\020\002\"$\n\n" +
       "ThreadList\022\026\n\005items\030\001 \003(\0132\007.Thread\"I\n\nTh" +
       "readPeer\022\n\n\002id\030\001 \001(\t\022\016\n\006thread\030\002 \001(\t\022\020\n\010" +
-      "welcomed\030\003 \001(\010\022\r\n\005admin\030\004 \001(\010\"\215\004\n\005Block\022" +
+      "welcomed\030\003 \001(\010\022\r\n\005admin\030\004 \001(\010\"\236\004\n\005Block\022" +
       "\n\n\002id\030\001 \001(\t\022\016\n\006thread\030\002 \001(\t\022\016\n\006author\030\003 " +
       "\001(\t\022\036\n\004type\030\004 \001(\0162\020.Block.BlockType\022(\n\004d" +
       "ate\030\005 \001(\0132\032.google.protobuf.Timestamp\022\017\n" +
       "\007parents\030\006 \003(\t\022\016\n\006target\030\007 \001(\t\022\014\n\004data\030\t" +
       " \001(\t\022\014\n\004body\030\010 \001(\t\022\"\n\006status\030\n \001(\0162\022.Blo" +
       "ck.BlockStatus\022\020\n\010attempts\030\013 \001(\005\022\023\n\004user" +
-      "\030e \001(\0132\005.User\"\322\001\n\tBlockType\022\r\n\005MERGE\020\000\032\002" +
+      "\030e \001(\0132\005.User\"\343\001\n\tBlockType\022\r\n\005MERGE\020\000\032\002" +
       "\010\001\022\n\n\006IGNORE\020\001\022\010\n\004FLAG\020\002\022\010\n\004JOIN\020\003\022\014\n\010AN" +
       "NOUNCE\020\004\022\t\n\005LEAVE\020\005\022\010\n\004TEXT\020\006\022\t\n\005FILES\020\007" +
       "\022\017\n\007COMMENT\020\010\032\002\010\001\022\010\n\004LIKE\020\t\022\007\n\003ADD\0202\022\014\n\010" +
       "ADDADMIN\020d\022\016\n\nREMOVEPEER\020e\022\t\n\005VIDEO\020f\022\016\n" +
-      "\nSTREAMMETA\020g\022\013\n\007PICTURE\020h\"1\n\013BlockStatu" +
-      "s\022\t\n\005READY\020\000\022\n\n\006QUEUED\020\001\022\013\n\007PENDING\020\002\"\"\n" +
-      "\tBlockList\022\025\n\005items\030\001 \003(\0132\006.Block\"j\n\014Blo" +
-      "ckMessage\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022\026\n\003e" +
-      "nv\030\003 \001(\0132\t.Envelope\022(\n\004date\030\004 \001(\0132\032.goog" +
-      "le.protobuf.Timestamp\"\204\001\n\006Invite\022\n\n\002id\030\001" +
-      " \001(\t\022\r\n\005block\030\002 \001(\014\022\014\n\004name\030\003 \001(\t\022\026\n\007inv" +
-      "iter\030\004 \001(\0132\005.Peer\022(\n\004date\030\005 \001(\0132\032.google" +
-      ".protobuf.Timestamp\022\017\n\007parents\030\006 \003(\t\"$\n\n" +
-      "InviteList\022\026\n\005items\030\001 \003(\0132\007.Invite\"\347\001\n\010S" +
-      "yncFile\022\023\n\013peerAddress\030\001 \001(\t\022\014\n\004file\030\002 \001" +
-      "(\t\022\034\n\004type\030\003 \001(\0162\016.SyncFile.Type\022(\n\004date" +
-      "\030\004 \001(\0132\032.google.protobuf.Timestamp\022&\n\top" +
-      "eration\030\005 \001(\0162\023.SyncFile.Operation\"&\n\004Ty" +
-      "pe\022\010\n\004BLOB\020\000\022\t\n\005PHOTO\020\001\022\t\n\005VIDEO\020\002\" \n\tOp" +
-      "eration\022\007\n\003ADD\020\000\022\n\n\006REMOVE\020\001\"(\n\014SyncFile" +
-      "List\022\030\n\005items\030\001 \003(\0132\t.SyncFile\"/\n\nStream" +
-      "File\022\014\n\004data\030\001 \001(\014\022\023\n\013description\030\002 \001(\014\"" +
-      "\362\001\n\tFileIndex\022\014\n\004mill\030\001 \001(\t\022\020\n\010checksum\030" +
-      "\002 \001(\t\022\016\n\006source\030\003 \001(\t\022\014\n\004opts\030\004 \001(\t\022\014\n\004h" +
-      "ash\030\005 \001(\t\022\013\n\003key\030\006 \001(\t\022\r\n\005media\030\007 \001(\t\022\014\n" +
-      "\004name\030\010 \001(\t\022\014\n\004size\030\t \001(\003\022)\n\005added\030\n \001(\013" +
-      "2\032.google.protobuf.Timestamp\022%\n\004meta\030\013 \001" +
-      "(\0132\027.google.protobuf.Struct\022\017\n\007targets\030\014" +
-      " \003(\t\"\222\002\n\004Node\022\014\n\004name\030\001 \001(\t\022\013\n\003pin\030\002 \001(\010" +
-      "\022\021\n\tplaintext\030\003 \001(\010\022\014\n\004mill\030\004 \001(\t\022\035\n\004opt" +
-      "s\030\005 \003(\0132\017.Node.OptsEntry\022,\n\013json_schema\030" +
-      "\006 \001(\0132\027.google.protobuf.Struct\022\037\n\005links\030" +
-      "\010 \003(\0132\020.Node.LinksEntry\032+\n\tOptsEntry\022\013\n\003" +
-      "key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\0323\n\nLinksEnt" +
-      "ry\022\013\n\003key\030\001 \001(\t\022\024\n\005value\030\002 \001(\0132\005.Link:\0028" +
-      "\001\"\273\001\n\004Link\022\013\n\003use\030\001 \001(\t\022\013\n\003pin\030\002 \001(\010\022\021\n\t" +
-      "plaintext\030\003 \001(\010\022\014\n\004mill\030\004 \001(\t\022\035\n\004opts\030\005 " +
-      "\003(\0132\017.Link.OptsEntry\022,\n\013json_schema\030\006 \001(" +
-      "\0132\027.google.protobuf.Struct\032+\n\tOptsEntry\022" +
-      "\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\215\004\n\014Noti" +
-      "fication\022\n\n\002id\030\001 \001(\t\022(\n\004date\030\002 \001(\0132\032.goo" +
-      "gle.protobuf.Timestamp\022\r\n\005actor\030\003 \001(\t\022\017\n" +
-      "\007subject\030\004 \001(\t\022\024\n\014subject_desc\030\005 \001(\t\022\r\n\005" +
-      "block\030\006 \001(\t\022\016\n\006target\030\007 \001(\t\022 \n\004type\030\010 \001(" +
-      "\0162\022.Notification.Type\022\014\n\004body\030\t \001(\t\022\014\n\004r" +
-      "ead\030\n \001(\010\022\023\n\004user\030e \001(\0132\005.User\"\236\002\n\004Type\022" +
-      "\023\n\017INVITE_RECEIVED\020\000\022\027\n\023ACCOUNT_PEER_JOI" +
-      "NED\020\001\022\025\n\021ACCOUNT_PEER_LEFT\020\010\022\017\n\013PEER_JOI" +
-      "NED\020\002\022\r\n\tPEER_LEFT\020\003\022\021\n\rMESSAGE_ADDED\020\004\022" +
-      "\017\n\013FILES_ADDED\020\005\022\021\n\rCOMMENT_ADDED\020\006\022\016\n\nL" +
-      "IKE_ADDED\020\007\022\017\n\013ADMIN_ADDED\020d\022\020\n\014PEER_REM" +
-      "OVED\020e\022\017\n\013VIDEO_ADDED\020f\022\020\n\014STREAM_ADDED\020" +
-      "g\022\020\n\013STREAM_FILE\020\364\003\022\022\n\rRECORD_REPORT\020\365\003\"" +
-      "0\n\020NotificationList\022\034\n\005items\030\001 \003(\0132\r.Not" +
-      "ification\"_\n\004Cafe\022\014\n\004peer\030\001 \001(\t\022\017\n\007addre" +
-      "ss\030\002 \001(\t\022\013\n\003api\030\003 \001(\t\022\020\n\010protocol\030\004 \001(\t\022" +
-      "\014\n\004node\030\005 \001(\t\022\013\n\003url\030\006 \001(\t\"\301\001\n\013CafeSessi" +
-      "on\022\n\n\002id\030\001 \001(\t\022\016\n\006access\030\002 \001(\t\022\'\n\003exp\030\003 " +
-      "\001(\0132\032.google.protobuf.Timestamp\022\017\n\007refre" +
-      "sh\030\004 \001(\t\022(\n\004rexp\030\005 \001(\0132\032.google.protobuf" +
-      ".Timestamp\022\017\n\007subject\030\006 \001(\t\022\014\n\004type\030\007 \001(" +
-      "\t\022\023\n\004cafe\030\010 \001(\0132\005.Cafe\".\n\017CafeSessionLis" +
-      "t\022\033\n\005items\030\001 \003(\0132\014.CafeSession\"\255\003\n\013CafeR" +
-      "equest\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022\016\n\006targ" +
-      "et\030\003 \001(\t\022\023\n\004cafe\030\004 \001(\0132\005.Cafe\022\r\n\005group\030\010" +
-      " \001(\t\022\022\n\nsync_group\030\n \001(\t\022\037\n\004type\030\005 \001(\0162\021" +
-      ".CafeRequest.Type\022(\n\004date\030\006 \001(\0132\032.google" +
-      ".protobuf.Timestamp\022\014\n\004size\030\007 \001(\003\022#\n\006sta" +
-      "tus\030\t \001(\0162\023.CafeRequest.Status\022\020\n\010attemp" +
-      "ts\030\013 \001(\005\022\022\n\ngroup_size\030\014 \001(\003\022\031\n\021group_tr" +
-      "ansferred\030\r \001(\003\"O\n\004Type\022\t\n\005STORE\020\000\022\013\n\007UN" +
-      "STORE\020\003\022\020\n\014STORE_THREAD\020\001\022\022\n\016UNSTORE_THR" +
-      "EAD\020\004\022\t\n\005INBOX\020\002\",\n\006Status\022\007\n\003NEW\020\000\022\013\n\007P" +
-      "ENDING\020\001\022\014\n\010COMPLETE\020\002\".\n\017CafeRequestLis" +
-      "t\022\033\n\005items\030\001 \003(\0132\014.CafeRequest\"\372\001\n\023CafeS" +
-      "yncGroupStatus\022\n\n\002id\030\001 \001(\t\022\021\n\tnum_total\030" +
-      "\002 \001(\005\022\023\n\013num_pending\030\003 \001(\005\022\024\n\014num_comple" +
-      "te\030\004 \001(\005\022\022\n\nsize_total\030\005 \001(\003\022\024\n\014size_pen" +
-      "ding\030\006 \001(\003\022\025\n\rsize_complete\030\007 \001(\003\022\031\n\021gro" +
-      "ups_size_total\030\010 \001(\003\022\034\n\024groups_size_comp" +
-      "lete\030\t \001(\003\022\r\n\005error\0302 \001(\t\022\020\n\010error_id\0303 " +
-      "\001(\t\"\330\001\n\017CafeHTTPRequest\022#\n\004type\030\001 \001(\0162\025." +
-      "CafeHTTPRequest.Type\022\013\n\003url\030\002 \001(\t\022.\n\007hea" +
-      "ders\030\003 \003(\0132\035.CafeHTTPRequest.HeadersEntr" +
-      "y\022\014\n\004path\030\004 \001(\t\032.\n\014HeadersEntry\022\013\n\003key\030\001" +
-      " \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"%\n\004Type\022\007\n\003PUT\020\000" +
-      "\022\010\n\004POST\020\001\022\n\n\006DELETE\020\002\"c\n\013CafeMessage\022\n\n" +
-      "\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022(\n\004date\030\003 \001(\0132\032." +
-      "google.protobuf.Timestamp\022\020\n\010attempts\030\004 " +
-      "\001(\005\"[\n\017CafeClientNonce\022\r\n\005value\030\001 \001(\t\022\017\n" +
-      "\007address\030\002 \001(\t\022(\n\004date\030\003 \001(\0132\032.google.pr" +
-      "otobuf.Timestamp\"\217\001\n\nCafeClient\022\n\n\002id\030\001 " +
-      "\001(\t\022\017\n\007address\030\002 \001(\t\022+\n\007created\030\003 \001(\0132\032." +
-      "google.protobuf.Timestamp\022(\n\004seen\030\004 \001(\0132" +
-      "\032.google.protobuf.Timestamp\022\r\n\005token\030\005 \001" +
-      "(\t\",\n\016CafeClientList\022\032\n\005items\030\001 \003(\0132\013.Ca" +
-      "feClient\"P\n\tCafeToken\022\n\n\002id\030\001 \001(\t\022\r\n\005val" +
-      "ue\030\002 \001(\014\022(\n\004date\030\003 \001(\0132\032.google.protobuf" +
-      ".Timestamp\"B\n\020CafeClientThread\022\n\n\002id\030\001 \001" +
-      "(\t\022\016\n\006client\030\002 \001(\t\022\022\n\nciphertext\030\003 \001(\014\"z" +
-      "\n\005Video\022\n\n\002id\030\001 \001(\t\022\017\n\007caption\030\002 \001(\t\022\023\n\013" +
-      "videoLength\030\003 \001(\003\022\016\n\006poster\030\004 \001(\t\022\r\n\005wid" +
-      "th\030\005 \001(\005\022\016\n\006height\030\006 \001(\005\022\020\n\010rotation\030\007 \001" +
-      "(\005\"k\n\nVideoChunk\022\n\n\002id\030\001 \001(\t\022\r\n\005chunk\030\002 " +
-      "\001(\t\022\017\n\007address\030\003 \001(\t\022\021\n\tstartTime\030\004 \001(\003\022" +
-      "\017\n\007endTime\030\005 \001(\003\022\r\n\005index\030\006 \001(\003\",\n\016Video" +
-      "ChunkList\022\032\n\005items\030\001 \003(\0132\013.VideoChunk\"m\n" +
-      "\013StreamBlock\022\n\n\002id\030\001 \001(\t\022\020\n\010streamid\030\002 \001" +
-      "(\t\022\r\n\005index\030\003 \001(\004\022\014\n\004size\030\004 \001(\005\022\016\n\006isRoo" +
-      "t\030\005 \001(\010\022\023\n\013description\030\006 \001(\t\".\n\017StreamBl" +
-      "ockList\022\033\n\005items\030\001 \003(\0132\014.StreamBlock\"r\n\n" +
-      "StreamMeta\022\n\n\002id\030\001 \001(\t\022\023\n\013nsubstreams\030\002 " +
-      "\001(\005\022\017\n\007bitrate\030\003 \001(\005\022\017\n\007caption\030\004 \001(\t\022\017\n" +
-      "\007nblocks\030\005 \001(\004\022\020\n\010posterid\030\006 \001(\t\",\n\016Stre" +
-      "amMetaList\022\032\n\005items\030\001 \003(\0132\013.StreamMeta\"\024" +
-      "\n\006Stream\022\n\n\002id\030\001 \001(\t\"g\n\021CafeClientMessag" +
-      "e\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022\016\n\006client\030\003 " +
-      "\001(\t\022(\n\004date\030\004 \001(\0132\032.google.protobuf.Time" +
-      "stamp\"}\n\005BotKV\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001" +
-      "(\014\022+\n\007created\030\003 \001(\0132\032.google.protobuf.Ti" +
-      "mestamp\022+\n\007updated\030\004 \001(\0132\032.google.protob" +
-      "uf.TimestampB\034\n\026sjtu.opennet.textilepbZ\002" +
-      "pbb\006proto3"
+      "\nSTREAMMETA\020g\022\013\n\007PICTURE\020h\022\017\n\013SIMPLE_FIL" +
+      "E\020i\"1\n\013BlockStatus\022\t\n\005READY\020\000\022\n\n\006QUEUED\020" +
+      "\001\022\013\n\007PENDING\020\002\"\"\n\tBlockList\022\025\n\005items\030\001 \003" +
+      "(\0132\006.Block\"j\n\014BlockMessage\022\n\n\002id\030\001 \001(\t\022\014" +
+      "\n\004peer\030\002 \001(\t\022\026\n\003env\030\003 \001(\0132\t.Envelope\022(\n\004" +
+      "date\030\004 \001(\0132\032.google.protobuf.Timestamp\"\204" +
+      "\001\n\006Invite\022\n\n\002id\030\001 \001(\t\022\r\n\005block\030\002 \001(\014\022\014\n\004" +
+      "name\030\003 \001(\t\022\026\n\007inviter\030\004 \001(\0132\005.Peer\022(\n\004da" +
+      "te\030\005 \001(\0132\032.google.protobuf.Timestamp\022\017\n\007" +
+      "parents\030\006 \003(\t\"$\n\nInviteList\022\026\n\005items\030\001 \003" +
+      "(\0132\007.Invite\"\347\001\n\010SyncFile\022\023\n\013peerAddress\030" +
+      "\001 \001(\t\022\014\n\004file\030\002 \001(\t\022\034\n\004type\030\003 \001(\0162\016.Sync" +
+      "File.Type\022(\n\004date\030\004 \001(\0132\032.google.protobu" +
+      "f.Timestamp\022&\n\toperation\030\005 \001(\0162\023.SyncFil" +
+      "e.Operation\"&\n\004Type\022\010\n\004BLOB\020\000\022\t\n\005PHOTO\020\001" +
+      "\022\t\n\005VIDEO\020\002\" \n\tOperation\022\007\n\003ADD\020\000\022\n\n\006REM" +
+      "OVE\020\001\"(\n\014SyncFileList\022\030\n\005items\030\001 \003(\0132\t.S" +
+      "yncFile\"/\n\nStreamFile\022\014\n\004data\030\001 \001(\014\022\023\n\013d" +
+      "escription\030\002 \001(\014\"\362\001\n\tFileIndex\022\014\n\004mill\030\001" +
+      " \001(\t\022\020\n\010checksum\030\002 \001(\t\022\016\n\006source\030\003 \001(\t\022\014" +
+      "\n\004opts\030\004 \001(\t\022\014\n\004hash\030\005 \001(\t\022\013\n\003key\030\006 \001(\t\022" +
+      "\r\n\005media\030\007 \001(\t\022\014\n\004name\030\010 \001(\t\022\014\n\004size\030\t \001" +
+      "(\003\022)\n\005added\030\n \001(\0132\032.google.protobuf.Time" +
+      "stamp\022%\n\004meta\030\013 \001(\0132\027.google.protobuf.St" +
+      "ruct\022\017\n\007targets\030\014 \003(\t\"\222\002\n\004Node\022\014\n\004name\030\001" +
+      " \001(\t\022\013\n\003pin\030\002 \001(\010\022\021\n\tplaintext\030\003 \001(\010\022\014\n\004" +
+      "mill\030\004 \001(\t\022\035\n\004opts\030\005 \003(\0132\017.Node.OptsEntr" +
+      "y\022,\n\013json_schema\030\006 \001(\0132\027.google.protobuf" +
+      ".Struct\022\037\n\005links\030\010 \003(\0132\020.Node.LinksEntry" +
+      "\032+\n\tOptsEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(" +
+      "\t:\0028\001\0323\n\nLinksEntry\022\013\n\003key\030\001 \001(\t\022\024\n\005valu" +
+      "e\030\002 \001(\0132\005.Link:\0028\001\"\273\001\n\004Link\022\013\n\003use\030\001 \001(\t" +
+      "\022\013\n\003pin\030\002 \001(\010\022\021\n\tplaintext\030\003 \001(\010\022\014\n\004mill" +
+      "\030\004 \001(\t\022\035\n\004opts\030\005 \003(\0132\017.Link.OptsEntry\022,\n" +
+      "\013json_schema\030\006 \001(\0132\027.google.protobuf.Str" +
+      "uct\032+\n\tOptsEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002" +
+      " \001(\t:\0028\001\"\243\004\n\014Notification\022\n\n\002id\030\001 \001(\t\022(\n" +
+      "\004date\030\002 \001(\0132\032.google.protobuf.Timestamp\022" +
+      "\r\n\005actor\030\003 \001(\t\022\017\n\007subject\030\004 \001(\t\022\024\n\014subje" +
+      "ct_desc\030\005 \001(\t\022\r\n\005block\030\006 \001(\t\022\016\n\006target\030\007" +
+      " \001(\t\022 \n\004type\030\010 \001(\0162\022.Notification.Type\022\014" +
+      "\n\004body\030\t \001(\t\022\014\n\004read\030\n \001(\010\022\023\n\004user\030e \001(\013" +
+      "2\005.User\"\264\002\n\004Type\022\023\n\017INVITE_RECEIVED\020\000\022\027\n" +
+      "\023ACCOUNT_PEER_JOINED\020\001\022\025\n\021ACCOUNT_PEER_L" +
+      "EFT\020\010\022\017\n\013PEER_JOINED\020\002\022\r\n\tPEER_LEFT\020\003\022\021\n" +
+      "\rMESSAGE_ADDED\020\004\022\017\n\013FILES_ADDED\020\005\022\021\n\rCOM" +
+      "MENT_ADDED\020\006\022\016\n\nLIKE_ADDED\020\007\022\017\n\013ADMIN_AD" +
+      "DED\020d\022\020\n\014PEER_REMOVED\020e\022\017\n\013VIDEO_ADDED\020f" +
+      "\022\020\n\014STREAM_ADDED\020g\022\024\n\020SIMPLEFILE_ADDED\020h" +
+      "\022\020\n\013STREAM_FILE\020\364\003\022\022\n\rRECORD_REPORT\020\365\003\"0" +
+      "\n\020NotificationList\022\034\n\005items\030\001 \003(\0132\r.Noti" +
+      "fication\"_\n\004Cafe\022\014\n\004peer\030\001 \001(\t\022\017\n\007addres" +
+      "s\030\002 \001(\t\022\013\n\003api\030\003 \001(\t\022\020\n\010protocol\030\004 \001(\t\022\014" +
+      "\n\004node\030\005 \001(\t\022\013\n\003url\030\006 \001(\t\"\301\001\n\013CafeSessio" +
+      "n\022\n\n\002id\030\001 \001(\t\022\016\n\006access\030\002 \001(\t\022\'\n\003exp\030\003 \001" +
+      "(\0132\032.google.protobuf.Timestamp\022\017\n\007refres" +
+      "h\030\004 \001(\t\022(\n\004rexp\030\005 \001(\0132\032.google.protobuf." +
+      "Timestamp\022\017\n\007subject\030\006 \001(\t\022\014\n\004type\030\007 \001(\t" +
+      "\022\023\n\004cafe\030\010 \001(\0132\005.Cafe\".\n\017CafeSessionList" +
+      "\022\033\n\005items\030\001 \003(\0132\014.CafeSession\"\255\003\n\013CafeRe" +
+      "quest\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022\016\n\006targe" +
+      "t\030\003 \001(\t\022\023\n\004cafe\030\004 \001(\0132\005.Cafe\022\r\n\005group\030\010 " +
+      "\001(\t\022\022\n\nsync_group\030\n \001(\t\022\037\n\004type\030\005 \001(\0162\021." +
+      "CafeRequest.Type\022(\n\004date\030\006 \001(\0132\032.google." +
+      "protobuf.Timestamp\022\014\n\004size\030\007 \001(\003\022#\n\006stat" +
+      "us\030\t \001(\0162\023.CafeRequest.Status\022\020\n\010attempt" +
+      "s\030\013 \001(\005\022\022\n\ngroup_size\030\014 \001(\003\022\031\n\021group_tra" +
+      "nsferred\030\r \001(\003\"O\n\004Type\022\t\n\005STORE\020\000\022\013\n\007UNS" +
+      "TORE\020\003\022\020\n\014STORE_THREAD\020\001\022\022\n\016UNSTORE_THRE" +
+      "AD\020\004\022\t\n\005INBOX\020\002\",\n\006Status\022\007\n\003NEW\020\000\022\013\n\007PE" +
+      "NDING\020\001\022\014\n\010COMPLETE\020\002\".\n\017CafeRequestList" +
+      "\022\033\n\005items\030\001 \003(\0132\014.CafeRequest\"\372\001\n\023CafeSy" +
+      "ncGroupStatus\022\n\n\002id\030\001 \001(\t\022\021\n\tnum_total\030\002" +
+      " \001(\005\022\023\n\013num_pending\030\003 \001(\005\022\024\n\014num_complet" +
+      "e\030\004 \001(\005\022\022\n\nsize_total\030\005 \001(\003\022\024\n\014size_pend" +
+      "ing\030\006 \001(\003\022\025\n\rsize_complete\030\007 \001(\003\022\031\n\021grou" +
+      "ps_size_total\030\010 \001(\003\022\034\n\024groups_size_compl" +
+      "ete\030\t \001(\003\022\r\n\005error\0302 \001(\t\022\020\n\010error_id\0303 \001" +
+      "(\t\"\330\001\n\017CafeHTTPRequest\022#\n\004type\030\001 \001(\0162\025.C" +
+      "afeHTTPRequest.Type\022\013\n\003url\030\002 \001(\t\022.\n\007head" +
+      "ers\030\003 \003(\0132\035.CafeHTTPRequest.HeadersEntry" +
+      "\022\014\n\004path\030\004 \001(\t\032.\n\014HeadersEntry\022\013\n\003key\030\001 " +
+      "\001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"%\n\004Type\022\007\n\003PUT\020\000\022" +
+      "\010\n\004POST\020\001\022\n\n\006DELETE\020\002\"c\n\013CafeMessage\022\n\n\002" +
+      "id\030\001 \001(\t\022\014\n\004peer\030\002 \001(\t\022(\n\004date\030\003 \001(\0132\032.g" +
+      "oogle.protobuf.Timestamp\022\020\n\010attempts\030\004 \001" +
+      "(\005\"[\n\017CafeClientNonce\022\r\n\005value\030\001 \001(\t\022\017\n\007" +
+      "address\030\002 \001(\t\022(\n\004date\030\003 \001(\0132\032.google.pro" +
+      "tobuf.Timestamp\"\217\001\n\nCafeClient\022\n\n\002id\030\001 \001" +
+      "(\t\022\017\n\007address\030\002 \001(\t\022+\n\007created\030\003 \001(\0132\032.g" +
+      "oogle.protobuf.Timestamp\022(\n\004seen\030\004 \001(\0132\032" +
+      ".google.protobuf.Timestamp\022\r\n\005token\030\005 \001(" +
+      "\t\",\n\016CafeClientList\022\032\n\005items\030\001 \003(\0132\013.Caf" +
+      "eClient\"P\n\tCafeToken\022\n\n\002id\030\001 \001(\t\022\r\n\005valu" +
+      "e\030\002 \001(\014\022(\n\004date\030\003 \001(\0132\032.google.protobuf." +
+      "Timestamp\"B\n\020CafeClientThread\022\n\n\002id\030\001 \001(" +
+      "\t\022\016\n\006client\030\002 \001(\t\022\022\n\nciphertext\030\003 \001(\014\"z\n" +
+      "\005Video\022\n\n\002id\030\001 \001(\t\022\017\n\007caption\030\002 \001(\t\022\023\n\013v" +
+      "ideoLength\030\003 \001(\003\022\016\n\006poster\030\004 \001(\t\022\r\n\005widt" +
+      "h\030\005 \001(\005\022\016\n\006height\030\006 \001(\005\022\020\n\010rotation\030\007 \001(" +
+      "\005\"k\n\nVideoChunk\022\n\n\002id\030\001 \001(\t\022\r\n\005chunk\030\002 \001" +
+      "(\t\022\017\n\007address\030\003 \001(\t\022\021\n\tstartTime\030\004 \001(\003\022\017" +
+      "\n\007endTime\030\005 \001(\003\022\r\n\005index\030\006 \001(\003\",\n\016VideoC" +
+      "hunkList\022\032\n\005items\030\001 \003(\0132\013.VideoChunk\"m\n\013" +
+      "StreamBlock\022\n\n\002id\030\001 \001(\t\022\020\n\010streamid\030\002 \001(" +
+      "\t\022\r\n\005index\030\003 \001(\004\022\014\n\004size\030\004 \001(\005\022\016\n\006isRoot" +
+      "\030\005 \001(\010\022\023\n\013description\030\006 \001(\t\".\n\017StreamBlo" +
+      "ckList\022\033\n\005items\030\001 \003(\0132\014.StreamBlock\"r\n\nS" +
+      "treamMeta\022\n\n\002id\030\001 \001(\t\022\023\n\013nsubstreams\030\002 \001" +
+      "(\005\022\017\n\007bitrate\030\003 \001(\005\022\017\n\007caption\030\004 \001(\t\022\017\n\007" +
+      "nblocks\030\005 \001(\004\022\020\n\010posterid\030\006 \001(\t\",\n\016Strea" +
+      "mMetaList\022\032\n\005items\030\001 \003(\0132\013.StreamMeta\"\024\n" +
+      "\006Stream\022\n\n\002id\030\001 \001(\t\"6\n\nSimpleFile\022\014\n\004nam" +
+      "e\030\001 \001(\t\022\014\n\004path\030\002 \001(\t\022\014\n\004size\030\003 \001(\003\"g\n\021C" +
+      "afeClientMessage\022\n\n\002id\030\001 \001(\t\022\014\n\004peer\030\002 \001" +
+      "(\t\022\016\n\006client\030\003 \001(\t\022(\n\004date\030\004 \001(\0132\032.googl" +
+      "e.protobuf.Timestamp\"}\n\005BotKV\022\013\n\003key\030\001 \001" +
+      "(\t\022\r\n\005value\030\002 \001(\014\022+\n\007created\030\003 \001(\0132\032.goo" +
+      "gle.protobuf.Timestamp\022+\n\007updated\030\004 \001(\0132" +
+      "\032.google.protobuf.TimestampB\034\n\026sjtu.open" +
+      "net.textilepbZ\002pbb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -53582,14 +54358,20 @@ public final class Model {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Stream_descriptor,
         new java.lang.String[] { "Id", });
-    internal_static_CafeClientMessage_descriptor =
+    internal_static_SimpleFile_descriptor =
       getDescriptor().getMessageTypes().get(44);
+    internal_static_SimpleFile_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_SimpleFile_descriptor,
+        new java.lang.String[] { "Name", "Path", "Size", });
+    internal_static_CafeClientMessage_descriptor =
+      getDescriptor().getMessageTypes().get(45);
     internal_static_CafeClientMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CafeClientMessage_descriptor,
         new java.lang.String[] { "Id", "Peer", "Client", "Date", });
     internal_static_BotKV_descriptor =
-      getDescriptor().getMessageTypes().get(45);
+      getDescriptor().getMessageTypes().get(46);
     internal_static_BotKV_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_BotKV_descriptor,
