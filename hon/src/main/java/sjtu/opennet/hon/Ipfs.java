@@ -2,6 +2,7 @@ package sjtu.opennet.hon;
 
 import mobile.Mobile_;
 import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.textilepb.View;
 
 /**
  * Provides access to Textile IPFS related APIs
@@ -48,6 +49,20 @@ public class Ipfs extends NodeDependent {
      */
     public void dataAtPath(final String path, final Handlers.DataHandler handler) {
         node.dataAtPath(path, (data, media, e) -> {
+            if (e != null) {
+                handler.onError(e);
+                return;
+            }
+            try {
+                handler.onComplete(data, media);
+            } catch (final Exception exception) {
+                handler.onError(exception);
+            }
+        });
+    }
+
+    public void dataAtFeedSimpleFile(View.FeedSimpleFile feed, final Handlers.DataHandler handler) {
+        node.dataAtFeedSimpleFile(feed.toByteArray(), (data, media, e)->{
             if (e != null) {
                 handler.onError(e);
                 return;
