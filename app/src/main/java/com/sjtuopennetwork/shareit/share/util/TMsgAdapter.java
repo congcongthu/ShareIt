@@ -60,6 +60,8 @@ public class TMsgAdapter extends BaseAdapter {
                 return handlePhotoView(i, view, viewGroup, 2);
             case 5:
                 return handleFileView(i, view, viewGroup, 1);
+            case 6:
+                return handleSimplePictureView(i,view,viewGroup);
             default:
                 return null;
         }
@@ -125,6 +127,7 @@ public class TMsgAdapter extends BaseAdapter {
                         Intent it1 = new Intent(context, ImageInfoActivity.class);
                         it1.putExtra("imghash", hashName[0]);
                         it1.putExtra("imgname", hashName[1]);
+                        it1.putExtra("isSimple",false);
                         context.startActivity(it1);
                     });
                 } else if (videoType == 1 || videoType == 2) {
@@ -155,6 +158,7 @@ public class TMsgAdapter extends BaseAdapter {
                         Intent it1 = new Intent(context, ImageInfoActivity.class);
                         it1.putExtra("imghash", hashName[0]);
                         it1.putExtra("imgname", hashName[1]);
+                        it1.putExtra("isSimple",false);
                         context.startActivity(it1);
                     });
                 } else if (videoType == 1) { // stream 视频
@@ -184,6 +188,56 @@ public class TMsgAdapter extends BaseAdapter {
         return view;
     }
 
+    private View handleSimplePictureView(int i, View view, ViewGroup viewGroup){
+        Log.d(TAG, "handlePhotoView: simple picture: " + msgList.get(i).body);
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.item_msg_img, viewGroup, false);
+            view.setTag(new PhotoVH(view));
+        }
+        if (view.getTag() instanceof PhotoVH) {
+            PhotoVH h = (PhotoVH) view.getTag();
+            String username = "";
+            String useravatar = "";
+            String[] hashName = msgList.get(i).body.split("##");
+            if(msgList.get(i).ismine){
+                username = ShareUtil.getMyName();
+                useravatar = ShareUtil.getMyAvatar();
+                h.send_photo_right.setVisibility(View.VISIBLE); //右边的显示
+                h.send_photo_left.setVisibility(View.GONE); //左边的隐藏
+                h.photo_name_r.setText(username);
+                h.photo_time_r.setText(df.format(msgList.get(i).sendtime * 1000));
+                ShareUtil.setImageView(context, h.photo_avatar_r, useravatar, 0);
+                h.video_icon_r.setVisibility(View.GONE);
+                ShareUtil.setImageView(context, h.chat_photo_r, hashName[0], 2);
+                h.chat_photo_r.setOnClickListener(v->{
+                    Intent itToFileTrans = new Intent(context, FileTransActivity.class);
+                    itToFileTrans.putExtra("fileCid", hashName[2]);
+                    itToFileTrans.putExtra("fileSizeCid", hashName[0]);
+                    context.startActivity(itToFileTrans);
+                });
+            }else{
+                String addr = msgList.get(i).author;
+                username = ShareUtil.getOtherName(addr);
+                useravatar = ShareUtil.getOtherAvatar(addr);
+                h.send_photo_left.setVisibility(View.VISIBLE); //左边的显示
+                h.send_photo_right.setVisibility(View.GONE); //右边的隐藏
+                h.photo_name.setText(username);
+                h.photo_time.setText(df.format(msgList.get(i).sendtime * 1000));
+                ShareUtil.setImageView(context, h.photo_avatar, useravatar, 0);
+                h.video_icon.setVisibility(View.GONE);
+                ShareUtil.setImageView(context, h.chat_photo, hashName[0], 2);
+                h.chat_photo.setOnClickListener(v -> {
+                    Intent it1 = new Intent(context, ImageInfoActivity.class);
+                    it1.putExtra("imghash", hashName[0]);
+                    it1.putExtra("imgname", hashName[1]);
+                    it1.putExtra("isSimple",true);
+                    context.startActivity(it1);
+                });
+            }
+        }
+        return view;
+    }
+
     private View handleFileView(int i, View view, ViewGroup viewGroup, int fileType) {
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.item_msg_file, viewGroup, false);
@@ -206,16 +260,16 @@ public class TMsgAdapter extends BaseAdapter {
                 h.file_time_r.setText(df.format(msgList.get(i).sendtime * 1000));
                 h.file_name_r.setText(hashName[1]);
                 ShareUtil.setImageView(context, h.file_avatar_r, useravatar, 0);
-                if (fileType == 0) { // 原生文件
+//                if (fileType == 0) { // 原生文件
                     h.send_file_right.setOnClickListener(view1 -> {
                         Intent itToFileTrans = new Intent(context, FileTransActivity.class);
                         itToFileTrans.putExtra("fileCid", hashName[2]);
                         itToFileTrans.putExtra("fileSizeCid", hashName[0]);
                         context.startActivity(itToFileTrans);
                     });
-                } else if (fileType == 1) {
-                    Log.d(TAG, "handleFileView: 收到simple file");
-                }
+//                } else if (fileType == 1) {
+//                    Log.d(TAG, "handleFileView: 收到simple file");
+//                }
             } else {
                 String addr = msgList.get(i).author;
                 username = ShareUtil.getOtherName(addr);
@@ -227,14 +281,14 @@ public class TMsgAdapter extends BaseAdapter {
                 h.file_name.setText(hashName[1]);
                 ShareUtil.setImageView(context, h.file_avatar, useravatar, 0);
                 h.send_file_left.setOnClickListener(v -> {
-                    String isExist = ShareUtil.isFileExist(hashName[1]);
+                    String isExist=null;
+                    isExist= ShareUtil.isFileExist(hashName[1]);
                     if (isExist != null) {
                         Toast.makeText(context, "文件已下载：" + isExist, Toast.LENGTH_SHORT).show();
                     } else {
-
                         AlertDialog.Builder downFile = new AlertDialog.Builder(context);
                         downFile.setTitle("下载文件");
-                        downFile.setMessage("确定下载 " + hashName[1] + " 吗？");
+                        downFile.setMessage("确定下载文件吗？");
                         Handler fileResponse = new Handler() {
                             @Override
                             public void handleMessage(Message msg) {
@@ -266,7 +320,7 @@ public class TMsgAdapter extends BaseAdapter {
                                 Textile.instance().ipfs.dataAtPath(hashName[0], new Handlers.DataHandler() {
                                     @Override
                                     public void onComplete(byte[] data, String media) {
-                                        String res = ShareUtil.storeSyncFile(data, hashName[1]+System.currentTimeMillis());
+                                        String res = ShareUtil.storeSyncFile(data, hashName[1]);
                                         String resMeg = "下载成功 " + res;
                                         Log.d(TAG, "onComplete: simple file: "+resMeg);
                                         Message msg = fileResponse.obtainMessage();
@@ -304,7 +358,7 @@ public class TMsgAdapter extends BaseAdapter {
 
     @Override
     public int getViewTypeCount() {
-        return 6;
+        return 7;
     }
 
     @Override

@@ -58,7 +58,7 @@ public class FileTransActivity extends AppCompatActivity {
     String loginAccount;
     RecordAdapter adapter;
 //    DateFormat df=new SimpleDateFormat("MM-dd HH:mm:ss");
-    DateFormat df=new SimpleDateFormat("HH:mm:ss");
+    DateFormat df=new SimpleDateFormat("HH:mm:ss:SSS");
     long startAdd=0;
     long rttSum=0;
     long getSum=0;
@@ -91,13 +91,14 @@ public class FileTransActivity extends AppCompatActivity {
         //从数据库中查出每个的接收时间
         records=new LinkedList<>();
         records= DBHelper.getInstance(getApplicationContext(),loginAccount).listRecords(fileCid);
+        Log.d(TAG, "onCreate: records size: "+records.size());
         recordsLv=findViewById(R.id.recordd_lv);
         adapter=new RecordAdapter(FileTransActivity.this,R.layout.item_records,records);
         recordsLv.setAdapter(adapter);
 
         //显示文件大小
         trans_size=findViewById(R.id.file_trans_size);
-        Textile.instance().files.content(fileSizeCid, new Handlers.DataHandler() {
+        Textile.instance().ipfs.dataAtPath(fileSizeCid, new Handlers.DataHandler() {
             @Override
             public void onComplete(byte[] data, String media) {
                 Message msg=handler.obtainMessage();
@@ -107,10 +108,26 @@ public class FileTransActivity extends AppCompatActivity {
                 Log.d(TAG, "onComplete: 文件大小："+data.length);
                 handler.sendMessage(msg);
             }
+
             @Override
             public void onError(Exception e) {
+
             }
         });
+//        Textile.instance().files.content(fileSizeCid, new Handlers.DataHandler() {
+//            @Override
+//            public void onComplete(byte[] data, String media) {
+//                Message msg=handler.obtainMessage();
+//                msg.what=9;
+//                msg.obj=data.length;
+//                filesize=data.length;
+//                Log.d(TAG, "onComplete: 文件大小："+data.length);
+//                handler.sendMessage(msg);
+//            }
+//            @Override
+//            public void onError(Exception e) {
+//            }
+//        });
 
         // 统计时间
         trans_rtt=findViewById(R.id.file_trans_rtt);
@@ -122,6 +139,7 @@ public class FileTransActivity extends AppCompatActivity {
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
+        Log.d(TAG, "onCreate: records size 2:"+records.size());
         processData();
 
         //savelog
@@ -173,6 +191,7 @@ public class FileTransActivity extends AppCompatActivity {
             rttSum+=(records.get(i).t3-startAdd); //发送端从发送到接收的自己的时间，rtt
         }
         int recvNum=records.size()-1;
+        Log.d(TAG, "processData: recvNum: "+recvNum);
         if(recvNum==0){
             trans_rtt.setText("平均RTT:未收到返回");
             trans_rec.setText("平均接收时间:未收到返回");
@@ -184,7 +203,7 @@ public class FileTransActivity extends AppCompatActivity {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void getNewMsg(TRecord tRecord){
         Log.d(TAG, "getNewMsg: 拿到通知：");
         if(tRecord.cid.equals(fileCid)){
@@ -235,11 +254,13 @@ public class FileTransActivity extends AppCompatActivity {
             long gap=tRecord.t2-tRecord.t1;
             long rttt=tRecord.t3-startAdd;
             if(tRecord.type==0){
+                Log.d(TAG, "getView: 显示自己："+position);
                 recordView.user.setText("自身节点");
-                recordView.duration.setText("开始:"+get1Str+", 发完:"+get2Str+", 耗时:"+gap);
+                recordView.duration.setText("开始:"+get1Str+",  发完:"+get2Str+"\n耗时:"+gap+"ms");
             }else{
+                Log.d(TAG, "getView: 显示接收："+position);
                 recordView.user.setText("接收节点:"+user.substring(0,13)+"...");
-                recordView.duration.setText("开始:"+get1Str+", 收完:"+get2Str+", 耗时:"+gap+", rtt:"+rttt);
+                recordView.duration.setText("开始:"+get1Str+",  收完:"+get2Str+"\n耗时:"+gap+"ms,  rtt:"+rttt+"ms");
             }
 
             return v;

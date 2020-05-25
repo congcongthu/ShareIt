@@ -271,7 +271,7 @@ public class ChatActivity extends AppCompatActivity {
             msgAdapter.notifyDataSetChanged();
             chat_lv.setSelection(msgList.size());
 
-            if(tMsg.msgtype==3 && tMsg.ismine){
+            if((tMsg.msgtype==6 || tMsg.msgtype==5) && tMsg.ismine){
                 String[] hashName=tMsg.body.split("##");
                 Intent itToFileTrans=new Intent(this, FileTransActivity.class);
                 itToFileTrans.putExtra("fileCid",hashName[2]);
@@ -296,25 +296,47 @@ public class ChatActivity extends AppCompatActivity {
             String filePath=choosePic.get(0).getPath();
             String fileName=ShareUtil.getFileNameWithSuffix(filePath);
             Log.d(TAG, "onActivityResult: upload pic: "+fileName);
-            //发送照片
-            Textile.instance().files.addPicture(filePath, threadid,fileName , new Handlers.BlockHandler() {
+
+            Textile.instance().files.addSimplePicture(filePath, threadid, new Handlers.BlockHandler() {
                 long addT1=System.currentTimeMillis();
                 @Override
                 public void onComplete(Model.Block block) {
+                    Log.d(TAG, "onComplete: 发送图片成功");
                     long addT2=System.currentTimeMillis();
                     try {
-                        String bbb=Textile.instance().files.list(threadid, "", 1).getItemsList().get(0).getBlock();
+                        String bbb=block.getId();
                         Log.d(TAG, "onComplete: bbb: "+bbb);
                         DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(bbb,addT1,addT2);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
+
                 @Override
                 public void onError(Exception e) {
-                    e.printStackTrace();
+
                 }
             });
+
+            //发送照片
+//            Textile.instance().files.addPicture(filePath, threadid,fileName , new Handlers.BlockHandler() {
+//                long addT1=System.currentTimeMillis();
+//                @Override
+//                public void onComplete(Model.Block block) {
+//                    long addT2=System.currentTimeMillis();
+//                    try {
+//                        String bbb=Textile.instance().files.list(threadid, "", 1).getItemsList().get(0).getBlock();
+//                        Log.d(TAG, "onComplete: bbb: "+bbb);
+//                        DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(bbb,addT1,addT2);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                @Override
+//                public void onError(Exception e) {
+//                    e.printStackTrace();
+//                }
+//            });
         }else if(requestCode==PictureConfig.TYPE_VIDEO && resultCode==RESULT_OK){ //如果是选择了视频
             chooseVideo=PictureSelector.obtainMultipleResult(data);
             String filePath=chooseVideo.get(0).getPath();
@@ -383,7 +405,8 @@ public class ChatActivity extends AppCompatActivity {
                     Log.d(TAG, "onComplete: 发送文件成功");
                     long addT2=System.currentTimeMillis();
                     try {
-                        String bbb=Textile.instance().files.list(threadid, "", 1).getItemsList().get(0).getBlock();
+//                        String bbb=Textile.instance().files.list(threadid, "", 1).getItemsList().get(0).getBlock();
+                        String bbb=block.getId();
                         Log.d(TAG, "onComplete: bbb: "+bbb);
                         DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(bbb,addT1,addT2);
                     } catch (Exception e) {

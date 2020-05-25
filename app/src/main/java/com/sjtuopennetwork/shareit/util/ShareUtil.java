@@ -64,6 +64,7 @@ public class ShareUtil {
         String finalNameWithDir="null"; //最终的完整文件路径
         try {
             File file=new File(fileDir+fileName);
+            Log.d(TAG, "saveFile: "+file.getAbsolutePath());
             if(!file.exists()){
                 file.createNewFile();
             }
@@ -234,11 +235,18 @@ public class ShareUtil {
 
     private static boolean isImgInCache(String hash){
         String fileName=fileCacheDir+hash;
+        Log.d(TAG, "isImgInCache: "+hash);
         File file=new File(fileName);
         return file.exists();
     }
 
-    private static String cacheImg(byte[] data,String hash){
+    public static String cacheImg(byte[] data,String hash){
+        String imgipfs=Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtlimgcache/ipfs";
+        File ipfsDir=new File(imgipfs);
+        if(!ipfsDir.exists()){
+            ipfsDir.mkdir();
+        }
+        Log.d(TAG, "cacheImg: test ipfsDir:"+ipfsDir.getAbsolutePath());
         return saveFile(data,fileCacheDir,hash);
     }
 
@@ -273,7 +281,7 @@ public class ShareUtil {
                             e.printStackTrace();
                         }
                     });
-                }else if (type==1){ //文件
+                }else if (type==1){ //文件图片
                     Textile.instance().files.content(hash, new Handlers.DataHandler() {
                         @Override
                         public void onComplete(byte[] data, String media) {
@@ -287,10 +295,11 @@ public class ShareUtil {
                             e.printStackTrace();
                         }
                     });
-                }else{
+                }else if(type==2){
                     Textile.instance().ipfs.dataAtPath(hash, new Handlers.DataHandler() {
                         @Override
                         public void onComplete(byte[] data, String media) {
+                            Log.d(TAG, "onComplete: 缓存ipfs图片成功："+data.length);
                             cacheImg(data,hash);
                             Message msg=handler.obtainMessage();
                             handler.sendMessage(msg);
