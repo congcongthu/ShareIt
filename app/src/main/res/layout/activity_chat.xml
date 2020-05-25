@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <android.support.v7.widget.Toolbar
+        android:background="@color/lightgray"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@+id/chat_name_toolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="chat"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+
+        <ImageView
+            android:id="@+id/group_menu"
+            android:padding="8dp"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_menu"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+
+    </android.support.v7.widget.Toolbar>
+
+
+
+    <LinearLayout
+        android:id="@+id/chat_backgroud"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ListView
+            android:id="@+id/chat_lv"
+            android:stackFromBottom="true"
+            android:transcriptMode="alwaysScroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null">
+        </ListView>
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:background="@color/white"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <EditText
+            android:padding="5dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/rect_search_contact"
+            android:id="@+id/chat_text_edt"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="1"/>
+
+
+        <ImageView
+            android:id="@+id/bt_add_file"
+            android:src="@drawable/ic_add_round"
+            android:layout_width="38dp"
+            android:layout_height="38dp" />
+
+        <Button
+            android:layout_margin="5dp"
+            android:background="@drawable/back_bt_login"
+            android:id="@+id/chat_send_text"
+            android:textColor="@color/white"
+            android:text="发送"
+            android:textSize="20sp"
+            android:layout_width="70dp"
+            android:layout_height="35dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/file_layout"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" >
+
+        <TextView
+            android:id="@+id/bt_send_img"
+            android:layout_margin="10dp"
+            android:background="@drawable/rect_search_contact"
+            android:gravity="center"
+            android:text="图片"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:id="@+id/bt_send_video_stream"
+            android:layout_margin="10dp"
+            android:background="@drawable/rect_search_contact"
+            android:gravity="center"
+            android:text="视频s"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:id="@+id/bt_send_video_ticket"
+            android:layout_margin="10dp"
+            android:background="@drawable/rect_search_contact"
+            android:gravity="center"
+            android:text="视频t"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_width="65dp"
+            android:layout_height="50dp" />
+        <TextView
+            android:id="@+id/bt_send_file"
+            android:layout_margin="10dp"
+            android:background="@drawable/rect_search_contact"
+            android:gravity="center"
+            android:text="文件"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+    </LinearLayout>
+</LinearLayout>
