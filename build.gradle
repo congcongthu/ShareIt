@@ -3,9 +3,10 @@
 buildscript {
     repositories {
         maven { url 'http://developer.huawei.com/repo/' }
+      //  maven { url "https://jitpack.io" }
         google()
         jcenter()
-        
+        maven { url "https://maven.google.com" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.2'
@@ -19,11 +20,13 @@ buildscript {
 
 allprojects {
     repositories {
+        maven {url 'http://developer.huawei.com/repo/'}
         google()
         jcenter()
         //maven { url 'http://202.120.38.131:9081/repository/SJTU-OpenNetwork/' }
         maven { url "https://jitpack.io" }
-        maven {url 'http://developer.huawei.com/repo/'}
+
+        maven { url "https://maven.google.com" }
         ////
     }
 }

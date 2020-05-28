@@ -17,6 +17,15 @@ import java.util.List;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Model;
 
+/**
+ * GroupAddMemberActivity is used for inviting new members
+ * from friends which are already added and don't exist in
+ * the group.
+ *
+ * @date 2020/5/28
+ * @author YF
+ * @version 1.0
+ */
 public class GroupAddMemberActivity extends AppCompatActivity {
 
     //UI控件
@@ -59,7 +68,7 @@ public class GroupAddMemberActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //求好友与群成员的差集
+        //计算好友与群成员的差集
         for(int i=0;i<myFriends.size();i++){
             if(!allMembers.contains(myFriends.get(i))){
                 new_peers.add(myFriends.get(i));

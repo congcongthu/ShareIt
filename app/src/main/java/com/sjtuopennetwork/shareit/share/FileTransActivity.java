@@ -40,6 +40,14 @@ import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.stream.util.FileUtil;
 
+/**
+ * FileTransActivity is used for showing the information of files transformation,
+ * includes the size of file, RTT, the receiving time and sending time.
+ *
+ * @date 2020/5/27
+ * @author YF
+ * @version 1.0
+ */
 public class FileTransActivity extends AppCompatActivity {
 
     private static final String TAG = "===================FileTransActivity";

@@ -22,6 +22,15 @@ import java.util.List;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Model;
 
+/**
+ * GroupInfoActivity is used to show members info of group and provide
+ * operates, includes showing QR code, inviting new members, deleting
+ * members, setting administrator.
+ *
+ * @date 2020/5/28
+ * @author YF
+ * @version 1.0
+ */
 public class GroupInfoActivity extends AppCompatActivity {
     private static final String TAG = "========================================";
 
@@ -64,8 +73,10 @@ public class GroupInfoActivity extends AppCompatActivity {
         showMembers();
     }
 
+    /**
+     * show the list of group members.
+     */
     public void showMembers(){
-        //显示成员列表
         try {
             group_thread = Textile.instance().threads.get(threadid);
             if(!Textile.instance().threads.isAdmin(threadid,Textile.instance().profile.get().getId())){ //如果不是管理员

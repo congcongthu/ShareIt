@@ -87,6 +87,10 @@ public class SyncPhotoActivity extends AppCompatActivity {
         photoAdapter.notifyDataSetChanged();
     }
 
+    /**
+      * Get all photoes hash in a thread.
+      * @throws Exception The exception that occurred
+     */
     private void getAllPhotoHashs() {
         try{
             List<View.Files> photos=Textile.instance().files.list(photoThread.getId(),"",1000).getItemsList();

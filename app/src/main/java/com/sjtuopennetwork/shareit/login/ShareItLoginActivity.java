@@ -18,6 +18,14 @@ import java.io.File;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Mobile;
 
+/**
+  * Activity for shareit login, user can use Mnemonic
+  * to login.
+  *
+  * @date 2020/5/27
+  * @author YF
+  * @version 1.0
+ */
 public class ShareItLoginActivity extends AppCompatActivity {
 
     private static final String TAG = "==================";

@@ -43,7 +43,13 @@ import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 
-
+/**
+ * ChatActivity is the activity used for grout chat.
+ *
+ * @date 2020/5/27
+ * @author YF
+ * @version 1.0
+ */
 public class ChatActivity extends AppCompatActivity {
 
     private static final String TAG = "======================";
@@ -263,6 +269,12 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * Handle the new messages in group chat.
+     * @param tMsg Information of new messages,
+     * {@link com.sjtuopennetwork.shareit.share.util.TMsg}
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateChat(TMsg tMsg){
         if(tMsg.threadid.equals(threadid)){

@@ -21,6 +21,13 @@ import java.util.UUID;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 
+/**
+ *
+ *
+ * @date 2020/5/28
+ * @author YF
+ * @version 1.0
+ */
 public class ImageInfoActivity extends AppCompatActivity {
 
     private static final String TAG = "===========ImageInfoActivity";

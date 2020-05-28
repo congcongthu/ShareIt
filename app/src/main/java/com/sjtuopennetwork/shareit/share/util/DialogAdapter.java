@@ -60,7 +60,7 @@ public class DialogAdapter extends ArrayAdapter {
 
         String avatarHash="";
         String dialogname="通知";
-        if (tDialog.add_or_img.equals("tongzhi")) {
+        if (tDialog.add_or_img.equals("notice")) {
             vh.headImg.setImageResource(R.drawable.ic_notification_img);
         } else { //单人根据addr显示头像，多人根据threadid得到threadname
             try {

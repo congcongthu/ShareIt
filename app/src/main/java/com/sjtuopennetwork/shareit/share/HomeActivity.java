@@ -28,6 +28,14 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
+/**
+  * HomeAcitivity is a activity shown for users after login successful.
+  * Users can switch different fragments in Home.
+  *
+  * @date 2020/5/27
+  * @author YF
+  * @version 1.0
+ */
 public class HomeActivity extends AppCompatActivity {
 
     private static final String TAG = "====================";
@@ -153,7 +161,10 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    //切换Fragment
+    /**
+      * replaceFragment is used to switch which fragment to change.
+      * @param fragment the fragment user want to transform to.
+     */
     private void replaceFragment(Fragment fragment) {
         fragmentManager = getSupportFragmentManager();
         transaction = fragmentManager.beginTransaction();

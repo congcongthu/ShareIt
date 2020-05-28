@@ -92,6 +92,10 @@ public class SyncFilesActivity extends AppCompatActivity {
         recyclerView.setAdapter(filesAdapter);
     }
 
+    /**
+      * Get a list of files name and hash from a thread.
+      * @throws Exception The exception that occurred
+     */
     private void getAllFiles() {
         try {
             List<View.Files> files= Textile.instance().files.list(fileThread.getId(),"",1000).getItemsList();

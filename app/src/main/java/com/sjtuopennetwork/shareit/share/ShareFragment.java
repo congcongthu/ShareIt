@@ -30,7 +30,15 @@ import java.util.List;
 
 import sjtu.opennet.hon.Textile;
 
-
+/**
+  * The fragment for share, listing all the groups which users already
+  * joined. User can create groups or scan QR code by UI button to join
+  * groups.
+  *
+  * @date 2020/5/27
+  * @author YF
+  * @version 1.0
+ */
 public class ShareFragment extends Fragment {
 
     private static final String TAG = "====================";
@@ -48,8 +56,10 @@ public class ShareFragment extends Fragment {
     //持久化存储
     public SharedPreferences pref;
 
+    /**
+      * Required empty public constructor
+     */
     public ShareFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -75,6 +85,9 @@ public class ShareFragment extends Fragment {
         }
     }
 
+    /**
+      * initUI initialize the UI controls, and set click events.
+     */
     private void initUI(){
         dialoglistView=getActivity().findViewById(R.id.dialogs_lv);
         //右上角菜单按钮
@@ -94,6 +107,9 @@ public class ShareFragment extends Fragment {
         });
     }
 
+    /**
+      * initData get the data from sharepreferences and db, initialize and set data for adapter.
+     */
     private void initData(){
         pref=getActivity().getSharedPreferences("txtl",Context.MODE_PRIVATE);
         loginAccount=pref.getString("loginAccount",""); //当前登录的account，就是address
@@ -123,7 +139,7 @@ public class ShareFragment extends Fragment {
         }
         if(gpinvite>0){ //如果有群组邀请就要显示出来
             TDialog noti=new TDialog("",lastInvite.getInviter().getName()+" 邀请你",
-                    lastInvite.getDate().getSeconds(),false,"tongzhi",true,true);
+                    lastInvite.getDate().getSeconds(),false,"notice",true,true);
             dialogs.add(0,noti);
         }
 
@@ -131,7 +147,7 @@ public class ShareFragment extends Fragment {
         dialoglistView.setAdapter(dialogAdapter);
 
         dialoglistView.setOnItemClickListener((parent, view, position, id) -> {
-            if(dialogs.get(position).add_or_img.equals("tongzhi")){ //如果是通知，就跳转到通知
+            if(dialogs.get(position).add_or_img.equals("notice")){ //如果是通知，就跳转到通知
                 Intent intent=new Intent(getActivity(), NotificationActivity.class);
                 startActivity(intent);
             }else{ //如果是对话就进入聊天
@@ -153,6 +169,13 @@ public class ShareFragment extends Fragment {
         });
     }
 
+
+    /**
+      * getNewMsg will refresh the Msg display if get a new Msg.
+      *
+      * @param tDialog
+      * @return void
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getNewMsg(TDialog tDialog){ //获取到新的消息后要更新显示
 

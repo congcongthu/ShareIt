@@ -11,6 +11,13 @@ import com.sjtuopennetwork.shareit.R;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.View;
 
+/**
+ * GroupCodeActivity is used to show QR code of group.
+ *
+ * @date 2020/5/28
+ * @author YF
+ * @version 1.0
+ */
 public class GroupCodeActivity extends AppCompatActivity {
 
     private static final String TAG = "=====================";

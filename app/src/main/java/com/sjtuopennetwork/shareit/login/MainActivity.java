@@ -43,6 +43,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+  * Initial login activity,user can choose to create a new account,
+  * or login with huaweiID or shareitID.
+  *
+  * @date 2020/5/27
+  * @author YF
+  * @version 1.0
+ */
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "===============";
@@ -128,7 +136,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //从华为ID返回到结果之后，将结果写入到SharedPreference
+
+
+
+    /**
+      * Writing the result of huaweiID info to SharedPreference.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -186,6 +199,10 @@ public class MainActivity extends AppCompatActivity {
         }
   }
 
+
+    /**
+     * 取得设备读写及相机权限
+     */
     private void getPermission() {
         if(PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)==PermissionChecker.PERMISSION_DENIED){
             ActivityCompat.requestPermissions(this,
@@ -198,10 +215,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     /**
-     * 发送Get请求到服务器
-     * @param strUrlPath:接口地址（带参数）
-     * @return
+      * Send get request to server.
+      *
+      * @param strUrlPath Url path to server
+      * @return String
      */
     public static String getServiceInfo(String strUrlPath){
         String strResult = "";

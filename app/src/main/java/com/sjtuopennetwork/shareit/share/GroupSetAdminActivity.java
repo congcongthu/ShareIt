@@ -16,6 +16,13 @@ import java.util.List;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Model;
 
+/**
+ *  GroupSetAdminActivity is used to set administrator of
+ *  a group.
+ *
+ * @author YF
+ * @version 1.0
+ */
 public class GroupSetAdminActivity extends AppCompatActivity {
 
     //UI控件
@@ -42,6 +49,7 @@ public class GroupSetAdminActivity extends AppCompatActivity {
         change_admin=findViewById(R.id.change_admin);
         contactView=findViewById(R.id.group_non_admins);
     }
+
     private void initData() {
         contactBeans=new LinkedList<>();
         nonAdmins=new LinkedList<>();

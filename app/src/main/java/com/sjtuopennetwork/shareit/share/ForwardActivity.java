@@ -25,6 +25,14 @@ import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Model;
 
+/**
+ * ForwardActivity is the activity used for forwarding messages to other groups.
+ * For different message types there are different forward methods.
+ *
+ * @date 2020/5/27
+ * @author YF
+ * @version 1.0
+ */
 public class ForwardActivity extends AppCompatActivity {
     private static final String TAG = "========ForwardActivity";
 
@@ -89,6 +97,12 @@ public class ForwardActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Forward file to other threads using textile instance{@link sjtu.opennet.hon.Files#addFiles
+     * (String, String, String, Handlers.BlockHandler)}
+     * @param threadId id of the thread which users want to forward to
+     * @param hashName the hash of file
+     */
     public void forwardFile(String threadId,String hashName){
         String[] hashNames=hashName.split("##");
         Log.d(TAG, "forwardFile: 转发文件："+hashNames[0]);
@@ -105,6 +119,11 @@ public class ForwardActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Forward text to other threads using textile instance{@link sjtu.opennet.hon.Messages#add(String, String)}
+     * @param threadId id of the thread which users want to forward to
+     * @param textBody the text
+     */
     public void forwardText(String threadId, String textBody){
         try {
             Textile.instance().messages.add(threadId, textBody);
@@ -114,6 +133,12 @@ public class ForwardActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * Forward picture to other threads using textile instance{@link sjtu.opennet.hon.Files#addPicture
+     * (String, String, String, Handlers.BlockHandler)}
+     * @param threadId id of the thread which users want to forward to
+     * @param hashName the hash of file
+     */
     public void forwardPhoto(String threadId,String hashName){
         String[] hashNames=hashName.split("##");
         Textile.instance().files.addPicture(hashNames[0], threadId,hashNames[1] , new Handlers.BlockHandler() {
@@ -128,6 +153,13 @@ public class ForwardActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Forward video stream to other threads using textile instance{@link sjtu.opennet.hon.Files#addPicture
+     * (String, String, String, Handlers.BlockHandler)}
+     * @param threadId id of the thread which users want to forward to
+     * @param streamBody the video stream body
+     * @param isMine whether the video belong to me
+     */
     public void forwardStream(String threadId,String streamBody, boolean isMine){
         String[] tmp=streamBody.split("##");
         String streamId="";

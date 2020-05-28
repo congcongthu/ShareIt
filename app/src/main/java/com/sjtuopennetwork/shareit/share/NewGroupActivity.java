@@ -81,6 +81,11 @@ public class NewGroupActivity extends AppCompatActivity {
         editText=findViewById(R.id.new_group_name);
     }
 
+    /**
+      * Create a new thread {@link sjtu.opennet.hon.Threads#add} with parameter thread name
+      * @param threadName the name for new thread
+      * @throws Exception The exception that occurred
+     */
     private void addNewThreads(String threadName){
         String key= UUID.randomUUID().toString();
         sjtu.opennet.textilepb.View.AddThreadConfig.Schema schema= sjtu.opennet.textilepb.View.AddThreadConfig.Schema.newBuilder()

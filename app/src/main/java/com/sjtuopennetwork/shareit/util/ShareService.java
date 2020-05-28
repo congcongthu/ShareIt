@@ -588,7 +588,7 @@ public class ShareService extends Service {
             }
             if (gpinvite > 0) { //如果有群组邀请就要显示出来
                 TDialog noti=new TDialog("",lastInvite.getInviter().getName()+" 邀请你",
-                        lastInvite.getDate().getSeconds(),false,"tongzhi",true,true);
+                        lastInvite.getDate().getSeconds(),false,"notice",true,true);
                 EventBus.getDefault().post(noti);
             }
         }

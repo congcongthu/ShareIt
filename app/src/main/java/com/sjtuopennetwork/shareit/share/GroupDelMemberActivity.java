@@ -16,6 +16,13 @@ import java.util.List;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Model;
 
+/**
+ * GroupDelMemberActivity is used to delete group members.
+ *
+ * @date 2020/5/28
+ * @author YF
+ * @version 1.0
+ */
 public class GroupDelMemberActivity extends AppCompatActivity {
 
     //UI控件
