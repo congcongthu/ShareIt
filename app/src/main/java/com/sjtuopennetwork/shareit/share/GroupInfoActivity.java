@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.library.flowlayout.FlowLayoutManager;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.util.GroupMemberAdapter;
 

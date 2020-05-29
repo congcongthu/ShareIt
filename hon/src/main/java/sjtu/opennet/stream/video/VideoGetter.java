@@ -54,7 +54,8 @@ public class VideoGetter {
     class VideoTsGetListener extends BaseTextileEventListener {
         @Override
         public void notificationReceived(Model.Notification notification) {
-            if(notification.getBody().equals("stream file")){
+            //TODO
+            if(notification.getBody().equals("stream video")){
                 Log.d(TAG, "notificationReceived: 收到streamfile");
                 if(notification.getBlock().equals("")){
                     Log.d(TAG, "notificationReceived: get endflag");

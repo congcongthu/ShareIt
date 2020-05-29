@@ -97,16 +97,16 @@ public class ImageInfoActivity extends AppCompatActivity {
         }
 //        }
         showImg.setOnClickListener(view -> finish());
-        showImg.setOnLongClickListener(v -> {//弹出对话框提示是否要保存到本地
-            AlertDialog.Builder storeImg = new AlertDialog.Builder(ImageInfoActivity.this);
-            storeImg.setTitle("保存图片到本地");
-            storeImg.setPositiveButton("保存", (dialog, which) -> {
-                ShareUtil.storeSyncFile(photoData, imgName);
-            });
-            storeImg.setNegativeButton("取消", (dialog, which) -> Toast.makeText(ImageInfoActivity.this, "已取消", Toast.LENGTH_SHORT).show());
-            storeImg.show();
-            return true;
-        });
+//        showImg.setOnLongClickListener(v -> {//弹出对话框提示是否要保存到本地
+//            AlertDialog.Builder storeImg = new AlertDialog.Builder(ImageInfoActivity.this);
+//            storeImg.setTitle("保存图片到本地");
+//            storeImg.setPositiveButton("保存", (dialog, which) -> {
+//                ShareUtil.storeSyncFile(photoData, imgName);
+//            });
+//            storeImg.setNegativeButton("取消", (dialog, which) -> Toast.makeText(ImageInfoActivity.this, "已取消", Toast.LENGTH_SHORT).show());
+//            storeImg.show();
+//            return true;
+//        });
 
     }
 }

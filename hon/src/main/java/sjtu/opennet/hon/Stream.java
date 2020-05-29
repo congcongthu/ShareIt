@@ -2,8 +2,11 @@ package sjtu.opennet.hon;
 
 import android.util.Log;
 
+import java.util.logging.Handler;
+
 import mobile.Mobile_;
 import sjtu.opennet.textilepb.Model;
+import sjtu.opennet.textilepb.View;
 
 public class Stream extends NodeDependent{
 
@@ -36,4 +39,19 @@ public class Stream extends NodeDependent{
     public void threadAddStream(String threadId, String streamId) throws Exception{
 
     }
+
+    public void dataAtStreamFile(View.FeedStreamMeta feed,String hash, final Handlers.DataHandler handler) {
+        node.dataAtStreamFile(feed.toByteArray(),hash.getBytes(), (data, media, e)->{
+            if (e != null) {
+                handler.onError(e);
+                return;
+            }
+            try {
+                handler.onComplete(data, media);
+            } catch (final Exception exception) {
+                handler.onError(exception);
+            }
+        });
+    }
+
 }

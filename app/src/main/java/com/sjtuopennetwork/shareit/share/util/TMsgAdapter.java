@@ -62,6 +62,8 @@ public class TMsgAdapter extends BaseAdapter {
                 return handleFileView(i, view, viewGroup, 1);
             case 6:
                 return handleSimplePictureView(i,view,viewGroup);
+            case 7:
+                return handleStreamPictureView(i,view,viewGroup);
             default:
                 return null;
         }
@@ -238,6 +240,56 @@ public class TMsgAdapter extends BaseAdapter {
         return view;
     }
 
+    private View handleStreamPictureView(int i, View view, ViewGroup viewGroup){
+        Log.d(TAG, "handlePhotoView: simple picture: " + msgList.get(i).body);
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.item_msg_img, viewGroup, false);
+            view.setTag(new PhotoVH(view));
+        }
+        if (view.getTag() instanceof PhotoVH) {
+            PhotoVH h = (PhotoVH) view.getTag();
+            String username = "";
+            String useravatar = "";
+            if(msgList.get(i).ismine){
+                String[] hashName=msgList.get(i).body.split("##");
+                username = ShareUtil.getMyName();
+                useravatar = ShareUtil.getMyAvatar();
+                h.send_photo_right.setVisibility(View.VISIBLE); //右边的显示
+                h.send_photo_left.setVisibility(View.GONE); //左边的隐藏
+                h.photo_name_r.setText(username);
+                h.photo_time_r.setText(df.format(msgList.get(i).sendtime * 1000));
+                ShareUtil.setImageView(context, h.photo_avatar_r, useravatar, 0);
+                h.video_icon_r.setVisibility(View.GONE);
+                String img=hashName[1];
+                Glide.with(context).load(img).thumbnail(0.3f).into(h.chat_photo_r);
+                h.chat_photo_r.setOnClickListener(v->{
+                    Intent itToFileTrans = new Intent(context, FileTransActivity.class);
+                    itToFileTrans.putExtra("fileCid", hashName[0]);
+                    itToFileTrans.putExtra("fileSizeCid", hashName[1]);
+                    itToFileTrans.putExtra("isStream",true);
+                    context.startActivity(itToFileTrans);
+                });
+            }else{
+                String addr = msgList.get(i).author;
+                username = ShareUtil.getOtherName(addr);
+                useravatar = ShareUtil.getOtherAvatar(addr);
+                h.send_photo_left.setVisibility(View.VISIBLE); //左边的显示
+                h.send_photo_right.setVisibility(View.GONE); //右边的隐藏
+                h.photo_name.setText(username);
+                h.photo_time.setText(df.format(msgList.get(i).sendtime * 1000));
+                ShareUtil.setImageView(context, h.photo_avatar, useravatar, 0);
+                h.video_icon.setVisibility(View.GONE);
+                Log.d(TAG, "handleStreamPictureView: :"+msgList.get(i).body);
+                Glide.with(context).load(msgList.get(i).body).thumbnail(0.3f).into(h.chat_photo);
+                h.chat_photo.setOnClickListener(v -> {
+//                    Intent it1 = new Intent(context, ImageInfoActivity.class);
+//                    context.startActivity(it1);
+                });
+            }
+        }
+        return view;
+    }
+
     private View handleFileView(int i, View view, ViewGroup viewGroup, int fileType) {
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.item_msg_file, viewGroup, false);
@@ -358,7 +410,7 @@ public class TMsgAdapter extends BaseAdapter {
 
     @Override
     public int getViewTypeCount() {
-        return 7;
+        return 8;
     }
 
     @Override

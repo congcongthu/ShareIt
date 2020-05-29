@@ -37,6 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import sjtu.opennet.hon.Handlers;
+import sjtu.opennet.hon.Stream;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.stream.util.FileUtil;
 
@@ -66,6 +67,7 @@ public class FileTransActivity extends AppCompatActivity {
     long getT=0;
     long sendT=0;
     int filesize=0;
+    boolean isStream=false;
 
     Handler handler=new Handler(){
         @Override
@@ -83,6 +85,7 @@ public class FileTransActivity extends AppCompatActivity {
 
         fileCid=getIntent().getStringExtra("fileCid");
         fileSizeCid=getIntent().getStringExtra("fileSizeCid");
+        isStream=getIntent().getBooleanExtra("isStream",false);
         Log.d(TAG, "onCreate: get File: "+fileCid);
 
         pref=getSharedPreferences("txtl",Context.MODE_PRIVATE);
@@ -98,22 +101,27 @@ public class FileTransActivity extends AppCompatActivity {
 
         //显示文件大小
         trans_size=findViewById(R.id.file_trans_size);
-        Textile.instance().ipfs.dataAtPath(fileSizeCid, new Handlers.DataHandler() {
-            @Override
-            public void onComplete(byte[] data, String media) {
-                Message msg=handler.obtainMessage();
-                msg.what=9;
-                msg.obj=data.length;
-                filesize=data.length;
-                Log.d(TAG, "onComplete: 文件大小："+data.length);
-                handler.sendMessage(msg);
-            }
+        if(isStream){
+            File file=new File(fileSizeCid);
+            trans_size.setText("文件大小:"+file.length()+" B");
+        }else {
+            Textile.instance().ipfs.dataAtPath(fileSizeCid, new Handlers.DataHandler() {
+                @Override
+                public void onComplete(byte[] data, String media) {
+                    Message msg = handler.obtainMessage();
+                    msg.what = 9;
+                    msg.obj = data.length;
+                    filesize = data.length;
+                    Log.d(TAG, "onComplete: 文件大小：" + data.length);
+                    handler.sendMessage(msg);
+                }
 
-            @Override
-            public void onError(Exception e) {
+                @Override
+                public void onError(Exception e) {
 
-            }
-        });
+                }
+            });
+        }
 //        Textile.instance().files.content(fileSizeCid, new Handlers.DataHandler() {
 //            @Override
 //            public void onComplete(byte[] data, String media) {
@@ -135,7 +143,11 @@ public class FileTransActivity extends AppCompatActivity {
         trans_send=findViewById(R.id.file_trans_send_t);
         startAdd=records.get(0).t1; //发送端开始发送的时间
         sendT=records.get(0).t2-records.get(0).t1;
-        trans_send.setText("发送时间:"+sendT+" ms");
+        if(isStream){
+            trans_send.setText("发送时间:未统计");
+        }else{
+            trans_send.setText("发送时间:"+sendT+" ms");
+        }
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
@@ -184,22 +196,39 @@ public class FileTransActivity extends AppCompatActivity {
     }
 
     private void processData(){
-        getSum=0;
-        rttSum=0;
-        for (int i=1;i<records.size();i++){
-            getSum+=(records.get(i).t2-records.get(i).t1); //接收端自己从get到done的时间
-            rttSum+=(records.get(i).t3-startAdd); //发送端从发送到接收的自己的时间，rtt
-        }
-        int recvNum=records.size()-1;
-        Log.d(TAG, "processData: recvNum: "+recvNum);
-        if(recvNum==0){
-            trans_rtt.setText("平均RTT:未收到返回");
-            trans_rec.setText("平均接收时间:未收到返回");
+        if(isStream){
+            rttSum=0;
+            for (int i=1;i<records.size();i++){
+                rttSum+=(records.get(i).t3-startAdd); //发送端从发送到接收的自己的时间，rtt
+            }
+            int recvNum=records.size()-1;
+            Log.d(TAG, "processData: recvNum: "+recvNum);
+            if(recvNum==0){
+                trans_rtt.setText("平均RTT:未收到返回");
+                trans_rec.setText("平均接收时间:未统计");
+            }else{
+                rttT=rttSum / recvNum;
+                trans_rtt.setText("平均RTT:"+rttT +" ms");
+                trans_rec.setText( "平均接收时间: 未统计");
+            }
         }else{
-            rttT=rttSum / recvNum;
-            trans_rtt.setText("平均RTT:"+rttT +" ms");
-            getT=getSum / recvNum;
-            trans_rec.setText( "平均接收时间:"+getT+" ms");
+            getSum=0;
+            rttSum=0;
+            for (int i=1;i<records.size();i++){
+                getSum+=(records.get(i).t2-records.get(i).t1); //接收端自己从get到done的时间
+                rttSum+=(records.get(i).t3-startAdd); //发送端从发送到接收的自己的时间，rtt
+            }
+            int recvNum=records.size()-1;
+            Log.d(TAG, "processData: recvNum: "+recvNum);
+            if(recvNum==0){
+                trans_rtt.setText("平均RTT:未收到返回");
+                trans_rec.setText("平均接收时间:未收到返回");
+            }else{
+                rttT=rttSum / recvNum;
+                trans_rtt.setText("平均RTT:"+rttT +" ms");
+                getT=getSum / recvNum;
+                trans_rec.setText( "平均接收时间:"+getT+" ms");
+            }
         }
     }
 
@@ -251,12 +280,20 @@ public class FileTransActivity extends AppCompatActivity {
             String user=tRecord.recordFrom;
             String get1Str=df.format(tRecord.t1);
             String get2Str=df.format(tRecord.t2);
+            if(isStream){
+                get1Str="0";
+                get2Str="0";
+            }
             long gap=tRecord.t2-tRecord.t1;
             long rttt=tRecord.t3-startAdd;
             if(tRecord.type==0){
                 Log.d(TAG, "getView: 显示自己："+position);
                 recordView.user.setText("自身节点");
-                recordView.duration.setText("开始:"+get1Str+",  发完:"+get2Str+"\n耗时:"+gap+"ms");
+                if(isStream){
+                    recordView.duration.setText("0");
+                }else{
+                    recordView.duration.setText("开始:"+get1Str+",  发完:"+get2Str+"\n耗时:"+gap+"ms");
+                }
             }else{
                 Log.d(TAG, "getView: 显示接收："+position);
                 recordView.user.setText("接收节点:"+user.substring(0,13)+"...");

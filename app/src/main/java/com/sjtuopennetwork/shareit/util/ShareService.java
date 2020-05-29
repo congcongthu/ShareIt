@@ -65,6 +65,8 @@ public class ShareService extends Service {
     private final Object LOCK=new Object();
 
     private HashMap<String, LinkedList<FileTransInfo>> recordTmp=new HashMap<>();
+    private LinkedList<StreamAndMsg> streamPicMsg=new LinkedList<>();
+    private LinkedList<TMsg> streamFileMsg=new LinkedList<>();
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -74,7 +76,7 @@ public class ShareService extends Service {
         repoPath=intent.getStringExtra("repopath");
 
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
-        connectCafe= pref.getBoolean("connectCafe",true);
+        connectCafe= pref.getBoolean("connectCafe",false);
 //        connectCafe= pref.getBoolean("connectCafe",true);
 
         new Thread(){
@@ -121,7 +123,7 @@ public class ShareService extends Service {
                     final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
                     String sk=m.getSeed(); //获得私钥
-                    Textile.initialize(repoPath,sk , true, false, true);
+                    Textile.initialize(repoPath,sk , true, true, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -142,7 +144,7 @@ public class ShareService extends Service {
                     final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
                     if(!Textile.isInitialized(repoPath)){
-                        Textile.initialize(repoPath,m.getSeed() , true, false,true);
+                        Textile.initialize(repoPath,m.getSeed() , true, true,true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -160,9 +162,9 @@ public class ShareService extends Service {
             Textile.launch(ShareService.this, repoPath, true);
             Textile.instance().addEventListener(new ShareListener());
             sjtu.opennet.textilepb.View.LogLevel logLevel= sjtu.opennet.textilepb.View.LogLevel.newBuilder()
-                    .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-                    .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-                    .putSystems("hon.peermanager", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+//                    .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+//                    .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+//                    .putSystems("hon.peermanager", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-core", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-mobile", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-service",sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
@@ -187,6 +189,16 @@ public class ShareService extends Service {
         public ThreadUpdateWork(Model.Thread t, FeedItemData f){
             thread=t;
             feedItemData=f;
+        }
+    }
+
+    class StreamAndMsg{
+        View.FeedStreamMeta feedStreamMeta;
+        TMsg tMsg;
+
+        public StreamAndMsg(View.FeedStreamMeta feedStreamMeta, TMsg tMsg) {
+            this.feedStreamMeta = feedStreamMeta;
+            this.tMsg = tMsg;
         }
     }
 
@@ -344,21 +356,38 @@ public class ShareService extends Service {
         }
 
         if(feedItemData.type.equals(FeedItemType.STREAMMETA)){ //得到stream
-            Log.d(TAG, "handleThreadUpdates: =====收到stream");
+            Log.d(TAG, "handleThreadUpdates: =====收到stream: "+feedItemData.feedStreamMeta.getStreammeta().getType());
             int ismine=0;
             if(feedItemData.feedStreamMeta.getUser().getAddress().equals(myAddr)){
                 ismine=1;
             }
-            if(ismine==0){ //
+            if(feedItemData.feedStreamMeta.getStreammeta().getType().equals(Model.StreamMeta.Type.PICTURE)){ //stream图片
                 String streamId=feedItemData.feedStreamMeta.getStreammeta().getId();
-                String posterId=feedItemData.feedStreamMeta.getStreammeta().getPosterid();
-                String body=posterId+"##"+streamId;
-                TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg( // stream视频就是将缩略图hash和streamid放入消息，并设置消息的类型为2
-                        threadId,2,feedItemData.feedStreamMeta.getBlock(),
-                        feedItemData.feedStreamMeta.getUser().getAddress(),body,
-                        feedItemData.feedStreamMeta.getDate().getSeconds(),ismine);
-                Log.d(TAG, "onComplete: postMsg消息");
-                EventBus.getDefault().post(tMsg);
+                // 接收图片就自动订阅
+                if(ismine==0) {
+                    try {
+                        Textile.instance().streams.subscribeStream(streamId);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    String body = streamId;
+                    TMsg tMsg = new TMsg(feedItemData.block, threadId, 7,
+                            feedItemData.feedStreamMeta.getUser().getAddress(), body, feedItemData.feedStreamMeta.getDate().getSeconds(), false);
+                    streamPicMsg.add(new StreamAndMsg(feedItemData.feedStreamMeta,tMsg));
+                }
+            }
+            if(feedItemData.feedStreamMeta.getStreammeta().getType().equals(Model.StreamMeta.Type.VIDEO)) { //stream视频
+                if(ismine==0){
+                    String streamId=feedItemData.feedStreamMeta.getStreammeta().getId();
+                    String posterId=feedItemData.feedStreamMeta.getStreammeta().getPosterid();
+                    String body=posterId+"##"+streamId;
+                    TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg( // stream视频就是将缩略图hash和streamid放入消息，并设置消息的类型为2
+                            threadId,2,feedItemData.feedStreamMeta.getBlock(),
+                            feedItemData.feedStreamMeta.getUser().getAddress(),body,
+                            feedItemData.feedStreamMeta.getDate().getSeconds(),ismine);
+                    Log.d(TAG, "onComplete: postMsg消息");
+                    EventBus.getDefault().post(tMsg);
+                }
             }
         }
 
@@ -407,12 +436,14 @@ public class ShareService extends Service {
                     feedItemData.feedSimpleFile.getUser().getAddress(),
                     body,
                     feedItemData.feedSimpleFile.getDate().getSeconds(),ismine);
-
             if(feedItemData.feedSimpleFile.getSimpleFile().getType().equals(Model.SimpleFile.Type.PICTURE)){
                 Textile.instance().ipfs.dataAtFeedSimpleFile(feedItemData.feedSimpleFile, new Handlers.DataHandler() {
                     @Override
                     public void onComplete(byte[] data, String media) {
                         String a=ShareUtil.cacheImg(data,fileHash);
+                        if(!feedItemData.feedSimpleFile.getUser().getAddress().equals(myAddr)){ //收到他人的消息才下载图片
+                            String b=ShareUtil.saveImage(data,fileName);
+                        }
                         Log.d(TAG, "onComplete: filesize:"+data.length+" "+a);
                         EventBus.getDefault().post(tMsg);
                     }
@@ -515,7 +546,7 @@ public class ShareService extends Service {
             // join the default thread after online, the thread is created by cafe
             if(ShareUtil.getThreadByName("default")==null){
                 try {
-                    Textile.instance().invites.acceptExternal("QmdocmhxFuJ6SdGMT3Arh5wacWnWjZ52VsGXdSp6aXhTVJ","2NfdMrvABwHorxeJxSckSkBKfBJMMF4LqGwdmjY5ZCKw8TDpfHYxELbWnNhed");
+//                    Textile.instance().invites.acceptExternal("QmdocmhxFuJ6SdGMT3Arh5wacWnWjZ52VsGXdSp6aXhTVJ","2NfdMrvABwHorxeJxSckSkBKfBJMMF4LqGwdmjY5ZCKw8TDpfHYxELbWnNhed");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -528,6 +559,41 @@ public class ShareService extends Service {
         @Override
         public void notificationReceived(Model.Notification notification) {
             Log.d(TAG, "notificationReceived, type: "+notification.getType()+" "+notification.getSubject());
+            if(notification.getBody().equals("stream picture")) { //TODO
+                String hash=notification.getBlock();
+                String streamId=notification.getSubject();
+                View.FeedStreamMeta feedStreamMeta=null;
+                TMsg tmp=null;
+                for(StreamAndMsg streamAndMsg:streamPicMsg){
+                    if(streamAndMsg.feedStreamMeta.getStreammeta().getId().equals(streamId)){
+                        feedStreamMeta=streamAndMsg.feedStreamMeta;
+                        tmp=streamAndMsg.tMsg;
+                    }
+                }
+                final String tmpThreadId=tmp.threadid;
+                final String tmpBlock=tmp.blockid;
+                final String tmpAuthor=tmp.author;
+                final long tmpSendTime=tmp.sendtime;
+                Textile.instance().streams.dataAtStreamFile(feedStreamMeta,hash ,new Handlers.DataHandler() {
+                    @Override
+                    public void onComplete(byte[] data, String media) {
+                        String cachePath=ShareUtil.cacheImg(data,hash);
+                        Log.d(TAG, "onComplete: stream file:"+cachePath);
+                        ShareUtil.saveImage(data,System.currentTimeMillis()+".jpg");
+                        TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                                tmpThreadId,7,tmpBlock,tmpAuthor,
+                                cachePath,tmpSendTime,0);
+                        EventBus.getDefault().post(tMsg);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                return;
+            }
+
             if( notification.getType().equals(Model.Notification.Type.RECORD_REPORT)){
                 if(notification.getUser().getAddress().equals(Textile.instance().account.address())){
                     Log.d(TAG, "notificationReceived: 自己的notification");
@@ -548,22 +614,29 @@ public class ShareService extends Service {
                     Log.d(TAG, "notificationReceived: l size:"+l.size());
                 }else if(notification.getSubject().equals("ipfsDone")){
                     LinkedList<FileTransInfo> l=recordTmp.get(notification.getBlock());
-                    Log.d(TAG, "notificationReceived: block: "+notification.getBlock()+" "+l.size());
-                    int i=0;
                     TRecord tRecord=null;
-                    for(;i<l.size();i++){
-                        if(l.get(i).peerkey.equals(notification.getActor())){ //找到那个人的get1
-                            long get1=l.get(i).gettime;
-                            Log.d(TAG, "notificationReceived: get1: "+get1+" "+i);
-                            long get2=notification.getDate().getSeconds()*1000+(notification.getDate().getNanos()/1000000);
-                            Log.d(TAG, "notificationReceived: ipfsDone,sec,nanosec: "+get2);
-                            tRecord=new TRecord(notification.getBlock(),notification.getActor(),get1,get2,System.currentTimeMillis(),1);
-                            DBHelper.getInstance(getApplicationContext(),loginAccount).recordGet(tRecord.cid,tRecord.recordFrom,Long.valueOf(get1),get2,tRecord.t3);
-                            Log.d(TAG, "notificationReceived: cid, get1, get2: "+tRecord.cid+" "+get1+" "+get2);
-                            break;
+                    if(l==null){ //没有对应的get，就是stream
+                        tRecord=new TRecord(notification.getBlock(),notification.getActor(),0,0,System.currentTimeMillis(),1);
+                        DBHelper.getInstance(getApplicationContext(),loginAccount).recordGet(tRecord.cid,tRecord.recordFrom,0,0,tRecord.t3);
+                        Log.d(TAG, "notificationReceived: cid, get1, get2: "+tRecord.cid+" "+0+" "+0);
+                    }else{
+                        int i=0;
+                        for(;i<l.size();i++){
+                            if(l.get(i).peerkey.equals(notification.getActor())){ //找到那个人的get1
+                                long get1=l.get(i).gettime;
+                                Log.d(TAG, "notificationReceived: get1: "+get1+" "+i);
+                                long get2=notification.getDate().getSeconds()*1000+(notification.getDate().getNanos()/1000000);
+                                Log.d(TAG, "notificationReceived: ipfsDone,sec,nanosec: "+get2);
+                                tRecord=new TRecord(notification.getBlock(),notification.getActor(),get1,get2,System.currentTimeMillis(),1);
+                                DBHelper.getInstance(getApplicationContext(),loginAccount).recordGet(tRecord.cid,tRecord.recordFrom,Long.valueOf(get1),get2,tRecord.t3);
+                                Log.d(TAG, "notificationReceived: cid, get1, get2: "+tRecord.cid+" "+get1+" "+get2);
+                                break;
+                            }
                         }
+                        Log.d(TAG, "notificationReceived: i: "+i);
+                        l.remove(i);
                     }
-                    l.remove(i);
+
                     EventBus.getDefault().post(tRecord);
                 }
                 return;

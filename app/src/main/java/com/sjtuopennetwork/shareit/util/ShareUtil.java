@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.MessageDigest;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,7 +36,7 @@ import sjtu.opennet.textilepb.View;
 public class ShareUtil {
     private static final String TAG = "========================";
     private static String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtlimg/";
-    private static String fileCacheDir=Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtlimgcache/";
+    private static String fileCacheDir=Environment.getExternalStorageDirectory().getAbsolutePath() + "/imgcache/";
     private static String fileDir=Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtlfile/";
 
     public static String storeSyncFile(byte[] data,String fileName){
@@ -51,6 +52,9 @@ public class ShareUtil {
     }
 
     private static String saveFile(byte[] data, String fileDir, String fileName){
+        if (fileName.charAt(0)=='/'){
+            fileName=fileName.substring(1);
+        }
         //创建文件夹
         File f = new File(fileDir);
         if(!f.exists()){
@@ -61,7 +65,6 @@ public class ShareUtil {
         if (!state.equals(Environment.MEDIA_MOUNTED)) {
             return "null";
         }
-        String finalNameWithDir="null"; //最终的完整文件路径
         try {
             File file=new File(fileDir+fileName);
             Log.d(TAG, "saveFile: "+file.getAbsolutePath());
@@ -70,13 +73,36 @@ public class ShareUtil {
             }
             FileOutputStream out=new FileOutputStream(file);
             out.write(data);
-            finalNameWithDir=fileDir+fileName;
             out.close();
-            return finalNameWithDir;
+            return file.getAbsolutePath();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return finalNameWithDir;
+        return "null";
+    }
+
+
+    public static String file2MD5(File file) throws Exception {
+        byte[] hash;
+        byte[] buffer = new byte[8192];
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        FileInputStream fis = new FileInputStream(file);
+        int len;
+        while ((len = fis.read(buffer)) != -1) {
+            md.update(buffer, 0, len);
+        }
+        hash = md.digest();
+
+        //对生成的16字节数组进行补零操作
+        StringBuilder hex = new StringBuilder(hash.length * 2);
+        for (byte b : hash) {
+            if ((b & 0xFF) < 0x10) {
+                hex.append("0");
+            }
+            hex.append(Integer.toHexString(b & 0xFF));
+        }
+        Log.d(TAG, "file2MD5: "+hex.toString());
+        return hex.toString();
     }
 
     public static String getHuaweiAvatar(String url){
@@ -241,7 +267,7 @@ public class ShareUtil {
     }
 
     public static String cacheImg(byte[] data,String hash){
-        String imgipfs=Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtlimgcache/ipfs";
+        String imgipfs=Environment.getExternalStorageDirectory().getAbsolutePath() + "/imgcache/ipfs";
         File ipfsDir=new File(imgipfs);
         if(!ipfsDir.exists()){
             ipfsDir.mkdir();
@@ -251,7 +277,7 @@ public class ShareUtil {
     }
 
     public static void setImageView(Context context,ImageView imageView,String hash,int type){ // 0 avatar, 1 textile picture, 2 ipfs picture
-        String fileDir=Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtlimgcache/";
+        String fileDir=Environment.getExternalStorageDirectory().getAbsolutePath() + "/imgcache/";
         String fileName=fileDir+hash;
         if(hash.equals("")){ //如果为空就用默认
             Glide.with(context).load(R.drawable.ic_album).thumbnail(0.3f).into(imageView);
@@ -321,5 +347,9 @@ public class ShareUtil {
         } else {
             return null;
         }
+    }
+
+    public static String saveImage(byte[] data, String fileName) {
+        return saveFile(data,dir,fileName);
     }
 }

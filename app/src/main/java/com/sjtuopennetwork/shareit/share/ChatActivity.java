@@ -20,6 +20,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.google.protobuf.ByteString;
 import com.leon.lfilepickerlibrary.LFilePicker;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
@@ -35,8 +38,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.List;
 
+import sjtu.opennet.stream.file.FilePusher;
+import sjtu.opennet.stream.util.FileUtil;
 import sjtu.opennet.stream.video.VideoPusher;
 import sjtu.opennet.stream.video.ticketvideo.VideoSender_tkt;
 import sjtu.opennet.textilepb.Model;
@@ -61,6 +67,7 @@ public class ChatActivity extends AppCompatActivity {
     TextView bt_send_video_stream;
     TextView bt_send_file;
     TextView bt_send_video_ticket;
+    TextView bt_send_stream_pic;
 
     //持久化数据
     public SharedPreferences pref;
@@ -131,6 +138,7 @@ public class ChatActivity extends AppCompatActivity {
         add_file_layout.setVisibility(View.GONE);
         chat_backgroud=findViewById(R.id.chat_backgroud);
         bt_send_video_ticket=findViewById(R.id.bt_send_video_ticket);
+        bt_send_stream_pic=findViewById(R.id.bt_send_stream_pic);
 
         chat_backgroud.setOnClickListener(view -> {
             if(addingFile){
@@ -220,6 +228,14 @@ public class ChatActivity extends AppCompatActivity {
 //                    .withFileFilter(new String[]{".txt",".png",".jpeg",".jpg" })//设置可选文件类型
                     .withTitle("文件选择")//标题
                     .start();
+        });
+
+        bt_send_stream_pic.setOnClickListener(v->{
+            PictureSelector.create(ChatActivity.this)
+                    .openGallery(PictureMimeType.ofImage())
+                    .maxSelectNum(1)
+                    .compress(false)
+                    .forResult(1871);
         });
 
         group_menu.setOnClickListener(v -> {
@@ -440,6 +456,29 @@ public class ChatActivity extends AppCompatActivity {
 //                    e.printStackTrace();
 //                }
 //            });
+        }else if(requestCode == 1871 && resultCode==RESULT_OK){
+            choosePic=PictureSelector.obtainMultipleResult(data);
+            String filePath=choosePic.get(0).getPath();
+            String picHash=pushPic(threadid,filePath);
+
+            TMsg tMsg= null;
+            try {
+                long l=System.currentTimeMillis()/1000;
+                tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                        threadid,7,String.valueOf(l),myName,picHash+"##"+filePath,l,1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            msgList.add(tMsg);
+            msgAdapter.notifyDataSetChanged();
+            chat_lv.setSelection(msgList.size());
+
+
+            Intent itToFileTrans=new Intent(this, FileTransActivity.class);
+            itToFileTrans.putExtra("fileCid",picHash);
+            itToFileTrans.putExtra("fileSizeCid",filePath);
+            itToFileTrans.putExtra("isStream",true);
+            startActivity(itToFileTrans);
         }
     }
 
@@ -476,5 +515,45 @@ public class ChatActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(finishActivityRecevier);
+    }
+
+    public String pushPic(String threadId, String path) {
+        Log.d(TAG, "onComplete: poster: " + path);
+        File picFile=new File(path);
+        String streamId=String.valueOf(System.currentTimeMillis());
+        try {
+            streamId=ShareUtil.file2MD5(picFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Model.StreamMeta streamMeta = Model.StreamMeta.newBuilder()
+                .setId(streamId)
+                .setNsubstreams(1)
+                .setPosterid(path)
+                .setType(Model.StreamMeta.Type.PICTURE)
+                .build();
+        try {
+            Textile.instance().streams.startStream(threadId, streamMeta);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        byte[] fileContent= FileUtil.readAllBytes(path);
+        JSONObject object=new JSONObject();
+        object.put("picName",picFile.getName());
+        String videoDescStr= JSON.toJSONString(object);
+        Model.StreamFile streamFile= Model.StreamFile.newBuilder()
+                .setData(ByteString.copyFrom(fileContent))
+                .setDescription(ByteString.copyFromUtf8(videoDescStr))
+                .build();
+
+        long addT1=System.currentTimeMillis();
+        DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(streamId,addT1,0);
+        try {
+            Textile.instance().streams.streamAddFile(streamId,streamFile.toByteArray());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return streamId;
     }
 }
