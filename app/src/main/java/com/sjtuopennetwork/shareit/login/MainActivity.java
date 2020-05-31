@@ -101,7 +101,14 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor=pref.edit();
                 String myname=editText.getText().toString();
                 if(myname.equals("")){
-                    Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
+                    Intent toHomeActivity=new Intent(this, HomeActivity.class);
+                    toHomeActivity.putExtra("login",1); //shareit注册新账号，1
+                    myname=String.valueOf(System.currentTimeMillis());
+                    toHomeActivity.putExtra("myname",myname); //到这里必然不为空
+                    toHomeActivity.putExtra("avatarpath",avatarpath);
+                    startActivity(toHomeActivity);
+                    finish();
                 }else{
                     //跳转到HomeActivity
                     Intent toHomeActivity=new Intent(this, HomeActivity.class);
@@ -191,8 +198,8 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this,
                     new String[]{
                             "android.permission.WRITE_EXTERNAL_STORAGE",
-                            "android.permission.READ_EXTERNAL_STORAGE",
-                            "android.permission.CAMERA"
+                            "android.permission.READ_EXTERNAL_STORAGE"
+//                            "android.permission.CAMERA"
                     },100);
         }
     }

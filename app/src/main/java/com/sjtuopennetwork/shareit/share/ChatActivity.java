@@ -550,6 +550,7 @@ public class ChatActivity extends AppCompatActivity {
         DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(streamId,addT1,0);
         try {
             Textile.instance().streams.streamAddFile(streamId,streamFile.toByteArray());
+            Textile.instance().streams.closeStream(threadId,streamId);
         } catch (Exception e) {
             e.printStackTrace();
         }

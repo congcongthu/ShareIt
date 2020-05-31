@@ -51,6 +51,7 @@ public class FileTransActivity extends AppCompatActivity {
     private TextView trans_send;
     private ListView recordsLv;
     private Button saveLog;
+    private TextView getNum;
 
     private String fileCid;
     private String fileSizeCid;
@@ -96,6 +97,7 @@ public class FileTransActivity extends AppCompatActivity {
         records= DBHelper.getInstance(getApplicationContext(),loginAccount).listRecords(fileCid);
         Log.d(TAG, "onCreate: records size: "+records.size());
         recordsLv=findViewById(R.id.recordd_lv);
+        getNum=findViewById(R.id.get_num);
         adapter=new RecordAdapter(FileTransActivity.this,R.layout.item_records,records);
         recordsLv.setAdapter(adapter);
 
@@ -230,6 +232,7 @@ public class FileTransActivity extends AppCompatActivity {
                 trans_rec.setText( "平均接收时间:"+getT+" ms");
             }
         }
+        getNum.setText("收到 "+(records.size()-1));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

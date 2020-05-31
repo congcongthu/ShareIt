@@ -1,5 +1,6 @@
 package com.sjtuopennetwork.shareit.util;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,6 +10,8 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.PermissionChecker;
 import android.util.Log;
 import android.util.Pair;
 
@@ -28,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -66,7 +70,7 @@ public class ShareService extends Service {
 
     private HashMap<String, LinkedList<FileTransInfo>> recordTmp=new HashMap<>();
     private LinkedList<StreamAndMsg> streamPicMsg=new LinkedList<>();
-    private LinkedList<TMsg> streamFileMsg=new LinkedList<>();
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -76,8 +80,10 @@ public class ShareService extends Service {
         repoPath=intent.getStringExtra("repopath");
 
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
-        connectCafe= pref.getBoolean("connectCafe",false);
-//        connectCafe= pref.getBoolean("connectCafe",true);
+//        connectCafe= pref.getBoolean("connectCafe",false);
+        connectCafe= pref.getBoolean("connectCafe",true);
+
+
 
         new Thread(){
             @Override
@@ -123,7 +129,7 @@ public class ShareService extends Service {
                     final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
                     String sk=m.getSeed(); //获得私钥
-                    Textile.initialize(repoPath,sk , true, true, true);
+                    Textile.initialize(repoPath,sk , true, false, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -144,7 +150,7 @@ public class ShareService extends Service {
                     final File repo1 = new File(repoDir, loginAccount);
                     repoPath = repo1.getAbsolutePath();
                     if(!Textile.isInitialized(repoPath)){
-                        Textile.initialize(repoPath,m.getSeed() , true, true,true);
+                        Textile.initialize(repoPath,m.getSeed() , true, false,true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -162,12 +168,13 @@ public class ShareService extends Service {
             Textile.launch(ShareService.this, repoPath, true);
             Textile.instance().addEventListener(new ShareListener());
             sjtu.opennet.textilepb.View.LogLevel logLevel= sjtu.opennet.textilepb.View.LogLevel.newBuilder()
-//                    .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-//                    .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-//                    .putSystems("hon.peermanager", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("hon.peermanager", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-core", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-mobile", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-service",sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("stream",sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .build();
             Textile.instance().logs.setLevel(logLevel);
         } catch (Exception e) {
@@ -436,6 +443,15 @@ public class ShareService extends Service {
                     feedItemData.feedSimpleFile.getUser().getAddress(),
                     body,
                     feedItemData.feedSimpleFile.getDate().getSeconds(),ismine);
+            final int peerCount=thread.getPeerCount();
+            Random r=new Random();
+            int delay=r.nextInt(100*peerCount);
+            try {
+                Log.d(TAG, "handleThreadUpdate: wait :"+delay);
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             if(feedItemData.feedSimpleFile.getSimpleFile().getType().equals(Model.SimpleFile.Type.PICTURE)){
                 Textile.instance().ipfs.dataAtFeedSimpleFile(feedItemData.feedSimpleFile, new Handlers.DataHandler() {
                     @Override
@@ -660,9 +676,14 @@ public class ShareService extends Service {
                 e.printStackTrace();
             }
             if (gpinvite > 0) { //如果有群组邀请就要显示出来
-                TDialog noti=new TDialog("",lastInvite.getInviter().getName()+" 邀请你",
-                        lastInvite.getDate().getSeconds(),false,"tongzhi",true,true);
-                EventBus.getDefault().post(noti);
+//                TDialog noti=new TDialog("",lastInvite.getInviter().getName()+" 邀请你",
+//                        lastInvite.getDate().getSeconds(),false,"tongzhi",true,true);
+//                EventBus.getDefault().post(noti);
+                try {
+                    Textile.instance().notifications.acceptInvite(notification.getId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
