@@ -69,6 +69,7 @@ public class VideoPusher {
                 Log.d(TAG, "onComplete: poster: "+path);
                 Model.StreamMeta streamMeta= Model.StreamMeta.newBuilder()
                         .setId(videoMeta.getHash())
+                        .setType(Model.StreamMeta.Type.VIDEO)
                         .setNsubstreams(1)
                         .setPosterid(path)
                         .build();

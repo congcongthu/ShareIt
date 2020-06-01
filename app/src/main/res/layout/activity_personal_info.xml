@@ -254,7 +254,7 @@
             android:textSize="16sp"/>
     </LinearLayout>
 
-    <TextView
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/lightgray"/>
@@ -282,6 +282,15 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/ipfsPeerId"
+        android:padding="3dp"
+        android:text="ddsss"
+        android:textIsSelectable="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/lightgray"/>
 
 
 </LinearLayout>

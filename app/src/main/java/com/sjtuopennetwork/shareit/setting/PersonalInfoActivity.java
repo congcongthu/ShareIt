@@ -51,6 +51,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private TextView cafeUrl;
     CircleProgressDialog circleProgressDialog;
     private TextView shadowPid;
+    private TextView ipfsPeerId;
 
     //持久化
     private SharedPreferences pref;
@@ -208,6 +209,13 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
         shadowPid=findViewById(R.id.shadow_pid);
         shadowPid.setText(Textile.instance().shadow());
+
+        ipfsPeerId=findViewById(R.id.ipfsPeerId);
+        try {
+            ipfsPeerId.setText(Textile.instance().ipfs.peerId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         info_avatar_layout.setOnClickListener(v -> {
             com.luck.picture.lib.PictureSelector.create(PersonalInfoActivity.this)

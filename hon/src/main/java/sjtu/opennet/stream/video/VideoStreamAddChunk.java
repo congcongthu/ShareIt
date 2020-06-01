@@ -118,6 +118,7 @@ public class VideoStreamAddChunk extends Thread{
                 Log.d(TAG, "streamAddFile: "+videoDescStr);
                 Model.StreamFile streamFile= Model.StreamFile.newBuilder()
                         .setData(ByteString.copyFrom(tsFileContent))
+
                         .setDescription(ByteString.copyFromUtf8(videoDescStr))
                         .build();
                 Textile.instance().streams.streamAddFile(videoId,streamFile.toByteArray());

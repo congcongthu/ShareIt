@@ -168,9 +168,9 @@ public class ShareService extends Service {
             Textile.launch(ShareService.this, repoPath, true);
             Textile.instance().addEventListener(new ShareListener());
             sjtu.opennet.textilepb.View.LogLevel logLevel= sjtu.opennet.textilepb.View.LogLevel.newBuilder()
-                    .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-                    .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-                    .putSystems("hon.peermanager", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+//                    .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+//                    .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+//                    .putSystems("hon.peermanager", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-core", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-mobile", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-service",sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
@@ -188,6 +188,25 @@ public class ShareService extends Service {
             editor.putString("loginAccount",loginAccount);
         }
         editor.commit();
+    }
+
+    private int getRand(int num,int peerCount){
+        int DEGREE = 3;
+        int GAP = 2000; //毫秒
+        Random r=new Random();
+//        int rand = r.nextInt(peerCount); //Npeers 是群组人数
+        int rand=num;
+        int height = (int)(Math.log(peerCount) / Math.log(DEGREE));
+        int level = 0;
+        int index = DEGREE;
+        while(level < height){
+            if(index>rand){
+                break;
+            }
+            level ++;
+            index =index + index* DEGREE;
+        }
+        return level*GAP;
     }
 
     class ThreadUpdateWork{
@@ -444,14 +463,30 @@ public class ShareService extends Service {
                     body,
                     feedItemData.feedSimpleFile.getDate().getSeconds(),ismine);
             final int peerCount=thread.getPeerCount();
-            Random r=new Random();
-            int delay=r.nextInt(100*peerCount);
             try {
+                List<Model.Peer> l=Textile.instance().threads.peers(threadId).getItemsList();
+                int k=0;
+                for(;k<l.size();k++){
+                    if(feedItemData.feedSimpleFile.getUser().getAddress().equals(l.get(k).getAddress())){
+                        break;
+                    }
+                }
+                l.remove(k);
+                int v=0;
+                for(;v<l.size();v++){
+                    if(myAddr.equals(l.get(v).getAddress())){
+                        break;
+                    }
+                }
+                int delay=getRand(v,peerCount);
                 Log.d(TAG, "handleThreadUpdate: wait :"+delay);
                 Thread.sleep(delay);
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
+
+//            Random r=new Random();
+//            int delay=r.nextInt(120*peerCount);
             if(feedItemData.feedSimpleFile.getSimpleFile().getType().equals(Model.SimpleFile.Type.PICTURE)){
                 Textile.instance().ipfs.dataAtFeedSimpleFile(feedItemData.feedSimpleFile, new Handlers.DataHandler() {
                     @Override

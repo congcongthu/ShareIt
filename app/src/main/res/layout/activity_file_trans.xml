@@ -20,6 +20,7 @@
             android:textSize="20sp" />
 
         <TextView
+            android:textColor="@color/black"
             android:id="@+id/get_num"
             android:padding="5dp"
             android:text="收到"
