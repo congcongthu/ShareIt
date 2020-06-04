@@ -14,11 +14,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.contact.SearchContactActivity;
+import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
 import com.sjtuopennetwork.shareit.login.MainActivity;
 import com.sjtuopennetwork.shareit.setting.util.GetIpAddress;
 import com.sjtuopennetwork.shareit.util.DBHelper;
@@ -46,6 +50,8 @@ public class SettingFragment extends Fragment {
     RoundImageView avatar_layout;
     TextView logout_layout;
 //    Button uploadLog;
+    Button setDegree;
+    EditText degree;
 
     //持久化
     private SharedPreferences pref;
@@ -88,6 +94,14 @@ public class SettingFragment extends Fragment {
         tv_name = getActivity().findViewById(R.id.myname);
         devices_layout = getActivity().findViewById(R.id.setting_devices_layout);
         logout_layout = getActivity().findViewById(R.id.logout);
+
+        setDegree=getActivity().findViewById(R.id.setDegree);
+        degree=getActivity().findViewById(R.id.degree);
+        setDegree.setOnClickListener(view -> {
+            int deg=Integer.parseInt(degree.getText().toString());
+            Log.d(TAG, "initUI: degree: "+deg);
+            Textile.instance().streams.setDegree(deg);
+        });
 
 //        uploadLog=getActivity().findViewById(R.id.uploadlog);
 //        uploadLog.setOnClickListener(view -> {

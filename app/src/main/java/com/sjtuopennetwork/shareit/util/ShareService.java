@@ -561,6 +561,7 @@ public class ShareService extends Service {
             }
 
             try {
+                Textile.instance().ipfs.swarmConnect("/ip4/192.168.3.1/tcp/35776/ipfs/12D3KooWBRkc2SucAVVD6c6kwGCYH8nrzdR2r71Mqb9wTzaMZB73");
                 boolean s1=Textile.instance().ipfs.swarmConnect("/ip6/2001:da8:8000:6084:1a31:bfff:fecf:e603/tcp/4001/ipfs/12D3KooWFHnbHXpDyW1nQxdjJ6ETauAfunj3g2ZtRU4xV9AkZxCq");
                 boolean s2=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.131/tcp/4001/ipfs/12D3KooWKAKVbQF5yUGAaE5uDnuEbZAAgeU6cUYME6FhqFvqWmay");
                 boolean s3=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.100/tcp/4001/ipfs/12D3KooWHp3ABxB1E4ebeEpvcViVFUSsaH198QopBQ8pygvF6PzX");

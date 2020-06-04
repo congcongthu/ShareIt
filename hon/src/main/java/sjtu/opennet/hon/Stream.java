@@ -40,6 +40,10 @@ public class Stream extends NodeDependent{
 
     }
 
+    public void setDegree(int num){
+        node.setMaxWorkers((long)num);
+    }
+
     public void dataAtStreamFile(View.FeedStreamMeta feed,String hash, final Handlers.DataHandler handler) {
         node.dataAtStreamFile(feed.toByteArray(),hash.getBytes(), (data, media, e)->{
             if (e != null) {
