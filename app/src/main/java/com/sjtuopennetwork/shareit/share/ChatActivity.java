@@ -473,7 +473,6 @@ public class ChatActivity extends AppCompatActivity {
             msgAdapter.notifyDataSetChanged();
             chat_lv.setSelection(msgList.size());
 
-
             Intent itToFileTrans=new Intent(this, FileTransActivity.class);
             itToFileTrans.putExtra("fileCid",picHash);
             itToFileTrans.putExtra("fileSizeCid",filePath);

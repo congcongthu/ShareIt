@@ -101,6 +101,7 @@ public class SettingFragment extends Fragment {
             int deg=Integer.parseInt(degree.getText().toString());
             Log.d(TAG, "initUI: degree: "+deg);
             Textile.instance().streams.setDegree(deg);
+            Toast.makeText(getActivity(), "设置成功", Toast.LENGTH_SHORT).show();
         });
 
 //        uploadLog=getActivity().findViewById(R.id.uploadlog);
