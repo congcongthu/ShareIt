@@ -36,7 +36,7 @@ public class GroupCodeActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        codeSource=inviteID+"/"+key;
+        codeSource=inviteID+"##"+key;
         Log.d(TAG, "onCreate: code:"+inviteID+"   "+key);
         ImageView imageView=findViewById(R.id.group_code);
         imageView.setImageBitmap(QRCodeUtil.CreateTwoDCode(codeSource));

@@ -16,10 +16,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.qrlibrary.qrcode.utils.PermissionUtils;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.sjtuopennetwork.shareit.util.CafeUtil;
+import com.sjtuopennetwork.shareit.util.QRCodeActivity;
 import com.sjtuopennetwork.shareit.util.RoundImageView;
 import com.sjtuopennetwork.shareit.util.ShareUtil;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
@@ -52,6 +54,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
     CircleProgressDialog circleProgressDialog;
     private TextView shadowPid;
     private TextView ipfsPeerId;
+    private LinearLayout shadowInfoLayout;
+    private LinearLayout shadowBack;
 
     //持久化
     private SharedPreferences pref;
@@ -208,7 +212,19 @@ public class PersonalInfoActivity extends AppCompatActivity {
         info_cafe=findViewById(R.id.personal_info_cafe);
 
         shadowPid=findViewById(R.id.shadow_pid);
-        shadowPid.setText(Textile.instance().shadow());
+//        shadowPid.setText(Textile.instance().shadow());
+        shadowInfoLayout=findViewById(R.id.shadow_info_layout);
+        shadowInfoLayout.setOnClickListener(v->{
+            PermissionUtils.getInstance().requestPermission(PersonalInfoActivity.this);
+            Intent it=new Intent(PersonalInfoActivity.this, QRCodeActivity.class);
+            startActivity(it);
+        });
+        shadowBack=findViewById(R.id.shadow_code_layout);
+        shadowBack.setOnClickListener(v->{
+            Intent it=new Intent(PersonalInfoActivity.this, ShadowCodeActivity.class);
+            startActivity(it);
+        });
+
 
         ipfsPeerId=findViewById(R.id.ipfsPeerId);
         try {

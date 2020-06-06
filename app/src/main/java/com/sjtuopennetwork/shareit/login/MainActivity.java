@@ -198,8 +198,8 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this,
                     new String[]{
                             "android.permission.WRITE_EXTERNAL_STORAGE",
-                            "android.permission.READ_EXTERNAL_STORAGE"
-//                            "android.permission.CAMERA"
+                            "android.permission.READ_EXTERNAL_STORAGE",
+                            "android.permission.CAMERA"
                     },100);
         }
     }

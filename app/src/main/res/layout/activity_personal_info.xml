@@ -203,13 +203,47 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="影子节点"
+            android:text="连接影子"
             android:layout_gravity="center_vertical"
             android:textColor="@color/black"
             android:textSize="20sp" />
         <TextView
             android:paddingLeft="10dp"
             android:id="@+id/shadow_pid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:ellipsize="end"
+            android:maxEms="12"
+            android:text=""
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/lightgray"/>
+    <LinearLayout
+        android:id="@+id/shadow_code_layout"
+        android:paddingLeft="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?selectableItemBackground"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="影子节点二维码"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+        <TextView
+            android:paddingLeft="10dp"
+            android:id="@+id/shadow_pid_save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
@@ -284,8 +318,10 @@
     </LinearLayout>
 
     <TextView
+        android:textColor="@color/black"
+        android:textSize="16sp"
         android:id="@+id/ipfsPeerId"
-        android:padding="3dp"
+        android:padding="10dp"
         android:text="ddsss"
         android:textIsSelectable="true"
         android:layout_width="match_parent"
