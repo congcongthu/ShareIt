@@ -81,13 +81,8 @@ public class SettingFragment extends Fragment {
     }
 
     private void initUI() {
-        info_layout = getActivity().findViewById(R.id.setting_info_layout);
-        qrcode_layout = getActivity().findViewById(R.id.setting_qrcode_layout);
-        notification_layout = getActivity().findViewById(R.id.setting_notification_layout);
-        avatar_layout = getActivity().findViewById(R.id.setting_avatar_photo);
-        tv_name = getActivity().findViewById(R.id.myname);
-        devices_layout = getActivity().findViewById(R.id.setting_devices_layout);
-        logout_layout = getActivity().findViewById(R.id.logout);
+        //init Widget
+        initWidget();
 
 //        uploadLog=getActivity().findViewById(R.id.uploadlog);
 //        uploadLog.setOnClickListener(view -> {
@@ -126,7 +121,10 @@ public class SettingFragment extends Fragment {
 ////                e.printStackTrace();
 ////            }
 //        });
-
+        //init SetOnCilckListener
+        initSetOnCilckListener();
+    }
+    private void initSetOnCilckListener(){
         info_layout.setOnClickListener(v -> {
             Intent it = new Intent(getActivity(), PersonalInfoActivity.class);
             startActivity(it);
@@ -147,7 +145,15 @@ public class SettingFragment extends Fragment {
             logout();
         });
     }
-
+    private void initWidget(){
+        info_layout = getActivity().findViewById(R.id.setting_info_layout);
+        qrcode_layout = getActivity().findViewById(R.id.setting_qrcode_layout);
+        notification_layout = getActivity().findViewById(R.id.setting_notification_layout);
+        avatar_layout = getActivity().findViewById(R.id.setting_avatar_photo);
+        tv_name = getActivity().findViewById(R.id.myname);
+        devices_layout = getActivity().findViewById(R.id.setting_devices_layout);
+        logout_layout = getActivity().findViewById(R.id.logout);
+    }
     private void logout() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setTitle("退出登录");
@@ -183,6 +189,9 @@ public class SettingFragment extends Fragment {
         Log.d(TAG, "initData: name avatar: "+username+" "+useravatar);
 
         //得到设备信息
+        getDeviceInfo();
+    }
+    private void getDeviceInfo(){
         try {
             Model.Thread t= ShareUtil.getThreadByName("mydevice1219");
             Context context = this.getActivity().getApplicationContext();
@@ -208,7 +217,6 @@ public class SettingFragment extends Fragment {
             e.printStackTrace();
         }
     }
-
     private void drawUI() {
         tv_name.setText(username);
         ShareUtil.setImageView(getContext(),avatar_layout,useravatar,0);

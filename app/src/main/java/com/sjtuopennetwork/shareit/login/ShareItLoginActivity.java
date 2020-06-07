@@ -31,7 +31,7 @@ public class ShareItLoginActivity extends AppCompatActivity {
 
     //内存数据
     String repoPath;
-
+    //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

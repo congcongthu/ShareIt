@@ -24,7 +24,7 @@ import java.util.List;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Model;
-
+import com.sjtuopennetwork.shareit.Constant;
 public class ForwardActivity extends AppCompatActivity {
     private static final String TAG = "========ForwardActivity";
 
@@ -64,24 +64,24 @@ public class ForwardActivity extends AppCompatActivity {
             forwardMsg.setTitle("确定转发消息？");
             forwardMsg.setPositiveButton("确定", (dialogInterface, i) -> {
                 switch (msgType){
-                    case 0: // 文本消息
+                    case Constant.MSG_TEXT: // 文本消息
                         String textBody=it.getStringExtra("textBody");
                         forwardText(threadId,textBody);
                         break;
-                    case 1: //图片
+                    case Constant.MSG_PIC: //图片
                         String picHashName=it.getStringExtra("picHashName");
                         forwardPhoto(threadId,picHashName);
                         break;
-                    case 2: //stream视频
+                    case Constant.MSG_STREAM_VEDIO: //stream视频
                         boolean isMine=it.getBooleanExtra("streamIsMine",false);
                         String streamBody=it.getStringExtra("streamBody");
                         forwardStream(threadId,streamBody,isMine);
                         break;
-                    case 3: //file
+                    case Constant.MSG_FILE: //file
                         String fileHashName=it.getStringExtra("fileHashName");
                         forwardFile(threadId,fileHashName);
                         break;
-                    case 4: //ticket视频
+                    case Constant.MSG_TICKET_VEDIO: //ticket视频
                         break;
                 }
             });
@@ -150,7 +150,7 @@ public class ForwardActivity extends AppCompatActivity {
         try {
             long l=System.currentTimeMillis()/1000;
             DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
-                    threadId,2,String.valueOf(l),myName,streamBody,l,1);
+                    threadId,Constant.MSG_STREAM_VEDIO,String.valueOf(l),myName,streamBody,l,1);
         } catch (Exception e) {
             e.printStackTrace();
         }

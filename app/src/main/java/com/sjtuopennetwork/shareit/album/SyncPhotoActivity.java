@@ -78,7 +78,10 @@ public class SyncPhotoActivity extends AppCompatActivity {
                     .forResult(PictureConfig.TYPE_IMAGE);
         });
 
-        //设置adapter
+        //set adapter
+        setAdapter();
+    }
+    private void setAdapter(){
         recyclerView=findViewById(R.id.sync_photo_rv);
         GridLayoutManager gridLayoutManager=new GridLayoutManager(this,4);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -86,7 +89,6 @@ public class SyncPhotoActivity extends AppCompatActivity {
         recyclerView.setAdapter(photoAdapter);
         photoAdapter.notifyDataSetChanged();
     }
-
     private void getAllPhotoHashs() {
         try{
             List<View.Files> photos=Textile.instance().files.list(photoThread.getId(),"",1000).getItemsList();

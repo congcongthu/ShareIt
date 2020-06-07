@@ -41,27 +41,26 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-
+import com.sjtuopennetwork.shareit.Constant;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "===============";
 
-    //UI控件
+    //UI Widget
     Button huaweiLogin;
     Button shareItLogin;
     Button shareItRegister;
     ImageView registerAvatar;
     EditText editText;
 
-    //持久化存储
+    //Persistent Storage
     SharedPreferences pref;
 
-    //内存数据
-    boolean isLogin; //是否已经登录，从pref中读出
-    String avatarpath; //存放登录时头像图片的路径
+    //personal data
+    boolean isLogin; //the flag to determine if it is registered(reading from the pref)
+    String avatarpath; //the path to store the img of avatar when loging
 
-    //华为ID
+    //Huawei ID
     private HuaweiIdSignInClient mSignInClient;
     private HuaweiIdSignInOptions mSignInOptions;
     String myclientid = "218779032643175488";
@@ -72,8 +71,7 @@ public class MainActivity extends AppCompatActivity {
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
 
         getPermission();
-
-        //查SharedPreference中"isLogin"判断登录状态，如果未登录则进入登录界面。如果已登录则跳转到HomeActivity
+        //check variable isLogin to determine if jumping into the HomeActivity
         isLogin=pref.getBoolean("isLogin",false); //如果没有这个字段就是首次打开
         if(isLogin){ //如果已经登录直接跳转到主界面，默认从pref中读取启动数据
             Intent toHomeActivity=new Intent(this, HomeActivity.class);
@@ -82,49 +80,10 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }else{ //如果未登录
             setContentView(R.layout.activity_main); //进入登录界面
-            huaweiLogin=findViewById(R.id.huaweiLogin);
-            shareItLogin=findViewById(R.id.shareItLogin);
-            shareItRegister=findViewById(R.id.shareItRegister);
-            registerAvatar=findViewById(R.id.register_avatar);
-            editText=findViewById(R.id.edt_name);
-
-            registerAvatar.setOnClickListener(v -> {
-                com.luck.picture.lib.PictureSelector.create(MainActivity.this)
-                        .openGallery(PictureMimeType.ofImage())
-                        .maxSelectNum(1)
-                        .compress(true)
-                        .enableCrop(true).withAspectRatio(1,1)
-                        .forResult(PictureConfig.TYPE_IMAGE);
-            });
-
-            shareItRegister.setOnClickListener(v -> {
-                SharedPreferences.Editor editor=pref.edit();
-                String myname=editText.getText().toString();
-                if(myname.equals("")){
-                    Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
-                }else{
-                    //跳转到HomeActivity
-                    Intent toHomeActivity=new Intent(this, HomeActivity.class);
-                    toHomeActivity.putExtra("login",1); //shareit注册新账号，1
-                    toHomeActivity.putExtra("myname",myname); //到这里必然不为空
-                    toHomeActivity.putExtra("avatarpath",avatarpath);
-                    startActivity(toHomeActivity);
-                    finish();
-                }
-            });
-
-            huaweiLogin.setOnClickListener(v -> {
-                //使用华为账号登录
-                mSignInOptions = new HuaweiIdSignInOptions.Builder(HuaweiIdSignInOptions.DEFAULT_SIGN_IN).build();
-                mSignInClient= HuaweiIdSignIn.getClient(MainActivity.this,mSignInOptions);
-                startActivityForResult(mSignInClient.getSignInIntent(), 8888);
-            });
-
-            shareItLogin.setOnClickListener(v -> {
-                //跳转到shareit登录界面
-                Intent toShareIt=new Intent(MainActivity.this,ShareItLoginActivity.class);
-                startActivity(toShareIt);
-            });
+            //get Widget
+            getWidget();
+            //set onClickListener
+            setOnClickListener();
         }
     }
 
@@ -132,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 8888) {
+        if (requestCode == Constant.SUCCESS_REQUEST_CODE) {
             Task<SignInHuaweiId> signInHuaweiIdTask = HuaweiIdSignIn.getSignedInAccountFromIntent(data);
             if (signInHuaweiIdTask.isSuccessful()) {
                 //登录成功，获取用户的华为帐号信息和ID Token
@@ -239,6 +198,52 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return strResult;
+    }
+    private void getWidget(){
+        huaweiLogin=findViewById(R.id.huaweiLogin);
+        shareItLogin=findViewById(R.id.shareItLogin);
+        shareItRegister=findViewById(R.id.shareItRegister);
+        registerAvatar=findViewById(R.id.register_avatar);
+        editText=findViewById(R.id.edt_name);
+    }
+    private void setOnClickListener(){
+        registerAvatar.setOnClickListener(v -> {
+            com.luck.picture.lib.PictureSelector.create(MainActivity.this)
+                    .openGallery(PictureMimeType.ofImage())
+                    .maxSelectNum(1)
+                    .compress(true)
+                    .enableCrop(true).withAspectRatio(1,1)
+                    .forResult(PictureConfig.TYPE_IMAGE);
+        });
+
+        shareItRegister.setOnClickListener(v -> {
+            SharedPreferences.Editor editor=pref.edit();
+            String myname=editText.getText().toString();
+            if(myname.equals("")){
+                Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
+            }else{
+                //跳转到HomeActivity
+                Intent toHomeActivity=new Intent(this, HomeActivity.class);
+                toHomeActivity.putExtra("login",1); //shareit注册新账号，1
+                toHomeActivity.putExtra("myname",myname); //到这里必然不为空
+                toHomeActivity.putExtra("avatarpath",avatarpath);
+                startActivity(toHomeActivity);
+                finish();
+            }
+        });
+
+        huaweiLogin.setOnClickListener(v -> {
+            //使用华为账号登录
+            mSignInOptions = new HuaweiIdSignInOptions.Builder(HuaweiIdSignInOptions.DEFAULT_SIGN_IN).build();
+            mSignInClient= HuaweiIdSignIn.getClient(MainActivity.this,mSignInOptions);
+            startActivityForResult(mSignInClient.getSignInIntent(), Constant.SUCCESS_REQUEST_CODE);
+        });
+
+        shareItLogin.setOnClickListener(v -> {
+            //跳转到shareit登录界面
+            Intent toShareIt=new Intent(MainActivity.this,ShareItLoginActivity.class);
+            startActivity(toShareIt);
+        });
     }
 }
 

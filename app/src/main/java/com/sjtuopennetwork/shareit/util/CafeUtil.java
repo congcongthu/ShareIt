@@ -9,7 +9,8 @@ import sjtu.opennet.textilepb.Model;
 public class CafeUtil {
     private static final String TAG = "=====================";
     private static boolean stopConnect=false;
-
+    private static final String URL="http://202.120.38.131:40601";
+    private static final String TOKEN="wnUV71bVxugyqDLjHwYt9SSfWd133vb242enJt9hCc12Nb22ET4uZzy3CACa";
     public static boolean isConnecting(){
         return !stopConnect;
     }
@@ -22,10 +23,10 @@ public class CafeUtil {
                     Log.d(TAG, "run: 开始连接cafe");
                     Textile.instance().cafes.register(
 //                    "http://159.138.58.61:40601",
-                            "http://202.120.38.131:40601",
+                            URL,
 //                    "http://192.168.1.109:40601",
 //                    "http://202.120.40.60:40601"
-                            "wnUV71bVxugyqDLjHwYt9SSfWd133vb242enJt9hCc12Nb22ET4uZzy3CACa", //131
+                            TOKEN, //131
                             handler);
                     try {
                         Thread.sleep(180000);

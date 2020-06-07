@@ -82,8 +82,10 @@ public class SyncFilesActivity extends AppCompatActivity {
                     .withTitle("文件选择")//标题
                     .start();
         });
-
-        //设置adapter
+        //set adapter
+        setAdapter();
+    }
+    private void setAdapter(){
         recyclerView=findViewById(R.id.sync_file_rv);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
@@ -91,7 +93,6 @@ public class SyncFilesActivity extends AppCompatActivity {
         filesAdapter=new FilesAdapter(this,fileNames,fileHashs);
         recyclerView.setAdapter(filesAdapter);
     }
-
     private void getAllFiles() {
         try {
             List<View.Files> files= Textile.instance().files.list(fileThread.getId(),"",1000).getItemsList();

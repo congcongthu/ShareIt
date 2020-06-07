@@ -191,31 +191,19 @@ public class PersonalInfoActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-        avatar_img = findViewById((R.id.setting_avatar_niceview));
-        info_name = findViewById(R.id.info_name);
-        info_addr = findViewById(R.id.info_addr);
-        info_avatar_layout = findViewById(R.id.setting_personal_info_avatar);
-        info_name_layout = findViewById(R.id.setting_personal_info_name);
-        info_addr_layout = findViewById(R.id.setting_personal_info_address);
-        info_phrase_layout=findViewById(R.id.setting_personal_info_phrase);
-        info_phrase=findViewById(R.id.info_phrase);
-        swarm_layout=findViewById(R.id.swarm_layout);
-        delay_time=findViewById(R.id.noti_time);
-
-        cafeCaption=findViewById(R.id.cafe_caption);
-        cafeUrl=findViewById(R.id.personal_cafe_url);
-        info_cafe=findViewById(R.id.personal_info_cafe);
-
-        shadowPid=findViewById(R.id.shadow_pid);
-        shadowPid.setText(Textile.instance().shadow());
-
+        //init widget
+        initWidget();
+        //init SetOnCilckListener
+        initSetOnCilckListener();
+    }
+    private  void initSetOnCilckListener(){
         info_avatar_layout.setOnClickListener(v -> {
             com.luck.picture.lib.PictureSelector.create(PersonalInfoActivity.this)
-                .openGallery(PictureMimeType.ofImage())
-                .maxSelectNum(1)
-                .compress(true)
-                .enableCrop(true).withAspectRatio(1,1)
-                .forResult(PictureConfig.TYPE_IMAGE);
+                    .openGallery(PictureMimeType.ofImage())
+                    .maxSelectNum(1)
+                    .compress(true)
+                    .enableCrop(true).withAspectRatio(1,1)
+                    .forResult(PictureConfig.TYPE_IMAGE);
         });
 
         info_name_layout.setOnClickListener(view -> {
@@ -239,7 +227,26 @@ public class PersonalInfoActivity extends AppCompatActivity {
             startActivity(it);
         });
     }
+    private void initWidget(){
+        avatar_img = findViewById((R.id.setting_avatar_niceview));
+        info_name = findViewById(R.id.info_name);
+        info_addr = findViewById(R.id.info_addr);
+        info_avatar_layout = findViewById(R.id.setting_personal_info_avatar);
+        info_name_layout = findViewById(R.id.setting_personal_info_name);
+        info_addr_layout = findViewById(R.id.setting_personal_info_address);
+        info_phrase_layout=findViewById(R.id.setting_personal_info_phrase);
+        info_phrase=findViewById(R.id.info_phrase);
+        swarm_layout=findViewById(R.id.swarm_layout);
+        delay_time=findViewById(R.id.noti_time);
 
+        cafeCaption=findViewById(R.id.cafe_caption);
+        cafeUrl=findViewById(R.id.personal_cafe_url);
+        info_cafe=findViewById(R.id.personal_info_cafe);
+
+        shadowPid=findViewById(R.id.shadow_pid);
+        shadowPid.setText(Textile.instance().shadow());
+
+    }
     @Override
     protected void onRestart() {
         super.onRestart();

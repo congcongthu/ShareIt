@@ -42,7 +42,7 @@ import sjtu.opennet.stream.video.ticketvideo.VideoSender_tkt;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
-
+import com.sjtuopennetwork.shareit.Constant;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -172,7 +172,10 @@ public class ChatActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        //init OnClickListener
+        initOnClickListener();
+    }
+    private void initOnClickListener(){
         send_msg.setOnClickListener(view -> {
             final String msg=chat_text_edt.getText().toString();
             if(!msg.equals("")){
@@ -234,15 +237,15 @@ public class ChatActivity extends AppCompatActivity {
             toForward.putExtra("msgType",forward.msgtype);
             String body="";
             switch (forward.msgtype){
-                case 0: // 文本消息
+                case Constant.MSG_TEXT: // 文本消息
                     toForward.putExtra("textBody",forward.body);
                     startActivity(toForward);
                     break;
-                case 1: //图片
+                case Constant.MSG_PIC: //图片
                     toForward.putExtra("picHashName",forward.body);
                     startActivity(toForward);
                     break;
-                case 2: //stream视频
+                case Constant.MSG_STREAM_VEDIO: //stream视频
                     if(forward.ismine){ // msg内容是 posterPath filePath streamId
                         toForward.putExtra("streamIsMine",true);
                     }
@@ -251,18 +254,17 @@ public class ChatActivity extends AppCompatActivity {
                     toForward.putExtra("streamBody",forward.body);
                     startActivity(toForward);
                     break;
-                case 3: //file
+                case Constant.MSG_FILE: //file
 //                    toForward.putExtra("fileHashName",forward.body);
 //                    startActivity(toForward);
                     break;
-                case 4: //ticket视频
+                case Constant.MSG_TICKET_VEDIO: //ticket视频
                     Toast.makeText(this, "无法转发ticket视频", Toast.LENGTH_SHORT).show();
                     break;
             }
             return false;
         });
     }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateChat(TMsg tMsg){
         if(tMsg.threadid.equals(threadid)){

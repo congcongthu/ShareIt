@@ -41,7 +41,7 @@ import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.QueryOuterClass;
 import sjtu.opennet.textilepb.RecordService;
 import sjtu.opennet.textilepb.View;
-
+import com.sjtuopennetwork.shareit.Constant;
 public class ShareService extends Service {
     public ShareService() {
     }
@@ -63,7 +63,6 @@ public class ShareService extends Service {
     private String lastBlock="0";
     private boolean serviceOn=true;
     private final Object LOCK=new Object();
-
     private HashMap<String, LinkedList<FileTransInfo>> recordTmp=new HashMap<>();
 
     @Override
@@ -108,12 +107,12 @@ public class ShareService extends Service {
         String phrase="";
         //初始化repo
         switch (login) {
-            case 0: //已经登录，找到repo，初始化textile
+            case Constant.LOGINED: //已经登录，找到repo，初始化textile
                 loginAccount=pref.getString("loginAccount","null"); //当前登录的account，就是address
                 final File repo0 = new File(repoDir, loginAccount);
                 repoPath = repo0.getAbsolutePath();
                 break;
-            case 1: //shareit注册，新建repo，初始化textile
+            case Constant.SHAREIT_LOGIN: //shareit注册，新建repo，初始化textile
                 try {
                     phrase= Textile.newWallet(12); //助记词
                     Mobile.MobileWalletAccount m=Textile.walletAccountAt(phrase,Textile.WALLET_ACCOUNT_INDEX,Textile.WALLET_PASSPHRASE);
@@ -126,7 +125,7 @@ public class ShareService extends Service {
                     e.printStackTrace();
                 }
                 break;
-            case 2: //华为账号登录，找到repo，初始化textile
+            case Constant.HUAWEI_LOGIN: //华为账号登录，找到repo，初始化textile
                 String openid=pref.getString("openid",""); //?测试一下是否需要截断，应该并不需要
                 String avatarUri=pref.getString("avatarUri",""); //先判断一下是否已经存储过
                 new Thread(){
@@ -148,7 +147,7 @@ public class ShareService extends Service {
                     e.printStackTrace();
                 }
                 break;
-            case 3: //shareit助记词登录,已经初始化了，只需要设置一些变量
+            case Constant.LOGINED_AND_INITED: //shareit助记词登录,已经初始化了，只需要设置一些变量
                 phrase=pref.getString("phrase","");
                 loginAccount=pref.getString("loginAccount","");
                 break;
@@ -174,7 +173,7 @@ public class ShareService extends Service {
 
         SharedPreferences.Editor editor=pref.edit();
         editor.putBoolean("isLogin",true);
-        if(login==1 || login ==2){ //1,2都需要修改助记词和登录账户,3不需要
+        if(login==Constant.SHAREIT_LOGIN || login ==Constant.HUAWEI_LOGIN){ //1,2都需要修改助记词和登录账户,3不需要
             editor.putString("phrase",phrase);
             editor.putString("loginAccount",loginAccount);
         }
