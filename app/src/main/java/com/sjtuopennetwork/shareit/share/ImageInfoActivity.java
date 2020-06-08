@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.luck.picture.lib.photoview.PhotoView;
+import com.sjtuopennetwork.shareit.LogUtils;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.util.ShareUtil;
 

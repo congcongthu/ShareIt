@@ -9,6 +9,7 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
 
+import com.sjtuopennetwork.shareit.LogUtils;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
 import com.sjtuopennetwork.shareit.share.ChatActivity;

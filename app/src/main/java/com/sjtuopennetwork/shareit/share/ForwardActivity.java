@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.sjtuopennetwork.shareit.LogUtils;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.util.DialogAdapter;
 import com.sjtuopennetwork.shareit.share.util.TDialog;

@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.qrlibrary.qrcode.utils.PermissionUtils;
+import com.sjtuopennetwork.shareit.LogUtils;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.setting.NotificationActivity;
 import com.sjtuopennetwork.shareit.share.util.DialogAdapter;

@@ -8,6 +8,7 @@ import android.util.Pair;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.sjtuopennetwork.shareit.LogUtils;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.contact.util.ContactUtil;
 import com.sjtuopennetwork.shareit.contact.util.ResultAdapter;

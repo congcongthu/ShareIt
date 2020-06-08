@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.sjtuopennetwork.shareit.LogUtils;
 import com.sjtuopennetwork.shareit.util.CafeUtil;
 import com.sjtuopennetwork.shareit.util.RoundImageView;
 import com.sjtuopennetwork.shareit.util.ShareUtil;

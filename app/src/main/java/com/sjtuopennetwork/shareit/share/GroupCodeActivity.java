@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.example.qrlibrary.qrcode.utils.QRCodeUtil;
+import com.sjtuopennetwork.shareit.LogUtils;
 import com.sjtuopennetwork.shareit.R;
 
 import sjtu.opennet.hon.Textile;

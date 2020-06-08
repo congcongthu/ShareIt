@@ -2,6 +2,8 @@ package com.sjtuopennetwork.shareit.util;
 
 import android.util.Log;
 
+import com.sjtuopennetwork.shareit.LogUtils;
+
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;

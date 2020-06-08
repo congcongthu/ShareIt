@@ -13,6 +13,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.googlecode.protobuf.format.JsonFormat;
+import com.sjtuopennetwork.shareit.LogUtils;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.util.TDialog;
 import com.sjtuopennetwork.shareit.share.util.TMsg;

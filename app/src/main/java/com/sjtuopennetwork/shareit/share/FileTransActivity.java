@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sjtuopennetwork.shareit.LogUtils;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.util.TRecord;
 import com.sjtuopennetwork.shareit.util.DBHelper;
@@ -144,7 +145,7 @@ public class FileTransActivity extends AppCompatActivity {
 
         //savelog
         saveLog=findViewById(R.id.save_log);
-        saveLogUtils.setOnClickListener(view -> {
+        saveLog.setOnClickListener(view -> {
             DateFormat dfd=new SimpleDateFormat("MM-dd HH:mm");
             String head="文件大小:"+filesize+
                     "\n平均rtt:"+rttT+

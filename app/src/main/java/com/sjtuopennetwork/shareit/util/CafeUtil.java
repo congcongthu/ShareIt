@@ -2,6 +2,8 @@ package com.sjtuopennetwork.shareit.util;
 
 import android.util.Log;
 
+import com.sjtuopennetwork.shareit.LogUtils;
+
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.Model;
