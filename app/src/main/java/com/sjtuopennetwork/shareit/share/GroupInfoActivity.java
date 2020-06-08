@@ -75,7 +75,7 @@ public class GroupInfoActivity extends AppCompatActivity {
             allMembers=Textile.instance().threads.peers(threadid).getItemsList();
             nonAdmins=Textile.instance().threads.nonAdmins(threadid).getItemsList();
             admins=Textile.instance().threads.admins(threadid).getItemsList();
-            Log.d(TAG, "showMembers: "+allMembers.size());
+            LogUtils.d(TAG, "showMembers: "+allMembers.size());
         } catch (Exception e) {
             e.printStackTrace();
         }

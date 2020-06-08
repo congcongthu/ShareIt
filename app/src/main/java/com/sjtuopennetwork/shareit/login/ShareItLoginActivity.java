@@ -45,7 +45,7 @@ public class ShareItLoginActivity extends AppCompatActivity {
         logInWithPhrase.setOnClickListener(v -> {
             String phrase=editText.getText().toString();
             final File repoDir = new File(ShareUtil.getAppExternalPath(this, "repo"));
-            Log.d(TAG, "onCreate: shareit login: "+repoDir.getAbsolutePath());
+            LogUtils.d(TAG, "onCreate: shareit login: "+repoDir.getAbsolutePath());
 
             boolean loginWrong=false;
             String loginAccount="";
@@ -54,20 +54,20 @@ public class ShareItLoginActivity extends AppCompatActivity {
                 Mobile.MobileWalletAccount m= Textile.walletAccountAt(phrase,Textile.WALLET_ACCOUNT_INDEX,Textile.WALLET_PASSPHRASE);
                 loginAccount=m.getAddress();
                 repoPath = new File(repoDir, loginAccount).getAbsolutePath();
-                Log.d(TAG, "onCreate: shareit repo path: "+repoPath);
+                LogUtils.d(TAG, "onCreate: shareit repo path: "+repoPath);
                 if (!Textile.isInitialized(repoPath)){
                     Textile.initialize(repoPath,m.getSeed() , true, false,true);
                 }
             } catch (Exception e) {
                 loginWrong=true;
-                Log.d(TAG, "onCreate: 助记词错误");
+                LogUtils.d(TAG, "onCreate: 助记词错误");
             }
 
             if(loginWrong){ //如果登录出了问题
                 Toast.makeText(this,"助记词错误",Toast.LENGTH_SHORT).show();
                 editText.setText("");
             }else { //如果登录成功
-                Log.d(TAG, "onCreate: 登录账户"+loginAccount);
+                LogUtils.d(TAG, "onCreate: 登录账户"+loginAccount);
                 SharedPreferences.Editor editor=pref.edit();
                 editor.putString("loginAccount",loginAccount);
                 editor.commit();

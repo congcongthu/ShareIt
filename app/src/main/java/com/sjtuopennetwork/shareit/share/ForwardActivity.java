@@ -49,7 +49,7 @@ public class ForwardActivity extends AppCompatActivity {
         //从数据库中查出对话
         dialogs=new LinkedList<>();
         dialogs = DBHelper.getInstance(getApplicationContext(),loginAccount).queryAllDIalogs();
-        Log.d(TAG, "initData: 对话数："+dialogs.size());
+        LogUtils.d(TAG, "initData: 对话数："+dialogs.size());
 
         //显示对话
         dialoglistView=findViewById(R.id.forward_dialogs);
@@ -91,7 +91,7 @@ public class ForwardActivity extends AppCompatActivity {
 
     public void forwardFile(String threadId,String hashName){
         String[] hashNames=hashName.split("##");
-        Log.d(TAG, "forwardFile: 转发文件："+hashNames[0]);
+        LogUtils.d(TAG, "forwardFile: 转发文件："+hashNames[0]);
 
         //发送文件
         Textile.instance().files.addFiles(hashNames[0], threadId, hashNames[1], new Handlers.BlockHandler() {

@@ -122,7 +122,7 @@ public class HomeActivity extends AppCompatActivity {
                 .getRunningServices(30);
 
         for (int i = 0; i < runningService.size(); i++) {
-            Log.d(TAG, "isServiceRunning: "+runningService.get(i).service.getClassName());
+            LogUtils.d(TAG, "isServiceRunning: "+runningService.get(i).service.getClassName());
             if (runningService.get(i).service.getClassName()
                     .equals(ServiceName)) {
                 return true;

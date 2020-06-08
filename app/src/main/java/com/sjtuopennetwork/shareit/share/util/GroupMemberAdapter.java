@@ -51,9 +51,9 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        Log.d(TAG, "onBindViewHolder: "+i);
+        LogUtils.d(TAG, "onBindViewHolder: "+i);
         viewHolder.name.setText(members.get(i).getName());
-        Log.d(TAG, "onBindViewHolder: avatar:"+members.get(i).getAvatar());
+        LogUtils.d(TAG, "onBindViewHolder: avatar:"+members.get(i).getAvatar());
         ShareUtil.setImageView(context, viewHolder.avatar, members.get(i).getAvatar(), 0);
     }
 

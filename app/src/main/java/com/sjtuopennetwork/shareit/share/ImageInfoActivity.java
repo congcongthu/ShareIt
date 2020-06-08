@@ -58,12 +58,12 @@ public class ImageInfoActivity extends AppCompatActivity {
         };
 
         imghash = it.getStringExtra("imghash");
-        Log.d(TAG, "onCreate: " + imghash);
+        LogUtils.d(TAG, "onCreate: " + imghash);
         if(isSimple){
             Textile.instance().ipfs.dataAtPath(imghash, new Handlers.DataHandler() {
                 @Override
                 public void onComplete(byte[] data, String media) {
-                    Log.d(TAG, "onComplete: 查看大图：" + data.length + " " + imghash);
+                    LogUtils.d(TAG, "onComplete: 查看大图：" + data.length + " " + imghash);
                     Bundle b = new Bundle();
                     b.putByteArray("img", data);
                     Message msg = new Message();
@@ -81,7 +81,7 @@ public class ImageInfoActivity extends AppCompatActivity {
             Textile.instance().files.content(imghash, new Handlers.DataHandler() {
                 @Override
                 public void onComplete(byte[] data, String media) {
-                    Log.d(TAG, "onComplete: 查看大图：" + data.length + " " + imghash);
+                    LogUtils.d(TAG, "onComplete: 查看大图：" + data.length + " " + imghash);
                     Bundle b = new Bundle();
                     b.putByteArray("img", data);
                     Message msg = new Message();

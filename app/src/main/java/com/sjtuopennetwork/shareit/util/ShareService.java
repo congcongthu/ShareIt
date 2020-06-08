@@ -80,7 +80,7 @@ public class ShareService extends Service {
             @Override
             public void run() {
                 super.run();
-                Log.d(TAG, "run: 启动前台服务");
+                LogUtils.d(TAG, "run: 启动前台服务");
                 NotificationManager notificationManager=(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 NotificationChannel notificationChannel=new NotificationChannel("12","前台服务",NotificationManager.IMPORTANCE_HIGH);
                 notificationManager.createNotificationChannel(notificationChannel);
@@ -198,7 +198,7 @@ public class ShareService extends Service {
     };
 
     public void handleThreadUpdate(ThreadUpdateWork threadUpdateWork){
-        Log.d(TAG, "处理消息："+threadUpdateWork.feedItemData.type+" "+threadUpdateWork.feedItemData.block);
+        LogUtils.d(TAG, "处理消息："+threadUpdateWork.feedItemData.type+" "+threadUpdateWork.feedItemData.block);
         Model.Thread thread=threadUpdateWork.thread;
         FeedItemData feedItemData=threadUpdateWork.feedItemData;
 
@@ -222,13 +222,13 @@ public class ShareService extends Service {
                 if (!authorIsMe){//双人，不是我，则是他人的好友同意
                     isSingle=1;
                     add_or_img=feedItemData.join.getUser().getAddress();
-                    Log.d(TAG, "threadUpdateReceived: get friend agree: "+add_or_img);
+                    LogUtils.d(TAG, "threadUpdateReceived: get friend agree: "+add_or_img);
                     flag=true;
                 }
             }else{ //群组
                 isSingle=0;
                 flag=true;
-                Log.d(TAG, "threadUpdateReceived: get group");
+                LogUtils.d(TAG, "threadUpdateReceived: get group");
             }
 
             if(flag){ //群组，或者双人接收才创建
@@ -253,7 +253,7 @@ public class ShareService extends Service {
             }else{ // 别人的消息
                 if(feedItemData.text.getBody().equals("ack")){
 //                    EventBus.getDefault().post(new Long(System.currentTimeMillis()));
-                    Log.d(TAG, "handleThreadUpdate: get other's ack");
+                    LogUtils.d(TAG, "handleThreadUpdate: get other's ack");
                     return;
                 } // 回复别人的消息
                 try {
@@ -312,8 +312,8 @@ public class ShareService extends Service {
         if(feedItemData.type.equals(FeedItemType.FILES)){
             String fileHash=feedItemData.files.getFiles(0).getFile().getHash();
             String fileName=feedItemData.files.getFiles(0).getFile().getName();
-            Log.d(TAG, "handleThreadUpdate: 1:"+feedItemData.block);
-            Log.d(TAG, "handleThreadUpdate: 2: "+feedItemData.files.getBlock());
+            LogUtils.d(TAG, "handleThreadUpdate: 1:"+feedItemData.block);
+            LogUtils.d(TAG, "handleThreadUpdate: 2: "+feedItemData.files.getBlock());
             int ismine=0;
             if(feedItemData.files.getUser().getAddress().equals(myAddr)){
                 ismine=1;
@@ -328,7 +328,7 @@ public class ShareService extends Service {
                     }
                 });
             }
-            Log.d(TAG, "handleThreadUpdate: fileHash: "+fileHash);
+            LogUtils.d(TAG, "handleThreadUpdate: fileHash: "+fileHash);
             String body=fileHash+"##"+fileName+"##"+feedItemData.block;
             TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
                     threadId,3,feedItemData.files.getBlock(),
@@ -343,7 +343,7 @@ public class ShareService extends Service {
         }
 
         if(feedItemData.type.equals(FeedItemType.STREAMMETA)){ //得到stream
-            Log.d(TAG, "handleThreadUpdates: =====收到stream");
+            LogUtils.d(TAG, "handleThreadUpdates: =====收到stream");
             int ismine=0;
             if(feedItemData.feedStreamMeta.getUser().getAddress().equals(myAddr)){
                 ismine=1;
@@ -356,7 +356,7 @@ public class ShareService extends Service {
                         threadId,2,feedItemData.feedStreamMeta.getBlock(),
                         feedItemData.feedStreamMeta.getUser().getAddress(),body,
                         feedItemData.feedStreamMeta.getDate().getSeconds(),ismine);
-                Log.d(TAG, "onComplete: postMsg消息");
+                LogUtils.d(TAG, "onComplete: postMsg消息");
                 EventBus.getDefault().post(tMsg);
             }
         }
@@ -377,7 +377,7 @@ public class ShareService extends Service {
                 String posterHash=video.getPoster();
                 String videoId=video.getId();
                 String body=posterHash+"##"+videoId;
-                Log.d(TAG, "threadUpdateReceived: getVideo: "+videoId+" "+posterHash);
+                LogUtils.d(TAG, "threadUpdateReceived: getVideo: "+videoId+" "+posterHash);
                 TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg( // ticket类型的视频，就将缩略图hash和videoid放入，设置消息类型为4
                         threadId,4,feedItemData.feedVideo.getBlock(),
                         feedItemData.feedVideo.getUser().getAddress(),body,
@@ -389,7 +389,7 @@ public class ShareService extends Service {
         if(feedItemData.type.equals(FeedItemType.SIMPLEFILE)){
             String fileHash=feedItemData.feedSimpleFile.getSimpleFile().getPath();
             String fileName=feedItemData.feedSimpleFile.getSimpleFile().getName();
-            Log.d(TAG, "handleThreadUpdate: simple: "+fileHash);
+            LogUtils.d(TAG, "handleThreadUpdate: simple: "+fileHash);
             int ismine=0;
             if(feedItemData.feedSimpleFile.getUser().getAddress().equals(myAddr)){
                 ismine=1;
@@ -412,7 +412,7 @@ public class ShareService extends Service {
                     @Override
                     public void onComplete(byte[] data, String media) {
                         String a=ShareUtil.cacheImg(data,fileHash);
-                        Log.d(TAG, "onComplete: filesize:"+data.length+" "+a);
+                        LogUtils.d(TAG, "onComplete: filesize:"+data.length+" "+a);
                         EventBus.getDefault().post(tMsg);
                     }
 
@@ -427,7 +427,7 @@ public class ShareService extends Service {
                     @Override
                     public void onComplete(byte[] data, String media) {
                         ShareUtil.storeSyncFile(data, fileName);
-                        Log.d(TAG, "onComplete: filesize:"+data.length);
+                        LogUtils.d(TAG, "onComplete: filesize:"+data.length);
                     }
 
                     @Override
@@ -463,12 +463,12 @@ public class ShareService extends Service {
                         Textile.instance().profile.setAvatar(avatarpath, new Handlers.BlockHandler() {
                             @Override
                             public void onComplete(Model.Block block) {
-                                Log.d(TAG, "onComplete: Shareit注册设置头像成功");
+                                LogUtils.d(TAG, "onComplete: Shareit注册设置头像成功");
                             }
 
                             @Override
                             public void onError(Exception e) {
-                                Log.d(TAG, "onError: ShareIt注册设置头像失败");
+                                LogUtils.d(TAG, "onError: ShareIt注册设置头像失败");
                             }
                         });
                     }
@@ -481,18 +481,18 @@ public class ShareService extends Service {
                 boolean s1=Textile.instance().ipfs.swarmConnect("/ip6/2001:da8:8000:6084:1a31:bfff:fecf:e603/tcp/4001/ipfs/12D3KooWFHnbHXpDyW1nQxdjJ6ETauAfunj3g2ZtRU4xV9AkZxCq");
                 boolean s2=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.131/tcp/4001/ipfs/12D3KooWKAKVbQF5yUGAaE5uDnuEbZAAgeU6cUYME6FhqFvqWmay");
                 boolean s3=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.100/tcp/4001/ipfs/12D3KooWHp3ABxB1E4ebeEpvcViVFUSsaH198QopBQ8pygvF6PzX");
-                Log.d(TAG, "nodeOnline: swarmConnect: "+s1+" "+s2+" "+s3);
+                LogUtils.d(TAG, "nodeOnline: swarmConnect: "+s1+" "+s2+" "+s3);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             //connect cafe
-            Log.d(TAG, "nodeOnline: connectcafe:"+connectCafe);
+            LogUtils.d(TAG, "nodeOnline: connectcafe:"+connectCafe);
             if(connectCafe){
                 CafeUtil.connectCafe(new Handlers.ErrorHandler() {
                     @Override
                     public void onComplete() {
-                        Log.d(TAG, "onComplete: cafe连接成功1");
+                        LogUtils.d(TAG, "onComplete: cafe连接成功1");
                         SharedPreferences.Editor editor=pref.edit();
                         editor.putBoolean("ok131",true);
                         editor.putBoolean("connectCafe",true);
@@ -501,7 +501,7 @@ public class ShareService extends Service {
 
                     @Override
                     public void onError(Exception e) {
-                        Log.d(TAG, "onError: cafe连接失败1");
+                        LogUtils.d(TAG, "onError: cafe连接失败1");
                         SharedPreferences.Editor editor=pref.edit();
                         editor.putBoolean("ok131",false);
                         editor.commit();
@@ -526,10 +526,10 @@ public class ShareService extends Service {
 
         @Override
         public void notificationReceived(Model.Notification notification) {
-            Log.d(TAG, "notificationReceived, type: "+notification.getType()+" "+notification.getSubject());
+            LogUtils.d(TAG, "notificationReceived, type: "+notification.getType()+" "+notification.getSubject());
             if( notification.getType().equals(Model.Notification.Type.RECORD_REPORT)){
                 if(notification.getUser().getAddress().equals(Textile.instance().account.address())){
-                    Log.d(TAG, "notificationReceived: 自己的notification");
+                    LogUtils.d(TAG, "notificationReceived: 自己的notification");
                     return;
                 }
                 if(notification.getSubject().equals("ipfsGet")){
@@ -542,23 +542,23 @@ public class ShareService extends Service {
                     long gett1=notification.getDate().getSeconds()*1000+(notification.getDate().getNanos()/1000000);
                     FileTransInfo fileTransInfo=new FileTransInfo(notification.getActor(),gett1);
                     l.add(fileTransInfo);
-                    Log.d(TAG, "notificationReceived: ipfsGet,sec,nanosec: "+gett1+" "+notification.getBlock());
+                    LogUtils.d(TAG, "notificationReceived: ipfsGet,sec,nanosec: "+gett1+" "+notification.getBlock());
                     recordTmp.put(notification.getBlock(),l);
-                    Log.d(TAG, "notificationReceived: l size:"+l.size());
+                    LogUtils.d(TAG, "notificationReceived: l size:"+l.size());
                 }else if(notification.getSubject().equals("ipfsDone")){
                     LinkedList<FileTransInfo> l=recordTmp.get(notification.getBlock());
-                    Log.d(TAG, "notificationReceived: block: "+notification.getBlock()+" "+l.size());
+                    LogUtils.d(TAG, "notificationReceived: block: "+notification.getBlock()+" "+l.size());
                     int i=0;
                     TRecord tRecord=null;
                     for(;i<l.size();i++){
                         if(l.get(i).peerkey.equals(notification.getActor())){ //找到那个人的get1
                             long get1=l.get(i).gettime;
-                            Log.d(TAG, "notificationReceived: get1: "+get1+" "+i);
+                            LogUtils.d(TAG, "notificationReceived: get1: "+get1+" "+i);
                             long get2=notification.getDate().getSeconds()*1000+(notification.getDate().getNanos()/1000000);
-                            Log.d(TAG, "notificationReceived: ipfsDone,sec,nanosec: "+get2);
+                            LogUtils.d(TAG, "notificationReceived: ipfsDone,sec,nanosec: "+get2);
                             tRecord=new TRecord(notification.getBlock(),notification.getActor(),get1,get2,System.currentTimeMillis(),1);
                             DBHelper.getInstance(getApplicationContext(),loginAccount).recordGet(tRecord.cid,tRecord.recordFrom,Long.valueOf(get1),get2,tRecord.t3);
-                            Log.d(TAG, "notificationReceived: cid, get1, get2: "+tRecord.cid+" "+get1+" "+get2);
+                            LogUtils.d(TAG, "notificationReceived: cid, get1, get2: "+tRecord.cid+" "+get1+" "+get2);
                             break;
                         }
                     }
@@ -630,7 +630,7 @@ public class ShareService extends Service {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void shutDown(Integer stop){
         if(stop==943){
-            Log.d(TAG, "shutDown: 服务stop");
+            LogUtils.d(TAG, "shutDown: 服务stop");
             Textile.instance().destroy();
             serviceOn=false;
             stopForeground(true);

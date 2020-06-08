@@ -93,7 +93,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     };
 
     public void drawCafeInfo(){
-        Log.d(TAG, "drawCafeInfo, ok131:"+ok131+" connectCafe:"+connectCafe);
+        LogUtils.d(TAG, "drawCafeInfo, ok131:"+ok131+" connectCafe:"+connectCafe);
         ok131=pref.getBoolean("ok131",false);
         connectCafe=pref.getBoolean("connectCafe",false);
         if(ok131){
@@ -125,7 +125,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
                     CafeUtil.connectCafe(new Handlers.ErrorHandler() {
                         @Override
                         public void onComplete() {
-                            Log.d(TAG, "onComplete: cafe131成功");
+                            LogUtils.d(TAG, "onComplete: cafe131成功");
                             SharedPreferences.Editor editor=pref.edit();
                             editor.putBoolean("ok131",true);
                             editor.putBoolean("connectCafe",true);
@@ -153,7 +153,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
                         CafeUtil.stopConnect(new Handlers.ErrorHandler() {
                             @Override
                             public void onComplete() {
-                                Log.d(TAG, "onComplete: 停止cafe连接");
+                                LogUtils.d(TAG, "onComplete: 停止cafe连接");
                                 connectCafe=false;
                                 ok131=false;
                                 SharedPreferences.Editor editor=pref.edit();
@@ -180,7 +180,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
         username= ShareUtil.getMyName();
         useravatar=ShareUtil.getMyAvatar();
-        Log.d(TAG, "initData: name avatar: "+username+" "+useravatar);
+        LogUtils.d(TAG, "initData: name avatar: "+username+" "+useravatar);
 
         phrase=pref.getString("phrase","");
         try {

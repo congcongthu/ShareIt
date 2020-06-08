@@ -62,7 +62,7 @@ public class ContactDiscoverActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 targetAddress=wantToAdd.getAddress();
-                Log.d(TAG, "myOnClick: createTwoPersonThread");
+                LogUtils.d(TAG, "myOnClick: createTwoPersonThread");
                 ContactUtil.createTwoPersonThread(targetAddress); //创建双人thread,key就是那个人的地址
             });
             addContact.setNegativeButton("取消", (dialog, which) -> Toast.makeText(ContactDiscoverActivity.this,"已取消",Toast.LENGTH_SHORT).show());

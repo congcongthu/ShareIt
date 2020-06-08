@@ -31,7 +31,7 @@ public class ContactUtil {
             for (Model.Peer p:threadPeers){
                 boolean pConnected=false;
                 for(Model.SwarmPeer s:swarmPeers){
-                    Log.d(TAG, "allPeerConnected: threadPeer: "+p.getId()+"  swarmPeer: "+s.getId());
+                    LogUtils.d(TAG, "allPeerConnected: threadPeer: "+p.getId()+"  swarmPeer: "+s.getId());
                     if(p.getId().equals(s.getId())){
                         pConnected=true;
                         break; //找到了就跳出
@@ -72,10 +72,10 @@ public class ContactUtil {
         List<Model.Thread> threads;
         try {
             threads=Textile.instance().threads.list().getItemsList();
-            Log.d(TAG, "getFriendList: thread的数量："+threads.size());
+            LogUtils.d(TAG, "getFriendList: thread的数量："+threads.size());
             for(Model.Thread t:threads){
                 if(t.getWhitelistCount()==2){ //如果是双人thread，并且的确有两个人
-                    Log.d(TAG, "getFriendList: 双人thread："+t.getName());
+                    LogUtils.d(TAG, "getFriendList: 双人thread："+t.getName());
                     List<Model.Peer> peers=Textile.instance().threads.peers(t.getId()).getItemsList();
                     for(Model.Peer p:peers){
                         if(!p.getAddress().equals(Textile.instance().account.address())){ //不是自己就是好友
@@ -127,19 +127,19 @@ public class ContactUtil {
             for (View.InviteView inviteView : invites) {
                 if(inviteView.getName().equals("FriendThread1219")){ //找到好友申请的邀请
                     String applier=inviteView.getInviter().getAddress();
-                    Log.d(TAG, "getApplication: 申请者address："+applier);
+                    LogUtils.d(TAG, "getApplication: 申请者address："+applier);
 
                     int oldindex=-1;
                     for(int i=0;i<friendApplications.size();i++){
                         if(friendApplications.get(i).getInviter().getAddress().equals(applier)){
-                            Log.d(TAG, "getApplication: 申请是老的"+i);
+                            LogUtils.d(TAG, "getApplication: 申请是老的"+i);
                             oldindex=i;
                             break;
                         }
                     }
 
                     if(oldindex==-1){
-                        Log.d(TAG, "getApplication: 这个申请是第一次："+inviteView.getId());
+                        LogUtils.d(TAG, "getApplication: 这个申请是第一次："+inviteView.getId());
                         String resultAddr=inviteView.getInviter().getAddress().substring(0,10);
                         ResultContact resultContact=new ResultContact(resultAddr,inviteView.getInviter().getName(),inviteView.getInviter().getAvatar(),null,false);
                         applications.add(resultContact);
@@ -170,7 +170,7 @@ public class ContactUtil {
             for(Model.Thread t:threads){
                 if(t.getKey().equals(targetAddress)){
                     Textile.instance().threads.remove(t.getId());
-                    Log.d(TAG, "createTwoPersonThread: 已删除key："+targetAddress);
+                    LogUtils.d(TAG, "createTwoPersonThread: 已删除key："+targetAddress);
                 }
             }
 

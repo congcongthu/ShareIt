@@ -1,25 +1,22 @@
 package com.sjtuopennetwork.shareit.album;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.sjtuopennetwork.shareit.LogUtils;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.album.util.PhotoAdapter;
-import com.sjtuopennetwork.shareit.share.ChatActivity;
-import com.sjtuopennetwork.shareit.share.util.TMsg;
 import com.sjtuopennetwork.shareit.util.ShareUtil;
 
 import java.util.ArrayList;
@@ -114,7 +111,7 @@ public class SyncPhotoActivity extends AppCompatActivity {
                     try {
                         String hash=Textile.instance().files.list(photoThread.getId(),"",1).getItemsList().get(0).getFiles(0).getFile().getHash();
                         String name=Textile.instance().files.list(photoThread.getId(),"",1).getItemsList().get(0).getFiles(0).getFile().getName();
-                        Log.d(TAG, "onComplete: add pic success : "+hash);
+                        LogUtils.d(TAG, "onComplete: add pic success : "+hash);
                         Message msg=new Message();
                         msg.what=1;
                         Bundle b=new Bundle();
@@ -129,7 +126,7 @@ public class SyncPhotoActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(Exception e) {
-                    Log.d(TAG, "onError: syncphotofailed");
+                    LogUtils.d(TAG, "onError: syncphotofailed");
                     e.printStackTrace();
                 }
             });

@@ -20,7 +20,7 @@ public class CafeUtil {
             @Override
             public void run() {
                 while(!stopConnect){
-                    Log.d(TAG, "run: 开始连接cafe");
+                    LogUtils.d(TAG, "run: 开始连接cafe");
                     Textile.instance().cafes.register(
 //                    "http://159.138.58.61:40601",
                             URL,

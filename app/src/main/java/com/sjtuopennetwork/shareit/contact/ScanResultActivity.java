@@ -70,7 +70,7 @@ public class ScanResultActivity extends AppCompatActivity {
 
     private void trySwarmConnect(String peerId) {
         try {
-            Log.d(TAG, "trySwarmConnect: 尝试swarmConnect："+peerId);
+            LogUtils.d(TAG, "trySwarmConnect: 尝试swarmConnect："+peerId);
             Textile.instance().ipfs.swarmConnect("/p2p-circuit/ipfs/"+peerId);
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,7 +108,7 @@ public class ScanResultActivity extends AppCompatActivity {
     //得到搜索结果
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getResult(Model.Contact c){
-        Log.d(TAG, "getResult: 得到结果："+c.getAddress());
+        LogUtils.d(TAG, "getResult: 得到结果："+c.getAddress());
 
         resultContact=c;
         //这里再设置

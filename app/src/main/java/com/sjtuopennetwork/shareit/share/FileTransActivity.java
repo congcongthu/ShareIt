@@ -71,7 +71,7 @@ public class FileTransActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             int fileSizeInt=(int)msg.obj;
-            Log.d(TAG, "handleMessage: handle文件大小："+fileSizeInt);
+            LogUtils.d(TAG, "handleMessage: handle文件大小："+fileSizeInt);
             trans_size.setText("文件大小:"+fileSizeInt+" B");
         }
     };
@@ -83,7 +83,7 @@ public class FileTransActivity extends AppCompatActivity {
 
         fileCid=getIntent().getStringExtra("fileCid");
         fileSizeCid=getIntent().getStringExtra("fileSizeCid");
-        Log.d(TAG, "onCreate: get File: "+fileCid);
+        LogUtils.d(TAG, "onCreate: get File: "+fileCid);
 
         pref=getSharedPreferences("txtl",Context.MODE_PRIVATE);
         loginAccount=pref.getString("loginAccount",""); //当前登录的account，就是address
@@ -91,7 +91,7 @@ public class FileTransActivity extends AppCompatActivity {
         //从数据库中查出每个的接收时间
         records=new LinkedList<>();
         records= DBHelper.getInstance(getApplicationContext(),loginAccount).listRecords(fileCid);
-        Log.d(TAG, "onCreate: records size: "+records.size());
+        LogUtils.d(TAG, "onCreate: records size: "+records.size());
         recordsLv=findViewById(R.id.recordd_lv);
         adapter=new RecordAdapter(FileTransActivity.this,R.layout.item_records,records);
         recordsLv.setAdapter(adapter);
@@ -105,7 +105,7 @@ public class FileTransActivity extends AppCompatActivity {
                 msg.what=9;
                 msg.obj=data.length;
                 filesize=data.length;
-                Log.d(TAG, "onComplete: 文件大小："+data.length);
+                LogUtils.d(TAG, "onComplete: 文件大小："+data.length);
                 handler.sendMessage(msg);
             }
 
@@ -121,7 +121,7 @@ public class FileTransActivity extends AppCompatActivity {
 //                msg.what=9;
 //                msg.obj=data.length;
 //                filesize=data.length;
-//                Log.d(TAG, "onComplete: 文件大小："+data.length);
+//                LogUtils.d(TAG, "onComplete: 文件大小："+data.length);
 //                handler.sendMessage(msg);
 //            }
 //            @Override
@@ -139,12 +139,12 @@ public class FileTransActivity extends AppCompatActivity {
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
-        Log.d(TAG, "onCreate: records size 2:"+records.size());
+        LogUtils.d(TAG, "onCreate: records size 2:"+records.size());
         processData();
 
         //savelog
         saveLog=findViewById(R.id.save_log);
-        saveLog.setOnClickListener(view -> {
+        saveLogUtils.setOnClickListener(view -> {
             DateFormat dfd=new SimpleDateFormat("MM-dd HH:mm");
             String head="文件大小:"+filesize+
                     "\n平均rtt:"+rttT+
@@ -157,7 +157,7 @@ public class FileTransActivity extends AppCompatActivity {
                 if(!logFile.exists()){
                     logFile.createNewFile();
                 }
-                Log.d(TAG, "onCreate: logpath: "+logFile.getAbsolutePath());
+                LogUtils.d(TAG, "onCreate: logpath: "+logFile.getAbsolutePath());
                 FileWriter writer=new FileWriter(logFile);
                 writer.write(head); writer.flush();
 
@@ -191,7 +191,7 @@ public class FileTransActivity extends AppCompatActivity {
             rttSum+=(records.get(i).t3-startAdd); //发送端从发送到接收的自己的时间，rtt
         }
         int recvNum=records.size()-1;
-        Log.d(TAG, "processData: recvNum: "+recvNum);
+        LogUtils.d(TAG, "processData: recvNum: "+recvNum);
         if(recvNum==0){
             trans_rtt.setText("平均RTT:未收到返回");
             trans_rec.setText("平均接收时间:未收到返回");
@@ -205,7 +205,7 @@ public class FileTransActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getNewMsg(TRecord tRecord){
-        Log.d(TAG, "getNewMsg: 拿到通知：");
+        LogUtils.d(TAG, "getNewMsg: 拿到通知：");
         if(tRecord.cid.equals(fileCid)){
             records.add(tRecord);
             adapter.notifyDataSetChanged();
@@ -254,11 +254,11 @@ public class FileTransActivity extends AppCompatActivity {
             long gap=tRecord.t2-tRecord.t1;
             long rttt=tRecord.t3-startAdd;
             if(tRecord.type==0){
-                Log.d(TAG, "getView: 显示自己："+position);
+                LogUtils.d(TAG, "getView: 显示自己："+position);
                 recordView.user.setText("自身节点");
                 recordView.duration.setText("开始:"+get1Str+",  发完:"+get2Str+"\n耗时:"+gap+"ms");
             }else{
-                Log.d(TAG, "getView: 显示接收："+position);
+                LogUtils.d(TAG, "getView: 显示接收："+position);
                 recordView.user.setText("接收节点:"+user.substring(0,13)+"...");
                 recordView.duration.setText("开始:"+get1Str+",  收完:"+get2Str+"\n耗时:"+gap+"ms,  rtt:"+rttt+"ms");
             }

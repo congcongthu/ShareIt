@@ -29,7 +29,7 @@ public class LogToHTTP {
 
         File logFile=new File(filename);
 
-        Log.d(TAG, "uploadLog: 上传文件的路径："+logFile.getAbsolutePath());
+        LogUtils.d(TAG, "uploadLog: 上传文件的路径："+logFile.getAbsolutePath());
 
         String peerID= "";
         try {
@@ -66,12 +66,12 @@ public class LogToHTTP {
         try {
             Random r=new Random();
             int delay=r.nextInt(1000);
-            Log.d(TAG, "run: 等待随机秒数："+delay);
+            LogUtils.d(TAG, "run: 等待随机秒数："+delay);
 
             Thread.sleep(delay);
             response=client.newCall(request).execute();
             responseString=response.body().string();
-            Log.d(TAG, "run: 上传结果："+response.body().string());
+            LogUtils.d(TAG, "run: 上传结果："+response.body().string());
         } catch (Exception e) {
             e.printStackTrace();
         }

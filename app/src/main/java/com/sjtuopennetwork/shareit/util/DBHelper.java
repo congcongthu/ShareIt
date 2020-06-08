@@ -86,7 +86,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public synchronized LinkedList<TRecord> listRecords(String cid){
-        Log.d(TAG, "listRecords: 查records："+cid);
+        LogUtils.d(TAG, "listRecords: 查records："+cid);
         LinkedList<TRecord> records=new LinkedList<>();
         Cursor cursor=appdb.rawQuery("select * from records where cid = ?",new String[]{cid});
         if(cursor.moveToFirst()){
@@ -107,7 +107,7 @@ public class DBHelper extends SQLiteOpenHelper {
             }while (cursor.moveToNext());
         }
         cursor.close();
-        Log.d(TAG, "listRecords: records长度："+records.size());
+        LogUtils.d(TAG, "listRecords: records长度："+records.size());
         return records;
     }
 
@@ -130,7 +130,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public synchronized void recordLocalStartAdd(String cid, long addT1,long addT2){
-        Log.d(TAG, "recordLocalStartAdd: cid: "+cid);
+        LogUtils.d(TAG, "recordLocalStartAdd: cid: "+cid);
         ContentValues v=new ContentValues();
         v.put("cid",cid);
         v.put("t1",addT1);

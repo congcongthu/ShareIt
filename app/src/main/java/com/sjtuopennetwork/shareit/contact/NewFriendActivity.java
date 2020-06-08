@@ -57,7 +57,7 @@ public class NewFriendActivity extends AppCompatActivity {
             accept.setMessage("确定接收 "+resultContact.name+" 的好友申请吗？");
             accept.setPositiveButton("接受", (dialog, which) -> {
                 try {
-                    Log.d(TAG, "showApplications: 同意申请："+inviteView.getId());
+                    LogUtils.d(TAG, "showApplications: 同意申请："+inviteView.getId());
                     Textile.instance().invites.accept(inviteView.getId());
 
                     //忽略所有其他的同一个人来的申请

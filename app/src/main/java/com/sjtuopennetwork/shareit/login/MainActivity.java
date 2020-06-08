@@ -1,18 +1,14 @@
 package com.sjtuopennetwork.shareit.login;
 
 import android.Manifest;
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -28,6 +24,7 @@ import com.huawei.hms.support.api.hwid.SignInHuaweiId;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.sjtuopennetwork.shareit.Constant;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.HomeActivity;
 
@@ -39,9 +36,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-import com.sjtuopennetwork.shareit.Constant;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "===============";
@@ -75,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         isLogin=pref.getBoolean("isLogin",false); //如果没有这个字段就是首次打开
         if(isLogin){ //如果已经登录直接跳转到主界面，默认从pref中读取启动数据
             Intent toHomeActivity=new Intent(this, HomeActivity.class);
-            toHomeActivity.putExtra("login",0); //已经处于登录状态，0
+            toHomeActivity.putExtra("login",Constant.LOGINED); //已经处于登录状态，0
             startActivity(toHomeActivity);
             finish();
         }else{ //如果未登录
@@ -115,18 +110,18 @@ public class MainActivity extends AppCompatActivity {
                 editor.commit();
 
                 Intent toHomeActivity=new Intent(this, HomeActivity.class);
-                toHomeActivity.putExtra("login",2); //华为账号登录，2
+                toHomeActivity.putExtra("login",Constant.HUAWEI_LOGIN); //华为账号登录，2
                 toHomeActivity.putExtra("myname",myname);
                 startActivity(toHomeActivity);
                 finish();
             } else{ //先不处理登录失败
                 int status = ((ApiException) signInHuaweiIdTask.getException()).getStatusCode();
-                //  Log.i(TAG, "signIn failed: " + status);
+                //  LogUtils.i(TAG, "signIn failed: " + status);
                 if (status == HuaweiIdStatusCodes.SIGN_IN_UNLOGIN) {
-                    //      Log.i(TAG, "Account not logged in");
+                    //      LogUtils.i(TAG, "Account not logged in");
                     //Account not logged in , try to sign in with getSignInIntent()
                 } else if (status == HuaweiIdStatusCodes.SIGN_IN_AUTH) {
-                    //      Log.i(TAG, "Account not authorized");
+                    //      LogUtils.i(TAG, "Account not authorized");
                     //Account not authorized  , try to authorize with getSignInIntent()
                 } else if (status == HuaweiIdStatusCodes.SIGN_IN_CHECK_PASSWORD) {
                     //Huawei Account Need Password Check

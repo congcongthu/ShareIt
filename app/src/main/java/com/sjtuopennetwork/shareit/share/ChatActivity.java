@@ -181,7 +181,7 @@ public class ChatActivity extends AppCompatActivity {
             if(!msg.equals("")){
                 chat_text_edt.setText("");
                 try {
-                    Log.d(TAG, "initData: get the msg: "+msg);
+                    LogUtils.d(TAG, "initData: get the msg: "+msg);
                     msgT1=System.currentTimeMillis();
                     Textile.instance().messages.add(threadid, msg);
                 } catch (Exception e) {
@@ -268,7 +268,7 @@ public class ChatActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateChat(TMsg tMsg){
         if(tMsg.threadid.equals(threadid)){
-            Log.d(TAG, "updateChat: "+tMsg.msgtype+" "+tMsg.body);
+            LogUtils.d(TAG, "updateChat: "+tMsg.msgtype+" "+tMsg.body);
             msgList.add(tMsg);
             msgAdapter.notifyDataSetChanged();
             chat_lv.setSelection(msgList.size());
@@ -287,7 +287,7 @@ public class ChatActivity extends AppCompatActivity {
 //    @Subscribe(threadMode = ThreadMode.MAIN)
 //    public void testRTT(Long ack){
 //        long rtt=ack-msgT1;
-//        Log.d(TAG, "testRTT: rtt: "+rtt);
+//        LogUtils.d(TAG, "testRTT: rtt: "+rtt);
 //    }
 
     @Override
@@ -297,17 +297,17 @@ public class ChatActivity extends AppCompatActivity {
             choosePic=PictureSelector.obtainMultipleResult(data);
             String filePath=choosePic.get(0).getPath();
             String fileName=ShareUtil.getFileNameWithSuffix(filePath);
-            Log.d(TAG, "onActivityResult: upload pic: "+fileName);
+            LogUtils.d(TAG, "onActivityResult: upload pic: "+fileName);
 
             Textile.instance().files.addSimplePicture(filePath, threadid, new Handlers.BlockHandler() {
                 long addT1=System.currentTimeMillis();
                 @Override
                 public void onComplete(Model.Block block) {
-                    Log.d(TAG, "onComplete: 发送图片成功");
+                    LogUtils.d(TAG, "onComplete: 发送图片成功");
                     long addT2=System.currentTimeMillis();
                     try {
                         String bbb=block.getId();
-                        Log.d(TAG, "onComplete: bbb: "+bbb);
+                        LogUtils.d(TAG, "onComplete: bbb: "+bbb);
                         DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(bbb,addT1,addT2);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -328,7 +328,7 @@ public class ChatActivity extends AppCompatActivity {
 //                    long addT2=System.currentTimeMillis();
 //                    try {
 //                        String bbb=Textile.instance().files.list(threadid, "", 1).getItemsList().get(0).getBlock();
-//                        Log.d(TAG, "onComplete: bbb: "+bbb);
+//                        LogUtils.d(TAG, "onComplete: bbb: "+bbb);
 //                        DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(bbb,addT1,addT2);
 //                    } catch (Exception e) {
 //                        e.printStackTrace();
@@ -342,12 +342,12 @@ public class ChatActivity extends AppCompatActivity {
         }else if(requestCode==PictureConfig.TYPE_VIDEO && resultCode==RESULT_OK){ //如果是选择了视频
             chooseVideo=PictureSelector.obtainMultipleResult(data);
             String filePath=chooseVideo.get(0).getPath();
-            Log.d(TAG, "onActivityResult: 选择了视频："+filePath);
+            LogUtils.d(TAG, "onActivityResult: 选择了视频："+filePath);
 
             VideoPusher videoPusher =new VideoPusher(this,threadid,filePath);
             videoPusher.startPush();
 
-            Log.d(TAG, "onActivityResult: video added");
+            LogUtils.d(TAG, "onActivityResult: video added");
             //发送端立马显示发送视频
             String videoId= videoPusher.getVideoId();
             Bitmap tmpBmap = videoPusher.getPosterBitmap(); //拿到缩略图
@@ -355,7 +355,7 @@ public class ChatActivity extends AppCompatActivity {
             String posterPath=tmpdir+"/"+videoId; //随机给一个名字
             ShareUtil.saveBitmap(posterPath,tmpBmap);
             String posterAndFile=posterPath+"##"+filePath+"##"+videoId;
-            Log.d(TAG, "onActivityResult: stream video: "+posterAndFile);
+            LogUtils.d(TAG, "onActivityResult: stream video: "+posterAndFile);
             TMsg tMsg= null;
             try {
                 long l=System.currentTimeMillis()/1000;
@@ -370,12 +370,12 @@ public class ChatActivity extends AppCompatActivity {
         }else if(requestCode == 1293 &&resultCode == RESULT_OK){
             chooseVideo=PictureSelector.obtainMultipleResult(data);
             String filePath=chooseVideo.get(0).getPath();
-            Log.d(TAG, "onActivityResult: 选择了视频："+filePath);
+            LogUtils.d(TAG, "onActivityResult: 选择了视频："+filePath);
 
             VideoSender_tkt videoSenderTkt =new VideoSender_tkt(ChatActivity.this,threadid,filePath);
             videoSenderTkt.startSend();
 //
-            Log.d(TAG, "onActivityResult: video added");
+            LogUtils.d(TAG, "onActivityResult: video added");
             //发送端立马显示发送视频
             String videoId= videoSenderTkt.getVideoId();
             Bitmap tmpBmap = videoSenderTkt.getPosterBitmap(); //拿到缩略图
@@ -383,7 +383,7 @@ public class ChatActivity extends AppCompatActivity {
             String posterPath=tmpdir+"/"+videoId; //随机给一个名字
             ShareUtil.saveBitmap(posterPath,tmpBmap);
             String posterAndFile=posterPath+"##"+filePath;
-            Log.d(TAG, "onActivityResult: poster_file"+posterAndFile);
+            LogUtils.d(TAG, "onActivityResult: poster_file"+posterAndFile);
             TMsg tMsg= null;
             try {
                 long l=System.currentTimeMillis()/1000;
@@ -404,12 +404,12 @@ public class ChatActivity extends AppCompatActivity {
                 long addT1=System.currentTimeMillis();
                 @Override
                 public void onComplete(Model.Block block) {
-                    Log.d(TAG, "onComplete: 发送文件成功");
+                    LogUtils.d(TAG, "onComplete: 发送文件成功");
                     long addT2=System.currentTimeMillis();
                     try {
 //                        String bbb=Textile.instance().files.list(threadid, "", 1).getItemsList().get(0).getBlock();
                         String bbb=block.getId();
-                        Log.d(TAG, "onComplete: bbb: "+bbb);
+                        LogUtils.d(TAG, "onComplete: bbb: "+bbb);
                         DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(bbb,addT1,addT2);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -430,7 +430,7 @@ public class ChatActivity extends AppCompatActivity {
 //                    long addT2=System.currentTimeMillis();
 //                    try {
 //                        String bbb=Textile.instance().files.list(threadid, "", 1).getItemsList().get(0).getBlock();
-//                        Log.d(TAG, "onComplete: bbb: "+bbb);
+//                        LogUtils.d(TAG, "onComplete: bbb: "+bbb);
 //                        DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(bbb,addT1,addT2);
 //                    } catch (Exception e) {
 //                        e.printStackTrace();

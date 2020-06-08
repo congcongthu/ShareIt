@@ -85,7 +85,7 @@ public class SettingFragment extends Fragment {
         initWidget();
 
 //        uploadLog=getActivity().findViewById(R.id.uploadlog);
-//        uploadLog.setOnClickListener(view -> {
+//        uploadLogUtils.setOnClickListener(view -> {
 ////            try {
 ////                final String logPath= FileUtil.getAppExternalPath(getActivity(),"repo")+"/"+Textile.instance().profile.get().getAddress()+"/logs/textile.log";
 ////
@@ -104,9 +104,9 @@ public class SettingFragment extends Fragment {
 ////                new Thread(){
 ////                    @Override
 ////                    public void run() {
-////                        Log.d(TAG, "initUI: log路径："+logPath);
+////                        LogUtils.d(TAG, "initUI: log路径："+logPath);
 ////                        String response=LogToHTTP.uploadLog(logPath);
-////                        Log.d(TAG, "run: 上传结果："+response);
+////                        LogUtils.d(TAG, "run: 上传结果："+response);
 ////                        if(response.equals("success")){
 ////                            Message msg=new Message(); msg.what=0;
 ////                            handler.sendMessage(msg);
@@ -186,7 +186,7 @@ public class SettingFragment extends Fragment {
 
         username=ShareUtil.getMyName();
         useravatar=ShareUtil.getMyAvatar();
-        Log.d(TAG, "initData: name avatar: "+username+" "+useravatar);
+        LogUtils.d(TAG, "initData: name avatar: "+username+" "+useravatar);
 
         //得到设备信息
         getDeviceInfo();

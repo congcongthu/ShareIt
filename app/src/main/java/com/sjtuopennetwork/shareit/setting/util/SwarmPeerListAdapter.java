@@ -96,7 +96,7 @@ public class SwarmPeerListAdapter extends BaseExpandableListAdapter {
         }else{
             itemHolder = (ViewHolderItem) convertView.getTag();
         }
-        Log.d(TAG, "getChildView: "+childPosition+" "+childs.get(0).get(childPosition).swarmAddress);
+        LogUtils.d(TAG, "getChildView: "+childPosition+" "+childs.get(0).get(childPosition).swarmAddress);
         itemHolder.tv_content.setText(childs.get(0).get(childPosition).swarmAddress+"/ipfs/"+childs.get(0).get(childPosition).peerId);
 //        itemHolder.tv_content.setText(childs.get(groupPosition).get(childPosition).actor+" "+childs.get(groupPosition).get(childPosition).swarmAddress);
         itemHolder.img_icon.setImageBitmap(BitmapFactory.decodeFile(childs.get(groupPosition).get(childPosition).avatarPath));

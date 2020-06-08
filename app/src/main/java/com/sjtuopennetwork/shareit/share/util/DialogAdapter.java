@@ -45,7 +45,7 @@ public class DialogAdapter extends ArrayAdapter {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Log.d(TAG, "getView: Dialog: "+ position);
+        LogUtils.d(TAG, "getView: Dialog: "+ position);
         View v;
         ViewHolder vh;
         TDialog tDialog = datas.get(position);

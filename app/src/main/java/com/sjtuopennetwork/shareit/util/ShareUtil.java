@@ -64,7 +64,7 @@ public class ShareUtil {
         String finalNameWithDir="null"; //最终的完整文件路径
         try {
             File file=new File(fileDir+fileName);
-            Log.d(TAG, "saveFile: "+file.getAbsolutePath());
+            LogUtils.d(TAG, "saveFile: "+file.getAbsolutePath());
             if(!file.exists()){
                 file.createNewFile();
             }
@@ -116,17 +116,17 @@ public class ShareUtil {
     }
 
     public static String getAppExternalPath(Context context, String dirName){
-        Log.i(TAG, String.format("Get path of %s dir in app external file directory.", dirName));
+        LogUtils.i(TAG, String.format("Get path of %s dir in app external file directory.", dirName));
         String directoryPath = "";
         if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
             directoryPath = context.getExternalFilesDir(dirName).getAbsolutePath();
         }else{
-            Log.w(TAG, "No external storage available, try to use internal storage. (Time to buy a new phone :)");
+            LogUtils.w(TAG, "No external storage available, try to use internal storage. (Time to buy a new phone :)");
             directoryPath = context.getFilesDir() + File.separator + dirName;
         }
         File file = new File(directoryPath);
         if(!file.exists()){
-            Log.i(TAG, "Directory does not exists. Try to create one.");
+            LogUtils.i(TAG, "Directory does not exists. Try to create one.");
             file.mkdir();
         }
         return directoryPath;
@@ -235,7 +235,7 @@ public class ShareUtil {
 
     private static boolean isImgInCache(String hash){
         String fileName=fileCacheDir+hash;
-        Log.d(TAG, "isImgInCache: "+hash);
+        LogUtils.d(TAG, "isImgInCache: "+hash);
         File file=new File(fileName);
         return file.exists();
     }
@@ -246,7 +246,7 @@ public class ShareUtil {
         if(!ipfsDir.exists()){
             ipfsDir.mkdir();
         }
-        Log.d(TAG, "cacheImg: test ipfsDir:"+ipfsDir.getAbsolutePath());
+        LogUtils.d(TAG, "cacheImg: test ipfsDir:"+ipfsDir.getAbsolutePath());
         return saveFile(data,fileCacheDir,hash);
     }
 
@@ -277,7 +277,7 @@ public class ShareUtil {
 
                         @Override
                         public void onError(Exception e) {
-                            Log.d(TAG, "onError: get image error: "+hash);
+                            LogUtils.d(TAG, "onError: get image error: "+hash);
                             e.printStackTrace();
                         }
                     });
@@ -291,7 +291,7 @@ public class ShareUtil {
                         }
                         @Override
                         public void onError(Exception e) {
-                            Log.d(TAG, "onError: get image error: "+hash);
+                            LogUtils.d(TAG, "onError: get image error: "+hash);
                             e.printStackTrace();
                         }
                     });
@@ -299,7 +299,7 @@ public class ShareUtil {
                     Textile.instance().ipfs.dataAtPath(hash, new Handlers.DataHandler() {
                         @Override
                         public void onComplete(byte[] data, String media) {
-                            Log.d(TAG, "onComplete: 缓存ipfs图片成功："+data.length);
+                            LogUtils.d(TAG, "onComplete: 缓存ipfs图片成功："+data.length);
                             cacheImg(data,hash);
                             Message msg=handler.obtainMessage();
                             handler.sendMessage(msg);

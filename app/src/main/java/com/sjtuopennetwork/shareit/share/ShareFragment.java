@@ -56,7 +56,7 @@ public class ShareFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Log.d(TAG, "onCreateView: ShareFragment调用了onCreateView");
+        LogUtils.d(TAG, "onCreateView: ShareFragment调用了onCreateView");
         return inflater.inflate(R.layout.fragment_share, container, false);
     }
 
@@ -64,7 +64,7 @@ public class ShareFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        Log.d(TAG, "onStart: ShareFragment的onSTart方法调用");
+        LogUtils.d(TAG, "onStart: ShareFragment的onSTart方法调用");
 
         initUI();
 
@@ -102,7 +102,7 @@ public class ShareFragment extends Fragment {
 
         //从数据库中查出对话
         dialogs= DBHelper.getInstance(getActivity().getApplicationContext(),loginAccount).queryAllDIalogs();
-        Log.d(TAG, "initData: 对话数："+dialogs.size());
+        LogUtils.d(TAG, "initData: 对话数："+dialogs.size());
 
         //查出邀请中最近的一个，添加到头部。
         int gpinvite=0;
