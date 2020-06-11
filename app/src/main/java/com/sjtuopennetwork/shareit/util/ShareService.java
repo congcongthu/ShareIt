@@ -541,7 +541,6 @@ public class ShareService extends Service {
                 EventBus.getDefault().post(tMsg);
             }
         }
-
     }
 
     class FileTransInfo{

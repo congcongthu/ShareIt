@@ -18,7 +18,7 @@ public class Stream extends NodeDependent{
 
     public void startStream(String threadId, Model.StreamMeta streamMeta) throws Exception {
         Log.d(TAG, "startStream,streamid: "+streamMeta.getId());
-        node.startStream(threadId,streamMeta.toByteArray());
+        node.startStream_Text(threadId,streamMeta.toByteArray());
     }
 
     public void subscribeStream(String streamId) throws Exception{
