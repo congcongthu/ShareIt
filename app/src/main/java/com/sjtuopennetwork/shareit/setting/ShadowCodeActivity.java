@@ -21,8 +21,8 @@ public class ShadowCodeActivity extends AppCompatActivity {
         imageView=findViewById(R.id.shadow_code_back);
 
         SharedPreferences pref=getSharedPreferences("txtl", Context.MODE_PRIVATE);
-        String swAddr=pref.getString("shadowSwarm","s");
-        if(!swAddr.equals("s")){
+        String swAddr=pref.getString("shadowSwarm","null");
+        if(!swAddr.equals("null")){
             imageView.setImageBitmap(QRCodeUtil.CreateTwoDCode(swAddr));
         }
     }

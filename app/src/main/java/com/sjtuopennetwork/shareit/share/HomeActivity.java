@@ -3,6 +3,7 @@ package com.sjtuopennetwork.shareit.share;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.bottomnavigation.LabelVisibilityMode;
@@ -28,6 +29,8 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
+import sjtu.opennet.hon.Textile;
+
 public class HomeActivity extends AppCompatActivity {
 
     private static final String TAG = "====================";
@@ -42,15 +45,17 @@ public class HomeActivity extends AppCompatActivity {
     FragmentTransaction transaction;
 
     //内存数据
-    boolean nodeOnline=false;
+    boolean nodeOnline = false;
 //    int login;
 
+    //持久化存储
+    private SharedPreferences pref;
 
     //导航栏监听器，每次点击都进行fragment的切换
-    private BottomNavigationView.OnNavigationItemSelectedListener navSeLis=new BottomNavigationView.OnNavigationItemSelectedListener() {
+    private BottomNavigationView.OnNavigationItemSelectedListener navSeLis = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-            switch(menuItem.getItemId()){
+            switch (menuItem.getItemId()) {
                 case R.id.share:
                     replaceFragment(shareFragment);
                     return true;
@@ -75,6 +80,29 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        Log.d(TAG, "onStart: home activity");
+
+        try {
+            if (Textile.instance().online()) {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        String shadowSwarm = pref.getString("shadowSwarm", "null");
+                        if (!shadowSwarm.equals("null")) {
+                            Log.d(TAG, "home start: swarm connect: " + shadowSwarm);
+                            try {
+                                Textile.instance().ipfs.swarmConnect(shadowSwarm);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }.start();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         super.onStart();
     }
 
@@ -83,31 +111,33 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        Intent theIntent=getIntent();
+        Intent theIntent = getIntent();
 
-        String myname=theIntent.getStringExtra("myname");
-        String avatarpath=theIntent.getStringExtra("avatarpath");
+        String myname = theIntent.getStringExtra("myname");
+        String avatarpath = theIntent.getStringExtra("avatarpath");
 
-        int login=theIntent.getIntExtra("login",5);
-        if(login==0 || login==1 || login==2 || login==3){ //如果等于5，就不是登录页面跳转过来的
+        pref = getSharedPreferences("txtl", Context.MODE_PRIVATE);
+
+        int login = theIntent.getIntExtra("login", 5);
+        if (login == 0 || login == 1 || login == 2 || login == 3) { //如果等于5，就不是登录页面跳转过来的
             initUI();
 
-            if(!EventBus.getDefault().isRegistered(this)){
+            if (!EventBus.getDefault().isRegistered(this)) {
                 EventBus.getDefault().register(this);
             }
-            boolean serviceRunning=isServiceRunning("com.sjtuopennetwork.shareit.util.ShareService");
-            if(serviceRunning){
+            boolean serviceRunning = isServiceRunning("com.sjtuopennetwork.shareit.util.ShareService");
+            if (serviceRunning) {
                 replaceFragment(shareFragment);
-            }else{
-                circleProgressDialog=new CircleProgressDialog(this);
+            } else {
+                circleProgressDialog = new CircleProgressDialog(this);
                 circleProgressDialog.setText("节点启动中");
                 circleProgressDialog.showDialog();
 
-                Intent intent=new Intent(this, ShareService.class);
-                intent.putExtra("login",login);
-                if(myname != null){
-                    intent.putExtra("myname",myname);
-                    intent.putExtra("avatarpath",avatarpath);
+                Intent intent = new Intent(this, ShareService.class);
+                intent.putExtra("login", login);
+                if (myname != null) {
+                    intent.putExtra("myname", myname);
+                    intent.putExtra("avatarpath", avatarpath);
                 }
                 startForegroundService(intent);
             }
@@ -122,7 +152,7 @@ public class HomeActivity extends AppCompatActivity {
                 .getRunningServices(30);
 
         for (int i = 0; i < runningService.size(); i++) {
-            Log.d(TAG, "isServiceRunning: "+runningService.get(i).service.getClassName());
+            Log.d(TAG, "isServiceRunning: " + runningService.get(i).service.getClassName());
             if (runningService.get(i).service.getClassName()
                     .equals(ServiceName)) {
                 return true;
@@ -131,23 +161,23 @@ public class HomeActivity extends AppCompatActivity {
         return false;
     }
 
-    private void initUI(){
-        shareFragment=new ShareFragment();
-        contactFragment=new ContactFragment();
-        albumFragment=new AlbumFragment();
-        settingFragment=new SettingFragment();
+    private void initUI() {
+        shareFragment = new ShareFragment();
+        contactFragment = new ContactFragment();
+        albumFragment = new AlbumFragment();
+        settingFragment = new SettingFragment();
 
-        BottomNavigationView nav=findViewById(R.id.nav_view);
+        BottomNavigationView nav = findViewById(R.id.nav_view);
         nav.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         nav.setOnNavigationItemSelectedListener(navSeLis);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void knowOnline(Integer integer){
-        if(integer.intValue()==0){
-            if(!nodeOnline){
+    public void knowOnline(Integer integer) {
+        if (integer.intValue() == 0) {
+            if (!nodeOnline) {
                 circleProgressDialog.dismiss();
-                nodeOnline=true;
+                nodeOnline = true;
                 replaceFragment(shareFragment);
             }
         }
@@ -166,7 +196,7 @@ public class HomeActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
 
-        if(EventBus.getDefault().isRegistered(this)){
+        if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
     }

@@ -187,6 +187,7 @@ public class Textile implements LifecycleObserver {
 
     /**
      * Create a new Textile wallet
+     *
      * @param wordCount The number of words the wallet recovery phrase should contain
      * @return The new wallet recovery phrase
      * @throws Exception The exception that occurred
@@ -198,8 +199,10 @@ public class Textile implements LifecycleObserver {
     public static void logDebug(final String msg) {
         Mobile.logDebug(msg.getBytes());
     }
+
     /**
      * Create a new Textile wallet
+     *
      * @param huaweiOpenId Huawei open id
      * @return The new wallet recovery phrase
      * @throws Exception The exception that occurred
@@ -210,8 +213,9 @@ public class Textile implements LifecycleObserver {
 
     /**
      * Resolve a wallet account
-     * @param phrase The wallet recovery phrase
-     * @param index The index of the account to resolve
+     *
+     * @param phrase   The wallet recovery phrase
+     * @param index    The index of the account to resolve
      * @param password The wallet password or nil if there is no password
      * @return The wallet account
      * @throws Exception The exception that occurred
@@ -223,6 +227,7 @@ public class Textile implements LifecycleObserver {
 
     /**
      * Check if Textile is already initialized
+     *
      * @param repoPath The path to the Textile repo
      * @return A boolean value indicating if Textile is initialized or not
      */
@@ -232,9 +237,10 @@ public class Textile implements LifecycleObserver {
 
     /**
      * Initialize the shared Textile instance with an existing account seed
-     * @param repoPath The path to the Textile repo
-     * @param seed The account seed
-     * @param debug Sets the log level to debug or not
+     *
+     * @param repoPath  The path to the Textile repo
+     * @param seed      The account seed
+     * @param debug     Sets the log level to debug or not
      * @param logToDisk Whether or not to write Textile logs to disk
      * @throws Exception The exception that occurred
      */
@@ -250,9 +256,10 @@ public class Textile implements LifecycleObserver {
 
     /**
      * Initialize the shared Textile instance with an existing account seed
-     * @param repoPath The path to the Textile repo
-     * @param seed The account seed
-     * @param debug Sets the log level to debug or not
+     *
+     * @param repoPath  The path to the Textile repo
+     * @param seed      The account seed
+     * @param debug     Sets the log level to debug or not
      * @param logToDisk Whether or not to write Textile logs to disk
      * @param isPrivate Whether or not to use private network
      * @throws Exception The exception that occurred
@@ -269,8 +276,9 @@ public class Textile implements LifecycleObserver {
 
     /**
      * Initialize the shared Textile instance, creating a new wallet
-     * @param repoPath The path to the Textile repo
-     * @param debug Sets the log level to debug or not
+     *
+     * @param repoPath  The path to the Textile repo
+     * @param debug     Sets the log level to debug or not
      * @param logToDisk Whether or not to write Textile logs to disk
      * @return The wallet recovery phrase
      * @throws Exception The exception that occurred
@@ -284,8 +292,9 @@ public class Textile implements LifecycleObserver {
 
     /**
      * Initialize the shared Textile instance, creating a new wallet
-     * @param repoPath The path to the Textile repo
-     * @param debug Sets the log level to debug or not
+     *
+     * @param repoPath  The path to the Textile repo
+     * @param debug     Sets the log level to debug or not
      * @param logToDisk Whether or not to write Textile logs to disk
      * @return The wallet recovery phrase
      * @throws Exception The exception that occurred
@@ -299,9 +308,10 @@ public class Textile implements LifecycleObserver {
 
     /**
      * After initialization is complete, launch Textile
+     *
      * @param applicationContext The application context
-     * @param repoPath The path to the Textile repo
-     * @param debug Sets the log level to debug or not
+     * @param repoPath           The path to the Textile repo
+     * @param debug              Sets the log level to debug or not
      * @throws Exception The exception that occurred
      */
     public static void launch(final Context applicationContext, final String repoPath, final boolean debug) throws Exception {
@@ -330,6 +340,7 @@ public class Textile implements LifecycleObserver {
 
     /**
      * The shared Textile instance, should be used for all Textile API access
+     *
      * @return The shared Textile instance
      */
     public static Textile instance() {
@@ -352,7 +363,7 @@ public class Textile implements LifecycleObserver {
         return Mobile.newTextile(config, messenger);
     }
 
-    private Textile () {
+    private Textile() {
     }
 
     void start() {
@@ -371,7 +382,7 @@ public class Textile implements LifecycleObserver {
             return;
         }
         node.stop((Exception e) -> {
-            if(e != null) {
+            if (e != null) {
                 handler.onError(e);
                 for (final TextileEventListener listener : eventListeners) {
                     listener.nodeFailedToStop(e);
@@ -417,6 +428,7 @@ public class Textile implements LifecycleObserver {
 
     /**
      * Get a summary of the local Textile node and it's data
+     *
      * @return A summary of the Textile node running locally
      * @throws Exception The exception that occurred
      */
@@ -427,6 +439,7 @@ public class Textile implements LifecycleObserver {
 
     /**
      * Return whether or not the node is online
+     *
      * @return A boolean indicating the online status of the node
      */
     public boolean online() {
@@ -471,6 +484,7 @@ public class Textile implements LifecycleObserver {
 
     /**
      * Register an listener to receive callbacks about Textile events
+     *
      * @param listener The listener that will be called back
      */
     public void addEventListener(TextileEventListener listener) {
@@ -493,6 +507,7 @@ public class Textile implements LifecycleObserver {
 
     /**
      * Remove a previously registered event listener
+     *
      * @param listener The listener to remove
      */
     public void removeEventListener(TextileEventListener listener) {
@@ -524,11 +539,15 @@ public class Textile implements LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     void onForeground() {
-        Log.d(TAG, "onForeground: ");
+        Log.d(TAG, "onForeground: app forground");
+        if (foregroundHandler != null) {
+            foregroundHandler.onForeground();
+        }
         if (appState.equals(AppState.Foreground)) {
             return;
         }
         if (appState.equals(AppState.BackgroundFromForeground)) {
+            Log.d(TAG, "onForeground: from background");
             lifecycleService.cancelPendingNodeStop();
         } else {
             Log.d(TAG, "onForeground: startNode");
@@ -537,9 +556,18 @@ public class Textile implements LifecycleObserver {
         appState = AppState.Foreground;
     }
 
+    Handlers.ForegroundHandler foregroundHandler;
+
+    public void setForegroundHandler(Handlers.ForegroundHandler foregroundHandler) {
+        this.foregroundHandler = foregroundHandler;
+    }
+
+    public void delForegroundHandler() {
+        this.foregroundHandler = null;
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     void onBackground() {
-        Log.d(TAG, "onBackground: ");
         if (appState.equals(AppState.Background)) {
             return;
         }

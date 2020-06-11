@@ -46,6 +46,7 @@ public class SettingFragment extends Fragment {
     LinearLayout qrcode_layout;
     LinearLayout notification_layout;
     LinearLayout devices_layout;
+    LinearLayout shadow_layout;
     TextView tv_name;
     RoundImageView avatar_layout;
     TextView logout_layout;
@@ -94,6 +95,11 @@ public class SettingFragment extends Fragment {
         tv_name = getActivity().findViewById(R.id.myname);
         devices_layout = getActivity().findViewById(R.id.setting_devices_layout);
         logout_layout = getActivity().findViewById(R.id.logout);
+        shadow_layout=getActivity().findViewById(R.id.shadow_layout);
+        shadow_layout.setOnClickListener(v->{
+            Intent itToShadow=new Intent(getActivity(),ShadowActivity.class);
+            getActivity().startActivity(itToShadow);
+        });
 
         setDegree=getActivity().findViewById(R.id.setDegree);
         degree=getActivity().findViewById(R.id.degree);

@@ -97,4 +97,7 @@ public class Handlers {
         void onError(final Exception e);
     }
 
+    public interface ForegroundHandler {
+        void onForeground();
+    }
 }

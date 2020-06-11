@@ -20,7 +20,8 @@
         android:roundIcon="@drawable/ic_share_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".setting.ShadowCodeActivity"></activity>
+        <activity android:name=".setting.ShadowActivity"></activity>
+        <activity android:name=".setting.ShadowCodeActivity" />
         <activity android:name=".share.FileTransActivity" />
         <activity android:name=".setting.SwarmActivity" />
         <activity android:name=".share.ForwardActivity" />

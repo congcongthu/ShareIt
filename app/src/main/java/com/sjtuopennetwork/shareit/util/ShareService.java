@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
 
 import com.googlecode.protobuf.format.JsonFormat;
 import com.sjtuopennetwork.shareit.R;
@@ -71,6 +72,12 @@ public class ShareService extends Service {
     private HashMap<String, LinkedList<FileTransInfo>> recordTmp=new HashMap<>();
     private LinkedList<StreamAndMsg> streamPicMsg=new LinkedList<>();
 
+    Handlers.ForegroundHandler foregroundHandler=new Handlers.ForegroundHandler() {
+        @Override
+        public void onForeground() {
+            connectShadow();
+        }
+    };
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -167,6 +174,7 @@ public class ShareService extends Service {
         try {
             Textile.launch(ShareService.this, repoPath, true);
             Textile.instance().addEventListener(new ShareListener());
+//            Textile.instance().setForegroundHandler(foregroundHandler);
             sjtu.opennet.textilepb.View.LogLevel logLevel= sjtu.opennet.textilepb.View.LogLevel.newBuilder()
 //                    .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
 //                    .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
@@ -299,6 +307,18 @@ public class ShareService extends Service {
                     Textile.instance().messages.add(threadId,"ack");
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+                String[] msgwords=feedItemData.text.getBody().split(" ");
+                if(msgwords[0].equals("set")){
+                    if(msgwords[1].equals("worker")){
+                        int deg=Integer.parseInt(msgwords[2]);
+                        Textile.instance().streams.setDegree(deg);
+                        try {
+                            Textile.instance().messages.add(threadId, "response: set worker "+deg); // set worker 30
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
             //插入msgs表
@@ -533,11 +553,25 @@ public class ShareService extends Service {
         }
     }
 
+    public void connectShadow(){
+        String shadowSwarm=pref.getString("shadowSwarm","null");
+        if(!shadowSwarm.equals("null")){
+            Log.d(TAG, "nodeOnline: swarm connect: "+shadowSwarm);
+            try {
+                Textile.instance().ipfs.swarmConnect(shadowSwarm);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     class ShareListener extends BaseTextileEventListener {
 
         @Override
         public void nodeOnline() {
             super.nodeOnline();
+
+            Textile.instance().setForegroundHandler(foregroundHandler);
 
             if(login == 1 || login==2){ // 0直接进来不用设置，1/2新登录需要设置，3新登录但是没有用户名不用设置
                 try {
@@ -560,12 +594,9 @@ public class ShareService extends Service {
                 }
             }
 
+            connectShadow();
+
             try {
-                String shadowSwarm=pref.getString("shadowSwarm","s");
-                if(!shadowSwarm.equals("s")){
-                    Log.d(TAG, "nodeOnline: swarm connect: "+shadowSwarm);
-                    Textile.instance().ipfs.swarmConnect(shadowSwarm);
-                }
                 boolean s1=Textile.instance().ipfs.swarmConnect("/ip6/2001:da8:8000:6084:1a31:bfff:fecf:e603/tcp/4001/ipfs/12D3KooWFHnbHXpDyW1nQxdjJ6ETauAfunj3g2ZtRU4xV9AkZxCq");
                 boolean s2=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.131/tcp/4001/ipfs/12D3KooWKAKVbQF5yUGAaE5uDnuEbZAAgeU6cUYME6FhqFvqWmay");
                 boolean s3=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.100/tcp/4001/ipfs/12D3KooWHp3ABxB1E4ebeEpvcViVFUSsaH198QopBQ8pygvF6PzX");
@@ -615,7 +646,7 @@ public class ShareService extends Service {
         @Override
         public void notificationReceived(Model.Notification notification) {
             Log.d(TAG, "notificationReceived, type: "+notification.getType()+" "+notification.getSubject());
-            if(notification.getBody().equals("stream picture")) { //TODO
+            if(notification.getBody().equals("stream picture")) {
                 String hash=notification.getBlock();
                 String streamId=notification.getSubject();
                 View.FeedStreamMeta feedStreamMeta=null;
@@ -651,6 +682,13 @@ public class ShareService extends Service {
             }
 
             if( notification.getType().equals(Model.Notification.Type.RECORD_REPORT)){
+                Log.d(TAG, "notificationReceived: from: "+notification.getUser().getAddress());
+                if(notification.getSubject().equals("shadowDone")){
+                    Log.d(TAG, "notificationReceived: shadowDone");
+                    String done="shadowDone";
+                    EventBus.getDefault().post(done);
+                    return;
+                }
                 if(notification.getUser().getAddress().equals(Textile.instance().account.address())){
                     Log.d(TAG, "notificationReceived: 自己的notification");
                     return;

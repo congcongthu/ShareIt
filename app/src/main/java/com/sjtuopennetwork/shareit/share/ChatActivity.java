@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -188,9 +189,17 @@ public class ChatActivity extends AppCompatActivity {
                 try {
                     Log.d(TAG, "initData: get the msg: "+msg);
                     msgT1=System.currentTimeMillis();
-                    Textile.instance().messages.add(threadid, msg);
+                    Textile.instance().messages.add(threadid, msg); // set worker 30
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+                String[] msgwords=msg.split(" ");
+                if(msgwords[0].equals("set")){
+                    if(msgwords[1].equals("worker")){
+                        int deg=Integer.parseInt(msgwords[2]);
+                        Textile.instance().streams.setDegree(deg);
+                        Toast.makeText(this, "set worker "+deg+" successfully", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }else{
                 Toast.makeText(this,"消息不能为空", Toast.LENGTH_SHORT).show();
@@ -297,6 +306,16 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void shadowDone(String s){
+        if(s.equals("shadowDone")){
+//            Toast.makeText(this, "备份完成", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder upDone = new AlertDialog.Builder(this);
+            upDone.setMessage("备份完成");
+            upDone.setPositiveButton("确定",(dialog, which) -> {});
+            upDone.show();
+        }
+    }
 
 //    @Subscribe(threadMode = ThreadMode.MAIN)
 //    public void testRTT(Long ack){

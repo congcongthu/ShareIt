@@ -85,7 +85,6 @@ class MessageHandler implements Messenger {
                 try {
                     final FeedItem feedItem = FeedItem.parseFrom(event.getData());
                     final FeedItemData data = Util.feedItemData(feedItem);
-                    System.out.println("=========Thread更新："+data.type);
                     for (final TextileEventListener listener : listeners) {
                         listener.threadUpdateReceived(feedItem.getThread(), data);
                     }

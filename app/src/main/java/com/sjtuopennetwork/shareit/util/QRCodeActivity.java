@@ -28,75 +28,95 @@ public class QRCodeActivity extends DefaultQRScanActivity {
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
 
-        pref=getSharedPreferences("txtl",MODE_PRIVATE);
+        pref = getSharedPreferences("txtl", MODE_PRIVATE);
     }
 
     @Override
     protected void onAlbumResult(int requestCode, int resultCode, String recode) {
-        System.out.println("============相册得到结果："+recode);
+        System.out.println("============相册得到结果：" + recode);
 
-        String[] decode=recode.split("##");
-        if(decode.length==1) { //影子swarm
-            try {
-                boolean s1=Textile.instance().ipfs.swarmConnect(decode[0]);
-                if(s1){
-                    SharedPreferences.Editor editor=pref.edit();
-                    editor.putString("shadowSwarm",decode[0]);
-                    editor.commit();
+        String[] decode = recode.split("##");
+        if (decode.length == 1) { //影子swarm
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        boolean s1 = Textile.instance().ipfs.swarmConnect(decode[0]);
+                        if (s1) {
+                            SharedPreferences.Editor editor = pref.edit();
+                            editor.putString("shadowSwarm", decode[0]);
+                            editor.commit();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            }.start();
             finish();
-        }else if(decode.length==2){ //那就是群组
-            //接受邀请
-            try {
-                Textile.instance().invites.acceptExternal(decode[0],decode[1]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        } else if (decode.length == 2) { //那就是群组
+            new Thread() {
+                @Override
+                public void run() {
+                    //接受邀请
+                    try {
+                        Textile.instance().invites.acceptExternal(decode[0], decode[1]);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
-            System.out.println("==============扫码加群成功");
+                    System.out.println("==============扫码加群成功");
+                }
+            }.start();
             finish();
-        }else if(decode.length==3) { //那就是好友
-            Bundle bundle=new Bundle();
-            bundle.putString("result",recode);
-            startActivity(new Intent(QRCodeActivity.this,ScanResultActivity.class).putExtras(bundle));
+        } else if (decode.length == 3) { //那就是好友
+            Bundle bundle = new Bundle();
+            bundle.putString("result", recode);
+            startActivity(new Intent(QRCodeActivity.this, ScanResultActivity.class).putExtras(bundle));
             finish();
         }
     }
 
     @Override
     protected void handleDecodeResult(String rawResult, Bundle bundle) {
-        System.out.println("===========扫码得到结果："+rawResult);
+        System.out.println("===========扫码得到结果：" + rawResult);
 
-        String[] decode=rawResult.split("##");
+        String[] decode = rawResult.split("##");
 
-        if(decode.length==1) { //影子swarm
-            try {
-                boolean s1=Textile.instance().ipfs.swarmConnect(decode[0]);
-                if(s1){
-                    SharedPreferences.Editor editor=pref.edit();
-                    editor.putString("shadowSwarm",decode[0]);
-                    editor.commit();
+        if (decode.length == 1) { //影子swarm
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        boolean s1 = Textile.instance().ipfs.swarmConnect(decode[0]);
+                        if (s1) {
+                            SharedPreferences.Editor editor = pref.edit();
+                            editor.putString("shadowSwarm", decode[0]);
+                            editor.commit();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            }.start();
             finish();
-        }else if(decode.length==2){ //那就是群组
-            //接受邀请
-            try {
-                Textile.instance().invites.acceptExternal(decode[0],decode[1]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        } else if (decode.length == 2) { //那就是群组
+            new Thread() {
+                @Override
+                public void run() {
+                    //接受邀请
+                    try {
+                        Textile.instance().invites.acceptExternal(decode[0], decode[1]);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
+                }
+            }.start();
             System.out.println("==============扫码加群成功");
             finish();
-        }else if(decode.length==3) { //那就是好友
-            bundle.putString("result",rawResult);
-            startActivity(new Intent(QRCodeActivity.this,ScanResultActivity.class).putExtras(bundle));
+        } else if (decode.length == 3) { //那就是好友
+            bundle.putString("result", rawResult);
+            startActivity(new Intent(QRCodeActivity.this, ScanResultActivity.class).putExtras(bundle));
             finish();
         }
     }

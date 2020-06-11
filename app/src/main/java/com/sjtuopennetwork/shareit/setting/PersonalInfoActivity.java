@@ -52,10 +52,10 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private TextView cafeCaption;
     private TextView cafeUrl;
     CircleProgressDialog circleProgressDialog;
-    private TextView shadowPid;
+//    private TextView shadowPid;
     private TextView ipfsPeerId;
-    private LinearLayout shadowInfoLayout;
-    private LinearLayout shadowBack;
+//    private LinearLayout shadowInfoLayout;
+//    private LinearLayout shadowBack;
 
     //持久化
     private SharedPreferences pref;
@@ -210,21 +210,6 @@ public class PersonalInfoActivity extends AppCompatActivity {
         cafeCaption=findViewById(R.id.cafe_caption);
         cafeUrl=findViewById(R.id.personal_cafe_url);
         info_cafe=findViewById(R.id.personal_info_cafe);
-
-        shadowPid=findViewById(R.id.shadow_pid);
-//        shadowPid.setText(Textile.instance().shadow());
-        shadowInfoLayout=findViewById(R.id.shadow_info_layout);
-        shadowInfoLayout.setOnClickListener(v->{
-            PermissionUtils.getInstance().requestPermission(PersonalInfoActivity.this);
-            Intent it=new Intent(PersonalInfoActivity.this, QRCodeActivity.class);
-            startActivity(it);
-        });
-        shadowBack=findViewById(R.id.shadow_code_layout);
-        shadowBack.setOnClickListener(v->{
-            Intent it=new Intent(PersonalInfoActivity.this, ShadowCodeActivity.class);
-            startActivity(it);
-        });
-
 
         ipfsPeerId=findViewById(R.id.ipfsPeerId);
         try {
