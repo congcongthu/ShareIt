@@ -18,6 +18,7 @@ import net.gotev.uploadservice.okhttp.OkHttpStack;
 
 import java.util.HashSet;
 
+import mobile.HlogHandler;
 import mobile.InitConfig;
 import mobile.MigrateConfig;
 import mobile.Mobile;
@@ -597,4 +598,8 @@ public class Textile implements LifecycleObserver {
             Logger.info(TAG, name + " disconnected");
         }
     };
+
+    public void getLog(HlogHandler handler) {
+        node.getLog(handler);
+    }
 }
