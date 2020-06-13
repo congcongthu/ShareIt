@@ -69,6 +69,7 @@ public class FileTransActivity extends AppCompatActivity {
     long sendT=0;
     int filesize=0;
     boolean isStream=false;
+    long workerNum=0;
 
     Handler handler=new Handler(){
         @Override
@@ -91,6 +92,8 @@ public class FileTransActivity extends AppCompatActivity {
 
         pref=getSharedPreferences("txtl",Context.MODE_PRIVATE);
         loginAccount=pref.getString("loginAccount",""); //当前登录的account，就是address
+
+        workerNum=Textile.instance().streams.getWorker();
 
         //从数据库中查出每个的接收时间
         records=new LinkedList<>();
@@ -159,15 +162,19 @@ public class FileTransActivity extends AppCompatActivity {
         //savelog
         saveLog=findViewById(R.id.save_log);
         saveLog.setOnClickListener(view -> {
+            if(isStream){
+                sendT=0;
+            }
             DateFormat dfd=new SimpleDateFormat("MM-dd HH:mm");
             String head="文件大小:"+filesize+
+                    "\nworker:"+workerNum+
                     "\n平均rtt:"+rttT+
                     "\n平均接收时间:"+getT+
                     "\n发送时间:"+sendT+"\n";
             String dir= FileUtil.getAppExternalPath(this,"txtllog");
             String logDate=dfd.format(System.currentTimeMillis());
             try {
-                File logFile=new File(dir+"/"+fileCid+"_"+logDate+".log");
+                File logFile=new File(dir+"/"+fileCid+"_"+logDate+".log.txt");
                 if(!logFile.exists()){
                     logFile.createNewFile();
                 }
@@ -182,6 +189,9 @@ public class FileTransActivity extends AppCompatActivity {
                     String get2Str=df.format(tRecord.t2);
                     long gap=tRecord.t2-tRecord.t1;
                     long grtt=tRecord.t3-startAdd;
+                    if(isStream){
+                        gap=0;get1Str="0";get2Str="0";
+                    }
                     if(tRecord.type==0){
                         writeStr="自身节点,开始:"+get1Str+", 发完:"+get2Str+", 耗时:"+gap+"ms\n";
                     }else{
@@ -213,6 +223,7 @@ public class FileTransActivity extends AppCompatActivity {
                 trans_rtt.setText("平均RTT:"+rttT +" ms");
                 trans_rec.setText( "平均接收时间: 未统计");
             }
+            getNum.setText("收到 "+(records.size()-1)+"个，worker:"+workerNum);
         }else{
             getSum=0;
             rttSum=0;
@@ -231,8 +242,9 @@ public class FileTransActivity extends AppCompatActivity {
                 getT=getSum / recvNum;
                 trans_rec.setText( "平均接收时间:"+getT+" ms");
             }
+            getNum.setText("收到 "+(records.size()-1)+"个");
         }
-        getNum.setText("收到 "+(records.size()-1));
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

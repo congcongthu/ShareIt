@@ -572,6 +572,8 @@ public class ShareService extends Service {
 
             Textile.instance().setForegroundHandler(foregroundHandler);
 
+            Log.d(TAG, "nodeOnline: shadow: "+Textile.instance().shadow());
+
             if(login == 1 || login==2){ // 0直接进来不用设置，1/2新登录需要设置，3新登录但是没有用户名不用设置
                 try {
                     Textile.instance().profile.setName(myname);

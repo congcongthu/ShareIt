@@ -53,6 +53,7 @@ public class SettingFragment extends Fragment {
 //    Button uploadLog;
     Button setDegree;
     EditText degree;
+    TextView show_worker;
 
     //持久化
     private SharedPreferences pref;
@@ -103,10 +104,15 @@ public class SettingFragment extends Fragment {
 
         setDegree=getActivity().findViewById(R.id.setDegree);
         degree=getActivity().findViewById(R.id.degree);
+        show_worker=getActivity().findViewById(R.id.show_worker);
+        long tmpworker=Textile.instance().streams.getWorker();
+        show_worker.setText("(当前:"+tmpworker+")");
         setDegree.setOnClickListener(view -> {
             int deg=Integer.parseInt(degree.getText().toString());
             Log.d(TAG, "initUI: degree: "+deg);
             Textile.instance().streams.setDegree(deg);
+            long tmpworker1=Textile.instance().streams.getWorker();
+            show_worker.setText("(当前:"+tmpworker1+")");
             Toast.makeText(getActivity(), "设置成功", Toast.LENGTH_SHORT).show();
         });
 
