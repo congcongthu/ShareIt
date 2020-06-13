@@ -44,6 +44,10 @@ public class Stream extends NodeDependent{
         node.setMaxWorkers((long)num);
     }
 
+    public long getWorker(){
+        return node.getMaxWorkers();
+    }
+
     public void dataAtStreamFile(View.FeedStreamMeta feed,String hash, final Handlers.DataHandler handler) {
         node.dataAtStreamFile(feed.toByteArray(),hash.getBytes(), (data, media, e)->{
             if (e != null) {
