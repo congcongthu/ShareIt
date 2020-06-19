@@ -39,6 +39,18 @@ public class ShareUtil {
     private static String fileCacheDir=Environment.getExternalStorageDirectory().getAbsolutePath() + "/imgcache/";
     private static String fileDir=Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtlfile/";
 
+    private static String txtllogdir=Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtllog/";
+
+    public static String getLogDir(){
+        //创建文件夹
+        File f = new File(txtllogdir);
+        if(!f.exists()){
+            f.mkdirs();
+        }
+
+        return txtllogdir;
+    }
+
     public static String storeSyncFile(byte[] data,String fileName){
         return saveFile(data,fileDir,fileName);
     }

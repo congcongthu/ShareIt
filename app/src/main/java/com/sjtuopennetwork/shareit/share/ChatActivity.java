@@ -42,6 +42,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.util.List;
 
+import mobile.HlogHandler;
 import sjtu.opennet.stream.file.FilePusher;
 import sjtu.opennet.stream.util.FileUtil;
 import sjtu.opennet.stream.video.VideoPusher;
@@ -158,6 +159,18 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+
+        Textile.instance().getLog(new HlogHandler() {
+            @Override
+            public void handleLog(String s) {
+                System.out.println("================get log: "+s);
+            }
+
+            @Override
+            public void logEnd() {
+
+            }
+        });
     }
 
     private void initData() {

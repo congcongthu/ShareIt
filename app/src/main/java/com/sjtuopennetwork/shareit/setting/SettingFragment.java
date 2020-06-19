@@ -50,7 +50,7 @@ public class SettingFragment extends Fragment {
     TextView tv_name;
     RoundImageView avatar_layout;
     TextView logout_layout;
-//    Button uploadLog;
+    Button lookLog;
     Button setDegree;
     EditText degree;
     TextView show_worker;
@@ -114,6 +114,12 @@ public class SettingFragment extends Fragment {
             long tmpworker1=Textile.instance().streams.getWorker();
             show_worker.setText("(当前:"+tmpworker1+")");
             Toast.makeText(getActivity(), "设置成功", Toast.LENGTH_SHORT).show();
+        });
+
+        lookLog=getActivity().findViewById(R.id.looklog);
+        lookLog.setOnClickListener(v->{
+            Intent itt=new Intent(getActivity(),LogActivity.class);
+            startActivity(itt);
         });
 
 //        uploadLog=getActivity().findViewById(R.id.uploadlog);
