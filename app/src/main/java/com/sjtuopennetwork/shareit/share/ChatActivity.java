@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.sjtuopennetwork.shareit.R;
+import com.sjtuopennetwork.shareit.login.MainActivity;
 import com.sjtuopennetwork.shareit.share.util.TMsg;
 import com.sjtuopennetwork.shareit.share.util.TMsgAdapter;
 import com.sjtuopennetwork.shareit.util.DBHelper;
@@ -230,6 +233,30 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         bt_send_file.setOnClickListener(v->{
+            PopupMenu file_select_menu = new PopupMenu(ChatActivity.this, v);
+            file_select_menu.getMenuInflater().inflate(R.menu.file_select, file_select_menu.getMenu());
+            file_select_menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    switch(menuItem.getItemId()){
+                        case R.id.file_select_selector:
+                            new LFilePicker()
+                                    .withActivity(ChatActivity.this)
+                                    .withRequestCode(293)
+                                    .withMutilyMode(false)//false为单选
+//                    .withFileFilter(new String[]{".txt",".png",".jpeg",".jpg" })//设置可选文件类型
+                                    .withTitle("文件选择")//标题
+                                    .start();
+                            break;
+                        case R.id.file_select_generate:
+
+                    }
+                    return false;
+                }
+            });
+
+            file_select_menu.show();
+            /*
             new LFilePicker()
                     .withActivity(ChatActivity.this)
                     .withRequestCode(293)
@@ -237,6 +264,8 @@ public class ChatActivity extends AppCompatActivity {
 //                    .withFileFilter(new String[]{".txt",".png",".jpeg",".jpg" })//设置可选文件类型
                     .withTitle("文件选择")//标题
                     .start();
+
+             */
         });
 
         bt_send_stream_pic.setOnClickListener(v->{

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Random;
 
 public class FileUtil {
     private static final String TAG = "HONVIDEO.FileUtil";
@@ -163,6 +164,51 @@ public class FileUtil {
         }catch(NullPointerException ne){
             Log.e(TAG, "Bitmap is NULL.");
             ne.printStackTrace();
+        }
+    }
+
+    /**
+     * generate file for test
+     * @param dir   Path of directory. File will be generate in this directory.
+     * @param size  File size in KB.
+     * @return      Absolute path of the generated file. It would be "" if generate failed.
+     */
+    public static String generateTestFile(String dir, int size) {
+        try{
+            File f = new File(dir, "test");
+            OutputStream fout = new FileOutputStream(f);
+            int cacheSize = 10;
+            int kb = 1024*8;
+            byte[] cache = new byte[cacheSize*kb];
+            long seed = System.currentTimeMillis();
+            Random r = new Random(seed);
+            int i = 0;
+
+            // Write to file
+            for(; i<size; i+=cacheSize) {
+                r.nextBytes(cache);
+                fout.write(cache);
+            }
+            // Write the remaining size
+            if (i > size) {
+                int tmpSize = cacheSize - (i - size);
+                if (tmpSize > 0) {
+                    r.nextBytes(cache);
+                    fout.write(cache, 0, tmpSize*kb);
+                }
+            }
+
+            fout.flush();
+            fout.close();
+            return f.getAbsolutePath();
+        }catch(FileNotFoundException fe){
+            Log.e(TAG, String.format("File %s not found.", dir));
+            fe.printStackTrace();
+            return "";
+        }catch(IOException ie){
+            Log.e(TAG, "Unknown IOException");
+            ie.printStackTrace();
+            return "";
         }
     }
 }
