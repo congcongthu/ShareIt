@@ -64,6 +64,8 @@ public class TMsgAdapter extends BaseAdapter {
                 return handleSimplePictureView(i,view,viewGroup);
             case 7:
                 return handleStreamPictureView(i,view,viewGroup);
+            case 8:
+                return handleStreamFileView(i,view,viewGroup);
             default:
                 return null;
         }
@@ -290,6 +292,77 @@ public class TMsgAdapter extends BaseAdapter {
         return view;
     }
 
+    private View handleStreamFileView(int i, View view, ViewGroup viewGroup){
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.item_msg_file, viewGroup, false);
+            view.setTag(new FileVH(view));
+        }
+
+        if (view.getTag() instanceof FileVH) {
+            FileVH h = (FileVH) view.getTag();
+            String username = "";
+            String useravatar = "";
+            String[] hashPath = msgList.get(i).body.split("##");
+
+            Log.d(TAG, "handleFileView: " + hashPath[0] + " " + hashPath[1]);
+            if (msgList.get(i).ismine) {
+                username = ShareUtil.getMyName();
+                Log.d(TAG, "handleFileView: myname " + username);
+                useravatar = ShareUtil.getMyAvatar();
+                h.send_file_right.setVisibility(View.VISIBLE); //右边的显示
+                h.send_file_left.setVisibility(View.GONE); //左边的隐藏
+                h.file_user_r.setText(username);
+                h.file_time_r.setText(df.format(msgList.get(i).sendtime * 1000));
+                String fileName=ShareUtil.getFileNameWithSuffix(hashPath[1]);
+                h.file_name_r.setText(fileName);
+                ShareUtil.setImageView(context, h.file_avatar_r, useravatar, 0);
+//                if (fileType == 0) { // 原生文件
+                h.send_file_right.setOnClickListener(view1 -> {
+                    Intent itToFileTrans = new Intent(context, FileTransActivity.class);
+                    itToFileTrans.putExtra("fileCid", hashPath[0]);
+                    itToFileTrans.putExtra("fileSizeCid", hashPath[1]);
+                    context.startActivity(itToFileTrans);
+                });
+//                } else if (fileType == 1) {
+//                    Log.d(TAG, "handleFileView: 收到simple file");
+//                }
+            } else {
+                String addr = msgList.get(i).author;
+                username = ShareUtil.getOtherName(addr);
+                useravatar = ShareUtil.getOtherAvatar(addr);
+                h.send_file_left.setVisibility(View.VISIBLE); //左边的显示
+                h.send_file_right.setVisibility(View.GONE); //右边的隐藏
+                h.file_user.setText(username);
+                h.file_time.setText(df.format(msgList.get(i).sendtime * 1000));
+                h.file_name.setText(hashPath[1]);
+                ShareUtil.setImageView(context, h.file_avatar, useravatar, 0);
+                h.send_file_left.setOnClickListener(v -> {
+                    String isExist=null;
+                    isExist= ShareUtil.isFileExist(hashPath[1]);
+                    if (isExist != null) {
+                        Toast.makeText(context, "文件已下载：" + isExist, Toast.LENGTH_SHORT).show();
+                    } else {
+                        AlertDialog.Builder downFile = new AlertDialog.Builder(context);
+                        downFile.setTitle("下载文件");
+                        downFile.setMessage("确定下载文件吗？");
+                        Handler fileResponse = new Handler() {
+                            @Override
+                            public void handleMessage(Message msg) {
+                                if (msg.what == 9) {
+                                    Toast.makeText(context, (String) msg.obj, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        };
+                        downFile.setNegativeButton("取消", (dialog, which) -> Toast.makeText(context, "已取消", Toast.LENGTH_SHORT).show());
+                        downFile.show();
+
+                    }
+                });
+            }
+        }
+        return view;
+    }
+
     private View handleFileView(int i, View view, ViewGroup viewGroup, int fileType) {
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.item_msg_file, viewGroup, false);
@@ -410,7 +483,7 @@ public class TMsgAdapter extends BaseAdapter {
 
     @Override
     public int getViewTypeCount() {
-        return 8;
+        return 9;
     }
 
     @Override

@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
 
     <application
         android:allowBackup="true"
@@ -20,7 +21,8 @@
         android:roundIcon="@drawable/ic_share_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".setting.ShadowActivity"></activity>
+        <activity android:name=".setting.LogActivity"></activity>
+        <activity android:name=".setting.ShadowActivity" />
         <activity android:name=".setting.ShadowCodeActivity" />
         <activity android:name=".share.FileTransActivity" />
         <activity android:name=".setting.SwarmActivity" />

@@ -69,7 +69,8 @@ public class DBHelper extends SQLiteOpenHelper {
             "t1 integer," +
             "t2 integer," +
             "t3 integer," +
-            "type integer)";
+            "type integer," +
+            "parent text)";
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
@@ -84,7 +85,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-
     public synchronized LinkedList<TRecord> listRecords(String cid){
         Log.d(TAG, "listRecords: 查records："+cid);
         LinkedList<TRecord> records=new LinkedList<>();
@@ -97,7 +97,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         cursor.getLong(cursor.getColumnIndex("t1")),
                         cursor.getLong(cursor.getColumnIndex("t2")),
                         cursor.getLong(cursor.getColumnIndex("t3")),
-                        cursor.getInt(cursor.getColumnIndex("type"))
+                        cursor.getInt(cursor.getColumnIndex("type")),
+                        cursor.getString(cursor.getColumnIndex("parent"))
                 );
                 if(tRecord.type==0){
                     records.add(0,tRecord);
@@ -111,7 +112,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return records;
     }
 
-    public synchronized void recordGet(String cid, String recordfrom, long get1, long get2, long t3){
+    public synchronized void recordGet(String cid, String recordfrom, long get1, long get2, long t3, String parent){
         ContentValues v=new ContentValues();
         v.put("cid",cid);
         v.put("recordfrom",recordfrom);
@@ -119,6 +120,7 @@ public class DBHelper extends SQLiteOpenHelper {
         v.put("t2",get2);
         v.put("t3",t3);
         v.put("type",1);
+        v.put("parent",parent);
         appdb.beginTransaction();
         try{
             appdb.insertOrThrow("records",null,v);
