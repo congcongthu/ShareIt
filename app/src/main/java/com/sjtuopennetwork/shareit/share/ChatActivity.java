@@ -70,6 +70,7 @@ public class ChatActivity extends AppCompatActivity {
     TextView bt_send_file;
     TextView bt_send_video_ticket;
     TextView bt_send_stream_pic;
+    TextView bt_send_stream_file;
 
     //持久化数据
     public SharedPreferences pref;
@@ -141,6 +142,7 @@ public class ChatActivity extends AppCompatActivity {
         chat_backgroud=findViewById(R.id.chat_backgroud);
         bt_send_video_ticket=findViewById(R.id.bt_send_video_ticket);
         bt_send_stream_pic=findViewById(R.id.bt_send_stream_pic);
+        bt_send_stream_file=findViewById(R.id.bt_send_stream_file);
 
         chat_backgroud.setOnClickListener(view -> {
             if(addingFile){
@@ -158,7 +160,6 @@ public class ChatActivity extends AppCompatActivity {
                 add_file_layout.setVisibility(View.VISIBLE);
             }
         });
-
 
         Textile.instance().getLog(new HlogHandler() {
             @Override
@@ -258,6 +259,16 @@ public class ChatActivity extends AppCompatActivity {
                     .maxSelectNum(1)
                     .compress(false)
                     .forResult(1871);
+        });
+
+        bt_send_stream_file.setOnClickListener(v->{
+            new LFilePicker()
+                    .withActivity(ChatActivity.this)
+                    .withRequestCode(756)
+                    .withMutilyMode(false)//false为单选
+//                    .withFileFilter(new String[]{".txt",".png",".jpeg",".jpg" })//设置可选文件类型
+                    .withTitle("文件选择")//标题
+                    .start();
         });
 
         group_menu.setOnClickListener(v -> {
@@ -491,7 +502,7 @@ public class ChatActivity extends AppCompatActivity {
         }else if(requestCode == 1871 && resultCode==RESULT_OK){
             choosePic=PictureSelector.obtainMultipleResult(data);
             String filePath=choosePic.get(0).getPath();
-            String picHash=pushPic(threadid,filePath);
+            String picHash=pushStreamFile(threadid,filePath,true);
 
             TMsg tMsg= null;
             try {
@@ -507,6 +518,29 @@ public class ChatActivity extends AppCompatActivity {
 
             Intent itToFileTrans=new Intent(this, FileTransActivity.class);
             itToFileTrans.putExtra("fileCid",picHash);
+            itToFileTrans.putExtra("fileSizeCid",filePath);
+            itToFileTrans.putExtra("isStream",true);
+            startActivity(itToFileTrans);
+        }else if(requestCode == 756 && resultCode==RESULT_OK){
+            chooseFilePath = data.getStringArrayListExtra("paths");
+            String filePath = chooseFilePath.get(0);
+
+            Log.d(TAG, "onActivityResult: get stream file path: "+filePath);
+            String fileHash=pushStreamFile(threadid,filePath,false);
+            TMsg tMsg= null;
+            try {
+                long l=System.currentTimeMillis()/1000;
+                tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                        threadid,8,String.valueOf(l),myName,fileHash+"##"+filePath,l,1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            msgList.add(tMsg);
+            msgAdapter.notifyDataSetChanged();
+            chat_lv.setSelection(msgList.size());
+
+            Intent itToFileTrans=new Intent(this, FileTransActivity.class);
+            itToFileTrans.putExtra("fileCid",fileHash);
             itToFileTrans.putExtra("fileSizeCid",filePath);
             itToFileTrans.putExtra("isStream",true);
             startActivity(itToFileTrans);
@@ -548,20 +582,27 @@ public class ChatActivity extends AppCompatActivity {
         unregisterReceiver(finishActivityRecevier);
     }
 
-    public String pushPic(String threadId, String path) {
-        Log.d(TAG, "onComplete: poster: " + path);
-        File picFile=new File(path);
+    public String pushStreamFile(String threadId, String path, boolean isPic) {
+        File file=new File(path);
         String streamId=String.valueOf(System.currentTimeMillis());
         try {
-            streamId=ShareUtil.file2MD5(picFile);
+            streamId=ShareUtil.file2MD5(file);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Log.d(TAG, "pushStreamFile: file md5: "+streamId);
+        Model.StreamMeta.Type streamType;
+        if(isPic){
+            streamType=Model.StreamMeta.Type.PICTURE;
+        }else{
+            streamType=Model.StreamMeta.Type.FILE;
+        }
+        Log.d(TAG, "pushStreamFile: type: "+streamType);
+
         Model.StreamMeta streamMeta = Model.StreamMeta.newBuilder()
                 .setId(streamId)
                 .setNsubstreams(1)
-                .setPosterid(path)
-                .setType(Model.StreamMeta.Type.PICTURE)
+                .setType(streamType)
                 .build();
         try {
             Textile.instance().streams.startStream(threadId, streamMeta);
@@ -570,11 +611,11 @@ public class ChatActivity extends AppCompatActivity {
         }
         byte[] fileContent= FileUtil.readAllBytes(path);
         JSONObject object=new JSONObject();
-        object.put("picName",picFile.getName());
-        String videoDescStr= JSON.toJSONString(object);
+        object.put("fileName",file.getName());
+        String descStr= JSON.toJSONString(object);
         Model.StreamFile streamFile= Model.StreamFile.newBuilder()
                 .setData(ByteString.copyFrom(fileContent))
-                .setDescription(ByteString.copyFromUtf8(videoDescStr))
+                .setDescription(ByteString.copyFromUtf8(descStr))
                 .build();
 
         long addT1=System.currentTimeMillis();

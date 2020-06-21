@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -195,7 +196,7 @@ public class FileTransActivity extends AppCompatActivity {
                     if(tRecord.type==0){
                         writeStr="自身节点,开始:"+get1Str+", 发完:"+get2Str+", 耗时:"+gap+"ms\n";
                     }else{
-                        writeStr="接收节点:"+user+", 开始:"+get1Str+", 收完:"+get2Str+", 耗时:"+gap+"ms, rtt:"+grtt+"ms\n";
+                        writeStr="接收节点:"+user+", 开始:"+get1Str+", 收完:"+get2Str+", 耗时:"+gap+"ms, rtt:"+grtt+"ms, "+"parent:"+tRecord.parent+"\n";
                     }
                     writer.write(writeStr); writer.flush();
                 }
@@ -249,7 +250,6 @@ public class FileTransActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getNewMsg(TRecord tRecord){
-        Log.d(TAG, "getNewMsg: 拿到通知：");
         if(tRecord.cid.equals(fileCid)){
             records.add(tRecord);
             adapter.notifyDataSetChanged();
@@ -313,6 +313,7 @@ public class FileTransActivity extends AppCompatActivity {
                 Log.d(TAG, "getView: 显示接收："+position);
                 recordView.user.setText("接收节点:"+user.substring(0,13)+"...");
                 recordView.duration.setText("开始:"+get1Str+",  收完:"+get2Str+"\n耗时:"+gap+"ms,  rtt:"+rttt+"ms");
+                recordView.tvParent.setText("parent: "+tRecord.parent);
             }
 
             return v;
@@ -321,9 +322,11 @@ public class FileTransActivity extends AppCompatActivity {
         class RecordView {
             TextView user;
             TextView duration;
+            TextView tvParent;
             public RecordView(View v){
                 user=v.findViewById(R.id.time_user);
                 duration=v.findViewById(R.id.time_duration);
+                tvParent=v.findViewById(R.id.tv_parent);
             }
         }
     }

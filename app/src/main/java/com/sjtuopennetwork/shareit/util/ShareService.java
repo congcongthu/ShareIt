@@ -16,6 +16,8 @@ import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.googlecode.protobuf.format.JsonFormat;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.share.util.TDialog;
@@ -71,6 +73,9 @@ public class ShareService extends Service {
 
     private HashMap<String, LinkedList<FileTransInfo>> recordTmp=new HashMap<>();
     private LinkedList<StreamAndMsg> streamPicMsg=new LinkedList<>();
+    private LinkedList<StreamAndMsg> streamFileMsg=new LinkedList<>();
+    private HashMap<String,StreamAndMsg> streamPicMap=new HashMap<>();
+    private HashMap<String,StreamAndMsg> streamFileMap=new HashMap<>();
 
     Handlers.ForegroundHandler foregroundHandler=new Handlers.ForegroundHandler() {
         @Override
@@ -87,8 +92,8 @@ public class ShareService extends Service {
         repoPath=intent.getStringExtra("repopath");
 
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
-//        connectCafe= pref.getBoolean("connectCafe",false);
-        connectCafe= pref.getBoolean("connectCafe",true);
+        connectCafe= pref.getBoolean("connectCafe",false);
+//        connectCafe= pref.getBoolean("connectCafe",true);
 
 
 
@@ -409,7 +414,7 @@ public class ShareService extends Service {
             }
             if(feedItemData.feedStreamMeta.getStreammeta().getType().equals(Model.StreamMeta.Type.PICTURE)){ //stream图片
                 String streamId=feedItemData.feedStreamMeta.getStreammeta().getId();
-                // 接收图片就自动订阅
+                // 接收图片就自动订阅，notification中收到实际文件
                 if(ismine==0) {
                     try {
                         Textile.instance().streams.subscribeStream(streamId);
@@ -419,7 +424,8 @@ public class ShareService extends Service {
                     String body = streamId;
                     TMsg tMsg = new TMsg(feedItemData.block, threadId, 7,
                             feedItemData.feedStreamMeta.getUser().getAddress(), body, feedItemData.feedStreamMeta.getDate().getSeconds(), false);
-                    streamPicMsg.add(new StreamAndMsg(feedItemData.feedStreamMeta,tMsg));
+//                    streamPicMsg.add(new StreamAndMsg(feedItemData.feedStreamMeta,tMsg));
+                    streamPicMap.put(streamId,new StreamAndMsg(feedItemData.feedStreamMeta,tMsg));
                 }
             }
             if(feedItemData.feedStreamMeta.getStreammeta().getType().equals(Model.StreamMeta.Type.VIDEO)) { //stream视频
@@ -433,6 +439,22 @@ public class ShareService extends Service {
                             feedItemData.feedStreamMeta.getDate().getSeconds(),ismine);
                     Log.d(TAG, "onComplete: postMsg消息");
                     EventBus.getDefault().post(tMsg);
+                }
+            }
+            if(feedItemData.feedStreamMeta.getStreammeta().getType().equals(Model.StreamMeta.Type.FILE)){
+                String streamId=feedItemData.feedStreamMeta.getStreammeta().getId();
+                // 自动订阅，notification中收到实际文件
+                if(ismine==0) {
+                    try {
+                        Textile.instance().streams.subscribeStream(streamId);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    String body = streamId;
+                    TMsg tMsg = new TMsg(feedItemData.block, threadId, 8,
+                            feedItemData.feedStreamMeta.getUser().getAddress(), body, feedItemData.feedStreamMeta.getDate().getSeconds(), false);
+//                    streamFileMsg.add(new StreamAndMsg(feedItemData.feedStreamMeta,tMsg));
+                    streamFileMap.put(streamId,new StreamAndMsg(feedItemData.feedStreamMeta,tMsg));
                 }
             }
         }
@@ -646,18 +668,17 @@ public class ShareService extends Service {
 
         @Override
         public void notificationReceived(Model.Notification notification) {
-            Log.d(TAG, "notificationReceived, type: "+notification.getType()+" "+notification.getSubject());
+            Log.d(TAG, "notificationReceived, type: "+notification.getBody()+" "+notification.getType()+" "+notification.getSubject());
+            if(notification.getUser().getAddress().equals(Textile.instance().account.address())){
+                Log.d(TAG, "notificationReceived: 自己的notification");
+                return;
+            }
             if(notification.getBody().equals("stream picture")) {
                 String hash=notification.getBlock();
                 String streamId=notification.getSubject();
-                View.FeedStreamMeta feedStreamMeta=null;
-                TMsg tmp=null;
-                for(StreamAndMsg streamAndMsg:streamPicMsg){
-                    if(streamAndMsg.feedStreamMeta.getStreammeta().getId().equals(streamId)){
-                        feedStreamMeta=streamAndMsg.feedStreamMeta;
-                        tmp=streamAndMsg.tMsg;
-                    }
-                }
+                View.FeedStreamMeta feedStreamMeta=streamPicMap.get(streamId).feedStreamMeta;
+                TMsg tmp=streamPicMap.get(streamId).tMsg;
+
                 final String tmpThreadId=tmp.threadid;
                 final String tmpBlock=tmp.blockid;
                 final String tmpAuthor=tmp.author;
@@ -666,12 +687,52 @@ public class ShareService extends Service {
                     @Override
                     public void onComplete(byte[] data, String media) {
                         String cachePath=ShareUtil.cacheImg(data,hash);
-                        Log.d(TAG, "onComplete: stream file:"+cachePath);
+                        Log.d(TAG, "onComplete: stream picture:"+cachePath);
                         ShareUtil.saveImage(data,System.currentTimeMillis()+".jpg");
                         TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
                                 tmpThreadId,7,tmpBlock,tmpAuthor,
                                 cachePath,tmpSendTime,0);
                         EventBus.getDefault().post(tMsg);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                return;
+            }
+            Log.d(TAG, "notificationReceived: body: "+notification.getBody());
+            if(notification.getBody().equals("stream file")) {
+                String hash=notification.getBlock();
+                String streamId=notification.getSubject();
+                View.FeedStreamMeta feedStreamMeta=streamFileMap.get(streamId).feedStreamMeta;
+                TMsg tmp=streamFileMap.get(streamId).tMsg;
+
+                final String tmpThreadId=tmp.threadid;
+                final String tmpBlock=tmp.blockid;
+                final String tmpAuthor=tmp.author;
+                final long tmpSendTime=tmp.sendtime;
+                String jsonStr=notification.getSubjectDesc();
+                Log.d(TAG, "notificationReceived: getSubject: "+jsonStr);
+                JSONObject jsonObject=JSON.parseObject(jsonStr);
+                String msgFileName=jsonObject.getString("fileName");
+                Textile.instance().streams.dataAtStreamFile(feedStreamMeta,hash ,new Handlers.DataHandler() {
+                    @Override
+                    public void onComplete(byte[] data, String media) {
+//                        String cachePath=ShareUtil.cacheImg(data,hash);
+//                        Log.d(TAG, "onComplete: stream file:"+cachePath);
+//                        ShareUtil.saveImage(data,System.currentTimeMillis()+".jpg");
+//                        TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+//                                tmpThreadId,8,tmpBlock,tmpAuthor,
+//                                cachePath,tmpSendTime,0);
+                        String filePath=ShareUtil.storeSyncFile(data,msgFileName);
+                        String msgBody=streamId+"##"+msgFileName;
+                        TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                                tmpThreadId,8,tmpBlock,tmpAuthor,
+                                msgBody,tmpSendTime,0);
+                        EventBus.getDefault().post(tMsg);
+                        Log.d(TAG, "onComplete: stream file get: "+filePath);
                     }
 
                     @Override
@@ -690,29 +751,37 @@ public class ShareService extends Service {
                     EventBus.getDefault().post(done);
                     return;
                 }
-                if(notification.getUser().getAddress().equals(Textile.instance().account.address())){
-                    Log.d(TAG, "notificationReceived: 自己的notification");
-                    return;
+
+
+                String blockJson=notification.getBlock();
+                String Id="";
+                String parent="0";
+                if(blockJson.charAt(0)=='{'){ //如果是json
+                    JSONObject object= JSON.parseObject(blockJson);
+                    Id=object.getString("ID");
+                    parent=object.getString("Parent");
+                }else{ //如果不是json，就是id
+                    Id=blockJson;
                 }
                 if(notification.getSubject().equals("ipfsGet")){
                     LinkedList<FileTransInfo> l=null;
-                    if(!recordTmp.containsKey(notification.getBlock())){
+                    if(!recordTmp.containsKey(Id)){
                         l=new LinkedList<>();
                     }else{
-                        l=recordTmp.get(notification.getBlock());
+                        l=recordTmp.get(Id);
                     }
                     long gett1=notification.getDate().getSeconds()*1000+(notification.getDate().getNanos()/1000000);
                     FileTransInfo fileTransInfo=new FileTransInfo(notification.getActor(),gett1);
                     l.add(fileTransInfo);
-                    Log.d(TAG, "notificationReceived: ipfsGet,sec,nanosec: "+gett1+" "+notification.getBlock());
-                    recordTmp.put(notification.getBlock(),l);
+                    Log.d(TAG, "notificationReceived: ipfsGet,sec,nanosec: "+gett1+" "+Id);
+                    recordTmp.put(Id,l);
                     Log.d(TAG, "notificationReceived: l size:"+l.size());
                 }else if(notification.getSubject().equals("ipfsDone")){
-                    LinkedList<FileTransInfo> l=recordTmp.get(notification.getBlock());
+                    LinkedList<FileTransInfo> l=recordTmp.get(Id);
                     TRecord tRecord=null;
                     if(l==null){ //没有对应的get，就是stream
-                        tRecord=new TRecord(notification.getBlock(),notification.getActor(),0,0,System.currentTimeMillis(),1);
-                        DBHelper.getInstance(getApplicationContext(),loginAccount).recordGet(tRecord.cid,tRecord.recordFrom,0,0,tRecord.t3);
+                        tRecord=new TRecord(Id,notification.getActor(),0,0,System.currentTimeMillis(),1,parent);
+                        DBHelper.getInstance(getApplicationContext(),loginAccount).recordGet(tRecord.cid,tRecord.recordFrom,0,0,tRecord.t3,parent);
                         Log.d(TAG, "notificationReceived: cid, get1, get2: "+tRecord.cid+" "+0+" "+0);
                     }else{
                         int i=0;
@@ -722,8 +791,8 @@ public class ShareService extends Service {
                                 Log.d(TAG, "notificationReceived: get1: "+get1+" "+i);
                                 long get2=notification.getDate().getSeconds()*1000+(notification.getDate().getNanos()/1000000);
                                 Log.d(TAG, "notificationReceived: ipfsDone,sec,nanosec: "+get2);
-                                tRecord=new TRecord(notification.getBlock(),notification.getActor(),get1,get2,System.currentTimeMillis(),1);
-                                DBHelper.getInstance(getApplicationContext(),loginAccount).recordGet(tRecord.cid,tRecord.recordFrom,Long.valueOf(get1),get2,tRecord.t3);
+                                tRecord=new TRecord(Id,notification.getActor(),get1,get2,System.currentTimeMillis(),1,parent);
+                                DBHelper.getInstance(getApplicationContext(),loginAccount).recordGet(tRecord.cid,tRecord.recordFrom,Long.valueOf(get1),get2,tRecord.t3,parent);
                                 Log.d(TAG, "notificationReceived: cid, get1, get2: "+tRecord.cid+" "+get1+" "+get2);
                                 break;
                             }
@@ -732,8 +801,11 @@ public class ShareService extends Service {
                         l.remove(i);
                     }
 
+//                    EventBus.getDefault().post(tRecord);
                     EventBus.getDefault().post(tRecord);
                 }
+
+                Log.d(TAG, "notificationReceived: block json: "+notification.getBlock());
                 return;
             }
 
@@ -750,7 +822,6 @@ public class ShareService extends Service {
                         }
                     }
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -799,6 +870,7 @@ public class ShareService extends Service {
             msg.obj=new ThreadUpdateWork(thread,feedItemData);
             threadUpdateHandler.sendMessage(msg);
         }
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
