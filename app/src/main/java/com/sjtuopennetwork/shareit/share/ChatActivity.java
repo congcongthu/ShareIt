@@ -2,6 +2,7 @@ package com.sjtuopennetwork.shareit.share;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -10,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -263,8 +265,51 @@ public class ChatActivity extends AppCompatActivity {
                                     .start();
                             break;
                         case R.id.file_select_generate:
+                            EditText inputs = new EditText(ChatActivity.this);
+                            inputs.setInputType(InputType.TYPE_CLASS_NUMBER);
+                            //inputs.setText("aa");
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
+                            builder.setTitle("文件大小(KB)").setView(inputs)
+                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            dialogInterface.dismiss();
+                                        }
+                                    });
+                            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    int inputSize = Integer.parseInt(inputs.getText().toString());
+                                    if (inputSize > 0) {
+                                        String outDir = FileUtil.getAppExternalPath(ChatActivity.this, "generatedFile");
+                                        String testFilePath = FileUtil.generateTestFile(outDir, inputSize);
+                                        Textile.instance().files.addSimpleFile(testFilePath, threadid, new Handlers.BlockHandler() {
+                                            long addT1=System.currentTimeMillis();
+                                            @Override
+                                            public void onComplete(Model.Block block) {
+                                                Log.d(TAG, "onComplete: 发送文件成功");
+                                                long addT2=System.currentTimeMillis();
+                                                try {
+//                        String bbb=Textile.instance().files.list(threadid, "", 1).getItemsList().get(0).getBlock();
+                                                    String bbb=block.getId();
+                                                    Log.d(TAG, "onComplete: bbb: "+bbb);
+                                                    DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(bbb,addT1,addT2);
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
 
+                                            @Override
+                                            public void onError(Exception e) {
+
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                            builder.show();
                     }
+
                     return false;
                 }
             });
@@ -291,6 +336,71 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         bt_send_stream_file.setOnClickListener(v->{
+            PopupMenu file_select_menu = new PopupMenu(ChatActivity.this, v);
+            file_select_menu.getMenuInflater().inflate(R.menu.file_select, file_select_menu.getMenu());
+            file_select_menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    switch(menuItem.getItemId()){
+                        case R.id.file_select_selector:
+                            new LFilePicker()
+                                    .withActivity(ChatActivity.this)
+                                    .withRequestCode(756)
+                                    .withMutilyMode(false)//false为单选
+//                    .withFileFilter(new String[]{".txt",".png",".jpeg",".jpg" })//设置可选文件类型
+                                    .withTitle("文件选择")//标题
+                                    .start();
+                            break;
+                        case R.id.file_select_generate:
+                            EditText inputs = new EditText(ChatActivity.this);
+                            inputs.setInputType(InputType.TYPE_CLASS_NUMBER);
+                            //inputs.setText("aa");
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
+                            builder.setTitle("文件大小(KB)").setView(inputs)
+                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            dialogInterface.dismiss();
+                                        }
+                                    });
+                            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    int inputSize = Integer.parseInt(inputs.getText().toString());
+                                    if (inputSize > 0) {
+                                        String outDir = FileUtil.getAppExternalPath(ChatActivity.this, "generatedFile");
+                                        String testFilePath = FileUtil.generateTestFile(outDir, inputSize);
+                                        Log.d(TAG, "onActivityResult: get stream file path: "+testFilePath);
+                                        String fileHash=pushStreamFile(threadid, testFilePath,false);
+                                        TMsg tMsg= null;
+                                        try {
+                                            long l=System.currentTimeMillis()/1000;
+                                            tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                                                    threadid,8,String.valueOf(l),myName,fileHash+"##"+testFilePath,l,1);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        msgList.add(tMsg);
+                                        msgAdapter.notifyDataSetChanged();
+                                        chat_lv.setSelection(msgList.size());
+
+                                        Intent itToFileTrans=new Intent(ChatActivity.this, FileTransActivity.class);
+                                        itToFileTrans.putExtra("fileCid",fileHash);
+                                        itToFileTrans.putExtra("fileSizeCid",testFilePath);
+                                        itToFileTrans.putExtra("isStream",true);
+                                        startActivity(itToFileTrans);
+                                    }
+                                }
+                            });
+                            builder.show();
+                    }
+
+                    return false;
+                }
+            });
+
+            file_select_menu.show();
+            /*
             new LFilePicker()
                     .withActivity(ChatActivity.this)
                     .withRequestCode(756)
@@ -298,6 +408,8 @@ public class ChatActivity extends AppCompatActivity {
 //                    .withFileFilter(new String[]{".txt",".png",".jpeg",".jpg" })//设置可选文件类型
                     .withTitle("文件选择")//标题
                     .start();
+
+             */
         });
 
         group_menu.setOnClickListener(v -> {

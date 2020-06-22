@@ -160,6 +160,15 @@ public class FileTransActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: records size 2:"+records.size());
         processData();
 
+        // write tree
+        Button writeTree = findViewById(R.id.write_tree_csv);
+        writeTree.setOnClickListener(view-> {
+            String outDir = FileUtil.getAppExternalPath(FileTransActivity.this, "trees");
+            String outPath = outDir + File.separator + fileCid + ".csv";
+            Textile.instance().writeTreeCsv(fileCid, outPath);
+            Toast.makeText(this, "保存分发树："+ outPath, Toast.LENGTH_SHORT).show();
+        });
+
         //savelog
         saveLog=findViewById(R.id.save_log);
         saveLog.setOnClickListener(view -> {

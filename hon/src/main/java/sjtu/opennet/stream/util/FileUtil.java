@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Locale;
 import java.util.Random;
 
 public class FileUtil {
@@ -175,10 +176,10 @@ public class FileUtil {
      */
     public static String generateTestFile(String dir, int size) {
         try{
-            File f = new File(dir, "test");
+            File f = new File(dir, String.format(Locale.CHINA,"test_%d", size));// ?? what does locale used for??
             OutputStream fout = new FileOutputStream(f);
             int cacheSize = 10;
-            int kb = 1024*8;
+            int kb = 1024;
             byte[] cache = new byte[cacheSize*kb];
             long seed = System.currentTimeMillis();
             Random r = new Random(seed);

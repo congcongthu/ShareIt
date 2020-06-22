@@ -602,4 +602,12 @@ public class Textile implements LifecycleObserver {
     public void getLog(HlogHandler handler) {
         node.getLog(handler);
     }
+
+    public void writeTreeCsv(String streamId, String outPath) {
+        try {
+            node.writeTreeCSV(streamId, outPath);
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
+    }
 }

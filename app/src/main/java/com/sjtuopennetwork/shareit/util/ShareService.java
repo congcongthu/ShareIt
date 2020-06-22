@@ -188,6 +188,7 @@ public class ShareService extends Service {
                     .putSystems("tex-mobile", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("tex-service",sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .putSystems("stream",sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("record",sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
                     .build();
             Textile.instance().logs.setLevel(logLevel);
         } catch (Exception e) {
