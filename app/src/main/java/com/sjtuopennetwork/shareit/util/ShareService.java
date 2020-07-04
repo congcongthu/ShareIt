@@ -418,7 +418,7 @@ public class ShareService extends Service {
                 // 接收图片就自动订阅，notification中收到实际文件
                 if(ismine==0) {
                     try {
-                        Textile.instance().streams.subscribeStream(streamId);
+//                        Textile.instance().streams.subscribeStream(streamId);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
