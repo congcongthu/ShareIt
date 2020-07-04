@@ -31,6 +31,11 @@ public class Stream extends NodeDependent{
         node.streamAddFile(streamId, streamFile);
     }
 
+    public Model.StreamMeta fileAsStream(String threadId, Model.StreamFile streamFile, Model.StreamMeta.Type fileType) throws Exception {
+        Log.d(TAG, "fileAsStream");
+        return Model.StreamMeta.parseFrom(node.fileAsStream_Text(threadId, streamFile.toByteArray(), fileType.getNumber()));
+    }
+
     public void closeStream(String threadId, String streamId) throws Exception{
         Log.d(TAG, "closeStream: "+streamId);
         node.closeStream(threadId, streamId);
