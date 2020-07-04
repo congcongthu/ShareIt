@@ -456,6 +456,7 @@ public class ShareService extends Service {
                             feedItemData.feedStreamMeta.getUser().getAddress(), body, feedItemData.feedStreamMeta.getDate().getSeconds(), false);
 //                    streamFileMsg.add(new StreamAndMsg(feedItemData.feedStreamMeta,tMsg));
                     streamFileMap.put(streamId,new StreamAndMsg(feedItemData.feedStreamMeta,tMsg));
+                    Log.d(TAG, "handleThreadUpdate: get file: "+streamId);
                 }
             }
         }
@@ -680,6 +681,7 @@ public class ShareService extends Service {
                 View.FeedStreamMeta feedStreamMeta=streamPicMap.get(streamId).feedStreamMeta;
                 TMsg tmp=streamPicMap.get(streamId).tMsg;
 
+                Log.d(TAG, "notificationReceived: this is picture: ");
                 final String tmpThreadId=tmp.threadid;
                 final String tmpBlock=tmp.blockid;
                 final String tmpAuthor=tmp.author;
@@ -703,10 +705,11 @@ public class ShareService extends Service {
                 });
                 return;
             }
-            Log.d(TAG, "notificationReceived: body: "+notification.getBody());
+            Log.d(TAG, "notificationReceived: body1: "+notification.getBody());
             if(notification.getBody().equals("stream file")) {
                 String hash=notification.getBlock();
                 String streamId=notification.getSubject();
+                Log.d(TAG, "notificationReceived: get root: "+streamId);
                 View.FeedStreamMeta feedStreamMeta=streamFileMap.get(streamId).feedStreamMeta;
                 TMsg tmp=streamFileMap.get(streamId).tMsg;
 

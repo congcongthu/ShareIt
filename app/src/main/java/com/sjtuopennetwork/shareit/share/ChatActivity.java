@@ -740,16 +740,17 @@ public class ChatActivity extends AppCompatActivity {
         }
         Log.d(TAG, "pushStreamFile: type: "+streamType);
 
-        Model.StreamMeta streamMeta = Model.StreamMeta.newBuilder()
-                .setId(streamId)
-                .setNsubstreams(1)
-                .setType(streamType)
-                .build();
-        try {
-            Textile.instance().streams.startStream(threadId, streamMeta);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        Model.StreamMeta streamMeta = Model.StreamMeta.newBuilder()
+//                .setId(streamId)
+//                .setNsubstreams(1)
+//                .setType(streamType)
+//                .build();
+//        try {
+//            Textile.instance().streams.startStream(threadId, streamMeta);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
         byte[] fileContent= FileUtil.readAllBytes(path);
         JSONObject object=new JSONObject();
         object.put("fileName",file.getName());
@@ -761,9 +762,13 @@ public class ChatActivity extends AppCompatActivity {
 
         long addT1=System.currentTimeMillis();
         DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(streamId,addT1,0);
+
+
+
         try {
-            Textile.instance().streams.streamAddFile(streamId,streamFile.toByteArray());
-            Textile.instance().streams.closeStream(threadId,streamId);
+        Textile.instance().streams.fileAsStream(threadId,streamFile,streamType);
+//            Textile.instance().streams.streamAddFile(streamId,streamFile.toByteArray());
+//            Textile.instance().streams.closeStream(threadId,streamId);
         } catch (Exception e) {
             e.printStackTrace();
         }
