@@ -715,7 +715,7 @@ public class ShareService extends Service {
                 final String tmpAuthor=tmp.author;
                 final long tmpSendTime=tmp.sendtime;
                 String jsonStr=notification.getSubjectDesc();
-                Log.d(TAG, "notificationReceived: getSubject: "+jsonStr);
+                Log.d(TAG, "notificationReceived: stream file getSubject: "+jsonStr);
                 JSONObject jsonObject=JSON.parseObject(jsonStr);
                 String msgFileName=jsonObject.getString("fileName");
                 Textile.instance().streams.dataAtStreamFile(feedStreamMeta,hash ,new Handlers.DataHandler() {
