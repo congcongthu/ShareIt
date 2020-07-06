@@ -725,13 +725,13 @@ public class ChatActivity extends AppCompatActivity {
 
     public String pushStreamFile(String threadId, String path, boolean isPic) {
         File file=new File(path);
-        String streamId=String.valueOf(System.currentTimeMillis());
-        try {
-            streamId=ShareUtil.file2MD5(file);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "pushStreamFile: file md5: "+streamId);
+//        String streamId=String.valueOf(System.currentTimeMillis());
+//        try {
+//            streamId=ShareUtil.file2MD5(file);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        Log.d(TAG, "pushStreamFile: file md5: "+streamId);
         Model.StreamMeta.Type streamType;
         if(isPic){
             streamType=Model.StreamMeta.Type.PICTURE;
@@ -760,15 +760,16 @@ public class ChatActivity extends AppCompatActivity {
                 .setDescription(ByteString.copyFromUtf8(descStr))
                 .build();
 
-        long addT1=System.currentTimeMillis();
-        DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(streamId,addT1,0);
-
-
-
+        String streamId="";
         try {
-        Textile.instance().streams.fileAsStream(threadId,streamFile,streamType);
+        Model.StreamMeta meta=Textile.instance().streams.fileAsStream(threadId,streamFile,streamType);
 //            Textile.instance().streams.streamAddFile(streamId,streamFile.toByteArray());
 //            Textile.instance().streams.closeStream(threadId,streamId);
+
+            long addT1=System.currentTimeMillis();
+            streamId= meta.getId();
+            DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(streamId,addT1,0);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

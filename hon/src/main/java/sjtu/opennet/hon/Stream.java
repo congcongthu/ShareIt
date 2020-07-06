@@ -67,4 +67,8 @@ public class Stream extends NodeDependent{
         });
     }
 
+    public boolean isStreamFinshed(String streaId){
+        return node.isStreamFinished(streaId);
+    }
+
 }
