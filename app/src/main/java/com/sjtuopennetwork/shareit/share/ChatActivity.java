@@ -166,17 +166,17 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        Textile.instance().getLog(new HlogHandler() {
-            @Override
-            public void handleLog(String s) {
-                System.out.println("================get log: "+s);
-            }
-
-            @Override
-            public void logEnd() {
-
-            }
-        });
+//        Textile.instance().getLog(new HlogHandler() {
+//            @Override
+//            public void handleLog(String s) {
+//                System.out.println("================get log: "+s);
+//            }
+//
+//            @Override
+//            public void logEnd() {
+//
+//            }
+//        });
     }
 
     private void initData() {
@@ -457,7 +457,21 @@ public class ChatActivity extends AppCompatActivity {
     public void updateChat(TMsg tMsg){
         if(tMsg.threadid.equals(threadid)){
             Log.d(TAG, "updateChat: "+tMsg.msgtype+" "+tMsg.body);
-            msgList.add(tMsg);
+
+            String blockId=tMsg.blockid;
+            int i=0;
+            for(;i<msgList.size();i++){
+                if(msgList.get(i).blockid.equals(blockId)){
+                    break;
+                }
+            }
+            if(i<msgList.size()){
+                msgList.remove(i);
+                msgList.add(i,tMsg);
+            }else{
+                msgList.add(tMsg);
+            }
+
             msgAdapter.notifyDataSetChanged();
             chat_lv.setSelection(msgList.size());
 

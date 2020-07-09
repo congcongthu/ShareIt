@@ -43,6 +43,13 @@
         android:layout_height="38dp"
         android:text="保存分发树" />
 
+    <TextView
+        android:layout_margin="3dp"
+        android:id="@+id/stream_id"
+        android:textColor="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <LinearLayout
         android:layout_marginTop="5dp"
         android:orientation="horizontal"

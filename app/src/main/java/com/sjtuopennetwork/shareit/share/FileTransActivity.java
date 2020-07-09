@@ -53,6 +53,7 @@ public class FileTransActivity extends AppCompatActivity {
     private ListView recordsLv;
     private Button saveLog;
     private TextView getNum;
+    TextView streamIdTV;
 
     private String fileCid;
     private String fileSizeCid;
@@ -87,6 +88,8 @@ public class FileTransActivity extends AppCompatActivity {
         setContentView(R.layout.activity_file_trans);
 
         fileCid=getIntent().getStringExtra("fileCid");
+        streamIdTV=findViewById(R.id.stream_id);
+        streamIdTV.setText(fileCid);
         fileSizeCid=getIntent().getStringExtra("fileSizeCid");
         isStream=getIntent().getBooleanExtra("isStream",false);
         Log.d(TAG, "onCreate: get File: "+fileCid);
@@ -302,24 +305,28 @@ public class FileTransActivity extends AppCompatActivity {
             }
 
             String user=tRecord.recordFrom;
-            String get1Str=df.format(tRecord.t1);
+            String get1Str;
             String get2Str=df.format(tRecord.t2);
             if(isStream){
                 get1Str="0";
                 get2Str="0";
+            }else{
+                get1Str=df.format(tRecord.t1);
             }
-            long gap=tRecord.t2-tRecord.t1;
+            long gap;
             long rttt=tRecord.t3-startAdd;
-            if(tRecord.type==0){
+            if(tRecord.type==0){ //自己的信息
                 Log.d(TAG, "getView: 显示自己："+position);
                 recordView.user.setText("自身节点");
                 if(isStream){
                     recordView.duration.setText("0");
                 }else{
+                    gap=tRecord.t2-tRecord.t1;
                     recordView.duration.setText("开始:"+get1Str+",  发完:"+get2Str+"\n耗时:"+gap+"ms");
                 }
-            }else{
-                Log.d(TAG, "getView: 显示接收："+position);
+            }else{ //收到反馈
+                Log.d(TAG, "getView: jieshou: "+tRecord.t1);
+                gap=tRecord.t1-tRecord.t2;
                 recordView.user.setText("接收节点:"+user.substring(0,13)+"...");
                 recordView.duration.setText("开始:"+get1Str+",  收完:"+get2Str+"\n耗时:"+gap+"ms,  rtt:"+rttt+"ms");
                 recordView.tvParent.setText("parent: "+tRecord.parent);

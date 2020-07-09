@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sjtuopennetwork.shareit.R;
@@ -40,6 +41,8 @@ public class ContactDiscoverActivity extends AppCompatActivity {
     DiscoverAdapter discoverAdapter;
     Button createNewGroup;
     CheckBox selectAll;
+    TextView discoveryNumTV;
+    int discoveryNum=0;
 
     //内存数据
     List<Model.Peer> myFriends;
@@ -98,6 +101,7 @@ public class ContactDiscoverActivity extends AppCompatActivity {
         selectAll=findViewById(R.id.chkbx_select_all);
         createNewGroup=findViewById(R.id.bt_create_new_group);
         discover_lv=findViewById(R.id.contact_discover_result_lv);
+        discoveryNumTV=findViewById(R.id.discover_num);
         myFriends= ContactUtil.getFriendList();
         resultContacts= Collections.synchronizedList(new LinkedList<>());
         newContacts=Collections.synchronizedList(new LinkedList<>());
@@ -168,6 +172,9 @@ public class ContactDiscoverActivity extends AppCompatActivity {
         resultContacts.add(new ResultContact(c.getAddress(),c.getName(),c.getAvatar(),null,isMyFriend));
         discoverAdapter.mChecked.add(true); //默认是选中的
         discover_lv.setSelection(0);
+
+        discoveryNum++;
+        discoveryNumTV.setText("发现"+discoveryNum+"个");
     }
 
     //双人thread创建成功后就发送邀请，用户看起来就是好友申请

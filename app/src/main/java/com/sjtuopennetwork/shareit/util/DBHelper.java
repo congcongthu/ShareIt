@@ -220,6 +220,12 @@ public class DBHelper extends SQLiteOpenHelper {
         return new TMsg(blockid,threadid,msgtype,author,body,sendtime,ismine==1);
     }
 
+    public synchronized void updateMsg(String blockId, String body){
+        ContentValues v=new ContentValues();
+        v.put("body",body);
+        appdb.update("msgs",v,"blockid=?",new String[]{blockId});
+    }
+
     //得到新消息时，对话要更新的内容可能有：图片、内容、时间
     public synchronized TDialog dialogGetMsg(TDialog tDialog,String threadId,String lastmsg,long lastmsgdate,String add_or_img){
         ContentValues v=new ContentValues();
