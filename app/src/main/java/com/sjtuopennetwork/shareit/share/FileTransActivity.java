@@ -326,7 +326,11 @@ public class FileTransActivity extends AppCompatActivity {
                 }
             }else{ //收到反馈
                 Log.d(TAG, "getView: jieshou: "+tRecord.t1);
-                gap=tRecord.t1-tRecord.t2;
+                if(isStream) {
+                    gap = tRecord.t1 - tRecord.t2;
+                }else{
+                    gap = tRecord.t2 - tRecord.t1;
+                }
                 recordView.user.setText("接收节点:"+user.substring(0,13)+"...");
                 recordView.duration.setText("开始:"+get1Str+",  收完:"+get2Str+"\n耗时:"+gap+"ms,  rtt:"+rttt+"ms");
                 recordView.tvParent.setText("parent: "+tRecord.parent);

@@ -41,6 +41,11 @@ public class Stream extends NodeDependent{
         node.closeStream(threadId, streamId);
     }
 
+    public String getState(String streamId){
+        String state=node.streamGetStatus(streamId);
+        return state;
+    }
+
     public void threadAddStream(String threadId, String streamId) throws Exception{
 
     }

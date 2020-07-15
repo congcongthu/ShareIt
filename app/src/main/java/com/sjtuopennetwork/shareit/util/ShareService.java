@@ -563,7 +563,6 @@ public class ShareService extends Service {
                                     streamId,feedItemData.feedStreamMeta.getDate().getSeconds(),0);
 
                             EventBus.getDefault().post(tMsg);
-
                         }
                     }
 
@@ -734,14 +733,14 @@ public class ShareService extends Service {
         @Override
         public void nodeStarted() {
             super.nodeStarted();
-            EventBus.getDefault().post(Integer.valueOf(0));
+//            EventBus.getDefault().post(Integer.valueOf(0));
         }
 
         @Override
         public void nodeOnline() {
             super.nodeOnline();
 
-//            EventBus.getDefault().post(Integer.valueOf(0));
+            EventBus.getDefault().post(Integer.valueOf(0));
 
 //            Textile.instance().setForegroundHandler(foregroundHandler);
 
@@ -934,7 +933,7 @@ public class ShareService extends Service {
                 String streamId=notification.getSubject();
                 synchronized (SHOW_LOCK){
                     if(metaNotiMap.containsKey(streamId)){ //如果已经有meta,就进行显示
-                        String hash=notification.getBlock(); // 存的是stream id
+                        String fileId=notification.getBlock(); // 存的是stream id
                         Log.d(TAG, "notificationReceived: have meta, get root: "+streamId);
                         View.FeedStreamMeta feedStreamMeta=metaNotiMap.get(streamId).threadUpdateWork.feedItemData.feedStreamMeta;
                         final String tmpThreadId=metaNotiMap.get(streamId).threadUpdateWork.thread.getId();
@@ -948,7 +947,7 @@ public class ShareService extends Service {
                             Log.d(TAG, "notificationReceived: stream getSubject: "+jsonStr);
                             JSONObject jsonObject=JSON.parseObject(jsonStr);
                             String msgFileName=jsonObject.getString("fileName");
-                            Textile.instance().streams.dataAtStreamFile(feedStreamMeta,hash ,new Handlers.DataHandler() {
+                            Textile.instance().streams.dataAtStreamFile(feedStreamMeta, fileId,new Handlers.DataHandler() {
                                 @Override
                                 public void onComplete(byte[] data, String media) {
                                     String filePath=ShareUtil.storeSyncFile(data,msgFileName);
@@ -972,10 +971,10 @@ public class ShareService extends Service {
                             metaNotiMap.remove(streamId);
                             return;
                         }else if(feedStreamMeta.getStreammeta().getType().equals(Model.StreamMeta.Type.PICTURE)){
-                            Textile.instance().streams.dataAtStreamFile(feedStreamMeta,hash ,new Handlers.DataHandler() {
+                            Textile.instance().streams.dataAtStreamFile(feedStreamMeta,fileId ,new Handlers.DataHandler() {
                                 @Override
                                 public void onComplete(byte[] data, String media) {
-                                    String cachePath=ShareUtil.cacheImg(data,hash);
+                                    String cachePath=ShareUtil.cacheImg(data,fileId);
                                     Log.d(TAG, "onComplete: stream picture:"+cachePath);
                                     ShareUtil.saveImage(data,System.currentTimeMillis()+".jpg");
                                     TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
@@ -998,7 +997,7 @@ public class ShareService extends Service {
                 }
             }
 
-            if( notification.getType().equals(Model.Notification.Type.RECORD_REPORT)){
+            if(notification.getType().equals(Model.Notification.Type.RECORD_REPORT)){
                 Log.d(TAG, "notificationReceived: from: "+notification.getUser().getAddress());
                 if(notification.getSubject().equals("shadowDone")){
                     Log.d(TAG, "notificationReceived: shadowDone");
@@ -1066,6 +1065,74 @@ public class ShareService extends Service {
 
                 Log.d(TAG, "notificationReceived: block json: "+notification.getBlock());
                 return;
+            }
+
+            if(notification.getType().equals(Model.Notification.Type.INFORM_TIMEOUT)){
+                String streamId=notification.getSubject();
+                synchronized (SHOW_LOCK){
+                    if(metaNotiMap.containsKey(streamId)){ //如果已经有meta,就进行显示
+                        Log.d(TAG, "notificationReceived: have meta, get root: "+streamId);
+                        View.FeedStreamMeta feedStreamMeta=metaNotiMap.get(streamId).threadUpdateWork.feedItemData.feedStreamMeta;
+                        final String tmpThreadId=metaNotiMap.get(streamId).threadUpdateWork.thread.getId();
+                        final String tmpBlock=feedStreamMeta.getBlock();
+                        final String tmpAuthor=feedStreamMeta.getUser().getAddress();
+                        final long tmpSendTime=feedStreamMeta.getDate().getSeconds();
+
+                        if(feedStreamMeta.getStreammeta().getType().equals(Model.StreamMeta.Type.FILE)){ //如果是文件
+                            //拿到文件名
+//                            String jsonStr=notification.getSubjectDesc();
+                            String jsonStr=feedStreamMeta.getStreammeta().getCaption();
+                            Log.d(TAG, "notificationReceived: stream getSubject: "+jsonStr);
+                            JSONObject jsonObject=JSON.parseObject(jsonStr);
+                            String msgFileName=jsonObject.getString("fileName");
+                            Textile.instance().streams.dataAtStreamFile(feedStreamMeta,streamId ,new Handlers.DataHandler() {
+                                @Override
+                                public void onComplete(byte[] data, String media) {
+                                    String filePath=ShareUtil.storeSyncFile(data,msgFileName);
+                                    String msgBody=streamId+"##"+msgFileName;
+//                                    TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+//                                            tmpThreadId,8,tmpBlock,tmpAuthor,
+//                                            msgBody,tmpSendTime,0);
+                                    TMsg tMsg=new TMsg(feedStreamMeta.getBlock(),tmpThreadId,8,tmpAuthor,msgBody,tmpSendTime,false);
+                                    DBHelper.getInstance(getApplicationContext(),loginAccount).updateMsg(feedStreamMeta.getBlock(),msgBody);
+
+                                    EventBus.getDefault().post(tMsg);
+                                    Log.d(TAG, "noti onComplete: stream file get: "+filePath);
+                                    metaNotiMap.remove(streamId);
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    Log.d(TAG, "onError: dddddddddddd");
+                                    e.printStackTrace();
+                                }
+                            });
+                            return;
+                        }else if(feedStreamMeta.getStreammeta().getType().equals(Model.StreamMeta.Type.PICTURE)){
+                            Textile.instance().streams.dataAtStreamFile(feedStreamMeta,streamId ,new Handlers.DataHandler() {
+                                @Override
+                                public void onComplete(byte[] data, String media) {
+                                    String cachePath=ShareUtil.cacheImg(data,streamId);
+                                    Log.d(TAG, "onComplete: stream picture:"+cachePath);
+                                    ShareUtil.saveImage(data,System.currentTimeMillis()+".jpg");
+                                    TMsg tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                                            tmpThreadId,7,tmpBlock,tmpAuthor,
+                                            cachePath,tmpSendTime,0);
+                                    EventBus.getDefault().post(tMsg);
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                            return;
+                        }
+                    }else{
+                        Log.d(TAG, "notificationReceived: noti no meta");
+//                        metaNotiMap.put(streamId,new MetaAndNotification(null,notification));
+                    }
+                }
             }
 
             //查出邀请中最近的一个，添加到头部。

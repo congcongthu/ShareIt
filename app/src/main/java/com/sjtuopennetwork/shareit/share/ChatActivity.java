@@ -357,39 +357,36 @@ public class ChatActivity extends AppCompatActivity {
                             //inputs.setText("aa");
                             AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
                             builder.setTitle("文件大小(KB)").setView(inputs)
-                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.dismiss();
-                                        }
-                                    });
-                            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    int inputSize = Integer.parseInt(inputs.getText().toString());
-                                    if (inputSize > 0) {
-                                        String outDir = FileUtil.getAppExternalPath(ChatActivity.this, "generatedFile");
-                                        String testFilePath = FileUtil.generateTestFile(outDir, inputSize);
-                                        Log.d(TAG, "onActivityResult: get stream file path: "+testFilePath);
-                                        String fileHash=pushStreamFile(threadid, testFilePath,false);
-                                        TMsg tMsg= null;
-                                        try {
-                                            long l=System.currentTimeMillis()/1000;
-                                            tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
-                                                    threadid,8,String.valueOf(l),myName,fileHash+"##"+testFilePath,l,1);
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                        msgList.add(tMsg);
-                                        msgAdapter.notifyDataSetChanged();
-                                        chat_lv.setSelection(msgList.size());
-
-                                        Intent itToFileTrans=new Intent(ChatActivity.this, FileTransActivity.class);
-                                        itToFileTrans.putExtra("fileCid",fileHash);
-                                        itToFileTrans.putExtra("fileSizeCid",testFilePath);
-                                        itToFileTrans.putExtra("isStream",true);
-                                        startActivity(itToFileTrans);
+                                    .setNegativeButton("取消", (dialogInterface, i) -> dialogInterface.dismiss());
+                            builder.setPositiveButton("确定", (dialogInterface, i) -> {
+                                String tmp=inputs.getText().toString();
+                                if(tmp.equals("")){
+                                    Toast.makeText(ChatActivity.this, "不能为空", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                int inputSize = Integer.parseInt(tmp);
+                                if (inputSize > 0) {
+                                    String outDir = FileUtil.getAppExternalPath(ChatActivity.this, "generatedFile");
+                                    String testFilePath = FileUtil.generateTestFile(outDir, inputSize);
+                                    Log.d(TAG, "onActivityResult: get stream file path: "+testFilePath);
+                                    String fileHash=pushStreamFile(threadid, testFilePath,false);
+                                    TMsg tMsg= null;
+                                    try {
+                                        long l=System.currentTimeMillis()/1000;
+                                        tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                                                threadid,8,String.valueOf(l),myName,fileHash+"##"+testFilePath,l,1);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
+                                    msgList.add(tMsg);
+                                    msgAdapter.notifyDataSetChanged();
+                                    chat_lv.setSelection(msgList.size());
+
+                                    Intent itToFileTrans=new Intent(ChatActivity.this, FileTransActivity.class);
+                                    itToFileTrans.putExtra("fileCid",fileHash);
+                                    itToFileTrans.putExtra("fileSizeCid",testFilePath);
+                                    itToFileTrans.putExtra("isStream",true);
+                                    startActivity(itToFileTrans);
                                 }
                             });
                             builder.show();
@@ -402,13 +399,12 @@ public class ChatActivity extends AppCompatActivity {
             file_select_menu.show();
             /*
             new LFilePicker()
-                    .withActivity(ChatActivity.this)
+                    .withActivity(ChatActivity.this))
                     .withRequestCode(756)
                     .withMutilyMode(false)//false为单选
-//                    .withFileFilter(new String[]{".txt",".png",".jpeg",".jpg" })//设置可选文件类型
+                    .withFileFilter(new String[]{".txt",".png",".jpeg",".jpg" })//设置可选文件类型
                     .withTitle("文件选择")//标题
                     .start();
-
              */
         });
 
@@ -776,10 +772,9 @@ public class ChatActivity extends AppCompatActivity {
 
         String streamId="";
         try {
-        Model.StreamMeta meta=Textile.instance().streams.fileAsStream(threadId,streamFile,streamType);
+            Model.StreamMeta meta=Textile.instance().streams.fileAsStream(threadId,streamFile,streamType);
 //            Textile.instance().streams.streamAddFile(streamId,streamFile.toByteArray());
 //            Textile.instance().streams.closeStream(threadId,streamId);
-
             long addT1=System.currentTimeMillis();
             streamId= meta.getId();
             DBHelper.getInstance(getApplicationContext(),loginAccount).recordLocalStartAdd(streamId,addT1,0);

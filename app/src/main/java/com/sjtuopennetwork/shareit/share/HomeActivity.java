@@ -131,6 +131,7 @@ public class HomeActivity extends AppCompatActivity {
             } else {
                 circleProgressDialog = new CircleProgressDialog(this);
                 circleProgressDialog.setText("节点启动中");
+                circleProgressDialog.setCancelable(false);
                 circleProgressDialog.showDialog();
 
                 Intent intent = new Intent(this, ShareService.class);

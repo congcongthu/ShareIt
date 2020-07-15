@@ -2,6 +2,7 @@ package com.sjtuopennetwork.shareit.share.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
@@ -338,12 +339,14 @@ public class TMsgAdapter extends BaseAdapter {
                 if(hashPath.length==1){ //显示灰色
                     ShareUtil.setImageView(context, h.file_avatar, useravatar, 0);
                     h.file_name.setText("未下载");
+                    h.file_name.setTextColor(Color.RED);
                 }else{ //正常
                     ShareUtil.setImageView(context, h.file_avatar, useravatar, 0);
                     h.file_name.setText(hashPath[1]);
+                    h.file_name.setTextColor(Color.BLACK);
                 }
                 h.send_file_left.setOnClickListener(v -> {
-                    String stateInfo="state info";
+                    String stateInfo=Textile.instance().streams.getState(hashPath[0]);
 
                     Toast.makeText(context, stateInfo, Toast.LENGTH_SHORT).show();
 
