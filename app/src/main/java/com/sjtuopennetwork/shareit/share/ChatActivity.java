@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,6 +49,8 @@ import java.io.File;
 import java.util.List;
 
 import mobile.HlogHandler;
+import sjtu.opennet.hon.MulticastFile;
+import sjtu.opennet.multicast.FileMultiCaster;
 import sjtu.opennet.stream.file.FilePusher;
 import sjtu.opennet.stream.util.FileUtil;
 import sjtu.opennet.stream.video.VideoPusher;
@@ -76,13 +79,14 @@ public class ChatActivity extends AppCompatActivity {
     TextView bt_send_video_ticket;
     TextView bt_send_stream_pic;
     TextView bt_send_stream_file;
+    TextView bt_send_multicast_file;
 
     //持久化数据
     public SharedPreferences pref;
 
     //内存数据
     String loginAccount; //当前登录的帐户
-    boolean addingFile=false;
+    boolean addingFile = false;
     String threadid;
     Model.Thread chat_thread;
     List<TMsg> msgList;
@@ -93,7 +97,14 @@ public class ChatActivity extends AppCompatActivity {
     String myAvatar;
     List<String> chooseFilePath;
     long msgT1;
+    int xiansuTime;
 
+    //const
+    int TICKET_VIDEO=1293;
+    int SIMPLE_FILE=293;
+    int STREAM_PIC=1871;
+    int STREAM_FILE=756;
+    int MULTI_FILE=7568;
 
     //退出群组相关
     public static final String REMOVE_DIALOG="you get out";
@@ -113,6 +124,7 @@ public class ChatActivity extends AppCompatActivity {
         IntentFilter intentFilter=new IntentFilter();
         intentFilter.addAction(REMOVE_DIALOG);
         registerReceiver(finishActivityRecevier,intentFilter);
+
     }
     @Override
     protected void onStart() {
@@ -148,6 +160,7 @@ public class ChatActivity extends AppCompatActivity {
         bt_send_video_ticket=findViewById(R.id.bt_send_video_ticket);
         bt_send_stream_pic=findViewById(R.id.bt_send_stream_pic);
         bt_send_stream_file=findViewById(R.id.bt_send_stream_file);
+        bt_send_multicast_file=findViewById(R.id.bt_send_multicast_file);
 
         chat_backgroud.setOnClickListener(view -> {
             if(addingFile){
@@ -245,7 +258,7 @@ public class ChatActivity extends AppCompatActivity {
                     .openGallery(PictureMimeType.ofVideo())
                     .maxSelectNum(1)
                     .compress(false)
-                    .forResult(1293);
+                    .forResult(TICKET_VIDEO);
         });
 
         bt_send_file.setOnClickListener(v->{
@@ -258,7 +271,7 @@ public class ChatActivity extends AppCompatActivity {
                         case R.id.file_select_selector:
                             new LFilePicker()
                                     .withActivity(ChatActivity.this)
-                                    .withRequestCode(293)
+                                    .withRequestCode(SIMPLE_FILE)
                                     .withMutilyMode(false)//false为单选
 //                    .withFileFilter(new String[]{".txt",".png",".jpeg",".jpg" })//设置可选文件类型
                                     .withTitle("文件选择")//标题
@@ -332,7 +345,7 @@ public class ChatActivity extends AppCompatActivity {
                     .openGallery(PictureMimeType.ofImage())
                     .maxSelectNum(1)
                     .compress(false)
-                    .forResult(1871);
+                    .forResult(STREAM_PIC);
         });
 
         bt_send_stream_file.setOnClickListener(v->{
@@ -345,7 +358,7 @@ public class ChatActivity extends AppCompatActivity {
                         case R.id.file_select_selector:
                             new LFilePicker()
                                     .withActivity(ChatActivity.this)
-                                    .withRequestCode(756)
+                                    .withRequestCode(STREAM_FILE)
                                     .withMutilyMode(false)//false为单选
 //                    .withFileFilter(new String[]{".txt",".png",".jpeg",".jpg" })//设置可选文件类型
                                     .withTitle("文件选择")//标题
@@ -397,15 +410,69 @@ public class ChatActivity extends AppCompatActivity {
             });
 
             file_select_menu.show();
-            /*
-            new LFilePicker()
-                    .withActivity(ChatActivity.this))
-                    .withRequestCode(756)
-                    .withMutilyMode(false)//false为单选
-                    .withFileFilter(new String[]{".txt",".png",".jpeg",".jpg" })//设置可选文件类型
-                    .withTitle("文件选择")//标题
-                    .start();
-             */
+
+        });
+
+        bt_send_multicast_file.setOnClickListener(v->{
+            PopupMenu file_select_menu = new PopupMenu(ChatActivity.this, v);
+            file_select_menu.getMenuInflater().inflate(R.menu.file_select, file_select_menu.getMenu());
+            file_select_menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    switch(menuItem.getItemId()){
+                        case R.id.file_select_selector:
+                            new LFilePicker()
+                                    .withActivity(ChatActivity.this)
+                                    .withRequestCode(MULTI_FILE)
+                                    .withMutilyMode(false)//false为单选
+                                    .withTitle("文件选择")//标题
+                                    .start();
+                            break;
+                        case R.id.file_select_generate:
+                            EditText inputs = new EditText(ChatActivity.this);
+                            inputs.setInputType(InputType.TYPE_CLASS_NUMBER);
+                            //inputs.setText("aa");
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
+                            builder.setTitle("文件大小(KB)").setView(inputs)
+                                    .setNegativeButton("取消", (dialogInterface, i) -> dialogInterface.dismiss());
+                            builder.setPositiveButton("确定", (dialogInterface, i) -> {
+                                String tmp=inputs.getText().toString();
+                                if(tmp.equals("")){
+                                    Toast.makeText(ChatActivity.this, "不能为空", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                int inputSize = Integer.parseInt(tmp);
+                                if (inputSize > 0) {
+                                    String outDir = FileUtil.getAppExternalPath(ChatActivity.this, "generatedFile");
+                                    String testFilePath = FileUtil.generateTestFile(outDir, inputSize);
+                                    Log.d(TAG, "onActivityResult: get file path: "+testFilePath);
+
+                                    String fileName=new File(testFilePath).getName();
+                                    TMsg tMsg= null;
+                                    long nowTime=System.currentTimeMillis()/1000;
+                                    try {
+                                        tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                                                threadid,9,String.valueOf(nowTime),myName,fileName,nowTime,1);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    msgList.add(tMsg);
+                                    msgAdapter.notifyDataSetChanged();
+                                    chat_lv.setSelection(msgList.size());
+
+                                    MulticastFile multicastFile=new MulticastFile(threadid,"",loginAccount,fileName,testFilePath,nowTime);
+                                    xiansuTime=pref.getInt("xiansu",100);
+                                    FileMultiCaster.sendMulticastFile(xiansuTime,multicastFile);
+                                }
+                            });
+                            builder.show();
+                    }
+
+                    return false;
+                }
+            });
+
+            file_select_menu.show();
         });
 
         group_menu.setOnClickListener(v -> {
@@ -454,19 +521,20 @@ public class ChatActivity extends AppCompatActivity {
         if(tMsg.threadid.equals(threadid)){
             Log.d(TAG, "updateChat: "+tMsg.msgtype+" "+tMsg.body);
 
-            String blockId=tMsg.blockid;
-            int i=0;
-            for(;i<msgList.size();i++){
-                if(msgList.get(i).blockid.equals(blockId)){
-                    break;
-                }
-            }
-            if(i<msgList.size()){
-                msgList.remove(i);
-                msgList.add(i,tMsg);
-            }else{
-                msgList.add(tMsg);
-            }
+//            String blockId=tMsg.blockid;
+//            int i=0;
+//            for(;i<msgList.size();i++){
+//                if(msgList.get(i).blockid.equals(blockId)){
+//                    break;
+//                }
+//            }
+//            if(i<msgList.size()){
+//                msgList.remove(i);
+//                msgList.add(i,tMsg);
+//            }else{
+//                msgList.add(tMsg);
+//            }
+            msgList.add(tMsg);
 
             msgAdapter.notifyDataSetChanged();
             chat_lv.setSelection(msgList.size());
@@ -575,7 +643,7 @@ public class ChatActivity extends AppCompatActivity {
             msgList.add(tMsg);
             msgAdapter.notifyDataSetChanged();
             chat_lv.setSelection(msgList.size());
-        }else if(requestCode == 1293 &&resultCode == RESULT_OK){
+        }else if(requestCode == TICKET_VIDEO &&resultCode == RESULT_OK){
             chooseVideo=PictureSelector.obtainMultipleResult(data);
             String filePath=chooseVideo.get(0).getPath();
             Log.d(TAG, "onActivityResult: 选择了视频："+filePath);
@@ -603,7 +671,7 @@ public class ChatActivity extends AppCompatActivity {
             msgList.add(tMsg);
             msgAdapter.notifyDataSetChanged();
             chat_lv.setSelection(msgList.size());
-        }else if(requestCode == 293 &&resultCode == RESULT_OK){
+        }else if(requestCode == SIMPLE_FILE &&resultCode == RESULT_OK){
             chooseFilePath = data.getStringArrayListExtra("paths");
             String path = chooseFilePath.get(0);
             String chooseFileName=ShareUtil.getFileNameWithSuffix(path);
@@ -650,7 +718,7 @@ public class ChatActivity extends AppCompatActivity {
 //                    e.printStackTrace();
 //                }
 //            });
-        }else if(requestCode == 1871 && resultCode==RESULT_OK){
+        }else if(requestCode == STREAM_PIC && resultCode==RESULT_OK){
             choosePic=PictureSelector.obtainMultipleResult(data);
             String filePath=choosePic.get(0).getPath();
             String picHash=pushStreamFile(threadid,filePath,true);
@@ -672,7 +740,7 @@ public class ChatActivity extends AppCompatActivity {
             itToFileTrans.putExtra("fileSizeCid",filePath);
             itToFileTrans.putExtra("isStream",true);
             startActivity(itToFileTrans);
-        }else if(requestCode == 756 && resultCode==RESULT_OK){
+        }else if(requestCode == STREAM_FILE && resultCode==RESULT_OK){
             chooseFilePath = data.getStringArrayListExtra("paths");
             String filePath = chooseFilePath.get(0);
 
@@ -695,6 +763,27 @@ public class ChatActivity extends AppCompatActivity {
             itToFileTrans.putExtra("fileSizeCid",filePath);
             itToFileTrans.putExtra("isStream",true);
             startActivity(itToFileTrans);
+        }else if(requestCode == MULTI_FILE && resultCode==RESULT_OK){
+            chooseFilePath = data.getStringArrayListExtra("paths");
+            String filePath = chooseFilePath.get(0);
+            Log.d(TAG, "onActivityResult: get multicast file: "+filePath);
+
+            String fileName=new File(filePath).getName();
+            TMsg tMsg= null;
+            long nowTime=System.currentTimeMillis()/1000;
+            try {
+                tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                        threadid,9,String.valueOf(nowTime),myName,fileName,nowTime,1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            msgList.add(tMsg);
+            msgAdapter.notifyDataSetChanged();
+            chat_lv.setSelection(msgList.size());
+
+            MulticastFile multicastFile=new MulticastFile(threadid,"",loginAccount,fileName,filePath,nowTime);
+            xiansuTime=pref.getInt("xiansu",100);
+            FileMultiCaster.sendMulticastFile(xiansuTime,multicastFile);
         }
     }
 

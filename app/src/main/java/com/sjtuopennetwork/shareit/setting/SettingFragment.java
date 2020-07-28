@@ -51,9 +51,14 @@ public class SettingFragment extends Fragment {
     RoundImageView avatar_layout;
     TextView logout_layout;
     Button lookLog;
+
     Button setDegree;
     EditText degree;
     TextView show_worker;
+
+    Button xiansu_bt;
+    EditText xiansu;
+    TextView xiansu_now;
 
     //持久化
     private SharedPreferences pref;
@@ -89,6 +94,8 @@ public class SettingFragment extends Fragment {
     }
 
     private void initUI() {
+        pref = getActivity().getSharedPreferences("txtl", Context.MODE_PRIVATE);
+
         info_layout = getActivity().findViewById(R.id.setting_info_layout);
         qrcode_layout = getActivity().findViewById(R.id.setting_qrcode_layout);
         notification_layout = getActivity().findViewById(R.id.setting_notification_layout);
@@ -113,6 +120,21 @@ public class SettingFragment extends Fragment {
             Textile.instance().streams.setDegree(deg);
             long tmpworker1=Textile.instance().streams.getWorker();
             show_worker.setText("(当前:"+tmpworker1+")");
+            Toast.makeText(getActivity(), "设置成功", Toast.LENGTH_SHORT).show();
+        });
+
+        xiansu=getActivity().findViewById(R.id.xiansu);
+        xiansu_bt=getActivity().findViewById(R.id.xiansu_bt);
+        xiansu_now=getActivity().findViewById(R.id.xiansu_now);
+        int newXiansuTime=pref.getInt("xiansu",100);
+        xiansu_now.setText("(当前:"+newXiansuTime+")");
+        xiansu_bt.setOnClickListener(view -> {
+            int xiansuTime=Integer.parseInt(xiansu.getText().toString());
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putInt("xiansu", xiansuTime );
+            editor.commit();
+            int newXiansuTime1=pref.getInt("xiansu",100);
+            xiansu_now.setText("(当前:"+newXiansuTime1+")");
             Toast.makeText(getActivity(), "设置成功", Toast.LENGTH_SHORT).show();
         });
 
@@ -185,23 +207,20 @@ public class SettingFragment extends Fragment {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setTitle("退出登录");
         dialog.setMessage("确定要退出登录吗？");
-        dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putBoolean("isLogin", false);
-                editor.commit();
+        dialog.setPositiveButton("确定", (dialogInterface, i) -> {
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("isLogin", false);
+            editor.commit();
 
-                //销毁Texile及数据库
-                EventBus.getDefault().post(new Integer(943));
+            //销毁Texile及数据库
+            EventBus.getDefault().post(new Integer(943));
 
-                DBHelper.setNull();
+            DBHelper.setNull();
 
-                Intent it = new Intent(getActivity(), MainActivity.class);
-                startActivity(it);
+            Intent it = new Intent(getActivity(), MainActivity.class);
+            startActivity(it);
 
-                getActivity().finish();
-            }
+            getActivity().finish();
         });
         dialog.setNegativeButton("取消", (dialogInterface, i) -> { });
         AlertDialog d = dialog.create();
@@ -209,7 +228,7 @@ public class SettingFragment extends Fragment {
     }
 
     private void initData() {
-        pref = getActivity().getSharedPreferences("txtl", Context.MODE_PRIVATE);
+
 
         username=ShareUtil.getMyName();
         useravatar=ShareUtil.getMyAvatar();

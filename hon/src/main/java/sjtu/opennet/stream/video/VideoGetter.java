@@ -49,6 +49,7 @@ public class VideoGetter {
     public void stopGet(){
         //close and delete listener
         Textile.instance().removeEventListener(videoTsGetListener);
+        videoTsGetListener=null;
     }
 
     class VideoTsGetListener extends BaseTextileEventListener {
@@ -56,7 +57,7 @@ public class VideoGetter {
         public void notificationReceived(Model.Notification notification) {
             //TODO
             if(notification.getBody().equals("stream video")){
-                Log.d(TAG, "notificationReceived: 收到streamfile");
+                Log.d(TAG, "+++++notificationReceived: 收到streamfile");
                 if(notification.getBlock().equals("")){
                     Log.d(TAG, "notificationReceived: get endflag");
                     M3U8Util.writeM3u8End(m3u8file);
@@ -84,6 +85,8 @@ public class VideoGetter {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }else{
+                Log.d(TAG, "notificationReceived: video listener get : "+ notification.getBody());
             }
         }
     }

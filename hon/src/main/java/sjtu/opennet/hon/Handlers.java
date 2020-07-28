@@ -7,6 +7,10 @@ import sjtu.opennet.textilepb.Model;
  */
 public class Handlers {
 
+    public interface MultiFileHandler{
+        void onGetMulticastFile(MulticastFile multicastFile);
+    }
+
     /**
      * Interface representing an object that can be
      * called to indicate completion

@@ -1,5 +1,7 @@
 package sjtu.opennet.hon;
 
+import java.io.File;
+
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.Model.CafeSyncGroupStatus;
 import sjtu.opennet.textilepb.Model.Contact;
