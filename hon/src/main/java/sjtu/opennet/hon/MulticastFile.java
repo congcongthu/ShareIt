@@ -7,14 +7,16 @@ public class MulticastFile {
     String fileName;
     String filePath;
     long sendTime;
+    int type; //0文字，1图片，2文件
 
-    public MulticastFile(String threadId, String FileId,  String senderAddress, String fileName, String filePath, long sendTime) {
+    public MulticastFile(String threadId, String FileId,  String senderAddress, String fileName, String filePath, long sendTime, int type) {
         this.threadId = threadId;
         this.fileId = fileId;
         this.senderAddress = senderAddress;
         this.fileName = fileName;
         this.filePath = filePath;
         this.sendTime = sendTime;
+        this.type = type;
     }
 
     public String getFileId() {
@@ -63,5 +65,13 @@ public class MulticastFile {
 
     public void setSendTime(long sendTime) {
         this.sendTime = sendTime;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

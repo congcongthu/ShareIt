@@ -50,7 +50,7 @@ import java.util.List;
 
 import mobile.HlogHandler;
 import sjtu.opennet.hon.MulticastFile;
-import sjtu.opennet.multicast.FileMultiCaster;
+import sjtu.opennet.multicast.MulticastHelper;
 import sjtu.opennet.stream.file.FilePusher;
 import sjtu.opennet.stream.util.FileUtil;
 import sjtu.opennet.stream.video.VideoPusher;
@@ -460,9 +460,9 @@ public class ChatActivity extends AppCompatActivity {
                                     msgAdapter.notifyDataSetChanged();
                                     chat_lv.setSelection(msgList.size());
 
-                                    MulticastFile multicastFile=new MulticastFile(threadid,"",loginAccount,fileName,testFilePath,nowTime);
+                                    MulticastFile multicastFile=new MulticastFile(threadid,"",loginAccount,fileName,testFilePath,nowTime,2);
                                     xiansuTime=pref.getInt("xiansu",100);
-                                    FileMultiCaster.sendMulticastFile(xiansuTime,multicastFile);
+                                    MulticastHelper.sendMulticastFile(xiansuTime,multicastFile);
                                 }
                             });
                             builder.show();
@@ -534,8 +534,8 @@ public class ChatActivity extends AppCompatActivity {
 //            }else{
 //                msgList.add(tMsg);
 //            }
-            msgList.add(tMsg);
 
+            msgList.add(tMsg);
             msgAdapter.notifyDataSetChanged();
             chat_lv.setSelection(msgList.size());
 
@@ -740,7 +740,8 @@ public class ChatActivity extends AppCompatActivity {
             itToFileTrans.putExtra("fileSizeCid",filePath);
             itToFileTrans.putExtra("isStream",true);
             startActivity(itToFileTrans);
-        }else if(requestCode == STREAM_FILE && resultCode==RESULT_OK){
+        }else if(requestCode == STREAM_FILE && resultCode==RESULT_OK)
+        {
             chooseFilePath = data.getStringArrayListExtra("paths");
             String filePath = chooseFilePath.get(0);
 
@@ -781,9 +782,9 @@ public class ChatActivity extends AppCompatActivity {
             msgAdapter.notifyDataSetChanged();
             chat_lv.setSelection(msgList.size());
 
-            MulticastFile multicastFile=new MulticastFile(threadid,"",loginAccount,fileName,filePath,nowTime);
+            MulticastFile multicastFile=new MulticastFile(threadid,"",loginAccount,fileName,filePath,nowTime,2);
             xiansuTime=pref.getInt("xiansu",100);
-            FileMultiCaster.sendMulticastFile(xiansuTime,multicastFile);
+            MulticastHelper.sendMulticastFile(xiansuTime,multicastFile);
         }
     }
 

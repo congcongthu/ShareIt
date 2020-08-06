@@ -288,7 +288,12 @@ public class ShareUtil {
         return saveFile(data,fileCacheDir,hash);
     }
 
-    public static void setImageView(Context context,ImageView imageView,String hash,int type){ // 0 avatar, 1 textile picture, 2 ipfs picture
+    public static void setImageView(Context context,ImageView imageView,String hash,int type){ // 0 avatar, 1 textile picture, 2 ipfs picture, 3 本地文件
+        if(type==3){
+            Glide.with(context).load(hash).thumbnail(0.3f).into(imageView);
+            return;
+        }
+
         String fileDir=Environment.getExternalStorageDirectory().getAbsolutePath() + "/imgcache/";
         String fileName=fileDir+hash;
         if(hash.equals("")){ //如果为空就用默认

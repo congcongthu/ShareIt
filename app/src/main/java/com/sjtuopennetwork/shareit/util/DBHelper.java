@@ -180,9 +180,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 boolean isread=cursor.getInt(cursor.getColumnIndex("isread"))==1;
                 String add_or_img=cursor.getString(cursor.getColumnIndex("add_or_img"));
                 boolean isSingle=cursor.getInt(cursor.getColumnIndex("issingle"))==1;
-
                 TDialog tDialog=new TDialog(threadid,lastmsg,lastmsgdate,isread,add_or_img,isSingle,true);
-                dialogs.add(tDialog);
+                if(threadid.equals("20200729multicast")){
+                    dialogs.add(0,tDialog);
+                }else {
+                    dialogs.add(tDialog);
+                }
             }while (cursor.moveToNext());
         }
         cursor.close();
@@ -237,7 +240,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return tDialog;
     }
 
-    public synchronized TDialog insertDialog(String threadid, String lastmsg, long lastmsgdate, int isRead, String add_or_img, int isSingle, int isVisible){
+    public synchronized TDialog insertDialog(String threadid, String lastmsg, long lastmsgdate, int isRead, String add_or_img, boolean isSingle, int isVisible){
         ContentValues v=new ContentValues();
         v.put("threadid",threadid);
         v.put("lastmsg",lastmsg);
@@ -254,7 +257,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         appdb.setTransactionSuccessful();
         appdb.endTransaction();
-        return new TDialog(threadid,lastmsg,lastmsgdate,isRead==1,add_or_img,isSingle==1,isVisible==1);
+        return new TDialog(threadid,lastmsg,lastmsgdate,isRead==1,add_or_img,isSingle,isVisible==1);
     }
 
     public synchronized  TDialog queryDialogByThreadID(String threadId){

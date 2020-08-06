@@ -16,6 +16,7 @@ import android.widget.ListView;
 import com.example.qrlibrary.qrcode.utils.PermissionUtils;
 import com.sjtuopennetwork.shareit.R;
 import com.sjtuopennetwork.shareit.setting.NotificationActivity;
+import com.sjtuopennetwork.shareit.share.multichat.ChatMultiActivity;
 import com.sjtuopennetwork.shareit.share.util.DialogAdapter;
 import com.sjtuopennetwork.shareit.share.util.TDialog;
 import com.sjtuopennetwork.shareit.util.DBHelper;
@@ -29,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import sjtu.opennet.hon.Textile;
+import sjtu.opennet.textilepb.Model;
 
 
 public class ShareFragment extends Fragment {
@@ -117,7 +119,6 @@ public class ShareFragment extends Fragment {
                     }
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,6 +135,9 @@ public class ShareFragment extends Fragment {
             if(dialogs.get(position).add_or_img.equals("tongzhi")){ //如果是通知，就跳转到通知
                 Intent intent=new Intent(getActivity(), NotificationActivity.class);
                 startActivity(intent);
+            }else if(dialogs.get(position).add_or_img.equals("multicast")){
+                Intent itmulti=new Intent(getActivity(), ChatMultiActivity.class);
+                startActivity(itmulti);
             }else{ //如果是对话就进入聊天
                 String threadid=dialogs.get(position).threadid;
                 //数据库中修改为已读

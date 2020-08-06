@@ -95,6 +95,11 @@ public final class Multicast {
      */
     com.google.protobuf.ByteString
         getSenderBytes();
+
+    /**
+     * <code>int32 fileType = 9;</code>
+     */
+    int getFileType();
   }
   /**
    * Protobuf type {@code packet}
@@ -196,6 +201,11 @@ public final class Multicast {
               java.lang.String s = input.readStringRequireUtf8();
 
               sender_ = s;
+              break;
+            }
+            case 72: {
+
+              fileType_ = input.readInt32();
               break;
             }
             default: {
@@ -426,6 +436,15 @@ public final class Multicast {
       }
     }
 
+    public static final int FILETYPE_FIELD_NUMBER = 9;
+    private int fileType_;
+    /**
+     * <code>int32 fileType = 9;</code>
+     */
+    public int getFileType() {
+      return fileType_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -464,6 +483,9 @@ public final class Multicast {
       if (!getSenderBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 8, sender_);
       }
+      if (fileType_ != 0) {
+        output.writeInt32(9, fileType_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -501,6 +523,10 @@ public final class Multicast {
       if (!getSenderBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, sender_);
       }
+      if (fileType_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(9, fileType_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -535,6 +561,8 @@ public final class Multicast {
           != other.getPacketType()) return false;
       if (!getSender()
           .equals(other.getSender())) return false;
+      if (getFileType()
+          != other.getFileType()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -564,6 +592,8 @@ public final class Multicast {
       hash = (53 * hash) + getPacketType();
       hash = (37 * hash) + SENDER_FIELD_NUMBER;
       hash = (53 * hash) + getSender().hashCode();
+      hash = (37 * hash) + FILETYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getFileType();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -717,6 +747,8 @@ public final class Multicast {
 
         sender_ = "";
 
+        fileType_ = 0;
+
         return this;
       }
 
@@ -755,6 +787,7 @@ public final class Multicast {
         }
         result.packetType_ = packetType_;
         result.sender_ = sender_;
+        result.fileType_ = fileType_;
         onBuilt();
         return result;
       }
@@ -830,6 +863,9 @@ public final class Multicast {
         if (!other.getSender().isEmpty()) {
           sender_ = other.sender_;
           onChanged();
+        }
+        if (other.getFileType() != 0) {
+          setFileType(other.getFileType());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1365,6 +1401,32 @@ public final class Multicast {
         onChanged();
         return this;
       }
+
+      private int fileType_ ;
+      /**
+       * <code>int32 fileType = 9;</code>
+       */
+      public int getFileType() {
+        return fileType_;
+      }
+      /**
+       * <code>int32 fileType = 9;</code>
+       */
+      public Builder setFileType(int value) {
+        
+        fileType_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 fileType = 9;</code>
+       */
+      public Builder clearFileType() {
+        
+        fileType_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -1433,11 +1495,12 @@ public final class Multicast {
   static {
     java.lang.String[] descriptorData = {
       "\n\017multicast.proto\032\037google/protobuf/times" +
-      "tamp.proto\"\253\001\n\006packet\022\r\n\005index\030\001 \001(\005\022\014\n\004" +
+      "tamp.proto\"\275\001\n\006packet\022\r\n\005index\030\001 \001(\005\022\014\n\004" +
       "data\030\002 \001(\014\022\020\n\010threadId\030\003 \001(\t\022\020\n\010fileName" +
       "\030\004 \001(\t\022\016\n\006fileId\030\005 \001(\t\022,\n\010sendTime\030\006 \001(\013" +
       "2\032.google.protobuf.Timestamp\022\022\n\npacketTy" +
-      "pe\030\007 \001(\005\022\016\n\006sender\030\010 \001(\tb\006proto3"
+      "pe\030\007 \001(\005\022\016\n\006sender\030\010 \001(\t\022\020\n\010fileType\030\t \001" +
+      "(\005b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1449,7 +1512,7 @@ public final class Multicast {
     internal_static_packet_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_packet_descriptor,
-        new java.lang.String[] { "Index", "Data", "ThreadId", "FileName", "FileId", "SendTime", "PacketType", "Sender", });
+        new java.lang.String[] { "Index", "Data", "ThreadId", "FileName", "FileId", "SendTime", "PacketType", "Sender", "FileType", });
     com.google.protobuf.TimestampProto.getDescriptor();
   }
 

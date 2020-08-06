@@ -51,7 +51,7 @@ import sjtu.opennet.hon.FeedItemType;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.MulticastFile;
 import sjtu.opennet.hon.Textile;
-import sjtu.opennet.multicast.FileMultiCaster;
+import sjtu.opennet.multicast.MulticastHelper;
 import sjtu.opennet.textilepb.Mobile;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.textilepb.QueryOuterClass;
@@ -313,7 +313,7 @@ public class ShareService extends Service {
                         feedItemData.join.getDate().getSeconds(),
                         0, //后台收到默认是未读的
                         add_or_img,
-                        isSingle, 1);
+                        isSingle==1, 1);
                 EventBus.getDefault().post(newDialog);
             }
         }
@@ -751,6 +751,19 @@ public class ShareService extends Service {
         @Override
         public void nodeOnline() {
             super.nodeOnline();
+            if(DBHelper.getInstance(getApplicationContext(), loginAccount).queryDialogByThreadID("20200729multicast")==null) {
+                DBHelper.getInstance(getApplicationContext(), loginAccount).insertDialog(
+                        "20200729multicast",
+                        "你好啊，现在我们已经成为好友了",
+                        System.currentTimeMillis() / 1000,
+                        1, //后台收到默认是未读的
+                        "multicast",
+                        false,
+                        1);
+                Log.d(TAG, "nodeOnline: create multi dialog");
+            }else{
+                Log.d(TAG, "nodeOnline: has multi dialog");
+            }
 
             EventBus.getDefault().post(Integer.valueOf(0));
 
@@ -779,16 +792,68 @@ public class ShareService extends Service {
                 }
             }
 
+
+            //广播
+            MulticastHelper.startListen(ShareService.this, new Handlers.MultiFileHandler() {
+                @Override
+                public void onGetMulticastFile(MulticastFile multicastFile) {
+                    TMsg tMsg=null;
+                    switch (multicastFile.getType()){
+                        case 0:
+                            tMsg = DBHelper.getInstance(getApplicationContext(), loginAccount).insertMsg(
+                                    multicastFile.getThreadId(), 10,
+                                    multicastFile.getFileId(),
+                                    multicastFile.getSenderAddress(),
+                                    multicastFile.getFilePath(), //存放文字的内容
+                                    multicastFile.getSendTime(),
+                                    0);
+                            break;
+                        case 1:
+                            tMsg = DBHelper.getInstance(getApplicationContext(), loginAccount).insertMsg(
+                                    multicastFile.getThreadId(), 11,
+                                    multicastFile.getFileId(),
+                                    multicastFile.getSenderAddress(),
+                                    multicastFile.getFilePath(), //存放图片路径
+                                    multicastFile.getSendTime(),
+                                    0);
+                            break;
+                        case 2:
+                            tMsg = DBHelper.getInstance(getApplicationContext(), loginAccount).insertMsg(
+                                    multicastFile.getThreadId(), 9,
+                                    multicastFile.getFileId(),
+                                    multicastFile.getSenderAddress(),
+                                    multicastFile.getFileName(),
+                                    multicastFile.getSendTime(),
+                                    0);
+                            break;
+                    }
+
+                    EventBus.getDefault().post(tMsg);
+                }
+            });
+
+
+            ShareUtil.createDeviceThread();
+
             connectShadow();
 
             try {
-                boolean s1 = Textile.instance().ipfs.swarmConnect("/ip4/192.168.3.18/tcp/40102/ipfs/12D3KooWNdTGY3rfF8VgKNyAHH4QHdqpaaUWJrxBygkAC2VGBiZe");
+//                boolean s1 = Textile.instance().ipfs.swarmConnect("/ip4/192.168.3.18/tcp/40102/ipfs/12D3KooWNdTGY3rfF8VgKNyAHH4QHdqpaaUWJrxBygkAC2VGBiZe");
                 //boolean s2=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.131/tcp/4001/ipfs/12D3KooWKAKVbQF5yUGAaE5uDnuEbZAAgeU6cUYME6FhqFvqWmay");
 //                boolean s3=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.100/tcp/4001/ipfs/12D3KooWHp3ABxB1E4ebeEpvcViVFUSsaH198QopBQ8pygvF6PzX");
 //                Log.d(TAG, "nodeOnline: swarmConnect: "+s1+" ");
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            // join the default thread after online, the thread is created by cafe
+//            if (ShareUtil.getThreadByName("default") == null) {
+//                try {
+//                    Textile.instance().invites.acceptExternal("QmdocmhxFuJ6SdGMT3Arh5wacWnWjZ52VsGXdSp6aXhTVJ","2NfdMrvABwHorxeJxSckSkBKfBJMMF4LqGwdmjY5ZCKw8TDpfHYxELbWnNhed");
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
 
             //connect cafe
             Log.d(TAG, "nodeOnline: connectcafe:" + connectCafe);
@@ -812,33 +877,6 @@ public class ShareService extends Service {
                     }
                 });
             }
-
-            ShareUtil.createDeviceThread();
-
-            // join the default thread after online, the thread is created by cafe
-            if (ShareUtil.getThreadByName("default") == null) {
-                try {
-//                    Textile.instance().invites.acceptExternal("QmdocmhxFuJ6SdGMT3Arh5wacWnWjZ52VsGXdSp6aXhTVJ","2NfdMrvABwHorxeJxSckSkBKfBJMMF4LqGwdmjY5ZCKw8TDpfHYxELbWnNhed");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            //广播
-
-            FileMultiCaster.startListen(ShareService.this, new Handlers.MultiFileHandler() {
-                @Override
-                public void onGetMulticastFile(MulticastFile multicastFile) {
-                    TMsg tMsg = DBHelper.getInstance(getApplicationContext(), loginAccount).insertMsg(
-                            multicastFile.getThreadId(), 9,
-                            multicastFile.getFileId(),
-                            multicastFile.getSenderAddress(),
-                            multicastFile.getFileName(),
-                            multicastFile.getSendTime(),
-                            0);
-                    EventBus.getDefault().post(tMsg);
-                }
-            });
         }
 
         @Override

@@ -9,4 +9,5 @@ message packet {
   google.protobuf.Timestamp sendTime = 6;
   int32 packetType = 7;
   string sender = 8;
+  int32 fileType = 9;
 }

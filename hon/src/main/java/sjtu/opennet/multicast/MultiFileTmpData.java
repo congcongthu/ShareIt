@@ -2,25 +2,11 @@ package sjtu.opennet.multicast;
 
 import java.util.PriorityQueue;
 
-public class MultiFileTmp {
+public class MultiFileTmpData {
     public String fileId;
-//    public String threadId;
-//    public String senderAddr;
-//    public String fileName;
-//    public Timestamp sendTime;
-
     public PriorityQueue<IndexPacket> datas=new PriorityQueue<>();
 
-//    public MultiFileTmp(String fileId, String threadId, String senderAddr, String fileName, Timestamp timestamp) {
-//        this.fileId = fileId;
-//        this.threadId = threadId;
-//        this.senderAddr = senderAddr;
-//        this.fileName = fileName;
-//        this.sendTime=timestamp;
-//    }
-
-
-    public MultiFileTmp(String fileId) {
+    public MultiFileTmpData(String fileId) {
         this.fileId = fileId;
     }
 

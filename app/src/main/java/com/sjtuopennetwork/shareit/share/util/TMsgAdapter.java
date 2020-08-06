@@ -69,9 +69,53 @@ public class TMsgAdapter extends BaseAdapter {
                 return handleStreamFileView(i,view,viewGroup);
             case 9:
                 return handleMultiFileView(i,view,viewGroup);
+            case 10: //广播文字
+                return handleTextView(i,view,viewGroup);
+            case 11: //广播图片
+                return handleMultiPhotoView(i,view,viewGroup);
             default:
                 return null;
         }
+    }
+
+    private View handleMultiPhotoView(int i, View view, ViewGroup viewGroup){
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.item_msg_img, viewGroup, false);
+            view.setTag(new PhotoVH(view));
+        }
+        if (view.getTag() instanceof PhotoVH) {
+            PhotoVH h = (PhotoVH) view.getTag();
+            String username = "";
+            String useravatar = "";
+//            String[] hashName = msgList.get(i).body.split("##");
+            if(msgList.get(i).ismine){
+                username = ShareUtil.getMyName();
+                useravatar = ShareUtil.getMyAvatar();
+                h.send_photo_right.setVisibility(View.VISIBLE); //右边的显示
+                h.send_photo_left.setVisibility(View.GONE); //左边的隐藏
+                h.photo_name_r.setText(username);
+                h.photo_time_r.setText(df.format(msgList.get(i).sendtime * 1000));
+                ShareUtil.setImageView(context, h.photo_avatar_r, useravatar, 0);
+                h.video_icon_r.setVisibility(View.GONE);
+                ShareUtil.setImageView(context, h.chat_photo_r, msgList.get(i).body, 3);
+                h.chat_photo_r.setOnClickListener(v->{
+                });
+            }else{
+                String addr = msgList.get(i).author;
+                username = ShareUtil.getOtherName(addr);
+                useravatar = ShareUtil.getOtherAvatar(addr);
+                h.send_photo_left.setVisibility(View.VISIBLE); //左边的显示
+                h.send_photo_right.setVisibility(View.GONE); //右边的隐藏
+                h.photo_name.setText(username);
+                h.photo_time.setText(df.format(msgList.get(i).sendtime * 1000));
+                ShareUtil.setImageView(context, h.photo_avatar, useravatar, 0);
+                h.video_icon.setVisibility(View.GONE);
+                ShareUtil.setImageView(context, h.chat_photo, msgList.get(i).body, 3);
+                h.chat_photo.setOnClickListener(v -> {
+                });
+            }
+        }
+        return view;
     }
 
     private View handleMultiFileView(int i, View view, ViewGroup viewGroup){
@@ -79,7 +123,6 @@ public class TMsgAdapter extends BaseAdapter {
             view = LayoutInflater.from(context).inflate(R.layout.item_msg_file, viewGroup, false);
             view.setTag(new FileVH(view));
         }
-
         if (view.getTag() instanceof FileVH) {
             FileVH h = (FileVH) view.getTag();
             String username = "";
@@ -542,7 +585,7 @@ public class TMsgAdapter extends BaseAdapter {
 
     @Override
     public int getViewTypeCount() {
-        return 10;
+        return 12;
     }
 
     @Override

@@ -1,8 +1,10 @@
 package sjtu.opennet.multicast;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.protobuf.ByteString;
@@ -23,9 +25,10 @@ import java.util.HashMap;
 import sjtu.opennet.hon.Handlers;
 import sjtu.opennet.hon.MulticastFile;
 import sjtu.opennet.multiproto.Multicast;
-import sjtu.opennet.stream.util.FileUtil;
 
-public class FileMultiCaster {
+public class MulticastHelper {
+
+
     private static final String TAG = "================FileMultiCaster";
 
     static WifiManager.MulticastLock multicastLock;
@@ -35,8 +38,9 @@ public class FileMultiCaster {
     static String MULTI_ADDR = "239.0.0.3";
     static String myAddress;
 
-    static HashMap<String,MultiFileTmp> multiFileMap=new HashMap();
+    static HashMap<String,MultiFileTmpData> multiFileTmpDataHashMap=new HashMap();
     private static String multiFileDir= Environment.getExternalStorageDirectory().getAbsolutePath() + "/txtlmulticast/";
+    private static String imgCache=Environment.getExternalStorageDirectory().getAbsolutePath() + "/imgcache/";
 
     public static void startListen(Context context, Handlers.MultiFileHandler multiFileHandler){
         File file=new File(multiFileDir);
@@ -58,7 +62,6 @@ public class FileMultiCaster {
             e.printStackTrace();
         }
 
-
         new Thread(){
             @Override
             public void run() {
@@ -78,44 +81,82 @@ public class FileMultiCaster {
                         switch(multiPacket.getPacketType()){
                             case 0:
                                 Log.d(TAG, "run: get meta: "+multiPacket.getFileName());
-                                MultiFileTmp multiFileTmp=new MultiFileTmp(multiPacket.getFileId());
-                                multiFileMap.put(multiPacket.getFileId(),multiFileTmp);
+                                MultiFileTmpData multiFileTmp=new MultiFileTmpData(multiPacket.getFileId());
+                                multiFileTmpDataHashMap.put(multiPacket.getFileId(),multiFileTmp);
                                 break;
                             case 1:
                                 Log.d(TAG, "run: get data: "+multiPacket.getFileId()+" "+multiPacket.getIndex());
-                                MultiFileTmp multiFileTmp1=multiFileMap.get(multiPacket.getFileId());
-                                if(multiFileTmp1!=null){
-                                    MultiFileTmp.IndexPacket indexPacket = new MultiFileTmp.IndexPacket();
+                                MultiFileTmpData multiFileTmpData=multiFileTmpDataHashMap.get(multiPacket.getFileId());
+                                if(multiFileTmpData!=null){
+                                    MultiFileTmpData.IndexPacket indexPacket = new MultiFileTmpData.IndexPacket();
                                     indexPacket.index=multiPacket.getIndex();
                                     indexPacket.data=multiPacket.getData().toByteArray();
-                                    multiFileTmp1.datas.add(indexPacket);
+                                    multiFileTmpData.datas.add(indexPacket);
                                 }else{
                                     Log.d(TAG, "run: no fileid: "+multiPacket.getFileId());
                                 }
                                 break;
                             case 2:
                                 //开始组装和存储
-                                MultiFileTmp multiFileTmp2=multiFileMap.get(multiPacket.getFileId());
-                                String filePathName=multiFileDir+"/"+ multiPacket.getFileName();
-                                BufferedOutputStream bfo=new BufferedOutputStream(new FileOutputStream(filePathName));
-                                if(multiFileTmp2!=null){
-                                    int multiSize=multiFileTmp2.datas.size();
-                                    Log.d(TAG, "run: get end: byte[] nums: "+multiSize);
-                                    for(int i=0;i<multiSize;i++){
-                                        byte[] tmp=multiFileTmp2.datas.poll().data;
-                                        bfo.write(tmp);
-                                        bfo.flush();
-                                    }
+                                MultiFileTmpData multiFileTmp2=multiFileTmpDataHashMap.get(multiPacket.getFileId());
+                                String body="";
+                                switch(multiPacket.getFileType()){
+                                    case 0: //广播文字
+                                        if(multiFileTmp2!=null){
+                                            int multiSize=multiFileTmp2.datas.size();
+                                            Log.d(TAG, "run: get end: byte[] nums: "+multiSize);
+                                            int dataLength=0;
+                                            for(MultiFileTmpData.IndexPacket indexPacket:multiFileTmp2.datas){
+                                                dataLength+=indexPacket.data.length;
+                                            }
+                                            byte[] word=new byte[dataLength];
+                                            int x=0;
+                                            for(int i=0;i<multiSize;i++){
+                                                byte[] tmp=multiFileTmp2.datas.poll().data;
+                                                System.arraycopy(tmp,0,word,x,tmp.length);
+                                                x+=tmp.length;
+                                            }
+                                            body=new String(word);
+                                        }
+                                        break;
+                                    case 1: //广播图片
+                                        body=imgCache+multiPacket.getFileName();
+                                        BufferedOutputStream bfo=new BufferedOutputStream(new FileOutputStream(body));
+                                        if(multiFileTmp2!=null){
+                                            int multiSize=multiFileTmp2.datas.size();
+                                            Log.d(TAG, "run: get end: byte[] nums: "+multiSize);
+                                            for(int i=0;i<multiSize;i++){
+                                                byte[] tmp=multiFileTmp2.datas.poll().data;
+                                                bfo.write(tmp);
+                                                bfo.flush();
+                                            }
+                                        }
+                                        bfo.close();
+                                        break;
+                                    case 2: //广播文件
+                                        body=multiFileDir+ multiPacket.getFileName();
+                                        BufferedOutputStream bfo2=new BufferedOutputStream(new FileOutputStream(body));
+                                        if(multiFileTmp2!=null){
+                                            int multiSize=multiFileTmp2.datas.size();
+                                            Log.d(TAG, "run: get end: byte[] nums: "+multiSize);
+                                            for(int i=0;i<multiSize;i++){
+                                                byte[] tmp=multiFileTmp2.datas.poll().data;
+                                                bfo2.write(tmp);
+                                                bfo2.flush();
+                                            }
+                                        }
+                                        bfo2.close();
+                                        break;
                                 }
-                                bfo.close();
 
                                 MulticastFile multicastFile=new MulticastFile(
                                         multiPacket.getThreadId(),
                                         multiPacket.getFileId(),
                                         multiPacket.getSender(),
                                         multiPacket.getFileName(),
-                                        filePathName,
-                                        multiPacket.getSendTime().getSeconds());
+                                        body,
+                                        multiPacket.getSendTime().getSeconds(),
+                                        multiPacket.getFileType());
 
                                 multiFileHandler.onGetMulticastFile(multicastFile);
                                 break;
@@ -163,7 +204,7 @@ public class FileMultiCaster {
             @Override
             public void run() {
                 String filePath=multicastFile.getFilePath();
-                Log.d(TAG, "run: try to send multicast : "+ filePath+" sleepTime: "+sleepTime);
+                Log.d(TAG, "run: try to send multicast : " + filePath+" sleepTime: " + sleepTime);
 
                 try {
                     socket.joinGroup(multiAddress);
@@ -194,37 +235,71 @@ public class FileMultiCaster {
                     Thread.sleep(100);
 
                     //发送数据
-                    BufferedInputStream bfi=new BufferedInputStream(new FileInputStream(filePath));
-                    byte[] tmpData=new byte[65000];
-                    int readNum=0;
-                    int index=1;
-                    while((readNum=bfi.read(tmpData))!=-1){
-                        Multicast.packet dataPacket=Multicast.packet.newBuilder()
-                                .setIndex(index)
-                                .setSender(myAddress)
-                                .setPacketType(1) //数据packet
-                                .setFileId(fileId)
-                                .setData(ByteString.copyFrom(tmpData,0,readNum))
-                                .build();
-                        byte[] datas=dataPacket.toByteArray();
-                        DatagramPacket tmpPacket = new DatagramPacket(
-                                datas,
-                                datas.length,
-                                multiAddress,
-                                MULTI_PORT
-                        );
-                        sendPacket(tmpPacket);
-                        Thread.sleep(sleepTime);
-                        Log.d(TAG, "run: send data: "+index+ " " +datas.length);
-                        index++;
+                    if(multicastFile.getType()==0){
+                        byte[] txtBytes=multicastFile.getFilePath().getBytes();
+                        int n=txtBytes.length/65000+1;
+                        for(int i=1;i<=n;i++){
+                            byte[] tmp=null;
+                            if(i!=n){
+                                tmp=new byte[65000];
+                                System.arraycopy(txtBytes,(i-1)*65000,tmp,0,65000);
+                            }else{
+                                int tmpLen=txtBytes.length-(n-1)*65000;
+                                tmp=new byte[tmpLen];
+                                System.arraycopy(txtBytes,(i-1)*65000,tmp,0,tmpLen);
+                            }
+                            Multicast.packet dataPacket=Multicast.packet.newBuilder()
+                                    .setIndex(i)
+                                    .setSender(myAddress)
+                                    .setPacketType(1) //数据packet
+                                    .setFileId(fileId)
+                                    .setData(ByteString.copyFrom(tmp,0,tmp.length))
+                                    .build();
+                            byte[] datas=dataPacket.toByteArray();
+                            DatagramPacket tmpPacket = new DatagramPacket(
+                                    datas,
+                                    datas.length,
+                                    multiAddress,
+                                    MULTI_PORT
+                            );
+                            sendPacket(tmpPacket);
+                            Thread.sleep(sleepTime);
+                            Log.d(TAG, "run: send data: "+i+ " " +datas.length);
+                        }
+                    }else{
+                        BufferedInputStream bfi=new BufferedInputStream(new FileInputStream(filePath));
+                        byte[] tmpData=new byte[65000];
+                        int readNum=0;
+                        int index=1;
+                        while((readNum=bfi.read(tmpData))!=-1){
+                            Multicast.packet dataPacket=Multicast.packet.newBuilder()
+                                    .setIndex(index)
+                                    .setSender(myAddress)
+                                    .setPacketType(1) //数据packet
+                                    .setFileId(fileId)
+                                    .setData(ByteString.copyFrom(tmpData,0,readNum))
+                                    .build();
+                            byte[] datas=dataPacket.toByteArray();
+                            DatagramPacket tmpPacket = new DatagramPacket(
+                                    datas,
+                                    datas.length,
+                                    multiAddress,
+                                    MULTI_PORT
+                            );
+                            sendPacket(tmpPacket);
+                            Thread.sleep(sleepTime);
+                            Log.d(TAG, "run: send data: "+index+ " " +datas.length);
+                            index++;
+                        }
+                        bfi.close();
                     }
-                    bfi.close();
 
                     //发送结束
                     Multicast.packet packetEnd= Multicast.packet.newBuilder()
                             .setSender(myAddress)
                             .setPacketType(2) // meta类型
                             .setFileId(fileId)
+                            .setFileType(multicastFile.getType())
                             .setFileName(multicastFile.getFileName())
                             .setThreadId(multicastFile.getThreadId())
                             .setFileId(fileId)
@@ -254,5 +329,6 @@ public class FileMultiCaster {
             e.printStackTrace();
         }
     }
+
 
 }
