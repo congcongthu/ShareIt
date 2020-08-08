@@ -47,6 +47,7 @@ public class HomeActivity extends AppCompatActivity {
     //内存数据
     boolean nodeOnline = false;
 //    int login;
+    boolean textileOn=false;
 
     //持久化存储
     private SharedPreferences pref;
@@ -100,7 +101,7 @@ public class HomeActivity extends AppCompatActivity {
                 }.start();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         super.onStart();
@@ -113,10 +114,9 @@ public class HomeActivity extends AppCompatActivity {
 
         Intent theIntent = getIntent();
 
-        String myname = theIntent.getStringExtra("myname");
-        String avatarpath = theIntent.getStringExtra("avatarpath");
-
         pref = getSharedPreferences("txtl", Context.MODE_PRIVATE);
+
+        textileOn = pref.getBoolean("textileon",false);
 
         int login = theIntent.getIntExtra("login", 5);
         if (login == 0 || login == 1 || login == 2 || login == 3) { //如果等于5，就不是登录页面跳转过来的
@@ -125,6 +125,7 @@ public class HomeActivity extends AppCompatActivity {
             if (!EventBus.getDefault().isRegistered(this)) {
                 EventBus.getDefault().register(this);
             }
+
             boolean serviceRunning = isServiceRunning("com.sjtuopennetwork.shareit.util.ShareService");
             if (serviceRunning) {
                 replaceFragment(shareFragment);
@@ -136,10 +137,6 @@ public class HomeActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(this, ShareService.class);
                 intent.putExtra("login", login);
-                if (myname != null) {
-                    intent.putExtra("myname", myname);
-                    intent.putExtra("avatarpath", avatarpath);
-                }
                 startForegroundService(intent);
             }
 
@@ -192,13 +189,23 @@ public class HomeActivity extends AppCompatActivity {
         transaction.commitAllowingStateLoss();
     }
 
-
     @Override
     public void onStop() {
         super.onStop();
 
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void textileOn(Integer ton){
+        if(ton==2562){
+            nodeOnline = false;
+            circleProgressDialog = new CircleProgressDialog(this);
+            circleProgressDialog.setText("节点启动中");
+            circleProgressDialog.setCancelable(false);
+            circleProgressDialog.showDialog();
         }
     }
 }

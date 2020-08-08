@@ -100,6 +100,16 @@ public final class Multicast {
      * <code>int32 fileType = 9;</code>
      */
     int getFileType();
+
+    /**
+     * <code>string localIp = 10;</code>
+     */
+    java.lang.String getLocalIp();
+    /**
+     * <code>string localIp = 10;</code>
+     */
+    com.google.protobuf.ByteString
+        getLocalIpBytes();
   }
   /**
    * Protobuf type {@code packet}
@@ -119,6 +129,7 @@ public final class Multicast {
       fileName_ = "";
       fileId_ = "";
       sender_ = "";
+      localIp_ = "";
     }
 
     @java.lang.Override
@@ -206,6 +217,12 @@ public final class Multicast {
             case 72: {
 
               fileType_ = input.readInt32();
+              break;
+            }
+            case 82: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              localIp_ = s;
               break;
             }
             default: {
@@ -445,6 +462,40 @@ public final class Multicast {
       return fileType_;
     }
 
+    public static final int LOCALIP_FIELD_NUMBER = 10;
+    private volatile java.lang.Object localIp_;
+    /**
+     * <code>string localIp = 10;</code>
+     */
+    public java.lang.String getLocalIp() {
+      java.lang.Object ref = localIp_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        localIp_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string localIp = 10;</code>
+     */
+    public com.google.protobuf.ByteString
+        getLocalIpBytes() {
+      java.lang.Object ref = localIp_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        localIp_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -485,6 +536,9 @@ public final class Multicast {
       }
       if (fileType_ != 0) {
         output.writeInt32(9, fileType_);
+      }
+      if (!getLocalIpBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 10, localIp_);
       }
       unknownFields.writeTo(output);
     }
@@ -527,6 +581,9 @@ public final class Multicast {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(9, fileType_);
       }
+      if (!getLocalIpBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, localIp_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -563,6 +620,8 @@ public final class Multicast {
           .equals(other.getSender())) return false;
       if (getFileType()
           != other.getFileType()) return false;
+      if (!getLocalIp()
+          .equals(other.getLocalIp())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -594,6 +653,8 @@ public final class Multicast {
       hash = (53 * hash) + getSender().hashCode();
       hash = (37 * hash) + FILETYPE_FIELD_NUMBER;
       hash = (53 * hash) + getFileType();
+      hash = (37 * hash) + LOCALIP_FIELD_NUMBER;
+      hash = (53 * hash) + getLocalIp().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -749,6 +810,8 @@ public final class Multicast {
 
         fileType_ = 0;
 
+        localIp_ = "";
+
         return this;
       }
 
@@ -788,6 +851,7 @@ public final class Multicast {
         result.packetType_ = packetType_;
         result.sender_ = sender_;
         result.fileType_ = fileType_;
+        result.localIp_ = localIp_;
         onBuilt();
         return result;
       }
@@ -866,6 +930,10 @@ public final class Multicast {
         }
         if (other.getFileType() != 0) {
           setFileType(other.getFileType());
+        }
+        if (!other.getLocalIp().isEmpty()) {
+          localIp_ = other.localIp_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1427,6 +1495,75 @@ public final class Multicast {
         onChanged();
         return this;
       }
+
+      private java.lang.Object localIp_ = "";
+      /**
+       * <code>string localIp = 10;</code>
+       */
+      public java.lang.String getLocalIp() {
+        java.lang.Object ref = localIp_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          localIp_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string localIp = 10;</code>
+       */
+      public com.google.protobuf.ByteString
+          getLocalIpBytes() {
+        java.lang.Object ref = localIp_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          localIp_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string localIp = 10;</code>
+       */
+      public Builder setLocalIp(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        localIp_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string localIp = 10;</code>
+       */
+      public Builder clearLocalIp() {
+        
+        localIp_ = getDefaultInstance().getLocalIp();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string localIp = 10;</code>
+       */
+      public Builder setLocalIpBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        localIp_ = value;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -1495,12 +1632,12 @@ public final class Multicast {
   static {
     java.lang.String[] descriptorData = {
       "\n\017multicast.proto\032\037google/protobuf/times" +
-      "tamp.proto\"\275\001\n\006packet\022\r\n\005index\030\001 \001(\005\022\014\n\004" +
+      "tamp.proto\"\316\001\n\006packet\022\r\n\005index\030\001 \001(\005\022\014\n\004" +
       "data\030\002 \001(\014\022\020\n\010threadId\030\003 \001(\t\022\020\n\010fileName" +
       "\030\004 \001(\t\022\016\n\006fileId\030\005 \001(\t\022,\n\010sendTime\030\006 \001(\013" +
       "2\032.google.protobuf.Timestamp\022\022\n\npacketTy" +
       "pe\030\007 \001(\005\022\016\n\006sender\030\010 \001(\t\022\020\n\010fileType\030\t \001" +
-      "(\005b\006proto3"
+      "(\005\022\017\n\007localIp\030\n \001(\tb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1512,7 +1649,7 @@ public final class Multicast {
     internal_static_packet_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_packet_descriptor,
-        new java.lang.String[] { "Index", "Data", "ThreadId", "FileName", "FileId", "SendTime", "PacketType", "Sender", "FileType", });
+        new java.lang.String[] { "Index", "Data", "ThreadId", "FileName", "FileId", "SendTime", "PacketType", "Sender", "FileType", "LocalIp", });
     com.google.protobuf.TimestampProto.getDescriptor();
   }
 

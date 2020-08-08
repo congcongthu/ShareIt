@@ -30,7 +30,6 @@ public class DBHelper extends SQLiteOpenHelper {
         appdb=null;
         helperInstance.close();
         helperInstance=null;
-
     }
 
     public synchronized static DBHelper getInstance(Context context,String dbname){

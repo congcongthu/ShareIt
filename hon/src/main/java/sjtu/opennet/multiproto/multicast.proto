@@ -10,4 +10,5 @@ message packet {
   int32 packetType = 7;
   string sender = 8;
   int32 fileType = 9;
+  string localIp = 10;
 }

@@ -46,6 +46,7 @@ public class ShareFragment extends Fragment {
     //内存数据
     List<TDialog> dialogs; //对话列表数据
     String loginAccount; //当前登录的帐户
+    boolean textileOn=false;
 
     //持久化存储
     public SharedPreferences pref;
@@ -99,6 +100,7 @@ public class ShareFragment extends Fragment {
     private void initData(){
         pref=getActivity().getSharedPreferences("txtl",Context.MODE_PRIVATE);
         loginAccount=pref.getString("loginAccount",""); //当前登录的account，就是address
+        textileOn=pref.getBoolean("textileon",false);
 
         dialogs=new LinkedList<>();
 
@@ -107,25 +109,27 @@ public class ShareFragment extends Fragment {
         Log.d(TAG, "initData: 对话数："+dialogs.size());
 
         //查出邀请中最近的一个，添加到头部。
-        int gpinvite=0;
-        sjtu.opennet.textilepb.View.InviteView lastInvite=null;
-        try {
-            if(Textile.instance().invites!=null){
-                List<sjtu.opennet.textilepb.View.InviteView> invites = Textile.instance().invites.list().getItemsList();
-                for(sjtu.opennet.textilepb.View.InviteView v:invites){ //遍历所有的邀请
-                    if(!v.getName().equals("FriendThread1219")){ //只要群组名不等于这个那就是好友邀请
-                        gpinvite++;
-                        lastInvite=v;
+        if(textileOn){
+            int gpinvite=0;
+            sjtu.opennet.textilepb.View.InviteView lastInvite=null;
+            try {
+                if(Textile.instance().invites!=null){
+                    List<sjtu.opennet.textilepb.View.InviteView> invites = Textile.instance().invites.list().getItemsList();
+                    for(sjtu.opennet.textilepb.View.InviteView v:invites){ //遍历所有的邀请
+                        if(!v.getName().equals("FriendThread1219")){ //只要群组名不等于这个那就是好友邀请
+                            gpinvite++;
+                            lastInvite=v;
+                        }
                     }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if(gpinvite>0){ //如果有群组邀请就要显示出来
-            TDialog noti=new TDialog("",lastInvite.getInviter().getName()+" 邀请你",
-                    lastInvite.getDate().getSeconds(),false,"tongzhi",true,true);
-            dialogs.add(0,noti);
+            if(gpinvite>0){ //如果有群组邀请就要显示出来
+                TDialog noti=new TDialog("",lastInvite.getInviter().getName()+" 邀请你",
+                        lastInvite.getDate().getSeconds(),false,"tongzhi",true,true);
+                dialogs.add(0,noti);
+            }
         }
 
         dialogAdapter=new DialogAdapter(getContext(),R.layout.item_share_dialog,dialogs);
@@ -159,9 +163,7 @@ public class ShareFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getNewMsg(TDialog tDialog){ //获取到新的消息后要更新显示
-
         if(!tDialog.add_or_img.equals("通知")){
-            //找到对应的那一个，将其删除，并在头部插入，如果没有找到就直接在头部插入。
             for(int i=0;i<dialogs.size();i++){
                 if(dialogs.get(i).threadid.equals(tDialog.threadid)){
                     dialogs.remove(i);

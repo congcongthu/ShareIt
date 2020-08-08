@@ -31,6 +31,7 @@ import com.sjtuopennetwork.shareit.util.ShareUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
+import sjtu.opennet.multicast.MulticastHelper;
 import sjtu.opennet.textilepb.Model;
 import sjtu.opennet.hon.Textile;
 import sjtu.opennet.textilepb.QueryOuterClass;
@@ -60,12 +61,16 @@ public class SettingFragment extends Fragment {
     EditText xiansu;
     TextView xiansu_now;
 
+    Button textileon_bt;
+    Button multicast_res;
+
     //持久化
     private SharedPreferences pref;
 
     //内存
     private String username;
     private String useravatar;
+    boolean textileOn;
 
     public SettingFragment() {
         // Required empty public constructor
@@ -75,18 +80,14 @@ public class SettingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_setting, container, false);
-
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.newBuilder().build();
-        try {
-            Textile.instance().account.sync(options);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        pref = getActivity().getSharedPreferences("txtl", Context.MODE_PRIVATE);
+        textileOn=pref.getBoolean("textileon",false);
 
         initUI();
         initData();
@@ -94,8 +95,6 @@ public class SettingFragment extends Fragment {
     }
 
     private void initUI() {
-        pref = getActivity().getSharedPreferences("txtl", Context.MODE_PRIVATE);
-
         info_layout = getActivity().findViewById(R.id.setting_info_layout);
         qrcode_layout = getActivity().findViewById(R.id.setting_qrcode_layout);
         notification_layout = getActivity().findViewById(R.id.setting_notification_layout);
@@ -103,45 +102,90 @@ public class SettingFragment extends Fragment {
         tv_name = getActivity().findViewById(R.id.myname);
         devices_layout = getActivity().findViewById(R.id.setting_devices_layout);
         logout_layout = getActivity().findViewById(R.id.logout);
-        shadow_layout=getActivity().findViewById(R.id.shadow_layout);
-        shadow_layout.setOnClickListener(v->{
-            Intent itToShadow=new Intent(getActivity(),ShadowActivity.class);
-            getActivity().startActivity(itToShadow);
+        textileon_bt=getActivity().findViewById(R.id.textileon_bt);
+        if(textileOn){
+            textileon_bt.setText("关闭IPFS");
+        }else {
+            textileon_bt.setText("启动IPFS");
+        }
+
+        textileon_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(textileOn){
+                    Toast.makeText(getActivity(), "关闭IPFS，需要重启应用", Toast.LENGTH_SHORT).show();
+
+                    SharedPreferences.Editor editor=pref.edit();
+                    editor.putBoolean("textileon",false);
+                    editor.commit();
+                }else{
+                    EventBus.getDefault().post(Integer.valueOf(2562));
+
+                    SharedPreferences.Editor editor=pref.edit();
+                    editor.putBoolean("textileon",true);
+                    editor.commit();
+                }
+            }
         });
+
+        shadow_layout=getActivity().findViewById(R.id.shadow_layout);
+        if(textileOn) {
+            shadow_layout.setOnClickListener(v -> {
+                Intent itToShadow = new Intent(getActivity(), ShadowActivity.class);
+                getActivity().startActivity(itToShadow);
+            });
+        }
 
         setDegree=getActivity().findViewById(R.id.setDegree);
         degree=getActivity().findViewById(R.id.degree);
         show_worker=getActivity().findViewById(R.id.show_worker);
-        long tmpworker=Textile.instance().streams.getWorker();
-        show_worker.setText("(当前:"+tmpworker+")");
-        setDegree.setOnClickListener(view -> {
-            int deg=Integer.parseInt(degree.getText().toString());
-            Log.d(TAG, "initUI: degree: "+deg);
-            Textile.instance().streams.setDegree(deg);
-            long tmpworker1=Textile.instance().streams.getWorker();
-            show_worker.setText("(当前:"+tmpworker1+")");
-            Toast.makeText(getActivity(), "设置成功", Toast.LENGTH_SHORT).show();
-        });
+
+        if(textileOn) {
+            long tmpworker = Textile.instance().streams.getWorker();
+            show_worker.setText("(当前:" + tmpworker + ")");
+            setDegree.setOnClickListener(view -> {
+                int deg = Integer.parseInt(degree.getText().toString());
+                Log.d(TAG, "initUI: degree: " + deg);
+                Textile.instance().streams.setDegree(deg);
+                long tmpworker1 = Textile.instance().streams.getWorker();
+                show_worker.setText("(当前:" + tmpworker1 + ")");
+                Toast.makeText(getActivity(), "设置成功", Toast.LENGTH_SHORT).show();
+            });
+        }
 
         xiansu=getActivity().findViewById(R.id.xiansu);
         xiansu_bt=getActivity().findViewById(R.id.xiansu_bt);
         xiansu_now=getActivity().findViewById(R.id.xiansu_now);
-        int newXiansuTime=pref.getInt("xiansu",100);
+        int newXiansuTime=pref.getInt("xiansu",50);
         xiansu_now.setText("(当前:"+newXiansuTime+")");
         xiansu_bt.setOnClickListener(view -> {
             int xiansuTime=Integer.parseInt(xiansu.getText().toString());
             SharedPreferences.Editor editor = pref.edit();
             editor.putInt("xiansu", xiansuTime );
             editor.commit();
-            int newXiansuTime1=pref.getInt("xiansu",100);
+            int newXiansuTime1=pref.getInt("xiansu",50);
             xiansu_now.setText("(当前:"+newXiansuTime1+")");
             Toast.makeText(getActivity(), "设置成功", Toast.LENGTH_SHORT).show();
         });
 
         lookLog=getActivity().findViewById(R.id.looklog);
-        lookLog.setOnClickListener(v->{
-            Intent itt=new Intent(getActivity(),LogActivity.class);
-            startActivity(itt);
+        if(textileOn) {
+            lookLog.setOnClickListener(v -> {
+                Intent itt = new Intent(getActivity(), LogActivity.class);
+                startActivity(itt);
+            });
+        }
+
+        multicast_res=getActivity().findViewById(R.id.multicast_res);
+        multicast_res.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                SharedPreferences.Editor editor = pref.edit();
+//                editor.putBoolean("huifu", true );
+//                editor.commit();
+                Toast.makeText(getActivity(), "开启回复", Toast.LENGTH_SHORT).show();
+                MulticastHelper.setRes(true);
+            }
         });
 
 //        uploadLog=getActivity().findViewById(R.id.uploadlog);
@@ -182,25 +226,27 @@ public class SettingFragment extends Fragment {
 ////            }
 //        });
 
-        info_layout.setOnClickListener(v -> {
-            Intent it = new Intent(getActivity(), PersonalInfoActivity.class);
-            startActivity(it);
-        });
-        qrcode_layout.setOnClickListener(v -> {
-            Intent it = new Intent(getActivity(), PersonalQrcodeActivity.class);
-            startActivity(it);
-        });
-        notification_layout.setOnClickListener(v -> {
-            Intent it = new Intent(getActivity(), NotificationActivity.class);
-            startActivity(it);
-        });
-        devices_layout.setOnClickListener(v -> {
-            Intent it = new Intent(getActivity(), MyDevicesActivity.class);
-            startActivity(it);
-        });
-        logout_layout.setOnClickListener(v -> {
-            logout();
-        });
+        if(textileOn) {
+            info_layout.setOnClickListener(v -> {
+                Intent it = new Intent(getActivity(), PersonalInfoActivity.class);
+                startActivity(it);
+            });
+            qrcode_layout.setOnClickListener(v -> {
+                Intent it = new Intent(getActivity(), PersonalQrcodeActivity.class);
+                startActivity(it);
+            });
+            notification_layout.setOnClickListener(v -> {
+                Intent it = new Intent(getActivity(), NotificationActivity.class);
+                startActivity(it);
+            });
+            devices_layout.setOnClickListener(v -> {
+                Intent it = new Intent(getActivity(), MyDevicesActivity.class);
+                startActivity(it);
+            });
+            logout_layout.setOnClickListener(v -> {
+                logout();
+            });
+        }
     }
 
     private void logout() {
@@ -228,42 +274,49 @@ public class SettingFragment extends Fragment {
     }
 
     private void initData() {
-
-
-        username=ShareUtil.getMyName();
-        useravatar=ShareUtil.getMyAvatar();
+        if(textileOn) {
+            username = ShareUtil.getMyName();
+            useravatar = ShareUtil.getMyAvatar();
+        }else{
+            username=pref.getString("myname","null");
+            useravatar=pref.getString("avatarpath","null");
+        }
         Log.d(TAG, "initData: name avatar: "+username+" "+useravatar);
 
         //得到设备信息
-        try {
-            Model.Thread t= ShareUtil.getThreadByName("mydevice1219");
-            Context context = this.getActivity().getApplicationContext();
-            String IP= GetIpAddress.getIPAddress(context);
-            String addr="/ip4/"+IP+"/tcp/40601/ipfs/"+ Textile.instance().ipfs.peerId();
-            System.out.println("=========="+addr);
-            String androidId = Settings.System.getString(context.getContentResolver(),
-                    Settings.Secure.ANDROID_ID);
-
-            String device = "厂商：" + android.os.Build.BRAND + "  型号：" + Build.MODEL + "#" + androidId + "%" + addr;//获取设备厂商、型号、系统id
-            Boolean flag = true;
-            sjtu.opennet.textilepb.View.TextList textList = Textile.instance().messages.list("", 100, t.getId());
-            for (int i = 0; i < textList.getItemsCount(); i++) {
-                if (textList.getItems(i).getBody().equals(device)) {
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag == true) {
-                Textile.instance().messages.add(t.getId(), device);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Model.Thread t= ShareUtil.getThreadByName("mydevice1219");
+//            Context context = this.getActivity().getApplicationContext();
+//            String IP= GetIpAddress.getIPAddress(context);
+//            String addr="/ip4/"+IP+"/tcp/40601/ipfs/"+ Textile.instance().ipfs.peerId();
+//            System.out.println("=========="+addr);
+//            String androidId = Settings.System.getString(context.getContentResolver(),
+//                    Settings.Secure.ANDROID_ID);
+//
+//            String device = "厂商：" + android.os.Build.BRAND + "  型号：" + Build.MODEL + "#" + androidId + "%" + addr;//获取设备厂商、型号、系统id
+//            Boolean flag = true;
+//            sjtu.opennet.textilepb.View.TextList textList = Textile.instance().messages.list("", 100, t.getId());
+//            for (int i = 0; i < textList.getItemsCount(); i++) {
+//                if (textList.getItems(i).getBody().equals(device)) {
+//                    flag = false;
+//                    break;
+//                }
+//            }
+//            if (flag == true) {
+//                Textile.instance().messages.add(t.getId(), device);
+//            }
+//        } catch (Exception e) {
+////            e.printStackTrace();
+//        }
     }
 
     private void drawUI() {
         tv_name.setText(username);
-        ShareUtil.setImageView(getContext(),avatar_layout,useravatar,0);
+        if(textileOn){
+            ShareUtil.setImageView(getContext(), avatar_layout, useravatar, 0);
+        }else {
+//            ShareUtil.setImageView(getContext(), avatar_layout, useravatar, 3);
+        }
     }
 
 }

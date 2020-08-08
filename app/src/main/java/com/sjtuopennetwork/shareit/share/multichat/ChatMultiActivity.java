@@ -59,11 +59,13 @@ public class ChatMultiActivity extends AppCompatActivity {
     static final String MULTI_THREADID="20200729multicast";
     String loginAccount;
     String myName;
+    String myAvatar;
     List<TMsg> msgList;
     TMsgAdapter msgAdapter;
     int xiansuTime;
     List<String> chooseFilePath;
     List<LocalMedia> choosePic;
+    boolean textileOn=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,11 +92,17 @@ public class ChatMultiActivity extends AppCompatActivity {
     private void initMulti() {
         pref=getSharedPreferences("txtl",MODE_PRIVATE);
         loginAccount=pref.getString("loginAccount",""); //当前登录的account，就是address
+        textileOn=pref.getBoolean("textileon",false);
 
-        try {
-            myName= Textile.instance().profile.name();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(textileOn) {
+            try {
+                myName = Textile.instance().profile.name();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{
+            myName=pref.getString("myname","null");
+            myAvatar=pref.getString("avatarpath","null");
         }
 
         adding_multi_file=findViewById(R.id.file_multi_layout);
@@ -116,107 +124,96 @@ public class ChatMultiActivity extends AppCompatActivity {
             }
         });
 
-        chat_multi_send_text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String msgTxt=chat_multi_text_edt.getText().toString();
-                if(msgTxt.equals("")){
-                    Toast.makeText(ChatMultiActivity.this, "消息不能为空", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                chat_multi_text_edt.setText("");
-                TMsg tMsg= null;
-                long nowTime=System.currentTimeMillis()/1000;
-                try {
-                    tMsg= DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
-                            MULTI_THREADID,10,String.valueOf(nowTime),myName,msgTxt,nowTime,1);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                msgList.add(tMsg);
-                msgAdapter.notifyDataSetChanged();
-                chat_multi_lv.setSelection(msgList.size());
-
-                MulticastFile multicastFile=new MulticastFile(MULTI_THREADID,"",loginAccount,"",msgTxt,nowTime,0);
-                xiansuTime=pref.getInt("xiansu",100);
-                MulticastHelper.sendMulticastFile(xiansuTime,multicastFile);
+        chat_multi_send_text.setOnClickListener(view -> {
+            String msgTxt=chat_multi_text_edt.getText().toString();
+            if(msgTxt.equals("")){
+                Toast.makeText(ChatMultiActivity.this, "消息不能为空", Toast.LENGTH_SHORT).show();
+                return;
             }
+            chat_multi_text_edt.setText("");
+            TMsg tMsg= null;
+            long nowTime=System.currentTimeMillis()/1000;
+            try {
+                tMsg= DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                        MULTI_THREADID,10,String.valueOf(System.currentTimeMillis()),myName,msgTxt,nowTime,1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            msgList.add(tMsg);
+            msgAdapter.notifyDataSetChanged();
+            chat_multi_lv.setSelection(msgList.size());
+
+            MulticastFile multicastFile=new MulticastFile(MULTI_THREADID,"",myName,"",msgTxt,nowTime,0);
+            xiansuTime=pref.getInt("xiansu",50);
+            MulticastHelper.sendMulticastFile(xiansuTime,multicastFile);
         });
 
-        bt_multi_send_img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PictureSelector.create(ChatMultiActivity.this)
-                        .openGallery(PictureMimeType.ofImage())
-                        .maxSelectNum(1)
-                        .compress(false)
-                        .forResult(MULTI_PIC);
-            }
-        });
+        bt_multi_send_img.setOnClickListener(view -> PictureSelector.create(ChatMultiActivity.this)
+                .openGallery(PictureMimeType.ofImage())
+                .maxSelectNum(1)
+                .compress(false)
+                .forResult(MULTI_PIC));
 
-        bt_multi_send__file.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PopupMenu file_select_menu = new PopupMenu(ChatMultiActivity.this, view);
-                file_select_menu.getMenuInflater().inflate(R.menu.file_select, file_select_menu.getMenu());
-                file_select_menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        switch(menuItem.getItemId()){
-                            case R.id.file_select_selector:
-                                new LFilePicker()
-                                        .withActivity(ChatMultiActivity.this)
-                                        .withRequestCode(MULTI_FILE)
-                                        .withMutilyMode(false)//false为单选
-                                        .withTitle("文件选择")//标题
-                                        .start();
-                                break;
-                            case R.id.file_select_generate:
-                                EditText inputs = new EditText(ChatMultiActivity.this);
-                                inputs.setInputType(InputType.TYPE_CLASS_NUMBER);
-                                //inputs.setText("aa");
-                                AlertDialog.Builder builder = new AlertDialog.Builder(ChatMultiActivity.this);
-                                builder.setTitle("文件大小(KB)").setView(inputs)
-                                        .setNegativeButton("取消", (dialogInterface, i) -> dialogInterface.dismiss());
-                                builder.setPositiveButton("确定", (dialogInterface, i) -> {
-                                    String tmp=inputs.getText().toString();
-                                    if(tmp.equals("")){
-                                        Toast.makeText(ChatMultiActivity.this, "不能为空", Toast.LENGTH_SHORT).show();
-                                        return;
+        bt_multi_send__file.setOnClickListener(view -> {
+            PopupMenu file_select_menu = new PopupMenu(ChatMultiActivity.this, view);
+            file_select_menu.getMenuInflater().inflate(R.menu.file_select, file_select_menu.getMenu());
+            file_select_menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    switch(menuItem.getItemId()){
+                        case R.id.file_select_selector:
+                            new LFilePicker()
+                                    .withActivity(ChatMultiActivity.this)
+                                    .withRequestCode(MULTI_FILE)
+                                    .withMutilyMode(false)//false为单选
+                                    .withTitle("文件选择")//标题
+                                    .start();
+                            break;
+                        case R.id.file_select_generate:
+                            EditText inputs = new EditText(ChatMultiActivity.this);
+                            inputs.setInputType(InputType.TYPE_CLASS_NUMBER);
+                            //inputs.setText("aa");
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ChatMultiActivity.this);
+                            builder.setTitle("文件大小(KB)").setView(inputs)
+                                    .setNegativeButton("取消", (dialogInterface, i) -> dialogInterface.dismiss());
+                            builder.setPositiveButton("确定", (dialogInterface, i) -> {
+                                String tmp=inputs.getText().toString();
+                                if(tmp.equals("")){
+                                    Toast.makeText(ChatMultiActivity.this, "不能为空", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                int inputSize = Integer.parseInt(tmp);
+                                if (inputSize > 0) {
+                                    String outDir = FileUtil.getAppExternalPath(ChatMultiActivity.this, "generatedFile");
+                                    String testFilePath = FileUtil.generateTestFile(outDir, inputSize);
+                                    Log.d(TAG, "onActivityResult: get file path: "+testFilePath);
+
+                                    String fileName=new File(testFilePath).getName();
+                                    TMsg tMsg= null;
+                                    long nowTime=System.currentTimeMillis()/1000;
+                                    try {
+                                        tMsg= DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
+                                                MULTI_THREADID,9,String.valueOf(System.currentTimeMillis()),myName,fileName,nowTime,1);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                    int inputSize = Integer.parseInt(tmp);
-                                    if (inputSize > 0) {
-                                        String outDir = FileUtil.getAppExternalPath(ChatMultiActivity.this, "generatedFile");
-                                        String testFilePath = FileUtil.generateTestFile(outDir, inputSize);
-                                        Log.d(TAG, "onActivityResult: get file path: "+testFilePath);
+                                    msgList.add(tMsg);
+                                    msgAdapter.notifyDataSetChanged();
+                                    chat_multi_lv.setSelection(msgList.size());
 
-                                        String fileName=new File(testFilePath).getName();
-                                        TMsg tMsg= null;
-                                        long nowTime=System.currentTimeMillis()/1000;
-                                        try {
-                                            tMsg= DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
-                                                    MULTI_THREADID,9,String.valueOf(nowTime),myName,fileName,nowTime,1);
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                        msgList.add(tMsg);
-                                        msgAdapter.notifyDataSetChanged();
-                                        chat_multi_lv.setSelection(msgList.size());
-
-                                        MulticastFile multicastFile=new MulticastFile(MULTI_THREADID,"",loginAccount,fileName,testFilePath,nowTime,2);
-                                        xiansuTime=pref.getInt("xiansu",100);
-                                        MulticastHelper.sendMulticastFile(xiansuTime,multicastFile);
-                                    }
-                                });
-                                builder.show();
-                        }
-
-                        return false;
+                                    MulticastFile multicastFile=new MulticastFile(MULTI_THREADID,"",myName,fileName,testFilePath,nowTime,2);
+                                    xiansuTime=pref.getInt("xiansu",50);
+                                    MulticastHelper.sendMulticastFile(xiansuTime,multicastFile);
+                                }
+                            });
+                            builder.show();
                     }
-                });
 
-                file_select_menu.show();
-            }
+                    return false;
+                }
+            });
+
+            file_select_menu.show();
         });
 
     }
@@ -232,7 +229,7 @@ public class ChatMultiActivity extends AppCompatActivity {
         }
     }
 
-            @Override
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == MULTI_FILE && resultCode==RESULT_OK){
             chooseFilePath = data.getStringArrayListExtra("paths");
@@ -244,7 +241,7 @@ public class ChatMultiActivity extends AppCompatActivity {
             long nowTime=System.currentTimeMillis()/1000;
             try {
                 tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
-                        MULTI_THREADID,9,String.valueOf(nowTime),myName,fileName,nowTime,1);
+                        MULTI_THREADID,9,String.valueOf(System.currentTimeMillis()),myName,fileName,nowTime,1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -252,8 +249,8 @@ public class ChatMultiActivity extends AppCompatActivity {
             msgAdapter.notifyDataSetChanged();
             chat_multi_lv.setSelection(msgList.size());
 
-            MulticastFile multicastFile=new MulticastFile(MULTI_THREADID,"",loginAccount,fileName,filePath,nowTime,2);
-            xiansuTime=pref.getInt("xiansu",100);
+            MulticastFile multicastFile=new MulticastFile(MULTI_THREADID,"",myName,fileName,filePath,nowTime,2);
+            xiansuTime=pref.getInt("xiansu",50);
             MulticastHelper.sendMulticastFile(xiansuTime,multicastFile);
         }else if(requestCode == MULTI_PIC && resultCode==RESULT_OK){
             choosePic=PictureSelector.obtainMultipleResult(data);
@@ -264,7 +261,7 @@ public class ChatMultiActivity extends AppCompatActivity {
             long nowTime=System.currentTimeMillis()/1000;
             try {
                 tMsg=DBHelper.getInstance(getApplicationContext(),loginAccount).insertMsg(
-                        MULTI_THREADID,11,String.valueOf(nowTime),myName,filePath,nowTime,1);
+                        MULTI_THREADID,11,String.valueOf(System.currentTimeMillis()),myName,filePath,nowTime,1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -272,8 +269,8 @@ public class ChatMultiActivity extends AppCompatActivity {
             msgAdapter.notifyDataSetChanged();
             chat_multi_lv.setSelection(msgList.size());
 
-            MulticastFile multicastFile=new MulticastFile(MULTI_THREADID,"",loginAccount,fileName,filePath,nowTime,1);
-            xiansuTime=pref.getInt("xiansu",100);
+            MulticastFile multicastFile=new MulticastFile(MULTI_THREADID,"",myName,fileName,filePath,nowTime,1);
+            xiansuTime=pref.getInt("xiansu",50);
             MulticastHelper.sendMulticastFile(xiansuTime,multicastFile);
         }
     }

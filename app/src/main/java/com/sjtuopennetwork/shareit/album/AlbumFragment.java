@@ -1,6 +1,7 @@
 package com.sjtuopennetwork.shareit.album;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -32,6 +33,9 @@ public class AlbumFragment extends Fragment {
     LinearLayout album_video_layout;
     LinearLayout album_file_layout;
 
+    public SharedPreferences pref;
+    boolean textileOn;
+
     public AlbumFragment() {
     }
 
@@ -46,6 +50,10 @@ public class AlbumFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+
+        pref=getActivity().getSharedPreferences("txtl", Context.MODE_PRIVATE);
+        textileOn=pref.getBoolean("textileon",false);
+
         initUI();
     }
 
@@ -54,17 +62,19 @@ public class AlbumFragment extends Fragment {
         album_video_layout=getActivity().findViewById(R.id.album_video_layout);
         album_file_layout=getActivity().findViewById(R.id.album_files_layout);
 
-        album_photo_layout.setOnClickListener(v -> {
-            Intent it=new Intent(getActivity(), SyncPhotoActivity.class);
-            startActivity(it);
-        });
-        album_video_layout.setOnClickListener(v -> {
-            Intent it=new Intent(getActivity(), SyncVideoActivity.class);
-            startActivity(it);
-        });
-        album_file_layout.setOnClickListener(v -> {
-            Intent it=new Intent(getActivity(), SyncFilesActivity.class);
-            startActivity(it);
-        });
+        if(textileOn) {
+            album_photo_layout.setOnClickListener(v -> {
+                Intent it = new Intent(getActivity(), SyncPhotoActivity.class);
+                startActivity(it);
+            });
+            album_video_layout.setOnClickListener(v -> {
+                Intent it = new Intent(getActivity(), SyncVideoActivity.class);
+                startActivity(it);
+            });
+            album_file_layout.setOnClickListener(v -> {
+                Intent it = new Intent(getActivity(), SyncFilesActivity.class);
+                startActivity(it);
+            });
+        }
     }
 }

@@ -242,7 +242,7 @@ public class ShareUtil {
         try {
            return Textile.instance().profile.avatar();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         return "";
     }
@@ -258,7 +258,7 @@ public class ShareUtil {
         try {
             return Textile.instance().profile.name();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         return "";
     }

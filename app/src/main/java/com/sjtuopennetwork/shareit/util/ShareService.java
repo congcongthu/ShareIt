@@ -81,30 +81,24 @@ public class ShareService extends Service {
     private boolean serviceOn = true;
     private final Object LOCK = new Object();
     private final static Object SHOW_LOCK = new Object();
-
+    boolean textileOn=false;
 
     private HashMap<String, LinkedList<FileTransInfo>> recordTmp = new HashMap<>();
-    //    private ConcurrentHashMap<String,StreamAndMsg> streamPicMap=new ConcurrentHashMap<>();
+//    private ConcurrentHashMap<String,StreamAndMsg> streamPicMap=new ConcurrentHashMap<>();
 //    private ConcurrentHashMap<String,StreamAndMsg> streamFileMap=new ConcurrentHashMap<>();
 //    private HashMap<String, MetaAndNotification> picMetaNotiMap=new HashMap<>();
     private HashMap<String, MetaAndNotification> metaNotiMap = new HashMap<>();
 
-    Handlers.ForegroundHandler foregroundHandler = new Handlers.ForegroundHandler() {
-        @Override
-        public void onForeground() {
-            connectShadow();
-        }
-    };
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        login = intent.getIntExtra("login", 0);
-        myname = intent.getStringExtra("myname");
-        avatarpath = intent.getStringExtra("avatarpath");
-        repoPath = intent.getStringExtra("repopath");
-
         pref = getSharedPreferences("txtl", MODE_PRIVATE);
+
+        login = intent.getIntExtra("login", 0);
+        myname=pref.getString("myname","null");
+        avatarpath=pref.getString("avatarpath","null");
+
         connectCafe = pref.getBoolean("connectCafe", false);
+        textileOn = pref.getBoolean("textileon",false);
 //        connectCafe= pref.getBoolean("connectCafe",true);
 
         new Thread() {
@@ -123,13 +117,16 @@ public class ShareService extends Service {
                 startForeground(108, notification);
 
                 initTextile(login);
+
+                if(textileOn){
+                    launchTextile();
+                }
             }
         }.start();
 
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -185,26 +182,6 @@ public class ShareService extends Service {
                 break;
         }
 
-        //启动Textile节点
-        try {
-            Textile.launch(ShareService.this, repoPath, true);
-            Textile.instance().addEventListener(new ShareListener());
-//            Textile.instance().setForegroundHandler(foregroundHandler);
-            sjtu.opennet.textilepb.View.LogLevel logLevel = sjtu.opennet.textilepb.View.LogLevel.newBuilder()
-//                    .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-//                    .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-//                    .putSystems("hon.peermanager", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-                    .putSystems("tex-core", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-                    .putSystems("tex-mobile", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-                    .putSystems("tex-service", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-                    .putSystems("stream", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-                    .putSystems("record", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
-                    .build();
-            Textile.instance().logs.setLevel(logLevel);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         SharedPreferences.Editor editor = pref.edit();
         editor.putBoolean("isLogin", true);
         if (login == 1 || login == 2) { //1,2都需要修改助记词和登录账户,3不需要
@@ -212,6 +189,8 @@ public class ShareService extends Service {
             editor.putString("loginAccount", loginAccount);
         }
         editor.commit();
+
+        launchMulticast();
     }
 
     private int getRand(int num, int peerCount) {
@@ -243,13 +222,95 @@ public class ShareService extends Service {
         }
     }
 
-    class StreamAndMsg {
-        View.FeedStreamMeta feedStreamMeta;
-        TMsg tMsg;
+//    class StreamAndMsg {
+//        View.FeedStreamMeta feedStreamMeta;
+//        TMsg tMsg;
+//
+//        public StreamAndMsg(View.FeedStreamMeta feedStreamMeta, TMsg tMsg) {
+//            this.feedStreamMeta = feedStreamMeta;
+//            this.tMsg = tMsg;
+//        }
+//    }
 
-        public StreamAndMsg(View.FeedStreamMeta feedStreamMeta, TMsg tMsg) {
-            this.feedStreamMeta = feedStreamMeta;
-            this.tMsg = tMsg;
+    public void launchTextile(){
+        //启动Textile节点
+        try {
+            Textile.launch(ShareService.this, repoPath, true);
+            Textile.instance().addEventListener(new ShareListener());
+//            Textile.instance().setForegroundHandler(foregroundHandler);
+            sjtu.opennet.textilepb.View.LogLevel logLevel = sjtu.opennet.textilepb.View.LogLevel.newBuilder()
+//                    .putSystems("hon.engine", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+//                    .putSystems("hon.bitswap", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+//                    .putSystems("hon.peermanager", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("tex-core", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("tex-mobile", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("tex-service", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("stream", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .putSystems("record", sjtu.opennet.textilepb.View.LogLevel.Level.DEBUG)
+                    .build();
+            Textile.instance().logs.setLevel(logLevel);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void launchMulticast(){
+        if(DBHelper.getInstance(getApplicationContext(), loginAccount).queryDialogByThreadID("20200729multicast")==null) {
+            DBHelper.getInstance(getApplicationContext(), loginAccount).insertDialog(
+                    "20200729multicast",
+                    "你好啊，现在我们已经成为好友了",
+                    System.currentTimeMillis() / 1000,
+                    1, //后台收到默认是未读的
+                    "multicast",
+                    false,
+                    1);
+            Log.d(TAG, "nodeOnline: create multi dialog");
+        }else{
+            Log.d(TAG, "nodeOnline: has multi dialog");
+        }
+
+        //广播
+        MulticastHelper.startListen(ShareService.this,myname, new Handlers.MultiFileHandler() {
+            @Override
+            public void onGetMulticastFile(MulticastFile multicastFile) {
+                TMsg tMsg=null;
+                switch (multicastFile.getType()){
+                    case 0:
+                        tMsg = DBHelper.getInstance(getApplicationContext(), loginAccount).insertMsg(
+                                multicastFile.getThreadId(), 10,
+                                multicastFile.getFileId(),
+                                multicastFile.getSenderAddress(),
+                                multicastFile.getFilePath(), //存放文字的内容
+                                multicastFile.getSendTime(),
+                                0);
+                        break;
+                    case 1:
+                        tMsg = DBHelper.getInstance(getApplicationContext(), loginAccount).insertMsg(
+                                multicastFile.getThreadId(), 11,
+                                multicastFile.getFileId(),
+                                multicastFile.getSenderAddress(),
+                                multicastFile.getFilePath(), //存放图片路径
+                                multicastFile.getSendTime(),
+                                0);
+                        break;
+                    case 2:
+                        tMsg = DBHelper.getInstance(getApplicationContext(), loginAccount).insertMsg(
+                                multicastFile.getThreadId(), 9,
+                                multicastFile.getFileId(),
+                                multicastFile.getSenderAddress(),
+                                multicastFile.getFileName(),
+                                multicastFile.getSendTime(),
+                                0);
+                        break;
+                }
+
+                EventBus.getDefault().post(tMsg);
+            }
+        });
+
+        if(!textileOn){ //如果没启动才广播
+            EventBus.getDefault().post(Integer.valueOf(0));
         }
     }
 
@@ -751,27 +812,16 @@ public class ShareService extends Service {
         @Override
         public void nodeOnline() {
             super.nodeOnline();
-            if(DBHelper.getInstance(getApplicationContext(), loginAccount).queryDialogByThreadID("20200729multicast")==null) {
-                DBHelper.getInstance(getApplicationContext(), loginAccount).insertDialog(
-                        "20200729multicast",
-                        "你好啊，现在我们已经成为好友了",
-                        System.currentTimeMillis() / 1000,
-                        1, //后台收到默认是未读的
-                        "multicast",
-                        false,
-                        1);
-                Log.d(TAG, "nodeOnline: create multi dialog");
-            }else{
-                Log.d(TAG, "nodeOnline: has multi dialog");
-            }
+
+            SharedPreferences.Editor editor=pref.edit();
+            editor.putBoolean("textileon",true);
+            editor.commit();
 
             EventBus.getDefault().post(Integer.valueOf(0));
 
-//            Textile.instance().setForegroundHandler(foregroundHandler);
-
             Log.d(TAG, "nodeOnline: shadow: " + Textile.instance().shadow());
 
-            if (login == 1 || login == 2) { // 0直接进来不用设置，1/2新登录需要设置，3新登录但是没有用户名不用设置
+//            if (login == 1 || login == 2) { // 0直接进来不用设置，1/2新登录需要设置，3新登录但是没有用户名不用设置
                 try {
                     Textile.instance().profile.setName(myname);
                     if (avatarpath != null) {
@@ -790,47 +840,7 @@ public class ShareService extends Service {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-
-
-            //广播
-            MulticastHelper.startListen(ShareService.this, new Handlers.MultiFileHandler() {
-                @Override
-                public void onGetMulticastFile(MulticastFile multicastFile) {
-                    TMsg tMsg=null;
-                    switch (multicastFile.getType()){
-                        case 0:
-                            tMsg = DBHelper.getInstance(getApplicationContext(), loginAccount).insertMsg(
-                                    multicastFile.getThreadId(), 10,
-                                    multicastFile.getFileId(),
-                                    multicastFile.getSenderAddress(),
-                                    multicastFile.getFilePath(), //存放文字的内容
-                                    multicastFile.getSendTime(),
-                                    0);
-                            break;
-                        case 1:
-                            tMsg = DBHelper.getInstance(getApplicationContext(), loginAccount).insertMsg(
-                                    multicastFile.getThreadId(), 11,
-                                    multicastFile.getFileId(),
-                                    multicastFile.getSenderAddress(),
-                                    multicastFile.getFilePath(), //存放图片路径
-                                    multicastFile.getSendTime(),
-                                    0);
-                            break;
-                        case 2:
-                            tMsg = DBHelper.getInstance(getApplicationContext(), loginAccount).insertMsg(
-                                    multicastFile.getThreadId(), 9,
-                                    multicastFile.getFileId(),
-                                    multicastFile.getSenderAddress(),
-                                    multicastFile.getFileName(),
-                                    multicastFile.getSendTime(),
-                                    0);
-                            break;
-                    }
-
-                    EventBus.getDefault().post(tMsg);
-                }
-            });
+//            }
 
 
             ShareUtil.createDeviceThread();
@@ -1277,4 +1287,15 @@ public class ShareService extends Service {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void startTextile(Integer stop){
+        if(stop==2562){
+            new Thread(){
+                @Override
+                public void run() {
+                    launchTextile();
+                }
+            }.start();
+        }
+    }
 }

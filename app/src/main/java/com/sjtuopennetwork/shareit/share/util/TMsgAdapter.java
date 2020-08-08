@@ -70,13 +70,49 @@ public class TMsgAdapter extends BaseAdapter {
             case 9:
                 return handleMultiFileView(i,view,viewGroup);
             case 10: //广播文字
-                return handleTextView(i,view,viewGroup);
+                return handleMultiTextView(i,view,viewGroup);
             case 11: //广播图片
                 return handleMultiPhotoView(i,view,viewGroup);
             default:
                 return null;
         }
     }
+
+
+    private View handleMultiTextView(int i, View view, ViewGroup viewGroup) {
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.item_msg_text, viewGroup, false);
+            view.setTag(new TextVH(view));
+        }
+        if (view.getTag() instanceof TextVH) {
+            TextVH h = (TextVH) view.getTag();
+            String username = "";
+            String useravatar = "";
+            if (msgList.get(i).ismine) {
+                username = msgList.get(i).author;
+                useravatar = msgList.get(i).blockid;
+                h.send_text_right.setVisibility(View.VISIBLE); //右边的显示
+                h.send_text_left.setVisibility(View.GONE); //左边的隐藏
+                h.msg_name_r.setText(username);
+                h.msg_time_r.setText(df.format(msgList.get(i).sendtime * 1000));
+                h.chat_words_r.setText(msgList.get(i).body);
+//                ShareUtil.setImageView(context, h.msg_avatar_r, useravatar, 3);
+            } else {
+//                String addr = msgList.get(i).author;
+//                Log.d(TAG, "handleTextView: addr:");
+                username = msgList.get(i).author;
+//                useravatar = ShareUtil.getOtherAvatar(addr);
+                h.send_text_left.setVisibility(View.VISIBLE); //左边的显示
+                h.send_text_right.setVisibility(View.GONE); //右边的隐藏
+                h.chat_words.setText(msgList.get(i).body);
+                h.msg_name.setText(username);
+                h.msg_time.setText(df.format(msgList.get(i).sendtime * 1000));
+//                ShareUtil.setImageView(context, h.msg_avatar, useravatar, 0);
+            }
+        }
+        return view;
+    }
+
 
     private View handleMultiPhotoView(int i, View view, ViewGroup viewGroup){
         if (view == null) {
@@ -89,26 +125,25 @@ public class TMsgAdapter extends BaseAdapter {
             String useravatar = "";
 //            String[] hashName = msgList.get(i).body.split("##");
             if(msgList.get(i).ismine){
-                username = ShareUtil.getMyName();
-                useravatar = ShareUtil.getMyAvatar();
+                username = msgList.get(i).author;
+                useravatar = msgList.get(i).blockid;
                 h.send_photo_right.setVisibility(View.VISIBLE); //右边的显示
                 h.send_photo_left.setVisibility(View.GONE); //左边的隐藏
                 h.photo_name_r.setText(username);
                 h.photo_time_r.setText(df.format(msgList.get(i).sendtime * 1000));
-                ShareUtil.setImageView(context, h.photo_avatar_r, useravatar, 0);
+//                ShareUtil.setImageView(context, h.photo_avatar_r, useravatar, 3);
                 h.video_icon_r.setVisibility(View.GONE);
                 ShareUtil.setImageView(context, h.chat_photo_r, msgList.get(i).body, 3);
                 h.chat_photo_r.setOnClickListener(v->{
                 });
             }else{
                 String addr = msgList.get(i).author;
-                username = ShareUtil.getOtherName(addr);
-                useravatar = ShareUtil.getOtherAvatar(addr);
+                username = msgList.get(i).author;
                 h.send_photo_left.setVisibility(View.VISIBLE); //左边的显示
                 h.send_photo_right.setVisibility(View.GONE); //右边的隐藏
                 h.photo_name.setText(username);
                 h.photo_time.setText(df.format(msgList.get(i).sendtime * 1000));
-                ShareUtil.setImageView(context, h.photo_avatar, useravatar, 0);
+//                ShareUtil.setImageView(context, h.photo_avatar, useravatar, 0);
                 h.video_icon.setVisibility(View.GONE);
                 ShareUtil.setImageView(context, h.chat_photo, msgList.get(i).body, 3);
                 h.chat_photo.setOnClickListener(v -> {
@@ -129,28 +164,25 @@ public class TMsgAdapter extends BaseAdapter {
             String useravatar = "";
 //            Log.d(TAG, "handleFileView: " + hashName[0] + " " + hashName[1]);
             if (msgList.get(i).ismine) {
-                username = ShareUtil.getMyName();
-//                Log.d(TAG, "handleFileView: myname " + username);
-                useravatar = ShareUtil.getMyAvatar();
+                username = msgList.get(i).author;
+                useravatar = msgList.get(i).blockid;
                 h.send_file_right.setVisibility(View.VISIBLE); //右边的显示
                 h.send_file_left.setVisibility(View.GONE); //左边的隐藏
                 h.file_user_r.setText(username);
                 h.file_time_r.setText(df.format(msgList.get(i).sendtime * 1000));
                 h.file_name_r.setText(msgList.get(i).body);
-                ShareUtil.setImageView(context, h.file_avatar_r, useravatar, 0);
+//                ShareUtil.setImageView(context, h.file_avatar_r, useravatar, 3);
 //                if (fileType == 0) { // 原生文件
                 h.send_file_right.setOnClickListener(view1 -> {
                 });
             } else {
-                String addr = msgList.get(i).author;
-                username = ShareUtil.getOtherName(addr);
-                useravatar = ShareUtil.getOtherAvatar(addr);
+                username = msgList.get(i).author;
                 h.send_file_left.setVisibility(View.VISIBLE); //左边的显示
                 h.send_file_right.setVisibility(View.GONE); //右边的隐藏
                 h.file_user.setText(username);
                 h.file_time.setText(df.format(msgList.get(i).sendtime * 1000));
                 h.file_name.setText(msgList.get(i).body);
-                ShareUtil.setImageView(context, h.file_avatar, useravatar, 0);
+//                ShareUtil.setImageView(context, h.file_avatar, useravatar, 0);
                 h.send_file_left.setOnClickListener(v -> {
 
                 });

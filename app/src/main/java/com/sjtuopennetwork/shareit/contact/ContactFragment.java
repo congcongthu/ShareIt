@@ -44,6 +44,7 @@ public class ContactFragment extends Fragment {
     //内存数据
     List<MyContactBean> contactBeans;
     List<Model.Peer> myFriends;
+    boolean textileOn;
 
     //持久化存储
     public SharedPreferences pref;
@@ -70,23 +71,50 @@ public class ContactFragment extends Fragment {
 
     private void initData(){
         pref=getActivity().getSharedPreferences("txtl", Context.MODE_PRIVATE);
+        textileOn=pref.getBoolean("textileon",false);
 
-        //显示好友列表
-        myFriends= ContactUtil.getFriendList();
+        if(textileOn) {
+            //显示好友列表
+            myFriends = ContactUtil.getFriendList();
 
-        contactBeans=new LinkedList<>();
+            contactBeans = new LinkedList<>();
 
-        for(Model.Peer p:myFriends){
-            MyContactBean contactBean=new MyContactBean(p.getAddress(),p.getName(),p.getAvatar());
-            contactBeans.add(contactBean);
+            for (Model.Peer p : myFriends) {
+                MyContactBean contactBean = new MyContactBean(p.getAddress(), p.getName(), p.getAvatar());
+                contactBeans.add(contactBean);
+            }
+            contactView.setData(contactBeans, false);
+
+            contactView.setListener(item -> {
+                Intent it = new Intent(getActivity(), ContactInfoActivity.class);
+                it.putExtra("address", item.id);
+                startActivity(it);
+            });
+
+
+            contact_discover_layout.setOnClickListener(v -> {
+                Intent it=new Intent(getActivity(),ContactDiscoverActivity.class);
+                startActivity(it);
+            });
+            new_friend_layout.setOnClickListener(v -> {
+                Intent it=new Intent(getActivity(),NewFriendActivity.class);
+                startActivity(it);
+            });
+            bt_contact_search.setOnClickListener(v -> {
+                Intent it=new Intent(getActivity(),SearchContactActivity.class);
+                startActivity(it);
+            });
+            bt_contact_scan.setOnClickListener(v -> {
+                PermissionUtils.getInstance().requestPermission(getActivity());
+
+                Intent it=new Intent(getActivity(), QRCodeActivity.class);
+                startActivity(it);
+            });
+
+            if(ContactUtil.getApplication().second.size()==0){
+                application_badge.setVisibility(View.GONE);
+            }
         }
-        contactView.setData(contactBeans,false);
-
-        contactView.setListener(item -> {
-            Intent it=new Intent(getActivity(),ContactInfoActivity.class);
-            it.putExtra("address",item.id);
-            startActivity(it);
-        });
     }
 
     private void initUI() {
@@ -96,29 +124,6 @@ public class ContactFragment extends Fragment {
         contactView=getActivity().findViewById(R.id.contact_list);
         bt_contact_scan=getActivity().findViewById(R.id.bt_contact_scan);
         application_badge=getActivity().findViewById(R.id.application_badge);
-
-        contact_discover_layout.setOnClickListener(v -> {
-            Intent it=new Intent(getActivity(),ContactDiscoverActivity.class);
-            startActivity(it);
-        });
-        new_friend_layout.setOnClickListener(v -> {
-            Intent it=new Intent(getActivity(),NewFriendActivity.class);
-            startActivity(it);
-        });
-        bt_contact_search.setOnClickListener(v -> {
-            Intent it=new Intent(getActivity(),SearchContactActivity.class);
-            startActivity(it);
-        });
-        bt_contact_scan.setOnClickListener(v -> {
-            PermissionUtils.getInstance().requestPermission(getActivity());
-
-            Intent it=new Intent(getActivity(), QRCodeActivity.class);
-            startActivity(it);
-        });
-
-        if(ContactUtil.getApplication().second.size()==0){
-            application_badge.setVisibility(View.GONE);
-        }
     }
 
 }

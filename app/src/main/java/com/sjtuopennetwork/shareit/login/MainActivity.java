@@ -105,16 +105,22 @@ public class MainActivity extends AppCompatActivity {
                     Intent toHomeActivity=new Intent(this, HomeActivity.class);
                     toHomeActivity.putExtra("login",1); //shareit注册新账号，1
                     myname=String.valueOf(System.currentTimeMillis());
-                    toHomeActivity.putExtra("myname",myname); //到这里必然不为空
-                    toHomeActivity.putExtra("avatarpath",avatarpath);
+//                    toHomeActivity.putExtra("myname",myname); //到这里必然不为空
+//                    toHomeActivity.putExtra("avatarpath",avatarpath);
+                    editor.putString("myname",myname);
+                    editor.putString("avatarpath",avatarpath);
+                    editor.commit();
                     startActivity(toHomeActivity);
                     finish();
                 }else{
                     //跳转到HomeActivity
                     Intent toHomeActivity=new Intent(this, HomeActivity.class);
                     toHomeActivity.putExtra("login",1); //shareit注册新账号，1
-                    toHomeActivity.putExtra("myname",myname); //到这里必然不为空
-                    toHomeActivity.putExtra("avatarpath",avatarpath);
+//                    toHomeActivity.putExtra("myname",myname); //到这里必然不为空
+//                    toHomeActivity.putExtra("avatarpath",avatarpath);
+                    editor.putString("myname",myname);
+                    editor.putString("avatarpath",avatarpath);
+                    editor.commit();
                     startActivity(toHomeActivity);
                     finish();
                 }

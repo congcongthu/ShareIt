@@ -90,12 +90,33 @@
 
             </RelativeLayout>
 
-            <Button
-                android:id="@+id/looklog"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="查看log"/>
+                android:layout_height="wrap_content">
 
+                <Button
+                    android:layout_margin="5dp"
+                    android:id="@+id/looklog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="查看log"/>
+
+                <Button
+                    android:layout_margin="5dp"
+                    android:id="@+id/textileon_bt"
+                    android:text="启动IPFS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <Button
+                    android:layout_margin="5dp"
+                    android:id="@+id/multicast_res"
+                    android:text="开启组播回复"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
 
             <View
                 android:background="@color/lightgray"
@@ -151,7 +172,7 @@
                 <TextView
                     android:id="@+id/xiansu_now"
                     android:gravity="center_vertical"
-                    android:text="(当前:100)"
+                    android:text="(当前:50)"
                     android:layout_width="80dp"
                     android:layout_height="40dp"/>
 
