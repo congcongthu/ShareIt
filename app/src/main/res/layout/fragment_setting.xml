@@ -160,7 +160,7 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:hint="两个组播packet间隔(ms)"
+                    android:hint="两个包间隔(ms)"
                     android:textSize="14sp"
                     android:id="@+id/xiansu"
                     android:layout_margin="10dp"
@@ -172,7 +172,7 @@
                 <TextView
                     android:id="@+id/xiansu_now"
                     android:gravity="center_vertical"
-                    android:text="(当前:50)"
+                    android:text="(当前:2)"
                     android:layout_width="80dp"
                     android:layout_height="40dp"/>
 
@@ -180,6 +180,38 @@
                     android:id="@+id/xiansu_bt"
                     android:padding="10dp"
                     android:text="设置组播限速"
+                    android:layout_margin="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:hint="包大小(byte,最大60)"
+                    android:textSize="14sp"
+                    android:id="@+id/packet_edit"
+                    android:layout_margin="10dp"
+                    android:background="@color/lightgray"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"/>
+
+                <TextView
+                    android:id="@+id/packet_now"
+                    android:gravity="center_vertical"
+                    android:text="(当前:1024)"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"/>
+
+                <Button
+                    android:id="@+id/packet_bt"
+                    android:padding="10dp"
+                    android:text="设置包大小"
                     android:layout_margin="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"/>

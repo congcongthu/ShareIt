@@ -848,7 +848,7 @@ public class ShareService extends Service {
             connectShadow();
 
             try {
-//                boolean s1 = Textile.instance().ipfs.swarmConnect("/ip4/192.168.3.18/tcp/40102/ipfs/12D3KooWNdTGY3rfF8VgKNyAHH4QHdqpaaUWJrxBygkAC2VGBiZe");
+                boolean s1 = Textile.instance().ipfs.swarmConnect("/ip4/192.168.3.18/tcp/40102/ipfs/12D3KooWMztvGZ7soP9tzfL8w8CQxeF8nD1tDPe87Vyr8uyBSdg3");
                 //boolean s2=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.131/tcp/4001/ipfs/12D3KooWKAKVbQF5yUGAaE5uDnuEbZAAgeU6cUYME6FhqFvqWmay");
 //                boolean s3=Textile.instance().ipfs.swarmConnect("/ip4/202.120.38.100/tcp/4001/ipfs/12D3KooWHp3ABxB1E4ebeEpvcViVFUSsaH198QopBQ8pygvF6PzX");
 //                Log.d(TAG, "nodeOnline: swarmConnect: "+s1+" ");

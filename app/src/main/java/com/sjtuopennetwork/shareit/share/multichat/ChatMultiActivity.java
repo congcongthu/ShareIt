@@ -56,13 +56,15 @@ public class ChatMultiActivity extends AppCompatActivity {
     boolean addingFile = false;
     static final int MULTI_FILE=4785;
     static final int MULTI_PIC=4378;
+    static final int MULTI_VIDEO=89764;
     static final String MULTI_THREADID="20200729multicast";
     String loginAccount;
     String myName;
     String myAvatar;
     List<TMsg> msgList;
     TMsgAdapter msgAdapter;
-    int xiansuTime;
+    float xiansuTime;
+    int packetSize;
     List<String> chooseFilePath;
     List<LocalMedia> choosePic;
     boolean textileOn=false;
@@ -144,8 +146,9 @@ public class ChatMultiActivity extends AppCompatActivity {
             chat_multi_lv.setSelection(msgList.size());
 
             MulticastFile multicastFile=new MulticastFile(MULTI_THREADID,"",myName,"",msgTxt,nowTime,0);
-            xiansuTime=pref.getInt("xiansu",50);
-            MulticastHelper.sendMulticastFile(xiansuTime,multicastFile);
+            xiansuTime=pref.getFloat("xiansu",1.0f);
+            packetSize=pref.getInt("packet",1024);
+            MulticastHelper.sendMulticastFile(packetSize,xiansuTime,multicastFile);
         });
 
         bt_multi_send_img.setOnClickListener(view -> PictureSelector.create(ChatMultiActivity.this)
@@ -202,8 +205,9 @@ public class ChatMultiActivity extends AppCompatActivity {
                                     chat_multi_lv.setSelection(msgList.size());
 
                                     MulticastFile multicastFile=new MulticastFile(MULTI_THREADID,"",myName,fileName,testFilePath,nowTime,2);
-                                    xiansuTime=pref.getInt("xiansu",50);
-                                    MulticastHelper.sendMulticastFile(xiansuTime,multicastFile);
+                                    xiansuTime=pref.getFloat("xiansu",1.0f);
+                                    packetSize=pref.getInt("packet",1024);
+                                    MulticastHelper.sendMulticastFile(packetSize,xiansuTime,multicastFile);
                                 }
                             });
                             builder.show();
@@ -215,6 +219,7 @@ public class ChatMultiActivity extends AppCompatActivity {
 
             file_select_menu.show();
         });
+
 
     }
 
@@ -250,8 +255,9 @@ public class ChatMultiActivity extends AppCompatActivity {
             chat_multi_lv.setSelection(msgList.size());
 
             MulticastFile multicastFile=new MulticastFile(MULTI_THREADID,"",myName,fileName,filePath,nowTime,2);
-            xiansuTime=pref.getInt("xiansu",50);
-            MulticastHelper.sendMulticastFile(xiansuTime,multicastFile);
+            xiansuTime=pref.getFloat("xiansu",1.0f);
+            packetSize=pref.getInt("packet",1024);
+            MulticastHelper.sendMulticastFile(packetSize,xiansuTime,multicastFile);
         }else if(requestCode == MULTI_PIC && resultCode==RESULT_OK){
             choosePic=PictureSelector.obtainMultipleResult(data);
             String filePath=choosePic.get(0).getPath();
@@ -270,8 +276,11 @@ public class ChatMultiActivity extends AppCompatActivity {
             chat_multi_lv.setSelection(msgList.size());
 
             MulticastFile multicastFile=new MulticastFile(MULTI_THREADID,"",myName,fileName,filePath,nowTime,1);
-            xiansuTime=pref.getInt("xiansu",50);
-            MulticastHelper.sendMulticastFile(xiansuTime,multicastFile);
+            xiansuTime=pref.getFloat("xiansu",1.0f);
+            packetSize=pref.getInt("packet",1024);
+            MulticastHelper.sendMulticastFile(packetSize,xiansuTime,multicastFile);
+        }else if(requestCode == MULTI_VIDEO && resultCode==RESULT_OK){
+
         }
     }
 }

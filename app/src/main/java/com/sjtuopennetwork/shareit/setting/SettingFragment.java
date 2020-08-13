@@ -61,6 +61,10 @@ public class SettingFragment extends Fragment {
     EditText xiansu;
     TextView xiansu_now;
 
+    Button packet_bt;
+    EditText packet_edit;
+    TextView packet_now;
+
     Button textileon_bt;
     Button multicast_res;
 
@@ -156,15 +160,30 @@ public class SettingFragment extends Fragment {
         xiansu=getActivity().findViewById(R.id.xiansu);
         xiansu_bt=getActivity().findViewById(R.id.xiansu_bt);
         xiansu_now=getActivity().findViewById(R.id.xiansu_now);
-        int newXiansuTime=pref.getInt("xiansu",50);
+        float newXiansuTime=pref.getFloat("xiansu",1.0f);
         xiansu_now.setText("(当前:"+newXiansuTime+")");
         xiansu_bt.setOnClickListener(view -> {
-            int xiansuTime=Integer.parseInt(xiansu.getText().toString());
+            float xiansuTime=Float.parseFloat(xiansu.getText().toString());
             SharedPreferences.Editor editor = pref.edit();
-            editor.putInt("xiansu", xiansuTime );
+            editor.putFloat("xiansu", xiansuTime );
             editor.commit();
-            int newXiansuTime1=pref.getInt("xiansu",50);
+            float newXiansuTime1=pref.getFloat("xiansu",1.0f);
             xiansu_now.setText("(当前:"+newXiansuTime1+")");
+            Toast.makeText(getActivity(), "设置成功", Toast.LENGTH_SHORT).show();
+        });
+
+        packet_edit=getActivity().findViewById(R.id.packet_edit);
+        packet_bt=getActivity().findViewById(R.id.packet_bt);
+        packet_now=getActivity().findViewById(R.id.packet_now);
+        int packetSize=pref.getInt("packet",1024);
+        packet_now.setText("(当前:"+packetSize+")");
+        packet_bt.setOnClickListener(view -> {
+            int xiansuTime=Integer.parseInt(packet_edit.getText().toString());
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putInt("packet", xiansuTime );
+            editor.commit();
+            int newSize=pref.getInt("packet",1024);
+            packet_now.setText("(当前:"+newSize+")");
             Toast.makeText(getActivity(), "设置成功", Toast.LENGTH_SHORT).show();
         });
 
